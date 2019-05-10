@@ -88,16 +88,12 @@ namespace SudokuApp.Models {
 
             } else {
 
-                var index = 0;
-
                 for (var i = 0; i < AvailableValues.Length; i++) {
 
-                    if (AvailableValues[i].Equals(s)) {
+                    if (AvailableValues[i].Equals(s[0])) {
 
-                        index = 0;
+                        this.AvailableValues = this.AvailableValues.Remove(i, 1);
                     }
-
-                    this.AvailableValues = this.AvailableValues.Remove(index, 1);
                 }
             }
         }

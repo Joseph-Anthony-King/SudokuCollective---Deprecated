@@ -15,8 +15,8 @@ namespace SudokuApp.Models {
         #region Constructors
         public SudokuMatrix(Difficulty difficulty = Difficulty.TEST) {
 
-            var columnRowDeliminators = new List<int>() {
-                10, 19, 28, 37, 46, 55, 64, 73 };
+            var rowColumnDeliminators = new List<int>() {
+                9, 18, 27, 36, 45, 54, 63, 72 };
             var firstRegionDeliminators = new List<int>() {
                 1, 2, 3, 10, 11, 12, 19, 20, 21 };
             var secondRegionDeliminators = new List<int>() {
@@ -90,11 +90,11 @@ namespace SudokuApp.Models {
                     )
                 );
 
-                SudokuCells[i].SudokuCellUpdatedEvent += HandleSudokuCellUpdatedEvent;
+                SudokuCells[i - 1].SudokuCellUpdatedEvent += HandleSudokuCellUpdatedEvent;
 
                 columnIndexer++;
 
-                if (columnRowDeliminators.Contains(i)) {
+                if (rowColumnDeliminators.Contains(i)) {
 
                     columnIndexer = 1;
                     rowIndexer++;
@@ -118,9 +118,11 @@ namespace SudokuApp.Models {
 
             foreach (var value in values) {
 
-                if (Int32.TryParse(value.ToString(), out var number)) {
+                var s = char.ToString(value);
 
-                    intList.Add((Int32)value);
+                if (Int32.TryParse(s, out var number)) {
+
+                    intList.Add(number);
 
                 } else {
 
@@ -134,6 +136,35 @@ namespace SudokuApp.Models {
             }
         }
         #endregion
+
+        public void GenerateSolution() {
+
+            foreach (var sudokuCell in SudokuCells) {
+
+                if (sudokuCell.Value == 0 && !string.IsNullOrEmpty(sudokuCell.AvailableValues)) {
+
+                    var intList = new List<int>();
+
+                    foreach (var value in sudokuCell.AvailableValues) {
+
+                        var s = char.ToString(value);
+
+                        if (Int32.TryParse(s, out var number)) {
+
+                            intList.Add(number);
+
+                        }
+                    }
+
+                    if (intList.Count > 1) {
+
+                        AppExtensions.AppExtensions.Shuffle(intList);
+                    }
+
+                    sudokuCell.Value = intList[0];
+                }
+            }
+        }
 
         public void ZeroOutSudokuCells()
         {
@@ -233,9 +264,9 @@ namespace SudokuApp.Models {
 
             foreach (var sudokuCell in SudokuCells) {
 
-                if (sudokuCell.Column == e.Column
+                if ((sudokuCell.Column == e.Column
                     || sudokuCell.Region == e.Region
-                    || sudokuCell.Row == e.Row) {
+                    || sudokuCell.Row == e.Row) && !string.IsNullOrEmpty(sudokuCell.AvailableValues)) {
 
                     sudokuCell.updateAvailableValues(e.Value.ToString());
                 }

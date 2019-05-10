@@ -13,8 +13,8 @@ namespace SudokuApp.AppExtensions {
             for (int i = list.Count; i > 1; i--)
             {
                 // Pick a random element to swap
-                int j = _randomShuffle.Next(9);
-                int k = _randomShuffle.Next(9);
+                int j = _randomShuffle.Next(list.Count);
+                int k = _randomShuffle.Next(list.Count);
                 // Swap
                 T tmp = list[j];
                 list[j] = list[k];
