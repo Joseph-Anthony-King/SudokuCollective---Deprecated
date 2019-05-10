@@ -1,0 +1,3 @@
+# SudokuApp
+
+This is a .Net Core project which will represent a .Net Core API with an Angular client...
