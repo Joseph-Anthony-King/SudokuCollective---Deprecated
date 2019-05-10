@@ -1,4 +1,5 @@
 ﻿using System;
+using SudokuApp.Models;
 
 namespace SudokuApp.ConsoleApp {
 
@@ -6,6 +7,12 @@ namespace SudokuApp.ConsoleApp {
         static void Main(string[] args) {
 
             Console.WriteLine("\nHello World from the SudokuApp Console App!");
+            Console.ReadLine();
+
+            SudokuMatrix matrix = new SudokuMatrix(Difficulty.TEST);
+            matrix.GenerateSolution();
+
+            Console.WriteLine(matrix);
             Console.ReadLine();
         }
     }
