@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace SudokuApp.Models {
 
-    public class SudokuMatix {
+    public class SudokuMatrix {
 
         public int Id { get; set; }
 
@@ -167,7 +169,7 @@ namespace SudokuApp.Models {
             return result;
         }
 
-        public override void ToString() {
+        public override string ToString() {
 
             StringBuilder result = new StringBuilder();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SudokuApp.AppExtensions {
     public class AppExtensions {
