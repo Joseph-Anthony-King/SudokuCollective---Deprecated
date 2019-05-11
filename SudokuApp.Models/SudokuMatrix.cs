@@ -13,6 +13,36 @@ namespace SudokuApp.Models {
 
         public List<SudokuCell> SudokuCells;
 
+        public List<int> FirstColumn { get => SudokuCells.Where(column => column.Column == 1).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SecondColumn { get => SudokuCells.Where(column => column.Column == 2).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> ThirdColumn { get => SudokuCells.Where(column => column.Column == 3).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> FourthColumn { get => SudokuCells.Where(column => column.Column == 4).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> FifthColumn { get => SudokuCells.Where(column => column.Column == 5).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SixthColumn { get => SudokuCells.Where(column => column.Column == 6).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SeventhColumn { get => SudokuCells.Where(column => column.Column == 7).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> EighthColumn { get => SudokuCells.Where(column => column.Column == 8).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> NinthColumn { get => SudokuCells.Where(column => column.Column == 9).Select(i => i.Value).Distinct().ToList(); }
+
+        public List<int> FirstRegion { get => SudokuCells.Where(region => region.Region == 1).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SecondRegion { get => SudokuCells.Where(region => region.Region == 2).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> ThirdRegion { get => SudokuCells.Where(region => region.Region == 3).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> FourthRegion { get => SudokuCells.Where(region => region.Region == 4).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> FifthRegion { get => SudokuCells.Where(region => region.Region == 5).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SixthRegion { get => SudokuCells.Where(region => region.Region == 6).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SeventhRegion { get => SudokuCells.Where(region => region.Region == 7).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> EighthRegion { get => SudokuCells.Where(region => region.Region == 8).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> NinthRegion { get => SudokuCells.Where(region => region.Region == 9).Select(i => i.Value).Distinct().ToList(); }
+
+        public List<int> FirstRow { get => SudokuCells.Where(row => row.Row == 1).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SecondRow { get => SudokuCells.Where(row => row.Row == 2).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> ThirdRow { get => SudokuCells.Where(row => row.Row == 3).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> FourthRow { get => SudokuCells.Where(row => row.Row == 4).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> FifthRow { get => SudokuCells.Where(row => row.Row == 5).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SixthRow { get => SudokuCells.Where(row => row.Row == 6).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> SeventhRow { get => SudokuCells.Where(row => row.Row == 7).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> EighthRow { get => SudokuCells.Where(row => row.Row == 8).Select(i => i.Value).Distinct().ToList(); }
+        public List<int> NinthRow { get => SudokuCells.Where(row => row.Row == 9).Select(i => i.Value).Distinct().ToList(); }
+
         #region Constructors
         public SudokuMatrix() {
 
@@ -138,32 +168,43 @@ namespace SudokuApp.Models {
 
         public void GenerateSolution() {
 
-            foreach (var sudokuCell in SudokuCells) {
+            do {
 
-                if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Count > 0) {
+                ZeroOutSudokuCells();
 
-                    var intList = new List<int>();
+                foreach (var sudokuCell in SudokuCells) {
 
-                    foreach (var value in sudokuCell.AvailableValues) {
+                    if (sudokuCell.AvailableValues.Count > 1 && sudokuCell.Value == 0) {
 
-                        intList.Add(value);
+                        AppExtensions.AppExtensions.Shuffle(sudokuCell.AvailableValues);
+
+                        sudokuCell.Value = sudokuCell.AvailableValues[0];
                     }
-
-                    if (intList.Count > 1) {
-
-                        AppExtensions.AppExtensions.Shuffle(intList);
-                    }
-
-                    sudokuCell.Value = intList[0];
                 }
+
+            } while (!IsValid());
+        }
+
+        public bool IsValid() {
+
+            if (FirstColumn.Count == 9 && SecondColumn.Count == 9 && ThirdColumn.Count == 9 && FourthColumn.Count == 9 && FifthColumn.Count == 9 
+                && SixthColumn.Count == 9 && SeventhColumn.Count == 9 && EighthColumn.Count == 9  && NinthColumn.Count == 9
+                && FirstRegion.Count == 9 && SecondRegion.Count == 9 && ThirdRegion.Count == 9 && FourthRegion.Count == 9 && FifthRegion.Count == 9
+                && SixthRegion.Count == 9 && SeventhRegion.Count == 9 && EighthRegion.Count == 9 && NinthRegion.Count == 9
+                && FirstRow.Count == 9 && SecondRow.Count == 9 && ThirdRow.Count == 9 && FourthRow.Count == 9 && FifthRow.Count == 9
+                && SixthRow.Count == 9 && SeventhRow.Count == 9 && EighthRow.Count == 9 && NinthRow.Count == 9) {
+
+                return true;
+
+            } else {
+
+                return false;
             }
         }
 
-        public void ZeroOutSudokuCells()
-        {
+        public void ZeroOutSudokuCells() {
 
-            foreach (var sudokuCell in SudokuCells)
-            {
+            foreach (var sudokuCell in SudokuCells) {
 
                 sudokuCell.Value = 0;
             }
@@ -263,19 +304,19 @@ namespace SudokuApp.Models {
 
             foreach (var sudokuCell in SudokuCells) {
 
-                    if (sudokuCell.Column == e.Column) {
+                if (sudokuCell.Column == e.Column) {
 
-                        sudokuCell.UpdateAvailableValues(e.Value);
+                    sudokuCell.UpdateAvailableValues(e.Value);
 
-                    } else if (sudokuCell.Region == e.Region) {
+                } else if (sudokuCell.Region == e.Region) {
 
-                        sudokuCell.UpdateAvailableValues(e.Value);
+                    sudokuCell.UpdateAvailableValues(e.Value);
 
-                    } else if (sudokuCell.Row == e.Row) {
+                } else if (sudokuCell.Row == e.Row) {
 
-                        sudokuCell.UpdateAvailableValues(e.Value);
+                    sudokuCell.UpdateAvailableValues(e.Value);
 
-                    } else {
+                } else {
 
                     // do nothing...
                 }

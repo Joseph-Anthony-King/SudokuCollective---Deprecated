@@ -100,6 +100,11 @@ namespace SudokuApp.Models {
 
                     this.AvailableValues.Remove(i);
                 }
+
+                if (this.AvailableValues.Count == 1) {
+
+                    this.Value = this.AvailableValues[0];
+                }
             }
         }
 
@@ -107,7 +112,30 @@ namespace SudokuApp.Models {
 
         public override string ToString() => DisplayValue.ToString();
 
-        public string PrintCellValue() => string.Format("[ {0} {1} {2} {3} {4} ]", this.Index, this.Value, this.Column, this.Region, this.Row);
+        public string PrintValue() => string.Format("[{0}]", this.Value);
+
+        public string PrintDisplayedValue() {
+
+            if (this.Obscured) {
+
+                return string.Format("[{0}]", this.DisplayValue);
+
+            } else {
+
+                return string.Format("[{0}]", this.Value);
+            }
+        }
+
+        public string PrintCoordinates() {
+
+            if (this.Row != 1) {
+
+                return string.Format("[{0}:{1},{2},{3}]", this.Index, this.Column, this.Region, this.Row);
+            } else {
+
+                return string.Format("[ {0}:{1},{2},{3}]", this.Index, this.Column, this.Region, this.Row);
+            }
+        }
 
         internal event EventHandler<UpdateSudokuCellEventArgs> SudokuCellUpdatedEvent;
 
