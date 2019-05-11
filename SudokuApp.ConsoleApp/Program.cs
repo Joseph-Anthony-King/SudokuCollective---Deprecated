@@ -23,7 +23,10 @@ namespace SudokuApp.ConsoleApp {
 
                     if (number == 1 || number == 2) {
 
-                        Console.WriteLine("\nNice response!");
+                        if (number == 1) {
+
+                            Routines.GenerateSolutions.Run();
+                        }
                         break;
 
                     } else {
