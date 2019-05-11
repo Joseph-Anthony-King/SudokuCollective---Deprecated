@@ -7,30 +7,42 @@ namespace SudokuApp.ConsoleApp {
     class Program {
         static void Main(string[] args) {
 
-            Console.WriteLine("\nHello World from the SudokuApp Console App!");
-            Console.ReadLine();
+            Console.WriteLine("\nWelcome to the Sudoku Console App!\n");
+            Console.WriteLine("Would you like to generate solutions or solve a solution:\n");
+            Console.WriteLine("\tEnter 1 to generate solutions");
+            Console.WriteLine("\tEnter 2 to solve a solution\n");
+            Console.Write("Please make your selection: ");
 
-            SudokuMatrix matrix = new SudokuMatrix();
+            begin:
 
-            for (var i = 0; i < 5; i++) {
+            var response = Console.ReadLine();
 
-                matrix.GenerateSolution();
-                matrix.SetDifficulty(Difficulty.TEST);
+            do {
 
+                if (Int32.TryParse(response, out var number)) {
 
-                for (var j = 1; j < 10; j++) {
+                    if (number == 1 || number == 2) {
 
-                    foreach (var row in matrix.SudokuCells.Where(cell => cell.Row == j)) {
+                        Console.WriteLine("\nNice response!");
+                        break;
 
-                        Console.Write(row.PrintDisplayedValue());
+                    } else {
+
+                        Console.WriteLine("\nInvalid response.");
+                        Console.Write("\nPlease make your selection: ");
+                        goto begin;
                     }
-                    Console.WriteLine();
+
+                } else {
+
+                    Console.WriteLine("\nInvalid response.");
+                    Console.Write("\nPlease make your selection: ");
+                    goto begin;
                 }
 
-                matrix.ZeroOutSudokuCells();
-                Console.WriteLine();
-            }
+            } while (true);
 
+            Console.WriteLine("\nPress enter to exit the program...");
             Console.ReadLine();
         }
     }
