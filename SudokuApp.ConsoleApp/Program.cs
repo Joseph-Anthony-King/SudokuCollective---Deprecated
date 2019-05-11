@@ -10,7 +10,8 @@ namespace SudokuApp.ConsoleApp {
             Console.WriteLine("\nWelcome to the Sudoku Console App!\n");
             Console.WriteLine("Would you like to generate solutions or solve a solution:\n");
             Console.WriteLine("\tEnter 1 to generate solutions");
-            Console.WriteLine("\tEnter 2 to solve a solution\n");
+            Console.WriteLine("\tEnter 2 to solve a solution");
+            Console.WriteLine("\tEnter 3 to exit program\n");
             Console.Write("Please make your selection: ");
 
             begin:
@@ -21,13 +22,25 @@ namespace SudokuApp.ConsoleApp {
 
                 if (Int32.TryParse(response, out var number)) {
 
-                    if (number == 1 || number == 2) {
+                    if (number == 1 || number == 2 || number == 3) {
 
                         if (number == 1) {
 
                             Routines.GenerateSolutions.Run();
+
+                        } else if (number == 3) {
+
+                            break;
+
+                        } else {
+
+                            Console.WriteLine("\nWould you like to generate solutions or solve a solution:\n");
+                            Console.WriteLine("\tEnter 1 to generate solutions");
+                            Console.WriteLine("\tEnter 2 to solve a solution\n");
+                            Console.Write("Please make your selection: ");
                         }
-                        break;
+
+                        goto begin;
 
                     } else {
 
