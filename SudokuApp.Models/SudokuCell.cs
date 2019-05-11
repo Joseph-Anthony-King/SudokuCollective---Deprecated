@@ -39,20 +39,7 @@ namespace SudokuApp.Models {
                 }
             }
         }
-        public int DisplayValue {
-
-            get {
-
-                if (Obscured) {
-
-                    return 0;
-
-                } else {
-
-                    return _value;
-                }
-            }
-        }
+        public int DisplayValue { get => Obscured ? 0 : _value; }
         public bool Obscured { get; set; }
         public List<int> AvailableValues;
         #endregion
