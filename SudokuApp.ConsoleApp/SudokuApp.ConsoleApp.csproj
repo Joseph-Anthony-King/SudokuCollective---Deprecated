@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SudokuApp.Models\SudokuApp.Models.csproj" />
-    <ProjectReference Include="..\SudokuApp.SudokuUtilities\SudokuApp.SudokuUtilities.csproj" />
   </ItemGroup>
 
 </Project>
