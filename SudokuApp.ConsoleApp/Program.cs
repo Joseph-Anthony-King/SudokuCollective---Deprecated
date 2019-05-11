@@ -9,10 +9,12 @@ namespace SudokuApp.ConsoleApp {
             Console.WriteLine("\nHello World from the SudokuApp Console App!");
             Console.ReadLine();
 
-            SudokuMatrix matrix = new SudokuMatrix(Difficulty.TEST);
+            SudokuMatrix matrix = new SudokuMatrix();
+            matrix.SetDifficulty(Difficulty.TEST);
             matrix.GenerateSolution();
 
             Console.WriteLine(matrix);
+
             Console.ReadLine();
         }
     }

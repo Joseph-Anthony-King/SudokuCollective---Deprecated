@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SudokuApp.Models {
@@ -13,7 +14,7 @@ namespace SudokuApp.Models {
         public List<SudokuCell> SudokuCells;
 
         #region Constructors
-        public SudokuMatrix(Difficulty difficulty = Difficulty.TEST) {
+        public SudokuMatrix() {
 
             var rowColumnDeliminators = new List<int>() {
                 9, 18, 27, 36, 45, 54, 63, 72 };
@@ -100,8 +101,6 @@ namespace SudokuApp.Models {
                     rowIndexer++;
                 }
             }
-            
-            setDifficulty();
         }
 
         public SudokuMatrix(List<int> intList) : this() {
@@ -141,19 +140,13 @@ namespace SudokuApp.Models {
 
             foreach (var sudokuCell in SudokuCells) {
 
-                if (sudokuCell.Value == 0 && !string.IsNullOrEmpty(sudokuCell.AvailableValues)) {
+                if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Count > 0) {
 
                     var intList = new List<int>();
 
                     foreach (var value in sudokuCell.AvailableValues) {
 
-                        var s = char.ToString(value);
-
-                        if (Int32.TryParse(s, out var number)) {
-
-                            intList.Add(number);
-
-                        }
+                        intList.Add(value);
                     }
 
                     if (intList.Count > 1) {
@@ -212,8 +205,14 @@ namespace SudokuApp.Models {
             return result.ToString();
         }
 
-        private void setDifficulty() {
+        public void SetDifficulty(Difficulty difficulty) {
 
+            foreach (var sudokuCell in SudokuCells) {
+
+                sudokuCell.Obscured = true;
+            }
+
+            this.Difficulty = difficulty;
             int index;
 
             if (this.Difficulty == Difficulty.EASY) {
@@ -264,11 +263,21 @@ namespace SudokuApp.Models {
 
             foreach (var sudokuCell in SudokuCells) {
 
-                if ((sudokuCell.Column == e.Column
-                    || sudokuCell.Region == e.Region
-                    || sudokuCell.Row == e.Row) && !string.IsNullOrEmpty(sudokuCell.AvailableValues)) {
+                    if (sudokuCell.Column == e.Column) {
 
-                    sudokuCell.updateAvailableValues(e.Value.ToString());
+                        sudokuCell.UpdateAvailableValues(e.Value);
+
+                    } else if (sudokuCell.Region == e.Region) {
+
+                        sudokuCell.UpdateAvailableValues(e.Value);
+
+                    } else if (sudokuCell.Row == e.Row) {
+
+                        sudokuCell.UpdateAvailableValues(e.Value);
+
+                    } else {
+
+                    // do nothing...
                 }
             }
         }

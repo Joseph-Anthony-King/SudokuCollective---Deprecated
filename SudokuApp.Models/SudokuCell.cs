@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SudokuApp.Models {
-    
+
     public class SudokuCell {
 
         private int _value;
@@ -21,7 +22,7 @@ namespace SudokuApp.Models {
 
                 if (this._value != 0) {
 
-                    this.AvailableValues = string.Empty;
+                    this.AvailableValues = new List<int>();
 
                     OnSuccessfulSudokuCellUpdate(
                         new UpdateSudokuCellEventArgs(
@@ -34,7 +35,7 @@ namespace SudokuApp.Models {
 
                 } else {
 
-                    this.AvailableValues = "123456789";
+                    this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
                 }
             }
         }
@@ -53,7 +54,7 @@ namespace SudokuApp.Models {
             }
         }
         public bool Obscured { get; set; }
-        public string AvailableValues { get; set; }
+        public List<int> AvailableValues;
         #endregion
 
         #region Constructors
@@ -66,6 +67,8 @@ namespace SudokuApp.Models {
 
             this.Value = 0;
             this.Obscured = true;
+
+            this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         }
 
         public SudokuCell(int index, int column, int region, int row, int value) {
@@ -77,23 +80,25 @@ namespace SudokuApp.Models {
 
             this.Value = value;
             this.Obscured = true;
+
+            if (this.Value == 0) {
+
+                this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            }
         }
         #endregion
 
-        internal void updateAvailableValues(string s) {
+        internal void UpdateAvailableValues(int i) {
 
-            if (string.IsNullOrEmpty(s)) {
+            if (i == 0) {
 
-                this.AvailableValues = "123456789";
+                this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
             } else {
 
-                for (var i = 0; i < AvailableValues.Length; i++) {
+                if (this.AvailableValues.Contains(i) && this.AvailableValues.Count > 0) {
 
-                    if (AvailableValues[i].Equals(s[0])) {
-
-                        this.AvailableValues = this.AvailableValues.Remove(i, 1);
-                    }
+                    this.AvailableValues.Remove(i);
                 }
             }
         }
@@ -101,6 +106,8 @@ namespace SudokuApp.Models {
         public int ToInt32() => DisplayValue;
 
         public override string ToString() => DisplayValue.ToString();
+
+        public string PrintCellValue() => string.Format("[ {0} {1} {2} {3} {4} ]", this.Index, this.Value, this.Column, this.Region, this.Row);
 
         internal event EventHandler<UpdateSudokuCellEventArgs> SudokuCellUpdatedEvent;
 

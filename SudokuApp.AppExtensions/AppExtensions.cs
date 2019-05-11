@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SudokuApp.AppExtensions {
-    public class AppExtensions {
+    public static class AppExtensions {
 
         public static Random generateRandomNumber = new Random();
 
@@ -20,6 +21,18 @@ namespace SudokuApp.AppExtensions {
                 list[j] = list[k];
                 list[k] = tmp;
             }
+        }
+
+        public static bool ContainsAnySimilarElements(this IEnumerable<int> aList, IEnumerable<int> bList) {
+            bool result = false;
+
+            foreach (int a in aList) {
+                if (bList.Contains(a)) {
+                    result = true;
+                }
+            }
+
+            return result;
         }
     }
 }
