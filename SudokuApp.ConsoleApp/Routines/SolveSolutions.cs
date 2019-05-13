@@ -65,7 +65,7 @@ namespace SudokuApp.ConsoleApp.Routines {
 
                 stopwatch.Start();
                 var matrix = new SudokuSolver(response.ToString());
-                matrix.SolveSolution();
+                matrix.Solve();
                 matrix.SetDifficulty(Difficulty.TEST);
                 stopwatch.Stop();
 
