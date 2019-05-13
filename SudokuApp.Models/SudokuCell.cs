@@ -75,6 +75,10 @@ namespace SudokuApp.Models {
         }
         #endregion
 
+        public int ToInt32() => DisplayValue;
+
+        public override string ToString() => DisplayValue.ToString();
+
         internal void UpdateAvailableValues(int i) {
 
             if (i == 0) {
@@ -92,35 +96,6 @@ namespace SudokuApp.Models {
 
                     this.Value = this.AvailableValues[0];
                 }
-            }
-        }
-
-        public int ToInt32() => DisplayValue;
-
-        public override string ToString() => DisplayValue.ToString();
-
-        public string PrintValue() => string.Format("[{0}]", this.Value);
-
-        public string PrintDisplayedValue() {
-
-            if (this.Obscured) {
-
-                return string.Format("[{0}]", this.DisplayValue);
-
-            } else {
-
-                return string.Format("[{0}]", this.Value);
-            }
-        }
-
-        public string PrintCoordinates() {
-
-            if (this.Row != 1) {
-
-                return string.Format("[{0}:{1},{2},{3}]", this.Index, this.Column, this.Region, this.Row);
-            } else {
-
-                return string.Format("[ {0}:{1},{2},{3}]", this.Index, this.Column, this.Region, this.Row);
             }
         }
 

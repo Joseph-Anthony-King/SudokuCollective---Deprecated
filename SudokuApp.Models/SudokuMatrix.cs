@@ -13,35 +13,127 @@ namespace SudokuApp.Models {
 
         public List<SudokuCell> SudokuCells;
 
-        public List<int> FirstColumn { get => SudokuCells.Where(column => column.Column == 1).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SecondColumn { get => SudokuCells.Where(column => column.Column == 2).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> ThirdColumn { get => SudokuCells.Where(column => column.Column == 3).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> FourthColumn { get => SudokuCells.Where(column => column.Column == 4).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> FifthColumn { get => SudokuCells.Where(column => column.Column == 5).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SixthColumn { get => SudokuCells.Where(column => column.Column == 6).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SeventhColumn { get => SudokuCells.Where(column => column.Column == 7).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> EighthColumn { get => SudokuCells.Where(column => column.Column == 8).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> NinthColumn { get => SudokuCells.Where(column => column.Column == 9).Select(i => i.Value).Distinct().ToList(); }
+        public List<List<SudokuCell>> Columns {
 
-        public List<int> FirstRegion { get => SudokuCells.Where(region => region.Region == 1).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SecondRegion { get => SudokuCells.Where(region => region.Region == 2).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> ThirdRegion { get => SudokuCells.Where(region => region.Region == 3).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> FourthRegion { get => SudokuCells.Where(region => region.Region == 4).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> FifthRegion { get => SudokuCells.Where(region => region.Region == 5).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SixthRegion { get => SudokuCells.Where(region => region.Region == 6).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SeventhRegion { get => SudokuCells.Where(region => region.Region == 7).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> EighthRegion { get => SudokuCells.Where(region => region.Region == 8).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> NinthRegion { get => SudokuCells.Where(region => region.Region == 9).Select(i => i.Value).Distinct().ToList(); }
+            get {
 
-        public List<int> FirstRow { get => SudokuCells.Where(row => row.Row == 1).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SecondRow { get => SudokuCells.Where(row => row.Row == 2).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> ThirdRow { get => SudokuCells.Where(row => row.Row == 3).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> FourthRow { get => SudokuCells.Where(row => row.Row == 4).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> FifthRow { get => SudokuCells.Where(row => row.Row == 5).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SixthRow { get => SudokuCells.Where(row => row.Row == 6).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> SeventhRow { get => SudokuCells.Where(row => row.Row == 7).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> EighthRow { get => SudokuCells.Where(row => row.Row == 8).Select(i => i.Value).Distinct().ToList(); }
-        public List<int> NinthRow { get => SudokuCells.Where(row => row.Row == 9).Select(i => i.Value).Distinct().ToList(); }
+                var result = new List<List<SudokuCell>>() {
+                    FirstColumn,
+                    SecondColumn,
+                    ThirdColumn,
+                    FourthColumn,
+                    FifthColumn,
+                    SixthColumn,
+                    SeventhColumn,
+                    EighthColumn,
+                    NinthColumn
+                };
+
+                return result;
+            }
+        }
+
+        public List<List<SudokuCell>> Regions {
+
+            get {
+
+                var result = new List<List<SudokuCell>>() {
+                    FirstRegion,
+                    SecondRegion,
+                    ThirdRegion,
+                    FourthRegion,
+                    FifthRegion,
+                    SixthRegion,
+                    SeventhRegion,
+                    EighthRegion,
+                    NinthRegion
+                };
+
+                return result;
+            }
+        }
+
+        public List<List<SudokuCell>> Rows {
+
+            get {
+
+                var result = new List<List<SudokuCell>>() {
+                    FirstRow,
+                    SecondRow,
+                    ThirdRow,
+                    FourthRow,
+                    FifthRow,
+                    SixthRow,
+                    SeventhRow,
+                    EighthRow,
+                    NinthRow
+                };
+
+                return result;
+            }
+        }
+
+        #region Private Properties
+        private List<SudokuCell> FirstColumn { get => SudokuCells.Where(column => column.Column == 1).ToList(); }
+        private List<SudokuCell> SecondColumn { get => SudokuCells.Where(column => column.Column == 2).ToList(); }
+        private List<SudokuCell> ThirdColumn { get => SudokuCells.Where(column => column.Column == 3).ToList(); }
+        private List<SudokuCell> FourthColumn { get => SudokuCells.Where(column => column.Column == 4).ToList(); }
+        private List<SudokuCell> FifthColumn { get => SudokuCells.Where(column => column.Column == 5).ToList(); }
+        private List<SudokuCell> SixthColumn { get => SudokuCells.Where(column => column.Column == 6).ToList(); }
+        private List<SudokuCell> SeventhColumn { get => SudokuCells.Where(column => column.Column == 7).ToList(); }
+        private List<SudokuCell> EighthColumn { get => SudokuCells.Where(column => column.Column == 8).ToList(); }
+        private List<SudokuCell> NinthColumn { get => SudokuCells.Where(column => column.Column == 9).ToList(); }
+
+        private List<SudokuCell> FirstRegion { get => SudokuCells.Where(region => region.Region == 1).ToList(); }
+        private List<SudokuCell> SecondRegion { get => SudokuCells.Where(region => region.Region == 2).ToList(); }
+        private List<SudokuCell> ThirdRegion { get => SudokuCells.Where(region => region.Region == 3).ToList(); }
+        private List<SudokuCell> FourthRegion { get => SudokuCells.Where(region => region.Region == 4).ToList(); }
+        private List<SudokuCell> FifthRegion { get => SudokuCells.Where(region => region.Region == 5).ToList(); }
+        private List<SudokuCell> SixthRegion { get => SudokuCells.Where(region => region.Region == 6).ToList(); }
+        private List<SudokuCell> SeventhRegion { get => SudokuCells.Where(region => region.Region == 7).ToList(); }
+        private List<SudokuCell> EighthRegion { get => SudokuCells.Where(region => region.Region == 8).ToList(); }
+        private List<SudokuCell> NinthRegion { get => SudokuCells.Where(region => region.Region == 9).ToList(); }
+
+        private List<SudokuCell> FirstRow { get => SudokuCells.Where(row => row.Row == 1).ToList(); }
+        private List<SudokuCell> SecondRow { get => SudokuCells.Where(row => row.Row == 2).ToList(); }
+        private List<SudokuCell> ThirdRow { get => SudokuCells.Where(row => row.Row == 3).ToList(); }
+        private List<SudokuCell> FourthRow { get => SudokuCells.Where(row => row.Row == 4).ToList(); }
+        private List<SudokuCell> FifthRow { get => SudokuCells.Where(row => row.Row == 5).ToList(); }
+        private List<SudokuCell> SixthRow { get => SudokuCells.Where(row => row.Row == 6).ToList(); }
+        private List<SudokuCell> SeventhRow { get => SudokuCells.Where(row => row.Row == 7).ToList(); }
+        private List<SudokuCell> EighthRow { get => SudokuCells.Where(row => row.Row == 8).ToList(); }
+        private List<SudokuCell> NinthRow { get => SudokuCells.Where(row => row.Row == 9).ToList(); }
+
+        private List<int> FirstColumnValues { get => SudokuCells.Where(column => column.Column == 1).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SecondColumnValues { get => SudokuCells.Where(column => column.Column == 2).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> ThirdColumnValues { get => SudokuCells.Where(column => column.Column == 3).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> FourthColumnValues { get => SudokuCells.Where(column => column.Column == 4).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> FifthColumnValues { get => SudokuCells.Where(column => column.Column == 5).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SixthColumnValues { get => SudokuCells.Where(column => column.Column == 6).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SeventhColumnValues { get => SudokuCells.Where(column => column.Column == 7).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> EighthColumnValues { get => SudokuCells.Where(column => column.Column == 8).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> NinthColumnValues { get => SudokuCells.Where(column => column.Column == 9).Select(i => i.Value).Distinct().ToList(); }
+
+        private List<int> FirstRegionValues { get => SudokuCells.Where(region => region.Region == 1).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SecondRegionValues { get => SudokuCells.Where(region => region.Region == 2).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> ThirdRegionValues { get => SudokuCells.Where(region => region.Region == 3).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> FourthRegionValues { get => SudokuCells.Where(region => region.Region == 4).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> FifthRegionValues { get => SudokuCells.Where(region => region.Region == 5).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SixthRegionValues { get => SudokuCells.Where(region => region.Region == 6).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SeventhRegionValues { get => SudokuCells.Where(region => region.Region == 7).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> EighthRegionValues { get => SudokuCells.Where(region => region.Region == 8).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> NinthRegionValues { get => SudokuCells.Where(region => region.Region == 9).Select(i => i.Value).Distinct().ToList(); }
+
+        private List<int> FirstRowValues { get => SudokuCells.Where(row => row.Row == 1).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SecondRowValues { get => SudokuCells.Where(row => row.Row == 2).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> ThirdRowValues { get => SudokuCells.Where(row => row.Row == 3).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> FourthRowValues { get => SudokuCells.Where(row => row.Row == 4).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> FifthRowValues { get => SudokuCells.Where(row => row.Row == 5).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SixthRowValues { get => SudokuCells.Where(row => row.Row == 6).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> SeventhRowValues { get => SudokuCells.Where(row => row.Row == 7).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> EighthRowValues { get => SudokuCells.Where(row => row.Row == 8).Select(i => i.Value).Distinct().ToList(); }
+        private List<int> NinthRowValues { get => SudokuCells.Where(row => row.Row == 9).Select(i => i.Value).Distinct().ToList(); }
+        #endregion
 
         #region Constructors
         public SudokuMatrix() {
@@ -179,35 +271,15 @@ namespace SudokuApp.Models {
                         AppExtensions.AppExtensions.Shuffle(sudokuCell.AvailableValues);
 
                         sudokuCell.Value = sudokuCell.AvailableValues[0];
+
+                        if (sudokuCell.Value == 0) {
+
+                            break;
+                        }
                     }
                 }
 
             } while (!IsValid());
-        }
-
-        public bool IsValid() {
-
-            if (FirstColumn.Count == 9 && SecondColumn.Count == 9 && ThirdColumn.Count == 9 && FourthColumn.Count == 9 && FifthColumn.Count == 9 
-                && SixthColumn.Count == 9 && SeventhColumn.Count == 9 && EighthColumn.Count == 9  && NinthColumn.Count == 9
-                && FirstRegion.Count == 9 && SecondRegion.Count == 9 && ThirdRegion.Count == 9 && FourthRegion.Count == 9 && FifthRegion.Count == 9
-                && SixthRegion.Count == 9 && SeventhRegion.Count == 9 && EighthRegion.Count == 9 && NinthRegion.Count == 9
-                && FirstRow.Count == 9 && SecondRow.Count == 9 && ThirdRow.Count == 9 && FourthRow.Count == 9 && FifthRow.Count == 9
-                && SixthRow.Count == 9 && SeventhRow.Count == 9 && EighthRow.Count == 9 && NinthRow.Count == 9) {
-
-                return true;
-
-            } else {
-
-                return false;
-            }
-        }
-
-        public void ZeroOutSudokuCells() {
-
-            foreach (var sudokuCell in SudokuCells) {
-
-                sudokuCell.Value = 0;
-            }
         }
 
         public List<int> ToInt32List() {
@@ -232,18 +304,6 @@ namespace SudokuApp.Models {
             }
 
             return result;
-        }
-
-        public override string ToString() {
-
-            StringBuilder result = new StringBuilder();
-
-            foreach (var sudokuCell in SudokuCells) {
-
-                result.Append(sudokuCell);
-            }
-
-            return result.ToString();
         }
 
         public void SetDifficulty(Difficulty difficulty) {
@@ -283,9 +343,9 @@ namespace SudokuApp.Models {
                 }
 
                 AppExtensions.AppExtensions.Shuffle(indexerList);
-                
+
                 for (var i = 0; i < index; i++) {
-                    
+
                     SudokuCells[indexerList[i]].Obscured = false;
                 }
 
@@ -295,6 +355,43 @@ namespace SudokuApp.Models {
 
                     sudokuCell.Obscured = false;
                 }
+            }
+        }
+
+        public override string ToString() {
+
+            StringBuilder result = new StringBuilder();
+
+            foreach (var sudokuCell in SudokuCells) {
+
+                result.Append(sudokuCell);
+            }
+
+            return result.ToString();
+        }
+
+        public bool IsValid() {
+
+            if (FirstColumnValues.Count == 9 && SecondColumnValues.Count == 9 && ThirdColumnValues.Count == 9 && FourthColumnValues.Count == 9 && FifthColumnValues.Count == 9
+                && SixthColumnValues.Count == 9 && SeventhColumnValues.Count == 9 && EighthColumnValues.Count == 9 && NinthColumnValues.Count == 9
+                && FirstRegionValues.Count == 9 && SecondRegionValues.Count == 9 && ThirdRegionValues.Count == 9 && FourthRegionValues.Count == 9 && FifthRegionValues.Count == 9
+                && SixthRegionValues.Count == 9 && SeventhRegionValues.Count == 9 && EighthRegionValues.Count == 9 && NinthRegionValues.Count == 9
+                && FirstRowValues.Count == 9 && SecondRowValues.Count == 9 && ThirdRowValues.Count == 9 && FourthRowValues.Count == 9 && FifthRowValues.Count == 9
+                && SixthRowValues.Count == 9 && SeventhRowValues.Count == 9 && EighthRowValues.Count == 9 && NinthRowValues.Count == 9) {
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+
+        private void ZeroOutSudokuCells() {
+
+            foreach (var sudokuCell in SudokuCells) {
+
+                sudokuCell.Value = 0;
             }
         }
 

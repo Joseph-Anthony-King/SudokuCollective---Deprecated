@@ -13,15 +13,15 @@ namespace SudokuApp.ConsoleApp.Routines {
 
             do {
                 var matrix = new SudokuMatrix();
-                matrix.GenerateSolution();
                 matrix.SetDifficulty(Difficulty.TEST);
+                matrix.GenerateSolution();
                 Console.WriteLine();
 
-                for (var i = 1; i < 10; i++) {
+                foreach (var row in matrix.Rows) {
 
-                    foreach (var row in matrix.SudokuCells.Where(cell => cell.Row == i)) {
+                    foreach (var cell in row) {
 
-                        Console.Write(row.PrintDisplayedValue());
+                        Console.Write(string.Format("{0} ", cell));
                     }
 
                     Console.WriteLine();
