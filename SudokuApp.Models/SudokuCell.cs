@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SudokuApp.Models {
 
@@ -22,13 +23,18 @@ namespace SudokuApp.Models {
 
                 if (value == 0) {
 
+                    if (this._value != 0) {
+
+                        this.AvailableValueIndex = 0;
+
+                    }
+
                     if (!_initializing) {
 
                         OnSuccessfulSudokuCellReset(
                             new ResetSudokuCellEventArgs(
                                 this.Index,
-                                this.AvailableValues,
-                                this.Value,
+                                this._value,
                                 this.Column,
                                 this.Region,
                                 this.Row
@@ -137,6 +143,16 @@ namespace SudokuApp.Models {
             }
         }
 
+        internal void ResetAvailableValues(int i) {
+
+            if (this.Value == 0 && !this.AvailableValues.Contains(i)) {
+
+                this.AvailableValues.Add(i);
+                this.AvailableValues = this.AvailableValues.Distinct().ToList();
+                this.AvailableValues.Sort();
+            }
+        }
+
         internal event EventHandler<UpdateSudokuCellEventArgs> SudokuCellUpdatedEvent;
 
         internal event EventHandler<ResetSudokuCellEventArgs> SudokuCellResetEvent;
@@ -149,7 +165,6 @@ namespace SudokuApp.Models {
         internal virtual void OnSuccessfulSudokuCellReset(ResetSudokuCellEventArgs e) {
 
             SudokuCellResetEvent.Invoke(this, e);
-            this.AvailableValues = e.Values;
         }
     }
 
@@ -174,20 +189,20 @@ namespace SudokuApp.Models {
     internal struct ResetSudokuCellEventArgs {
 
         internal int Index { get; set; }
-        internal List<int> Values { get; set; }
         internal int Value { get; set; }
         internal int Column { get; set; }
         internal int Region { get; set; }
         internal int Row { get; set; }
+        internal List<int> Values { get; set; }
 
-        internal ResetSudokuCellEventArgs(int index, List<int> values, int value, int column, int region, int row) {
+        internal ResetSudokuCellEventArgs(int index, int value, int column, int region, int row) {
 
             Index = index;
-            Values = values;
             Value = value;
             Column = column;
             Region = region;
             Row = row;
+            Values = new List<int>();
         }
     }
 }

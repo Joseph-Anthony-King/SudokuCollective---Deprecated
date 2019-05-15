@@ -41,6 +41,8 @@ namespace SudokuApp.Utilities {
 
                 Console.WriteLine(sb.ToString().Trim().Substring(0, sb.Length - 2));
 
+
+
                 resultSeed.AddRange(loopSeed);
 
             } else {

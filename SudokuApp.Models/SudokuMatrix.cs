@@ -427,7 +427,64 @@ namespace SudokuApp.Models {
 
             if (e.Values.Count == 0) {
 
-                var result = SudokuCells.Where(cell => cell.Column == e.Column || cell.Region == e.Region || cell.Row == e.Row).SelectMany(cell => cell.AvailableValues).Distinct().ToList();
+                var tmp = new List<int>();
+
+                foreach (var sudokuCell in SudokuCells) {
+
+                    if (sudokuCell.Index != e.Index) {
+
+                        if (sudokuCell.Column == e.Column) {
+
+                            sudokuCell.ResetAvailableValues(e.Value);
+
+                        } else if (sudokuCell.Region == e.Region) {
+
+                            sudokuCell.ResetAvailableValues(e.Value);
+
+                        } else if (sudokuCell.Row == e.Row) {
+
+                            sudokuCell.ResetAvailableValues(e.Value);
+
+                        } else {
+
+                            // do nothing...
+                        }
+                    }
+                }
+
+                foreach (var sudokuCell in SudokuCells) {
+
+                    if (sudokuCell.Index != e.Index) {
+
+                        if (sudokuCell.Column == e.Column) {
+
+                            foreach (var i in sudokuCell.AvailableValues) {
+
+                                tmp.Add(i);
+                            }
+
+                        } else if (sudokuCell.Region == e.Region) {
+
+                            foreach (var i in sudokuCell.AvailableValues) {
+
+                                tmp.Add(i);
+                            }
+
+                        } else if (sudokuCell.Row == e.Row) {
+
+                            foreach (var i in sudokuCell.AvailableValues) {
+
+                                tmp.Add(i);
+                            }
+
+                        } else {
+
+                            // do nothing...
+                        }
+                    }
+                }
+
+                var result = tmp.Distinct().ToList();
 
                 if (result.Contains(0)) {
 
@@ -436,23 +493,7 @@ namespace SudokuApp.Models {
 
                 result.Sort();
 
-                foreach (var cell in SudokuCells) {
-
-                    if (cell.Index != e.Index) {
-
-                        if (cell.Column == e.Column || cell.Region == e.Region || cell.Row == e.Row) {
-
-                            if (cell.Value == 0 && !cell.AvailableValues.Contains(e.Value)) {
-
-                                cell.AvailableValues.Add(e.Value);
-                                cell.AvailableValues.Sort();
-                            }
-                        }
-                    }
-                }
-
-                e.Values = new List<int>();
-                e.Values = result;
+                SudokuCells[e.Index - 1].AvailableValues.AddRange(result);
             }
         }
     }
