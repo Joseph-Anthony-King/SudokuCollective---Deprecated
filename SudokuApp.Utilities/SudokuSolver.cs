@@ -14,48 +14,123 @@ namespace SudokuApp.Utilities {
         public void Solve() {
 
             var resultSeed = new List<int>();
-            var continueLoop = true;
             var tmp = new SudokuMatrix(this.ToInt32List());
             var loopSeed = IsolateIntersectingValues(tmp.ToInt32List());
 
             if (loopSeed.Contains(0)) {
-
-                do {
-
-                    var loopTmp = new SudokuMatrix(loopSeed);
-                    loopTmp.SetDifficulty(Difficulty.TEST);
-
-                    foreach (var sudokuCell in loopTmp.SudokuCells) {
-
-                        if (sudokuCell.AvailableValues.Count > 1 && sudokuCell.Value == 0) {
-
-                            AppExtensions.AppExtensions.Shuffle(sudokuCell.AvailableValues);
-
-                            sudokuCell.Value = sudokuCell.AvailableValues[0];
-
-                            if (sudokuCell.Value == 0) {
-
-                                break;
-                            }
-                        }
+            
+                var keys = GenerateKeys(loopSeed);
+            
+                foreach (var key in keys) {
+            
+                    var possibleSolution = IsolateIntersectingValues(key);
+            
+                    var possibleMatrix = new SudokuMatrix(possibleSolution);
+                    possibleMatrix.SetDifficulty(Difficulty.TEST);
+            
+                    if (possibleMatrix.IsValid()) {
+            
+                        resultSeed.AddRange(possibleMatrix.ToInt32List());
+                        break;
+            
+                    } else {
+            
+                        resultSeed.AddRange(loopSeed);
                     }
-
-                    if (loopTmp.IsValid()) {
-
-                        resultSeed.AddRange(loopTmp.ToInt32List());
-                        continueLoop = false;
-                    }
-
-                } while (continueLoop);
-
-
+                }
+            
             } else {
-
+            
                 resultSeed.AddRange(loopSeed);
             }
 
+            Console.WriteLine();
+
             var result = new SudokuMatrix(resultSeed);
             this.SudokuCells = result.SudokuCells;
+        }
+
+        private List<List<int>> GenerateKeys(List<int> seed) {
+
+            List<List<int>> result = new List<List<int>>();
+
+            var loopTmp = new SudokuMatrix(seed);
+            var targetCells = new List<SudokuCell>();
+            var targetCellIndexes = new List<int>();
+
+            var candidates = new List<List<int>>();
+            var possibilities = new List<List<int>>();
+            var possibilitiesStack = new List<Stack<int>>();
+
+            foreach (var cell in loopTmp.SudokuCells) {
+
+                if (cell.AvailableValues.Count < 5 && cell.Value == 0) {
+
+                    targetCellIndexes.Add(cell.Index);
+                    targetCells.Add(cell);
+                }
+            }
+
+            foreach (var index in targetCellIndexes) {
+
+                var tmpList = new List<List<int>>();
+
+                foreach (var values in targetCells.Where(cell => cell.Index == index).Select(cell => cell.AvailableValues)) {
+
+                    foreach (var value in values) {
+
+                        tmpList.Add(new List<int> { value });
+                    }
+                }
+
+                if (candidates.Count == 0) {
+
+                    candidates.AddRange(tmpList);
+
+                } else {
+
+                    var tmpCandidate = new List<List<int>>();
+
+                    foreach (var candidate in candidates) {
+
+                        foreach (var tList in tmpList) {
+
+                            var buildCandidate = new List<int>();
+
+                            buildCandidate.AddRange(candidate);
+                            buildCandidate.AddRange(tList);
+
+                            tmpCandidate.Add(buildCandidate);
+                        }
+                    }
+
+                    candidates.AddRange(tmpCandidate);
+                }
+            }
+
+            possibilities = candidates.Where(list => list.Count == targetCellIndexes.Count).ToList();
+
+            foreach (var possibility in possibilities) {
+
+                possibilitiesStack.Add(new Stack<int>(possibility));
+            }
+
+            foreach (var possibility in possibilitiesStack) {
+
+                var keyGenerationMatrix = new SudokuMatrix(seed);
+
+                for (var i = 0; i < targetCellIndexes.Count; i++) {
+
+                    if (possibility.Count > 0) {
+
+                        keyGenerationMatrix.SudokuCells[targetCellIndexes[i] - 1].Value = possibility.Pop();
+                    }
+                }
+
+                result.Add(keyGenerationMatrix.ToInt32List());
+            }
+
+            return result;
         }
 
         private List<int> IsolateIntersectingValues(List<int> paramList) {
@@ -573,12 +648,6 @@ namespace SudokuApp.Utilities {
             return result;
         }
 
-        public class MissingSudokuValuesReference {
-
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-
         public MissingSudokuValuesReference GenerateMissingValuesReference(string key, string value) {
 
             return new MissingSudokuValuesReference() { Key = key, Value = value };
@@ -605,6 +674,12 @@ namespace SudokuApp.Utilities {
             }
 
             return result;
+        }
+
+        public class MissingSudokuValuesReference {
+
+            public string Key { get; set; }
+            public string Value { get; set; }
         }
     }
 }
