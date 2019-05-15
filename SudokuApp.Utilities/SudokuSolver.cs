@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SudokuApp.Models;
 using System;
+using System.Text;
 
 namespace SudokuApp.Utilities {
     public class SudokuSolver : SudokuMatrix {
@@ -18,27 +19,30 @@ namespace SudokuApp.Utilities {
             var loopSeed = IsolateIntersectingValues(tmp.ToInt32List());
 
             if (loopSeed.Contains(0)) {
-            
-                var keys = GenerateKeys(loopSeed);
-            
-                foreach (var key in keys) {
-            
-                    var possibleSolution = IsolateIntersectingValues(key);
-            
-                    var possibleMatrix = new SudokuMatrix(possibleSolution);
-                    possibleMatrix.SetDifficulty(Difficulty.TEST);
-            
-                    if (possibleMatrix.IsValid()) {
-            
-                        resultSeed.AddRange(possibleMatrix.ToInt32List());
-                        break;
-            
-                    } else {
-            
-                        resultSeed.AddRange(loopSeed);
+
+                var unknownsIndex = new List<int>();
+
+                for (var i = 0; i < tmp.SudokuCells.Count; i++) {
+
+                    if (tmp.SudokuCells[i].Value == 0) {
+
+                        unknownsIndex.Add(i);
                     }
                 }
-            
+
+                Console.WriteLine("\nThere are {0} unknown values with indexes of:\n\t", unknownsIndex.Count);
+
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var i in unknownsIndex) {
+
+                    sb.Append(i + ", ");
+                }
+
+                Console.WriteLine(sb.ToString().Trim().Substring(0, sb.Length - 2));
+
+                resultSeed.AddRange(loopSeed);
+
             } else {
             
                 resultSeed.AddRange(loopSeed);

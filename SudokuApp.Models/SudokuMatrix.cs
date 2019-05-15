@@ -211,6 +211,7 @@ namespace SudokuApp.Models {
                 );
 
                 SudokuCells[i - 1].SudokuCellUpdatedEvent += HandleSudokuCellUpdatedEvent;
+                SudokuCells[i - 1].SudokuCellResetEvent += HandleSudokuCellResetEvent;
 
                 columnIndexer++;
 
@@ -398,22 +399,60 @@ namespace SudokuApp.Models {
 
             foreach (var sudokuCell in SudokuCells) {
 
-                if (sudokuCell.Column == e.Column) {
+                if (sudokuCell.Index != e.Index) {
 
-                    sudokuCell.UpdateAvailableValues(e.Value);
+                    if (sudokuCell.Column == e.Column) {
 
-                } else if (sudokuCell.Region == e.Region) {
+                        sudokuCell.UpdateAvailableValues(e.Value);
 
-                    sudokuCell.UpdateAvailableValues(e.Value);
+                    } else if (sudokuCell.Region == e.Region) {
 
-                } else if (sudokuCell.Row == e.Row) {
+                        sudokuCell.UpdateAvailableValues(e.Value);
 
-                    sudokuCell.UpdateAvailableValues(e.Value);
+                    } else if (sudokuCell.Row == e.Row) {
 
-                } else {
+                        sudokuCell.UpdateAvailableValues(e.Value);
 
-                    // do nothing...
+                    } else {
+
+                        // do nothing...
+                    }
                 }
+            }
+        }
+
+        internal void HandleSudokuCellResetEvent(
+            object sender,
+            ResetSudokuCellEventArgs e) {
+
+            if (e.Values.Count == 0) {
+
+                var result = SudokuCells.Where(cell => cell.Column == e.Column || cell.Region == e.Region || cell.Row == e.Row).SelectMany(cell => cell.AvailableValues).Distinct().ToList();
+
+                if (result.Contains(0)) {
+
+                    result.Remove(0);
+                }
+
+                result.Sort();
+
+                foreach (var cell in SudokuCells) {
+
+                    if (cell.Index != e.Index) {
+
+                        if (cell.Column == e.Column || cell.Region == e.Region || cell.Row == e.Row) {
+
+                            if (cell.Value == 0 && !cell.AvailableValues.Contains(e.Value)) {
+
+                                cell.AvailableValues.Add(e.Value);
+                                cell.AvailableValues.Sort();
+                            }
+                        }
+                    }
+                }
+
+                e.Values = new List<int>();
+                e.Values = result;
             }
         }
     }
