@@ -64,7 +64,7 @@ namespace SudokuApp.Utilities {
 
             foreach (var cell in loopTmp.SudokuCells) {
 
-                if (cell.AvailableValues.Count < 5 && cell.Value == 0) {
+                if (cell.AvailableValues.Count < 6 && cell.Value == 0) {
 
                     targetCellIndexes.Add(cell.Index);
                     targetCells.Add(cell);
