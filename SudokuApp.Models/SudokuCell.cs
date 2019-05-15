@@ -148,8 +148,12 @@ namespace SudokuApp.Models {
             if (this.Value == 0 && !this.AvailableValues.Contains(i)) {
 
                 this.AvailableValues.Add(i);
-                this.AvailableValues = this.AvailableValues.Distinct().ToList();
-                this.AvailableValues.Sort();
+                var tmp = this.AvailableValues.Distinct().ToList();
+                tmp.Remove(0);
+                tmp.Sort();
+
+                this.AvailableValues = new List<int>();
+                this.AvailableValues.AddRange(tmp);
             }
         }
 
