@@ -25,8 +25,6 @@ namespace SudokuApp.Models {
 
                     if (!_initializing) {
 
-                        this._value = value;
-
                         OnSuccessfulSudokuCellReset(
                             new ResetSudokuCellEventArgs(
                                 this.Index,
@@ -36,18 +34,18 @@ namespace SudokuApp.Models {
                                 this.Row
                             )
                         );
+
+                        this._value = value;
                     }
 
                 } else {
 
                     this.AvailableValues = new List<int>();
-                    var tmp = value;
-                    this._value = value;
 
                     OnSuccessfulSudokuCellUpdate(
                         new UpdateSudokuCellEventArgs(
                             this.Index,
-                            tmp,
+                            this._value = value,
                             this.Column,
                             this.Region,
                             this.Row
