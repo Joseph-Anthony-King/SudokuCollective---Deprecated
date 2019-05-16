@@ -266,7 +266,9 @@ namespace SudokuApp.Models {
 
                     if (sudokuCell.AvailableValues.Count > 1 && sudokuCell.Value == 0) {
 
-                        AppExtensions.AppExtensions.Shuffle(sudokuCell.AvailableValues);
+                        Random random = new Random();
+
+                        AppExtensions.AppExtensions.Shuffle(sudokuCell.AvailableValues, random);
 
                         sudokuCell.Value = sudokuCell.AvailableValues[0];
 
@@ -340,7 +342,8 @@ namespace SudokuApp.Models {
                     indexerList.Add(i);
                 }
 
-                AppExtensions.AppExtensions.Shuffle(indexerList);
+                Random random = new Random();
+                AppExtensions.AppExtensions.Shuffle(indexerList, random);
 
                 for (var i = 0; i < index; i++) {
 

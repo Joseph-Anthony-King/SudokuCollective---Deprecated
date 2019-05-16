@@ -7,7 +7,6 @@ namespace SudokuApp.Models {
     public class SudokuCell {
 
         private int _value;
-        private int _availableValuesIndex;
         private bool _initializing = true;
 
         #region Properties
@@ -54,31 +53,6 @@ namespace SudokuApp.Models {
                 }
             }
         }
-        public int AvailableValueIndex {
-
-            get {
-
-                if (_availableValuesIndex >= AvailableValues.Count) {
-
-                    return AvailableValues.Count;
-
-                } else {
-
-                    return _availableValuesIndex;
-                }
-            }
-            set {
-
-                if (value >= AvailableValues.Count) {
-
-                    this._availableValuesIndex = 0;
-
-                } else {
-
-                    this._availableValuesIndex = value;
-                }
-            }
-        }
         public int DisplayValue { get => Obscured ? 0 : _value; }
         public bool Obscured { get; set; }
         public List<int> AvailableValues;
@@ -95,7 +69,6 @@ namespace SudokuApp.Models {
             this.Row = row;
 
             this.Value = 0;
-            this.AvailableValueIndex = 0;
             this.Obscured = true;
 
             _initializing = false;
@@ -114,7 +87,6 @@ namespace SudokuApp.Models {
             this.Row = row;
 
             this.Value = value;
-            this.AvailableValueIndex = 0;
             this.Obscured = true;
 
             _initializing = false;

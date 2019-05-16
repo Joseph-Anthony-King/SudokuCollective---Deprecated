@@ -61,7 +61,6 @@ namespace SudokuApp.ConsoleApp.Routines {
                 Console.Write("Enter the ninth row:   ");
 
                 response.Append(Console.ReadLine());
-                Console.WriteLine();
 
                 stopwatch.Start();
                 var matrix = new SudokuSolver(response.ToString());
