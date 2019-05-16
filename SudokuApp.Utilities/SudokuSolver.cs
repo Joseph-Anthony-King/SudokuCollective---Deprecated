@@ -41,47 +41,87 @@ namespace SudokuApp.Utilities {
 
                 Console.WriteLine(sb.ToString().Trim().Substring(0, sb.Length - 2));
 
-                for (var i = 0; i < unknownsIndex.Count; ) {
+                tmp.SudokuCells[0].Value = 0;
 
-                    if (unknownsIndex[i] == 0) {
+                if (tmp.SudokuCells[0].AvailableValues.Count > 0) {
 
-                        tmp.SudokuCells[unknownsIndex[i]].Value = tmp.SudokuCells[unknownsIndex[i]].AvailableValues[tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex];
+                    Console.Write("Available values after reset at: ");
 
-                        if (tmp.SudokuCells[unknownsIndex[i] + 1].AvailableValues.Count == 0) {
-
-                            tmp.SudokuCells[unknownsIndex[i]].Value = 0;
-                            tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex++;
-
-                        } else {
-
-                            i++;
-                        }
-
-                    } else if (unknownsIndex[i] == 80) {
-
-                        if (tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex == 0) {
-
-                            i--;
-
-                        } else {
-
-                            tmp.SudokuCells[unknownsIndex[i]].Value = tmp.SudokuCells[unknownsIndex[i]].AvailableValues[tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex];
-                        }
-                    } else {
-
-                        tmp.SudokuCells[unknownsIndex[i]].Value = tmp.SudokuCells[unknownsIndex[i]].AvailableValues[tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex];
-
-                        if (tmp.SudokuCells[unknownsIndex[i] + 1].AvailableValues.Count == 0) {
-
-                            tmp.SudokuCells[unknownsIndex[i]].Value = 0;
-                            tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex++;
-
-                        } else {
-
-                            i++;
-                        }
+                    foreach (var i in tmp.SudokuCells[0].AvailableValues) {
+                        Console.Write(i + " ");
                     }
+                    Console.WriteLine();
+
+                } else {
+
+                    Console.WriteLine("The available values did not reset.");
                 }
+
+                //for (var i = 0; i < unknownsIndex.Count;) {
+
+                //    if (tmp.SudokuCells[unknownsIndex[i]].Value == 0) {
+
+                //        if (unknownsIndex[i] == 0) {
+
+                //            tmp.SudokuCells[unknownsIndex[i]].Value = tmp.SudokuCells[unknownsIndex[i]].AvailableValues[tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex];
+
+                //            if (tmp.SudokuCells[unknownsIndex[i] + 1].AvailableValues.Count == 0) {
+
+                //                tmp.SudokuCells[unknownsIndex[i]].Value = 0;
+                //                tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex++;
+
+                //            } else {
+
+                //                i++;
+                //            }
+
+                //        } else if (unknownsIndex[i] == 80) {
+
+                //            if (tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex == 0) {
+
+                //                i--;
+
+                //            } else {
+
+                //                tmp.SudokuCells[unknownsIndex[i]].Value = tmp.SudokuCells[unknownsIndex[i]].AvailableValues[tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex];
+                //            }
+                //        } else {
+
+                //            if (tmp.SudokuCells[unknownsIndex[i]].AvailableValues.Count > 0) {
+
+                //                tmp.SudokuCells[unknownsIndex[i]].Value = tmp.SudokuCells[unknownsIndex[i]].AvailableValues[tmp.SudokuCells[unknownsIndex[i]].AvailableValueIndex];
+
+                //                if (tmp.SudokuCells[unknownsIndex[i + 1]].AvailableValues.Count == 0 && tmp.SudokuCells[unknownsIndex[i + 1]].Value == 0) {
+
+                //                    tmp.SudokuCells[unknownsIndex[i]].Value = 0;
+                //                    tmp.SudokuCells[unknownsIndex[i - 1]].Value = 0;
+                //                    tmp.SudokuCells[unknownsIndex[i - 1]].AvailableValueIndex++;
+                //                    i--;
+
+                //                } else {
+
+                //                    i++;
+                //                }
+
+                //            } else {
+
+                //                if (i > 0) {
+
+                //                    tmp.SudokuCells[unknownsIndex[i]].Value = 0;
+                //                    tmp.SudokuCells[unknownsIndex[i - 1]].Value = 0;
+                //                    tmp.SudokuCells[unknownsIndex[i - 1]].AvailableValueIndex++;
+                //                    i--;
+                //                }
+                //            }
+                //        }
+
+                //    } else {
+
+                //        i++;
+                //    }
+
+                //    Console.WriteLine(i);
+                //}
 
                 resultSeed.AddRange(loopSeed);
 

@@ -23,13 +23,9 @@ namespace SudokuApp.Models {
 
                 if (value == 0) {
 
-                    if (this._value != 0) {
-
-                        this.AvailableValueIndex = 0;
-
-                    }
-
                     if (!_initializing) {
+
+                        this._value = value;
 
                         OnSuccessfulSudokuCellReset(
                             new ResetSudokuCellEventArgs(
@@ -45,25 +41,34 @@ namespace SudokuApp.Models {
                 } else {
 
                     this.AvailableValues = new List<int>();
-                    this.AvailableValueIndex = 0;
+                    var tmp = value;
+                    this._value = value;
 
                     OnSuccessfulSudokuCellUpdate(
                         new UpdateSudokuCellEventArgs(
                             this.Index,
-                            value,
+                            tmp,
                             this.Column,
                             this.Region,
                             this.Row
                         )
                     );
                 }
-
-                this._value = value;
             }
         }
         public int AvailableValueIndex {
 
-            get => this._availableValuesIndex;
+            get {
+
+                if (_availableValuesIndex >= AvailableValues.Count) {
+
+                    return AvailableValues.Count;
+
+                } else {
+
+                    return _availableValuesIndex;
+                }
+            }
             set {
 
                 if (value >= AvailableValues.Count) {
@@ -127,7 +132,6 @@ namespace SudokuApp.Models {
             if (i == 0) {
 
                 this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-                this.AvailableValueIndex = 0;
 
             } else {
 
