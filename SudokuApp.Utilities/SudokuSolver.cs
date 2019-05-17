@@ -13,17 +13,15 @@ namespace SudokuApp.Utilities {
 
             var resultSeed = new List<int>();
             var tmp = new SudokuMatrix(this.ToInt32List());
-            tmp.SetDifficulty(Difficulty.TEST);
             var loopSeed = SudokuSolverMethods.IsolateIntersectingValues(tmp, tmp.ToInt32List());
 
             if (loopSeed.Contains(0)) {
 
                 var loopTmp = new SudokuMatrix(this.ToInt32List());
-                loopTmp.SetDifficulty(Difficulty.TEST);
 
                 do {
+
                     loopTmp = new SudokuMatrix(this.ToInt32List());
-                    loopTmp.SetDifficulty(Difficulty.TEST);
 
                     var unknownsIndex = new List<int>();
 
@@ -54,7 +52,6 @@ namespace SudokuApp.Utilities {
                         } else {
 
                             loopTmp = new SudokuMatrix(loopSeed);
-                            loopTmp.SetDifficulty(Difficulty.TEST);
                             i = 0;
                         }
                     }
@@ -67,8 +64,6 @@ namespace SudokuApp.Utilities {
             
                 resultSeed.AddRange(loopSeed);
             }
-
-            Console.WriteLine();
 
             var result = new SudokuMatrix(resultSeed);
             this.SudokuCells = result.SudokuCells;
