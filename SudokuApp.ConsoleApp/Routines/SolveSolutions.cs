@@ -88,7 +88,7 @@ namespace SudokuApp.ConsoleApp.Routines {
 
                 Console.Write("\nTime to generate solution: " + elapsedTime + "\n\n");
 
-                Console.Write("Would you like to solve another solutions (yes/no): ");
+                Console.Write("Would you like to solve another solution (yes/no): ");
 
                 var result = Console.ReadLine();
                 Console.WriteLine();

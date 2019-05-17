@@ -27,7 +27,7 @@ namespace SudokuApp.ConsoleApp.Routines {
                     Console.WriteLine();
                 }
 
-                Console.Write("\nWould you like to generate another solutions (yes/no): ");
+                Console.Write("\nWould you like to generate another solution (yes/no): ");
 
                 result = Console.ReadLine();
 

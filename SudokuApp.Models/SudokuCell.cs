@@ -40,11 +40,12 @@ namespace SudokuApp.Models {
                 } else {
 
                     this.AvailableValues = new List<int>();
+                    this._value = value;
 
                     OnSuccessfulSudokuCellUpdate(
                         new UpdateSudokuCellEventArgs(
                             this.Index,
-                            this._value = value,
+                            this._value,
                             this.Column,
                             this.Region,
                             this.Row
@@ -79,6 +80,9 @@ namespace SudokuApp.Models {
             if (this.Value == 0) {
 
                 this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            } else {
+
+                this.AvailableValues = new List<int>();
             }
 
             this.Index = index;
