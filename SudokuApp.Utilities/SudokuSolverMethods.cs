@@ -544,10 +544,5 @@ namespace SudokuApp.Utilities {
 
             return result;
         }
-
-        internal static MissingSudokuValuesReference GenerateMissingValuesReference(string key, string value) {
-
-            return new MissingSudokuValuesReference() { Key = key, Value = value };
-        }
     }
 }
