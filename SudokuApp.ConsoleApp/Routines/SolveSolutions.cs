@@ -3,6 +3,9 @@ using System.Text;
 using System.Diagnostics;
 using SudokuApp.Models;
 using SudokuApp.Utilities;
+using System.Threading.Tasks;
+using System.Threading;
+using SudokuApp.ConsoleApp.Classes;
 
 namespace SudokuApp.ConsoleApp.Routines {
 
@@ -65,7 +68,14 @@ namespace SudokuApp.ConsoleApp.Routines {
                 Console.WriteLine();
 
                 var matrix = new SudokuSolver(response.ToString());
-                matrix.Solve();
+                Task solver = matrix.Solve();
+
+                ConsoleSpiner spin = new ConsoleSpiner();
+                
+                while (!solver.IsCompleted) {
+                    
+                    spin.Turn();
+                }
 
                 if (matrix.IsValid()) {
                     matrix.SetDifficulty(Difficulty.TEST);
@@ -109,6 +119,5 @@ namespace SudokuApp.ConsoleApp.Routines {
 
             } while (continueLoop);
         }
-
     }
 }
