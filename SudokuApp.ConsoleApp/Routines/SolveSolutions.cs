@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Text;
+using System.Diagnostics;
 using SudokuApp.Models;
 using SudokuApp.Utilities;
 

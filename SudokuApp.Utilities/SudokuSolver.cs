@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using SudokuApp.Models;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using SudokuApp.Models;
 
 namespace SudokuApp.Utilities {
 
@@ -12,7 +12,7 @@ namespace SudokuApp.Utilities {
 
         public SudokuSolver(string values) : base(values) { }
 
-        public void Solve() {
+        public async void Solve() {
 
             stopwatch.Reset();
             stopwatch.Start();
