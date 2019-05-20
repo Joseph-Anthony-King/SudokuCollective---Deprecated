@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text;
 using System.Diagnostics;
-using SudokuApp.Models;
-using SudokuApp.Utilities;
 using System.Threading.Tasks;
 using System.Threading;
+using SudokuApp.Models;
+using SudokuApp.Utilities;
 using SudokuApp.ConsoleApp.Classes;
 
 namespace SudokuApp.ConsoleApp.Routines {
