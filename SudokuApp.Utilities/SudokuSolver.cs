@@ -1,15 +1,20 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SudokuApp.Models;
 using System;
-using System.Text;
+using System.Diagnostics;
 
 namespace SudokuApp.Utilities {
+
     public class SudokuSolver : SudokuMatrix {
+
+        public Stopwatch stopwatch = new Stopwatch();
 
         public SudokuSolver(string values) : base(values) { }
 
         public void Solve() {
+
+            stopwatch.Reset();
+            stopwatch.Start();
 
             var resultSeed = new List<int>();
             var tmp = new SudokuMatrix(this.ToInt32List());
@@ -20,6 +25,11 @@ namespace SudokuApp.Utilities {
                 var loopTmp = new SudokuMatrix(this.ToInt32List());
 
                 do {
+
+                    if (!stopwatch.IsRunning) {
+
+                        stopwatch.Start();
+                    }
 
                     loopTmp = new SudokuMatrix(this.ToInt32List());
 
@@ -56,7 +66,9 @@ namespace SudokuApp.Utilities {
                         }
                     }
 
-                } while (!loopTmp.IsValid());
+                    stopwatch.Stop();
+
+                } while (stopwatch.Elapsed.Ticks < TimeSpan.TicksPerMinute && !loopTmp.IsValid());
 
                 resultSeed.AddRange(loopTmp.ToInt32List());
 
@@ -67,7 +79,11 @@ namespace SudokuApp.Utilities {
 
             var result = new SudokuMatrix(resultSeed);
             this.SudokuCells = result.SudokuCells;
-        }
 
+            if (stopwatch.IsRunning) {
+
+                stopwatch.Stop();
+            }
+        }
     }
 }
