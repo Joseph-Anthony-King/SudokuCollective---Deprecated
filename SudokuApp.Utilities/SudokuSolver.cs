@@ -8,6 +8,7 @@ namespace SudokuApp.Utilities {
     public class SudokuSolver : SudokuMatrix {
 
         public Stopwatch stopwatch = new Stopwatch();
+        long timeLimit = TimeSpan.TicksPerMinute * 3;
 
         public SudokuSolver(string values) : base(values) { }
 
@@ -68,7 +69,7 @@ namespace SudokuApp.Utilities {
 
                     stopwatch.Stop();
 
-                } while (stopwatch.Elapsed.Ticks < TimeSpan.TicksPerMinute && !loopTmp.IsValid());
+                } while (stopwatch.Elapsed.Ticks < timeLimit && !loopTmp.IsValid());
 
                 resultSeed.AddRange(loopTmp.ToInt32List());
 
