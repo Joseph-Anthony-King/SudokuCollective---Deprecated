@@ -12,7 +12,7 @@ namespace SudokuApp.Utilities {
 
         public SudokuSolver(string values) : base(values) { }
 
-        public async void Solve() {
+        public void Solve() {
 
             stopwatch.Reset();
             stopwatch.Start();
