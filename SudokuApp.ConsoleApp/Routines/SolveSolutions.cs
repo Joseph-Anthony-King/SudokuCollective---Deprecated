@@ -13,6 +13,8 @@ namespace SudokuApp.ConsoleApp.Routines {
 
         internal static void Run() {
 
+            var firstRun = true;
+
             Console.WriteLine("\nPlease enter the sudoku puzzle you wish to solve.");
             Console.WriteLine("You will be entering the nine values for each row.");
             Console.WriteLine("Just enter the values with no spaces, for unknown");
@@ -65,9 +67,30 @@ namespace SudokuApp.ConsoleApp.Routines {
                 Console.Write("Enter the ninth row:   ");
 
                 response.Append(Console.ReadLine());
+
+                if (firstRun) {
+                    
+                    Console.WriteLine("\nThe solver will run for 3 minutes by default.  You");
+                    Console.WriteLine("can adjust this time from anywhere between 1 to 15");
+                    Console.WriteLine("minutes.  If you do not want to adjust the default");
+                    Console.WriteLine("running time simply press enter at the prompt.");
+                    firstRun = false;
+                }
+
+                Console.Write("\nIndicate new running time if desired: ");
+
+                var runningTimeResponse = new string(Console.ReadLine());
                 Console.WriteLine();
 
                 var matrix = new SudokuSolver(response.ToString());
+                if (Int32.TryParse(runningTimeResponse, out var runningTime)) {
+                    
+                    if (runningTime > 0 && runningTime < 16) {
+
+                        matrix.SetTimeLimit(runningTime);
+                    }
+                }
+
                 Task solver = matrix.Solve();
 
                 ConsoleSpiner spin = new ConsoleSpiner();
@@ -76,8 +99,11 @@ namespace SudokuApp.ConsoleApp.Routines {
                     
                     spin.Turn();
                 }
+                
+                Console.Beep();
 
                 if (matrix.IsValid()) {
+                    
                     matrix.SetDifficulty(Difficulty.TEST);
 
                     foreach (var row in matrix.Rows) {

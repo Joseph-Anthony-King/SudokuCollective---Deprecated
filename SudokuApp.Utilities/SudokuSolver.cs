@@ -8,10 +8,41 @@ namespace SudokuApp.Utilities {
 
     public class SudokuSolver : SudokuMatrix {
 
-        public Stopwatch stopwatch = new Stopwatch();
-        long timeLimit = TimeSpan.TicksPerMinute * 3;
+        private int _minutes;
+        private long timeLimit;
 
-        public SudokuSolver(string values) : base(values) { }
+        public Stopwatch stopwatch = new Stopwatch();
+        public int Minutes {
+
+            get => _minutes;
+            set {
+
+                if (value < 1) {
+
+                    _minutes = 1;
+
+                } else if (value > 15) {
+
+                    _minutes = 15;
+
+                } else {
+
+                    _minutes = value;
+                }
+            }
+        }
+
+        public SudokuSolver(string values) : base(values) { 
+
+            Minutes = 3;
+            timeLimit = TimeSpan.TicksPerMinute * Minutes;
+        }
+
+        public void SetTimeLimit(int limit) {
+
+            Minutes = limit;
+            timeLimit = TimeSpan.TicksPerMinute * Minutes;
+        }
 
         public async Task Solve() {
             
