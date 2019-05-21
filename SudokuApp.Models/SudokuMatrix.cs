@@ -7,13 +7,13 @@ namespace SudokuApp.Models {
 
     public class SudokuMatrix {
 
-        public int Id { get; set; }
+        internal int Id { get; set; }
 
-        public Difficulty Difficulty;
+        internal Difficulty Difficulty;
 
         public List<SudokuCell> SudokuCells;
 
-        public List<List<SudokuCell>> Columns {
+        internal List<List<SudokuCell>> Columns {
 
             get {
 
@@ -33,7 +33,7 @@ namespace SudokuApp.Models {
             }
         }
 
-        public List<List<SudokuCell>> Regions {
+        internal List<List<SudokuCell>> Regions {
 
             get {
 
@@ -294,7 +294,7 @@ namespace SudokuApp.Models {
             return result;
         }
 
-        public List<int> ToDisplayedValuesList() {
+        internal List<int> ToDisplayedValuesList() {
 
             List<int> result = new List<int>();
 

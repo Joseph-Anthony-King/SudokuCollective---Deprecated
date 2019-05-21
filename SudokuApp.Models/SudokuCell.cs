@@ -10,11 +10,11 @@ namespace SudokuApp.Models {
         private bool _initializing = true;
 
         #region Properties
-        public int Id { get; set; }
-        public int Index { get; set; }
-        public int Column { get; set; }
-        public int Region { get; set; }
-        public int Row { get; set; }
+        internal int Id { get; set; }
+        internal int Index { get; set; }
+        internal int Column { get; set; }
+        internal int Region { get; set; }
+        internal int Row { get; set; }
         public int Value {
 
             get => _value;
@@ -54,8 +54,8 @@ namespace SudokuApp.Models {
                 }
             }
         }
-        public int DisplayValue { get => Obscured ? 0 : _value; }
-        public bool Obscured { get; set; }
+        internal int DisplayValue { get => Obscured ? 0 : _value; }
+        internal bool Obscured { get; set; }
         public List<int> AvailableValues;
         #endregion
 
@@ -98,7 +98,7 @@ namespace SudokuApp.Models {
         }
         #endregion
 
-        public int ToInt32() => DisplayValue;
+        internal int ToInt32() => DisplayValue;
 
         public override string ToString() => DisplayValue.ToString();
 

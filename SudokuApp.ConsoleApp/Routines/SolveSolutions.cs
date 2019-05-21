@@ -9,9 +9,9 @@ using SudokuApp.ConsoleApp.Classes;
 
 namespace SudokuApp.ConsoleApp.Routines {
 
-    public static class SolveSolutions {
+    internal static class SolveSolutions {
 
-        public static void Run() {
+        internal static void Run() {
 
             Console.WriteLine("\nPlease enter the sudoku puzzle you wish to solve.");
             Console.WriteLine("You will be entering the nine values for each row.");

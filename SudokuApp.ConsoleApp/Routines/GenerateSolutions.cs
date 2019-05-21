@@ -4,9 +4,9 @@ using SudokuApp.Models;
 
 namespace SudokuApp.ConsoleApp.Routines {
 
-    public static class GenerateSolutions {
+    internal static class GenerateSolutions {
 
-        public static void Run() {
+        internal static void Run() {
 
             var result = string.Empty;
             var continueLoop = true;

@@ -6,6 +6,7 @@ namespace SudokuApp.ConsoleApp.Classes {
     public class ConsoleSpiner {
         
         int counter;
+        
         public ConsoleSpiner() {
             counter = 0;
         }
@@ -14,6 +15,7 @@ namespace SudokuApp.ConsoleApp.Classes {
 
             Thread.Sleep(100);
             counter++;
+
             switch (counter % 4) {
 
                 case 0: Console.Write("  Working    / "); break;
