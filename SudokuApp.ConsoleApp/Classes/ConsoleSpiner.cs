@@ -14,16 +14,15 @@ namespace SudokuApp.ConsoleApp.Classes {
 
             Thread.Sleep(100);
             counter++;
-            Console.Write("  Working... ");
             switch (counter % 4) {
 
-                case 0: Console.Write("/"); break;
-                case 1: Console.Write("-"); break;
-                case 2: Console.Write("\\"); break;
-                case 3: Console.Write("|"); break;
+                case 0: Console.Write("  Working    / "); break;
+                case 1: Console.Write("  Working.   - "); break;
+                case 2: Console.Write("  Working..  \\ "); break;
+                case 3: Console.Write("  Working... | "); break;
             }
 
-            Console.SetCursorPosition(Console.CursorLeft - 14, Console.CursorTop);
+            Console.SetCursorPosition(Console.CursorLeft - 15, Console.CursorTop);
         }
     }
 }
