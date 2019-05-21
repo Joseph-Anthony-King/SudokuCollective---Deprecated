@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SudokuApp.Models {
 
@@ -13,5 +14,6 @@ namespace SudokuApp.Models {
         }
         public DateTime DateCreated { get; set; }
         public string Email { get; set; }
+        internal List<Game> Games { get; set; }
     }
 }
