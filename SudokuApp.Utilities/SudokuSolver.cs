@@ -26,7 +26,7 @@ namespace SudokuApp.Utilities {
 
                 if (loopSeed.Contains(0)) {
 
-                    var loopTmp = new SudokuMatrix(this.ToInt32List());
+                    var loopTmp = new SudokuMatrix(loopSeed);
 
                     do {
 
@@ -35,7 +35,7 @@ namespace SudokuApp.Utilities {
                             stopwatch.Start();
                         }
 
-                        loopTmp = new SudokuMatrix(this.ToInt32List());
+                        loopTmp = new SudokuMatrix(loopSeed);
 
                         var unknownsIndex = new List<int>();
 
