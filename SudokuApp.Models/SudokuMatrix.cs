@@ -72,6 +72,7 @@ namespace SudokuApp.Models {
                 return result;
             }
         }
+
         public  List<SudokuCell> FirstColumn { get => SudokuCells.Where(column => column.Column == 1).ToList(); }
         public  List<SudokuCell> SecondColumn { get => SudokuCells.Where(column => column.Column == 2).ToList(); }
         public  List<SudokuCell> ThirdColumn { get => SudokuCells.Where(column => column.Column == 3).ToList(); }
@@ -256,6 +257,40 @@ namespace SudokuApp.Models {
         }
         #endregion
 
+        public bool IsValid() {
+
+            if (FirstColumnValues.Count == 9 && SecondColumnValues.Count == 9 && ThirdColumnValues.Count == 9 && FourthColumnValues.Count == 9 && FifthColumnValues.Count == 9
+                && SixthColumnValues.Count == 9 && SeventhColumnValues.Count == 9 && EighthColumnValues.Count == 9 && NinthColumnValues.Count == 9
+                && FirstRegionValues.Count == 9 && SecondRegionValues.Count == 9 && ThirdRegionValues.Count == 9 && FourthRegionValues.Count == 9 && FifthRegionValues.Count == 9
+                && SixthRegionValues.Count == 9 && SeventhRegionValues.Count == 9 && EighthRegionValues.Count == 9 && NinthRegionValues.Count == 9
+                && FirstRowValues.Count == 9 && SecondRowValues.Count == 9 && ThirdRowValues.Count == 9 && FourthRowValues.Count == 9 && FifthRowValues.Count == 9
+                && SixthRowValues.Count == 9 && SeventhRowValues.Count == 9 && EighthRowValues.Count == 9 && NinthRowValues.Count == 9) {
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+
+        internal bool IsSolved() {
+
+            var result = true;
+
+            var solution = ToInt32List();
+            var usersAnsweres = ToDisplayedValuesList();
+
+            for (var i = 0; i < solution.Count; i++) {
+                
+                if (solution[i] != usersAnsweres[i]) {
+
+                    result = false;
+                }
+            }
+
+            return result;
+        }
         public void GenerateSolution() {
 
             do {
@@ -369,23 +404,6 @@ namespace SudokuApp.Models {
             }
 
             return result.ToString();
-        }
-
-        public bool IsValid() {
-
-            if (FirstColumnValues.Count == 9 && SecondColumnValues.Count == 9 && ThirdColumnValues.Count == 9 && FourthColumnValues.Count == 9 && FifthColumnValues.Count == 9
-                && SixthColumnValues.Count == 9 && SeventhColumnValues.Count == 9 && EighthColumnValues.Count == 9 && NinthColumnValues.Count == 9
-                && FirstRegionValues.Count == 9 && SecondRegionValues.Count == 9 && ThirdRegionValues.Count == 9 && FourthRegionValues.Count == 9 && FifthRegionValues.Count == 9
-                && SixthRegionValues.Count == 9 && SeventhRegionValues.Count == 9 && EighthRegionValues.Count == 9 && NinthRegionValues.Count == 9
-                && FirstRowValues.Count == 9 && SecondRowValues.Count == 9 && ThirdRowValues.Count == 9 && FourthRowValues.Count == 9 && FifthRowValues.Count == 9
-                && SixthRowValues.Count == 9 && SeventhRowValues.Count == 9 && EighthRowValues.Count == 9 && NinthRowValues.Count == 9) {
-
-                return true;
-
-            } else {
-
-                return false;
-            }
         }
 
         private void ZeroOutSudokuCells() {
