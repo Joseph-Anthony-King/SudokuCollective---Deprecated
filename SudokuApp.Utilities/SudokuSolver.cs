@@ -34,14 +34,14 @@ namespace SudokuApp.Utilities {
 
         public SudokuSolver(string values) : base(values) { 
 
-            Minutes = 3;
-            timeLimit = TimeSpan.TicksPerMinute * Minutes;
+            this.Minutes = 3;
+            this.timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
         public void SetTimeLimit(int limit) {
 
-            Minutes = limit;
-            timeLimit = TimeSpan.TicksPerMinute * Minutes;
+            this.Minutes = limit;
+            this.timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
         public async Task Solve() {

@@ -14,6 +14,13 @@ namespace SudokuApp.Models {
         }
         public DateTime DateCreated { get; set; }
         public string Email { get; set; }
-        internal List<Game> Games { get; set; }
+        public List<Game> Games { get; set; }
+
+        public User(string firstName, string lastName) {
+
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.DateCreated = DateTime.Now;
+        }
     }
 }

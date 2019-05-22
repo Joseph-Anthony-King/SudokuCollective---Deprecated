@@ -11,7 +11,8 @@ namespace SudokuApp.ConsoleApp {
             Console.WriteLine("Would you like to generate solutions or solve a solution:\n");
             Console.WriteLine("\tEnter 1 to generate solutions");
             Console.WriteLine("\tEnter 2 to solve a solution");
-            Console.WriteLine("\tEnter 3 to exit program\n");
+            Console.WriteLine("\tEnter 3 to play a game");
+            Console.WriteLine("\tEnter 4 to exit program\n");
             Console.Write("Please make your selection: ");
 
             begin:
@@ -22,7 +23,7 @@ namespace SudokuApp.ConsoleApp {
 
                 if (Int32.TryParse(response, out var number)) {
 
-                    if (number == 1 || number == 2 || number == 3) {
+                    if (number == 1 || number == 2 || number == 3 || number == 4) {
 
                         if (number == 1) {
 
@@ -31,7 +32,8 @@ namespace SudokuApp.ConsoleApp {
                             Console.WriteLine("\nWould you like to generate solutions or solve a solution:\n");
                             Console.WriteLine("\tEnter 1 to generate solutions");
                             Console.WriteLine("\tEnter 2 to solve a solution");
-                            Console.WriteLine("\tEnter 3 to exit program\n");
+                            Console.WriteLine("\tEnter 3 to play a game");
+                            Console.WriteLine("\tEnter 4 to exit program\n");
                             Console.Write("Please make your selection: ");
 
                             goto begin;
@@ -43,12 +45,26 @@ namespace SudokuApp.ConsoleApp {
                             Console.WriteLine("\nWould you like to generate solutions or solve a solution:\n");
                             Console.WriteLine("\tEnter 1 to generate solutions");
                             Console.WriteLine("\tEnter 2 to solve a solution");
-                            Console.WriteLine("\tEnter 3 to exit program\n");
+                            Console.WriteLine("\tEnter 3 to play a game");
+                            Console.WriteLine("\tEnter 4 to exit program\n");
                             Console.Write("Please make your selection: ");
 
                             goto begin;
 
                         } else if (number == 3) {
+
+                            Routines.PlayGames.Run();
+
+                            Console.WriteLine("\nWould you like to generate solutions or solve a solution:\n");
+                            Console.WriteLine("\tEnter 1 to generate solutions");
+                            Console.WriteLine("\tEnter 2 to solve a solution");
+                            Console.WriteLine("\tEnter 3 to play a game");
+                            Console.WriteLine("\tEnter 4 to exit program\n");
+                            Console.Write("Please make your selection: ");
+
+                            goto begin;
+
+                        } else if (number == 4) {
 
                             break;
 
@@ -57,7 +73,8 @@ namespace SudokuApp.ConsoleApp {
                             Console.WriteLine("\nWould you like to generate solutions or solve a solution:\n");
                             Console.WriteLine("\tEnter 1 to generate solutions");
                             Console.WriteLine("\tEnter 2 to solve a solution");
-                            Console.WriteLine("\tEnter 3 to exit program\n");
+                            Console.WriteLine("\tEnter 3 to play a game");
+                            Console.WriteLine("\tEnter 4 to exit program\n");
                             Console.Write("Please make your selection: ");
                         }
 
