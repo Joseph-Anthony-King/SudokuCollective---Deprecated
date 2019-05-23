@@ -69,7 +69,7 @@ namespace SudokuApp.ConsoleApp {
 
             } while (true);
 
-            Console.WriteLine("\nPress enter to exit the program...");
+            Console.WriteLine("\nPress enter to exit the app...");
             Console.ReadLine();
         }
     }
