@@ -7,14 +7,15 @@ namespace SudokuApp.Models {
     public class SudokuCell {
 
         private int _value;
+        private int _displayValue;
         private bool _initializing = true;
 
         #region Properties
-        internal int Id { get; set; }
-        internal int Index { get; set; }
-        internal int Column { get; set; }
-        internal int Region { get; set; }
-        internal int Row { get; set; }
+        public int Id { get; set; }
+        public int Index { get; set; }
+        public int Column { get; set; }
+        public int Region { get; set; }
+        public int Row { get; set; }
         public int Value {
 
             get => _value;
@@ -22,7 +23,7 @@ namespace SudokuApp.Models {
 
                 if (value == 0) {
 
-                    if (!_initializing) {
+                    if (!this._initializing) {
 
                         OnSuccessfulSudokuCellReset(
                             new ResetSudokuCellEventArgs(
@@ -54,8 +55,25 @@ namespace SudokuApp.Models {
                 }
             }
         }
-        internal int DisplayValue { get => Obscured ? 0 : _value; }
-        internal bool Obscured { get; set; }
+        public int DisplayValue {
+
+            get {
+                
+                if (!this.Obscured) {
+
+                    return _value;
+
+                } else {
+
+                    return _displayValue;
+                }
+            }
+            set {
+
+                _displayValue = value;
+            }
+        }
+        public bool Obscured { get; set; }
         public List<int> AvailableValues;
         #endregion
 
@@ -72,7 +90,7 @@ namespace SudokuApp.Models {
             this.Value = 0;
             this.Obscured = true;
 
-            _initializing = false;
+            this._initializing = false;
         }
 
         public SudokuCell(int index, int column, int region, int row, int value) {
@@ -94,13 +112,13 @@ namespace SudokuApp.Models {
             this.Value = value;
             this.Obscured = true;
 
-            _initializing = false;
+            this._initializing = false;
         }
         #endregion
 
-        internal int ToInt32() => DisplayValue;
+        internal int ToInt32() => this.DisplayValue;
 
-        public override string ToString() => DisplayValue.ToString();
+        public override string ToString() => this.DisplayValue.ToString();
 
         internal void UpdateAvailableValues(int i) {
 
