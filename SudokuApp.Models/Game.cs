@@ -7,7 +7,7 @@ namespace SudokuApp.Models {
         internal int Id { get; set; }
         internal DateTime DateCreated { get; set; }
         internal DateTime DateCompleted { get; set; }
-        internal int UserId { get; set; }
+        public User User { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
         public bool ContinueGame { get; set; }
 
@@ -15,7 +15,7 @@ namespace SudokuApp.Models {
 
             this.SudokuMatrix = matrix;
             this.DateCreated = DateTime.Now;
-            this.UserId = user.Id;
+            this.User = user;
             this.SudokuMatrix.Difficulty = difficulty;
             this.ContinueGame = true;
         }

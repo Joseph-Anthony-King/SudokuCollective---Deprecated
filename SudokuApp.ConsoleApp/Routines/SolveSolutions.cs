@@ -99,22 +99,15 @@ namespace SudokuApp.ConsoleApp.Routines {
                     
                     spin.Turn();
                 }
-                
+
+                Console.WriteLine();
                 Console.Beep();
 
                 if (matrix.IsValid()) {
                     
                     matrix.SetDifficulty(Difficulty.TEST);
 
-                    foreach (var row in matrix.Rows) {
-
-                        foreach (var cell in row) {
-
-                            Console.Write(string.Format("{0} ", cell));
-                        }
-
-                        Console.WriteLine();
-                    }
+                    DisplayScreens.DisplayMatix(matrix);
 
                     // Format and display the TimeSpan value.
                     string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
@@ -123,7 +116,7 @@ namespace SudokuApp.ConsoleApp.Routines {
                         matrix.stopwatch.Elapsed.Seconds,
                         matrix.stopwatch.Elapsed.Milliseconds / 10);
 
-                    Console.Write("\nTime to generate solution: " + elapsedTime + "\n\n");
+                    Console.Write("\n\nTime to generate solution: " + elapsedTime + "\n\n");
 
                 } else {
 

@@ -9,23 +9,18 @@ namespace SudokuApp.ConsoleApp.Routines {
 
         internal static void Run() {
 
-            Console.WriteLine("\nWe're now going to set up your game.\n");
-            Console.Write("Press enter your first name: ");
+            Console.Write("\nPlease enter your nickname: ");
 
-            var firstName = new string(Console.ReadLine());
+            var nickName = new string(Console.ReadLine());
 
-            Console.Write("Press enter your last name: ");
-
-            var lastName = new string(Console.ReadLine());
-
-            var user = new User(firstName, lastName);
+            var user = new User() { NickName = nickName };
 
             Console.WriteLine("\nSet a difficulty level:\n");
-            Console.WriteLine("\tEnter 1 for Steady Sloth (EASY)");
-            Console.WriteLine("\tEnter 2 for Leaping Lemur (MEDIUM)");
-            Console.WriteLine("\tEnter 3 for Mighty Mountain Lion (HARD)");
-            Console.WriteLine("\tEnter 4 for Sneaky Shark (EVIL)\n");
-            Console.Write("Please make your selection: ");
+            Console.WriteLine("Enter 1 for Steady Sloth (EASY)");
+            Console.WriteLine("Enter 2 for Leaping Lemur (MEDIUM)");
+            Console.WriteLine("Enter 3 for Mighty Mountain Lion (HARD)");
+            Console.WriteLine("Enter 4 for Sneaky Shark (EVIL)\n");
+            Console.Write(string.Format("{0}, please make your selection: ", user.NickName));
 
             var difficultyResponse = Console.ReadLine();
             Difficulty difficulty = new Difficulty();
@@ -63,7 +58,7 @@ namespace SudokuApp.ConsoleApp.Routines {
 
             do {
 
-                DisplayScreens.GameScreen(game.SudokuMatrix);
+                DisplayScreens.GameScreen(game);
 
                 var command = Console.ReadLine();
                 command = command.ToUpper().Trim();
@@ -73,7 +68,7 @@ namespace SudokuApp.ConsoleApp.Routines {
                     var continueX = true;
 
                     do {
-                        Console.Write("\n\tEnter the X Coordinate> ");
+                        Console.Write("\nEnter the column: ");
                         var xValue = Console.ReadLine();
 
                         if (Int32.TryParse(xValue, out var xNumber)) {
@@ -84,7 +79,7 @@ namespace SudokuApp.ConsoleApp.Routines {
 
                                 do {
 
-                                    Console.Write("\n\tEnter the Y Coordinate> ");
+                                    Console.Write("\nEnter the row: ");
                                     var yValue = Console.ReadLine();
                                     
                                     if (Int32.TryParse(yValue, out var yNumber)) {
@@ -101,7 +96,7 @@ namespace SudokuApp.ConsoleApp.Routines {
                                                 do {
                                                     if (command.Equals("1") || command.Equals("ENTER")) {
 
-                                                        Console.Write("\n\tEnter a number from 1 through 9> ");
+                                                        Console.Write("\nEnter a number from 1 through 9> ");
                                                         string userEntry = Console.ReadLine();
                                                         
                                                         if (Int32.TryParse(userEntry, out var userNumber)) {
@@ -135,8 +130,8 @@ namespace SudokuApp.ConsoleApp.Routines {
                                                 } while (userEntryInvalid);
 
                                             } else {
-                                                Console.WriteLine("\n\tThis value is a hint provided by the system and cannot be changed.");
-                                                Console.WriteLine("\tPlease try again.\n\n\t\t         (Press Enter to Continue)");
+                                                Console.WriteLine("\nThis value is a hint provided by the system and cannot be changed.");
+                                                Console.WriteLine("Please try again.\n\n\t         (Press Enter to Continue)");
                                                 Console.ReadLine();
                                                 break;
                                             }
@@ -164,12 +159,12 @@ namespace SudokuApp.ConsoleApp.Routines {
                     
                     if (game.IsSolved()) {
 
-                        Console.WriteLine("\n\tYOU WIN!");
+                        Console.WriteLine("\nYOU WIN!");
                         continueGame = false;
 
                     } else {
 
-                        Console.WriteLine("\n\tNOPE... TRY AGAIN!");
+                        Console.WriteLine("\nNOPE... TRY AGAIN!");
                     }
 
                 } else if (command.Equals("4") || command.Equals("EXIT")) {

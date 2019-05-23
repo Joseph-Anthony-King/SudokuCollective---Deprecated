@@ -22,5 +22,10 @@ namespace SudokuApp.Models {
             this.LastName = lastName;
             this.DateCreated = DateTime.Now;
         }
+
+        public User() {
+
+            this.DateCreated = DateTime.Now;
+        }
     }
 }

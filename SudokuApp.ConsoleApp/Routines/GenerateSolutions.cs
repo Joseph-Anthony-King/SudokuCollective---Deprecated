@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using SudokuApp.ConsoleApp.Classes;
 using SudokuApp.Models;
 
 namespace SudokuApp.ConsoleApp.Routines {
@@ -15,19 +16,10 @@ namespace SudokuApp.ConsoleApp.Routines {
                 var matrix = new SudokuMatrix();
                 matrix.SetDifficulty(Difficulty.TEST);
                 matrix.GenerateSolution();
-                Console.WriteLine();
 
-                foreach (var row in matrix.Rows) {
+                DisplayScreens.DisplayMatix(matrix);
 
-                    foreach (var cell in row) {
-
-                        Console.Write(string.Format("{0} ", cell));
-                    }
-
-                    Console.WriteLine();
-                }
-
-                Console.Write("\nWould you like to generate another solution (yes/no): ");
+                Console.Write("\n\nWould you like to generate another solution (yes/no): ");
 
                 result = Console.ReadLine();
 
