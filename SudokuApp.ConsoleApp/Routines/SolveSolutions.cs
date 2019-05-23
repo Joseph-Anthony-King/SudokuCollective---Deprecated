@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Text;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Threading;
 using SudokuApp.Models;
 using SudokuApp.Utilities;
 using SudokuApp.ConsoleApp.Classes;

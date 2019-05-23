@@ -299,6 +299,7 @@ namespace SudokuApp.Models {
 
             return result;
         }
+        
         public void GenerateSolution() {
 
             do {

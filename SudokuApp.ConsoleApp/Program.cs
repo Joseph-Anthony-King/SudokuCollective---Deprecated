@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using SudokuApp.Models;
 using SudokuApp.ConsoleApp.Classes;
 
 namespace SudokuApp.ConsoleApp {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SudokuApp.Models;
 
 namespace SudokuApp.Utilities {

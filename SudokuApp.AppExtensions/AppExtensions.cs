@@ -21,7 +21,7 @@ namespace SudokuApp.AppExtensions {
             }
         }
 
-        public static bool ContainsAnySimilarElements(this IEnumerable<int> aList, IEnumerable<int> bList) {
+        public static bool IsThisListEqual(this IEnumerable<int> aList, IEnumerable<int> bList) {
             bool result = false;
 
             foreach (int a in aList) {
