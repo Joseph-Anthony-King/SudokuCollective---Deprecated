@@ -18,7 +18,7 @@ namespace SudokuApp.ConsoleApp.Routines {
 
             var user = new User(firstName, lastName);
 
-            Console.WriteLine("\nSet a difficulty level:");
+            Console.WriteLine("\nSet a difficulty level:\n");
             Console.WriteLine("\tEnter 1 for Steady Sloth (EASY)");
             Console.WriteLine("\tEnter 2 for Leaping Lemur (MEDIUM)");
             Console.WriteLine("\tEnter 3 for Mighty Mountain Lion (HARD)");
@@ -70,7 +70,6 @@ namespace SudokuApp.ConsoleApp.Routines {
             }            
 
             Console.WriteLine("\nPress enter to exit to main menu.");
-            Console.ReadLine();
         }
     }
 }
