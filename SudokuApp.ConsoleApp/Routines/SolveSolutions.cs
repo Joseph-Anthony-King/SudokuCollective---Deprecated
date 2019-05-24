@@ -118,7 +118,7 @@ namespace SudokuApp.ConsoleApp.Routines {
 
                 } else {
 
-                    Console.WriteLine("Need more values in order to deduce a solution.\n");
+                    Console.WriteLine("\nNeed more values in order to deduce a solution.\n");
                 }
 
                 Console.Write("Would you like to solve another solution (yes/no): ");
