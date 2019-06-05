@@ -2,18 +2,19 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {
 
-    public class SudokuMatrix {
+    public class SudokuMatrix : ISudokuMatrix {
 
         internal int Id { get; set; }
 
         internal Difficulty Difficulty;
 
-        public List<SudokuCell> SudokuCells;
+        public List<SudokuCell> SudokuCells { get; set; }
 
-        internal List<List<SudokuCell>> Columns {
+        public List<List<SudokuCell>> Columns {
 
             get {
 
@@ -33,7 +34,7 @@ namespace SudokuApp.Models {
             }
         }
 
-        internal List<List<SudokuCell>> Regions {
+        public List<List<SudokuCell>> Regions {
 
             get {
 
@@ -282,7 +283,7 @@ namespace SudokuApp.Models {
             }
         }
 
-        internal bool IsSolved() {
+        public bool IsSolved() {
 
             var result = true;
 
@@ -338,7 +339,7 @@ namespace SudokuApp.Models {
             return result;
         }
 
-        internal List<int> ToDisplayedValuesList() {
+        public List<int> ToDisplayedValuesList() {
 
             List<int> result = new List<int>();
 

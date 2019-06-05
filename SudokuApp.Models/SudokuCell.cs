@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {
 
-    public class SudokuCell {
+    public class SudokuCell : ISudokuCell {
 
         private int _value;
         private int _displayValue;
@@ -74,7 +75,7 @@ namespace SudokuApp.Models {
             }
         }
         public bool Obscured { get; set; }
-        public List<int> AvailableValues;
+        public List<int> AvailableValues { get; set; }
         #endregion
 
         #region Constructors
@@ -116,11 +117,11 @@ namespace SudokuApp.Models {
         }
         #endregion
 
-        internal int ToInt32() => this.DisplayValue;
+        public int ToInt32() => this.DisplayValue;
 
         public override string ToString() => this.DisplayValue.ToString();
 
-        internal void UpdateAvailableValues(int i) {
+        public void UpdateAvailableValues(int i) {
 
             if (i == 0) {
 
@@ -140,7 +141,7 @@ namespace SudokuApp.Models {
             }
         }
 
-        internal void ResetAvailableValues(int i) {
+        public void ResetAvailableValues(int i) {
 
             if (this.Value == 0 && !this.AvailableValues.Contains(i)) {
 

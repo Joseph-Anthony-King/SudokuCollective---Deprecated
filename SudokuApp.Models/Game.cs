@@ -1,12 +1,13 @@
 using System;
+using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {
 
-    public class Game {
+    public class Game : IGame {
 
-        internal int Id { get; set; }
-        internal DateTime DateCreated { get; set; }
-        internal DateTime DateCompleted { get; set; }
+        public int Id { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateCompleted { get; set; }
         public User User { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
         public bool ContinueGame { get; set; }

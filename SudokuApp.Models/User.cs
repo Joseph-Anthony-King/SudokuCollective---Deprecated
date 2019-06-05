@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {
 
-    public class User {
+    public class User : IUser {
 
-        internal int Id { get; set; }
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string NickName { get; set; }
