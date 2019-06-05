@@ -10,7 +10,6 @@ namespace SudokuApp.Models.Interfaces {
         User User { get; set; }
         SudokuMatrix SudokuMatrix { get; set; }
         bool ContinueGame { get; set; }
-
         bool IsSolved();
     }
 }
