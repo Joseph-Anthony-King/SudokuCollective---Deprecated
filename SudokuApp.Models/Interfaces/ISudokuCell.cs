@@ -16,6 +16,10 @@ namespace SudokuApp.Models.Interfaces {
         List<int> AvailableValues { get; set; }
         int ToInt32();
         void UpdateAvailableValues(int i);
-        void ResetAvailableValues(int i);      
+        void ResetAvailableValues(int i);
+        event EventHandler<UpdateSudokuCellEventArgs> SudokuCellUpdatedEvent;
+        event EventHandler<ResetSudokuCellEventArgs> SudokuCellResetEvent;
+        void OnSuccessfulSudokuCellUpdate(UpdateSudokuCellEventArgs e);
+        void OnSuccessfulSudokuCellReset(ResetSudokuCellEventArgs e);
     }
 }

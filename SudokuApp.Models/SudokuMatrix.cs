@@ -424,7 +424,7 @@ namespace SudokuApp.Models {
             }
         }
 
-        internal void HandleSudokuCellUpdatedEvent(
+        public void HandleSudokuCellUpdatedEvent(
             object sender,
             UpdateSudokuCellEventArgs e) {
 
@@ -452,7 +452,7 @@ namespace SudokuApp.Models {
             }
         }
 
-        internal void HandleSudokuCellResetEvent(
+        public void HandleSudokuCellResetEvent(
             object sender,
             ResetSudokuCellEventArgs e) {
 

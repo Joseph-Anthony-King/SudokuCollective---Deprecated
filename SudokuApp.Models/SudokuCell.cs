@@ -155,30 +155,30 @@ namespace SudokuApp.Models {
             }
         }
 
-        internal event EventHandler<UpdateSudokuCellEventArgs> SudokuCellUpdatedEvent;
+        public event EventHandler<UpdateSudokuCellEventArgs> SudokuCellUpdatedEvent;
 
-        internal event EventHandler<ResetSudokuCellEventArgs> SudokuCellResetEvent;
+        public event EventHandler<ResetSudokuCellEventArgs> SudokuCellResetEvent;
 
-        internal virtual void OnSuccessfulSudokuCellUpdate(UpdateSudokuCellEventArgs e) {
+        public virtual void OnSuccessfulSudokuCellUpdate(UpdateSudokuCellEventArgs e) {
 
             SudokuCellUpdatedEvent.Invoke(this, e);
         }
 
-        internal virtual void OnSuccessfulSudokuCellReset(ResetSudokuCellEventArgs e) {
+        public virtual void OnSuccessfulSudokuCellReset(ResetSudokuCellEventArgs e) {
 
             SudokuCellResetEvent.Invoke(this, e);
         }
     }
 
-    internal struct UpdateSudokuCellEventArgs {
+    public struct UpdateSudokuCellEventArgs {
 
-        internal int Index { get; set; }
-        internal int Value { get; set; }
-        internal int Column { get; set; }
-        internal int Region { get; set; }
-        internal int Row { get; set; }
+        public int Index { get; set; }
+        public int Value { get; set; }
+        public int Column { get; set; }
+        public int Region { get; set; }
+        public int Row { get; set; }
 
-        internal UpdateSudokuCellEventArgs(int index, int value, int column, int region, int row) {
+        public UpdateSudokuCellEventArgs(int index, int value, int column, int region, int row) {
 
             Index = index;
             Value = value;
@@ -188,16 +188,16 @@ namespace SudokuApp.Models {
         }
     }
 
-    internal struct ResetSudokuCellEventArgs {
+    public struct ResetSudokuCellEventArgs {
 
-        internal int Index { get; set; }
-        internal int Value { get; set; }
-        internal int Column { get; set; }
-        internal int Region { get; set; }
-        internal int Row { get; set; }
-        internal List<int> Values { get; set; }
+        public int Index { get; set; }
+        public int Value { get; set; }
+        public int Column { get; set; }
+        public int Region { get; set; }
+        public int Row { get; set; }
+        public List<int> Values { get; set; }
 
-        internal ResetSudokuCellEventArgs(int index, int value, int column, int region, int row) {
+        public ResetSudokuCellEventArgs(int index, int value, int column, int region, int row) {
 
             Index = index;
             Value = value;

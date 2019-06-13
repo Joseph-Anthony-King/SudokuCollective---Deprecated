@@ -68,6 +68,8 @@ namespace SudokuApp.Models.Interfaces {
         void GenerateSolution();
         List<int> ToInt32List();
         List<int> ToDisplayedValuesList();
-        void SetDifficulty(Difficulty difficulty);        
+        void SetDifficulty(Difficulty difficulty);
+        void HandleSudokuCellUpdatedEvent( object sender, UpdateSudokuCellEventArgs e);
+        void HandleSudokuCellResetEvent(object sender, ResetSudokuCellEventArgs e);
     }
 }
