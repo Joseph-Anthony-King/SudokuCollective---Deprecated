@@ -19,6 +19,8 @@ namespace SudokuApp.Models {
             this.User = user;
             this.SudokuMatrix.Difficulty = difficulty;
             this.ContinueGame = true;
+
+            this.User.Games.Add(this);
         }
 
         public bool IsSolved() {

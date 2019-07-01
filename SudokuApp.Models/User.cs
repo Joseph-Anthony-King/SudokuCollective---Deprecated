@@ -17,16 +17,20 @@ namespace SudokuApp.Models {
         public string Email { get; set; }
         public List<Game> Games { get; set; }
 
-        public User(string firstName, string lastName) {
+        public User(string firstName, string lastName) : this() {
 
             this.FirstName = firstName;
             this.LastName = lastName;
-            this.DateCreated = DateTime.Now;
         }
 
         public User() {
 
-            this.DateCreated = DateTime.Now;
+            this.DateCreated = GetCurrentTime();
+            Games = new List<Game>();
+        }
+
+        protected virtual DateTime GetCurrentTime() {
+            return DateTime.Now;
         }
     }
 }
