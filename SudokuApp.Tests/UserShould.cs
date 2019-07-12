@@ -1,9 +1,6 @@
 ﻿using System;
-using Moq;
-using Moq.Protected;
 using NUnit.Framework;
 using SudokuApp.Models;
-using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Tests {
 

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SudokuApp.Models\SudokuApp.Models.csproj" />
+    <ProjectReference Include="..\SudokuApp.Utilities\SudokuApp.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
