@@ -79,7 +79,7 @@ namespace SudokuApp.Tests {
         }
 
         [Test]
-        public void ToInt32OutputValueAsInt() {
+        public void HaveToInt32OutputValueAsInt() {
 
             var sut = populatedTestMatrix.SudokuCells[0];
             sut.Obscured = false;
@@ -89,7 +89,7 @@ namespace SudokuApp.Tests {
         }
 
         [Test]
-        public void ToStringOutputValueAsString() {
+        public void HaveToStringOutputValueAsString() {
 
             var sut = populatedTestMatrix.SudokuCells[0];
             sut.Obscured = false;
