@@ -58,6 +58,7 @@ namespace SudokuApp.Tests {
 
             Assert.That(firstInt, Is.Not.EqualTo(0));
             Assert.That(sut.DisplayValue, Is.EqualTo(firstInt));
+            Assert.That(sut.DisplayValue, Is.EqualTo(sut.Value));
         }
 
         [Test]
