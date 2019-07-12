@@ -7,6 +7,15 @@ namespace SudokuApp.Tests {
     public class UserShould {
 
         [Test]
+        public void HaveAnID() {
+
+            var sut = new User();
+
+            Assert.That(sut.Id, Is.TypeOf<int>());
+            Assert.That(sut.Id, Is.EqualTo(0));
+        }
+
+        [Test]
         public void AcceptFirstAndLastName() {
 
             var sut = new User("John", "Doe");
@@ -17,16 +26,7 @@ namespace SudokuApp.Tests {
         }
 
         [Test]
-        public void HaveAccurateDateCreated() {
-
-            var sut = new User();
-            var currentDateTime = DateTime.Now;
-
-            Assert.That(sut.DateCreated, Is.EqualTo(currentDateTime).Within(1).Seconds);
-        }
-
-        [Test]
-        public void HavingWorkingProperties() {
+        public void HaveWorkingProperties() {
 
             var sut = new User();
 
@@ -38,12 +38,12 @@ namespace SudokuApp.Tests {
         }
 
         [Test]
-        public void HaveAnID() {
+        public void HaveAccurateDateCreated() {
 
             var sut = new User();
+            var currentDateTime = DateTime.Now;
 
-            Assert.That(sut.Id, Is.TypeOf<int>());
-            Assert.That(sut.Id, Is.EqualTo(0));
+            Assert.That(sut.DateCreated, Is.EqualTo(currentDateTime).Within(1).Seconds);
         }
 
         [Test]
