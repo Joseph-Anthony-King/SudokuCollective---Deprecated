@@ -66,7 +66,7 @@ namespace SudokuApp.Tests {
         }
 
         [Test]
-        public void ReturnTrueIfValue() {
+        public void ReturnTrueIfValid() {
 
             var sut = populatedTestMatrix;
 
