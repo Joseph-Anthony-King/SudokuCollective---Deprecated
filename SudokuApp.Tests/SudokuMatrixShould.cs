@@ -102,5 +102,125 @@ namespace SudokuApp.Tests {
             Assert.That(result, Is.TypeOf<string>());
             Assert.That(result.Length, Is.EqualTo(81));
         }
+
+        [Test]
+        public void HaveNoObscuredCellsOnTestDifficulty() {
+
+            populatedTestMatrix.SetDifficulty(Difficulty.TEST);
+            var sut = populatedTestMatrix;
+            var result = 0;
+
+            foreach(var cell in sut.SudokuCells) {
+
+                if (cell.Obscured == false) {
+
+                    result++;
+                }
+            }
+
+            Assert.That(result, Is.EqualTo(81));
+        }
+
+        [Test]
+        public void Have35VisibleCellsOnEasyDifficulty() {
+
+            populatedTestMatrix.SetDifficulty(Difficulty.EASY);
+            var sut = populatedTestMatrix;
+            var result = 0;
+
+            foreach(var cell in sut.SudokuCells) {
+
+                if (cell.Obscured == false) {
+
+                    result++;
+                }
+            }
+
+            Assert.That(result, Is.EqualTo(35));
+        }
+
+        [Test]
+        public void Have29VisibleCellsOnMediumDifficulty() {
+
+            populatedTestMatrix.SetDifficulty(Difficulty.MEDIUM);
+            var sut = populatedTestMatrix;
+            var result = 0;
+
+            foreach(var cell in sut.SudokuCells) {
+
+                if (cell.Obscured == false) {
+
+                    result++;
+                }
+            }
+
+            Assert.That(result, Is.EqualTo(29));
+        }
+
+        [Test]
+        public void Have23VisibleCellsOnHardDifficulty() {
+
+            populatedTestMatrix.SetDifficulty(Difficulty.HARD);
+            var sut = populatedTestMatrix;
+            var result = 0;
+
+            foreach(var cell in sut.SudokuCells) {
+
+                if (cell.Obscured == false) {
+
+                    result++;
+                }
+            }
+
+            Assert.That(result, Is.EqualTo(23));
+        }
+
+        [Test]
+        public void Have17VisibleCellsOnEvilDifficulty() {
+
+            populatedTestMatrix.SetDifficulty(Difficulty.EVIL);
+            var sut = populatedTestMatrix;
+            var result = 0;
+
+            foreach(var cell in sut.SudokuCells) {
+
+                if (cell.Obscured == false) {
+
+                    result++;
+                }
+            }
+
+            Assert.That(result, Is.EqualTo(17));
+        }
+
+        [Test]
+        public void DetermineIfMatrixIsSolved() {
+
+            var intList = new List<int>() {
+                    4, 1, 9, 2, 6, 5, 3, 8, 7, 
+                    2, 8, 3, 1, 7, 9, 4, 5, 6, 
+                    5, 6, 7, 4, 3, 8, 9, 1, 2, 
+                    1, 2, 5, 3, 9, 4, 7, 6, 8, 
+                    7, 3, 8, 5, 1, 6, 2, 4, 9, 
+                    6, 9, 4, 7, 8, 2, 5, 3, 1, 
+                    3, 5, 6, 8, 2, 7, 1, 9, 4, 
+                    8, 7, 1, 9, 4, 3, 6, 2, 5, 
+                    9, 4, 2, 6, 5, 1, 8, 7, 3
+                };
+
+            var sut = new SudokuMatrix(intList);
+            sut.SetDifficulty(Difficulty.TEST);
+
+            Assert.That(sut.IsSolved(), Is.True);
+        }
+
+        [Test]
+        public void GenerateValidSolution() {
+
+            var sut = new SudokuMatrix();
+            sut.GenerateSolution();
+
+            Assert.That(sut.IsValid(), Is.True);
+        }
     }
 }
