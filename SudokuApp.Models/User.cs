@@ -33,6 +33,7 @@ namespace SudokuApp.Models {
             this.DateCreated = GetCurrentTime();
             this.Games = new List<Game>();
             this.Permissions = new List<Permission>();
+            
             this.Permissions.Add(
                 new Permission() { 
                     Name = "User", 
