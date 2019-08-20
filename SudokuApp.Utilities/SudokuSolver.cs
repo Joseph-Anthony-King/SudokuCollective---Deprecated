@@ -38,6 +38,12 @@ namespace SudokuApp.Utilities {
             this.timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
+        public SudokuSolver(List<int> values) : base(values) { 
+
+            this.Minutes = 3;
+            this.timeLimit = TimeSpan.TicksPerMinute * Minutes;
+        }
+
         public void SetTimeLimit(int limit) {
 
             this.Minutes = limit;

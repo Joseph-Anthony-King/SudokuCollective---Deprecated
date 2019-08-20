@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuApp.AppExtensions {
+    
     public static class AppExtensions {
 
         public static void Shuffle<T>(List<T> list, Random generateRandomNumber) {
