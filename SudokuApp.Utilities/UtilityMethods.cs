@@ -4,6 +4,7 @@ using System.Linq;
 using SudokuApp.AppExtensions;
 
 namespace SudokuApp.Utilities {
+    
     public static class UtilityMethods {
 
         public static List<int> GenerateSudokuCompliantIntList() {

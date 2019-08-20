@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace SudokuApp.ConsoleApp.Classes {
+namespace SudokuApp.ConsoleDev.Classes {
 
     public class ConsoleSpiner {
         

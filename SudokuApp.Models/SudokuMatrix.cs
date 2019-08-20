@@ -283,7 +283,7 @@ namespace SudokuApp.Models {
             }
         }
 
-        public bool IsSolved() {
+        public virtual bool IsSolved() {
 
             var result = true;
 
