@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Moq;
 using SudokuApp.Models;
 
-namespace SudokuApp.Tests {
+namespace SudokuApp.Tests
+{
 
     public class GameShould {
 
