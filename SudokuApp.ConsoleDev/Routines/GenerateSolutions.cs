@@ -1,6 +1,7 @@
 ﻿using System;
 using SudokuApp.ConsoleDev.Classes;
 using SudokuApp.Models;
+using SudokuApp.Models.Enums;
 
 namespace SudokuApp.ConsoleDev.Routines {
 

@@ -1,7 +1,7 @@
-using System;
 using NUnit.Framework;
 using SudokuApp.Models;
 using SudokuApp.Utilities;
+using SudokuApp.Models.Enums;
 
 namespace SudokuApp.Tests {
 

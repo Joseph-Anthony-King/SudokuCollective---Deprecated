@@ -1,4 +1,5 @@
 using System;
+using SudokuApp.Models.Enums;
 using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {

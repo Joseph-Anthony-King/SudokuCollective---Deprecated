@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using SudokuApp.Models.Enums;
 
 namespace SudokuApp.Models.Interfaces {
 

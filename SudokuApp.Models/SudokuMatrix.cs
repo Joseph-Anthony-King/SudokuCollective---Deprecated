@@ -2,13 +2,14 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using SudokuApp.Models.Enums;
 using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {
 
     public class SudokuMatrix : ISudokuMatrix {
 
-        internal int Id { get; set; }
+        public int Id { get; set; }
 
         internal Difficulty Difficulty;
 

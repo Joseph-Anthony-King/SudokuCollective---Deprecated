@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using SudokuApp.Utilities;
 using SudokuApp.Models;
+using SudokuApp.Models.Enums;
 
 namespace SudokuApp.Tests {
 
@@ -27,6 +28,18 @@ namespace SudokuApp.Tests {
             stringList = sb.ToString();
 
             populatedTestMatrix = new SudokuMatrix(intList);
+        }
+        
+        [Test]
+        [Category("Models")]
+        public void HaveAnID() {
+
+            // Arrange and Act
+            var sut = new SudokuMatrix(stringList);
+
+            // Assert
+            Assert.That(sut.Id, Is.TypeOf<int>());
+            Assert.That(sut.Id, Is.EqualTo(0));
         }
 
         [Test]
@@ -272,7 +285,7 @@ namespace SudokuApp.Tests {
 
         [Test]
         [Category("Models")]
-        public void GenerateValidSolution() {
+        public void GenerateValidSolutions() {
 
             // Arrange
             var sut = new SudokuMatrix();

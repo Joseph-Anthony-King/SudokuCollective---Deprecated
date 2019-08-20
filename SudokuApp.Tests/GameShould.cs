@@ -1,9 +1,9 @@
 using NUnit.Framework;
 using Moq;
 using SudokuApp.Models;
+using SudokuApp.Models.Enums;
 
-namespace SudokuApp.Tests
-{
+namespace SudokuApp.Tests {
 
     public class GameShould {
 
@@ -17,6 +17,18 @@ namespace SudokuApp.Tests
             matrix = new Mock<SudokuMatrix>();
 
             matrix.Setup(m => m.IsSolved()).Returns(true);
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAnID() {
+
+            // Arrange and Act
+            Game sut = new Game(user.Object, matrix.Object, Difficulty.TEST);
+
+            // Assert
+            Assert.That(sut.Id, Is.TypeOf<int>());
+            Assert.That(sut.Id, Is.EqualTo(0));
         }
 
         [Test]
