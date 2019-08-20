@@ -1,8 +1,8 @@
 ﻿using System;
-using SudokuApp.ConsoleApp.Classes;
+using SudokuApp.ConsoleDev.Classes;
 using SudokuApp.Models;
 
-namespace SudokuApp.ConsoleApp.Routines {
+namespace SudokuApp.ConsoleDev.Routines {
 
     internal static class GenerateSolutions {
 

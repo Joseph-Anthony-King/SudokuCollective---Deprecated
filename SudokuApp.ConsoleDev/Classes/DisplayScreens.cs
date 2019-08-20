@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SudokuApp.Models;
 
-namespace SudokuApp.ConsoleApp.Classes {
+namespace SudokuApp.ConsoleDev.Classes {
 
     public static class DisplayScreens {
         

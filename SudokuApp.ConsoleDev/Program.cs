@@ -1,7 +1,7 @@
 ﻿using System;
-using SudokuApp.ConsoleApp.Classes;
+using SudokuApp.ConsoleDev.Classes;
 
-namespace SudokuApp.ConsoleApp {
+namespace SudokuApp.ConsoleDev {
 
     class Program {
         static void Main(string[] args) {
