@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuApp.Utilities;
+using SudokuApp.Models;
 using SudokuApp.Models.Enums;
+using SudokuApp.Utilities;
 
 namespace SudokuApp.Tests {
 
@@ -70,7 +71,11 @@ namespace SudokuApp.Tests {
                 };
 
             var sut = new SudokuSolver(intList);
-            sut.SetDifficulty(Difficulty.EASY);
+            sut.SetDifficulty(new Difficulty() {
+                    Name = "Easy", 
+                    DifficultyLevel = DifficultyLevel.EASY
+                }
+            );
 
             // Act
             var result = sut.Solve();

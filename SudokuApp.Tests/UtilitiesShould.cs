@@ -16,7 +16,11 @@ namespace SudokuApp.Tests {
 
             // Act
             var result = new SudokuMatrix(sut);
-            result.SetDifficulty(Difficulty.TEST);
+            result.SetDifficulty(new Difficulty() {
+                    Name = "Test", 
+                    DifficultyLevel = DifficultyLevel.TEST
+                }
+            );
 
             // Assert
             Assert.That(sut.Count, Is.EqualTo(81));

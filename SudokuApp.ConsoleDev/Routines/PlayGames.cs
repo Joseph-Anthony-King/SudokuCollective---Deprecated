@@ -33,19 +33,31 @@ namespace SudokuApp.ConsoleDev.Routines {
                     
                     if (difficultyNumber == 1) {
 
-                        difficulty = Difficulty.EASY;
+                        difficulty = new Difficulty() { 
+                            Name = "Easy", 
+                            DifficultyLevel = DifficultyLevel.EASY 
+                        };
 
                     } else if (difficultyNumber == 2) {
 
-                        difficulty = Difficulty.MEDIUM;
+                        difficulty = new Difficulty() { 
+                            Name = "Medium", 
+                            DifficultyLevel = DifficultyLevel.MEDIUM 
+                        };
 
                     } else if (difficultyNumber == 3) {
 
-                        difficulty = Difficulty.HARD;
+                        difficulty = new Difficulty() { 
+                            Name = "Hard", 
+                            DifficultyLevel = DifficultyLevel.HARD 
+                        };
 
                     } else if (difficultyNumber == 4) {
 
-                        difficulty = Difficulty.EVIL;
+                        difficulty = new Difficulty() { 
+                            Name = "Evil", 
+                            DifficultyLevel = DifficultyLevel.EVIL 
+                        };
                     }
                 }
             }

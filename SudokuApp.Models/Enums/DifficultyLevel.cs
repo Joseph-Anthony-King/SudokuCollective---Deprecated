@@ -1,6 +1,6 @@
 namespace SudokuApp.Models.Enums {
 
-    public enum Difficulty {
+    public enum DifficultyLevel {
 
         TEST,
         EASY,

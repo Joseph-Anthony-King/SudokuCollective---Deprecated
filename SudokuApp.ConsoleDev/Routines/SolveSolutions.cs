@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using SudokuApp.Models;
 using SudokuApp.Models.Enums;
 using SudokuApp.Utilities;
 using SudokuApp.ConsoleDev.Classes;
@@ -103,7 +104,9 @@ namespace SudokuApp.ConsoleDev.Routines {
 
                 if (matrix.IsValid()) {
                     
-                    matrix.SetDifficulty(Difficulty.TEST);
+                    matrix.SetDifficulty(new Difficulty() { 
+                        Name = "Test", 
+                        DifficultyLevel = DifficultyLevel.TEST});
 
                     DisplayScreens.DisplayMatix(matrix);
 

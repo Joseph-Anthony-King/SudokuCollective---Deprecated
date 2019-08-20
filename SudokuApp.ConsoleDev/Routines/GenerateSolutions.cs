@@ -14,7 +14,12 @@ namespace SudokuApp.ConsoleDev.Routines {
 
             do {
                 var matrix = new SudokuMatrix();
-                matrix.SetDifficulty(Difficulty.TEST);
+
+                matrix.SetDifficulty(new Difficulty() {
+                    Name = "Test",
+                    DifficultyLevel = DifficultyLevel.TEST
+                });
+                
                 matrix.GenerateSolution();
 
                 DisplayScreens.DisplayMatix(matrix);

@@ -359,18 +359,23 @@ namespace SudokuApp.Models {
                 sudokuCell.Obscured = true;
             }
 
-            this.Difficulty = difficulty;
+            this.Difficulty = new Difficulty() {
+
+                Name = difficulty.Name,
+                DifficultyLevel = difficulty.DifficultyLevel
+            };
+            
             int index;
 
-            if (this.Difficulty == Difficulty.EASY) {
+            if (this.Difficulty.DifficultyLevel == DifficultyLevel.EASY) {
 
                 index = 35;
 
-            } else if (this.Difficulty == Difficulty.MEDIUM) {
+            } else if (this.Difficulty.DifficultyLevel == DifficultyLevel.MEDIUM) {
 
                 index = 29;
 
-            } else if (this.Difficulty == Difficulty.HARD) {
+            } else if (this.Difficulty.DifficultyLevel == DifficultyLevel.HARD) {
 
                 index = 23;
 
@@ -379,7 +384,7 @@ namespace SudokuApp.Models {
                 index = 17;
             }
 
-            if (this.Difficulty != Difficulty.TEST) {
+            if (this.Difficulty.DifficultyLevel != DifficultyLevel.TEST) {
 
                 List<int> indexerList = new List<int>();
 

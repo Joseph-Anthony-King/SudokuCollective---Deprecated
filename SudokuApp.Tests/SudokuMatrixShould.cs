@@ -148,7 +148,10 @@ namespace SudokuApp.Tests {
         public void HaveNoObscuredCellsOnTestDifficulty() {
 
             // Arrange
-            populatedTestMatrix.SetDifficulty(Difficulty.TEST);
+            populatedTestMatrix.SetDifficulty(new Difficulty() {
+                Name = "Test",
+                DifficultyLevel = DifficultyLevel.TEST
+            });
 
             // Act
             var sut = populatedTestMatrix;
@@ -171,7 +174,10 @@ namespace SudokuApp.Tests {
         public void Have35VisibleCellsOnEasyDifficulty() {
 
             // Arrange
-            populatedTestMatrix.SetDifficulty(Difficulty.EASY);
+            populatedTestMatrix.SetDifficulty(new Difficulty() {
+                Name = "Easy",
+                DifficultyLevel = DifficultyLevel.EASY
+            });
 
             // Act
             var sut = populatedTestMatrix;
@@ -194,7 +200,10 @@ namespace SudokuApp.Tests {
         public void Have29VisibleCellsOnMediumDifficulty() {
 
             // Arrange
-            populatedTestMatrix.SetDifficulty(Difficulty.MEDIUM);
+            populatedTestMatrix.SetDifficulty(new Difficulty() {
+                Name = "Medium",
+                DifficultyLevel = DifficultyLevel.MEDIUM
+            });
 
             // Act
             var sut = populatedTestMatrix;
@@ -217,7 +226,10 @@ namespace SudokuApp.Tests {
         public void Have23VisibleCellsOnHardDifficulty() {
 
             // Arrange
-            populatedTestMatrix.SetDifficulty(Difficulty.HARD);
+            populatedTestMatrix.SetDifficulty(new Difficulty() {
+                Name = "Hard",
+                DifficultyLevel = DifficultyLevel.HARD
+            });
 
             // Act
             var sut = populatedTestMatrix;
@@ -240,7 +252,10 @@ namespace SudokuApp.Tests {
         public void Have17VisibleCellsOnEvilDifficulty() {
 
             // Arrange
-            populatedTestMatrix.SetDifficulty(Difficulty.EVIL);
+            populatedTestMatrix.SetDifficulty(new Difficulty() {
+                Name = "Evil",
+                DifficultyLevel = DifficultyLevel.EVIL
+            });
 
             // Act
             var sut = populatedTestMatrix;
@@ -277,7 +292,10 @@ namespace SudokuApp.Tests {
 
             // Act
             var sut = new SudokuMatrix(intList);
-            sut.SetDifficulty(Difficulty.TEST);
+            sut.SetDifficulty(new Difficulty() {
+                Name = "Test",
+                DifficultyLevel = DifficultyLevel.TEST
+            });
 
             // Assert
             Assert.That(sut.IsSolved(), Is.True);
