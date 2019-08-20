@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using SudokuApp.ConsoleDev.Classes;
 using SudokuApp.Models;
+using SudokuApp.Models.Enums;
 
 namespace SudokuApp.ConsoleDev.Routines {
 

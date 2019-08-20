@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using SudokuApp.Models;
+using SudokuApp.Models.Enums;
 
 namespace SudokuApp.Tests {
 
@@ -23,12 +25,13 @@ namespace SudokuApp.Tests {
         public void AcceptFirstAndLastName() {
 
             // Arrange and Act
-            var sut = new User("John", "Doe");
+            var sut = new User("John", "Doe", "Password");
 
             // Assert
             Assert.That(sut.FirstName, Is.EqualTo("John"));
             Assert.That(sut.LastName, Is.EqualTo("Doe"));
             Assert.That(sut.FullName, Is.EqualTo("John Doe"));
+            Assert.That(sut.Password, Is.EqualTo("Password"));
         }
 
         [Test]
@@ -68,6 +71,44 @@ namespace SudokuApp.Tests {
 
             // Assert
             Assert.That(sut.Games.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAPassword() {
+
+            // Arrange and Act
+            var sut = new User();
+
+            // Assert
+            Assert.That(sut.Password, Is.TypeOf<string>());
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveDefaultPermissionLevelOfUser() {
+
+            // Arrange and Act
+            var sut = new User();
+
+            // Assert
+            Assert.That(sut.IsAdmin(), Is.EqualTo(false));
+            Assert.That(sut.Permissions.Any(p => p.PermissionLevel == PermissionLevel.USER));
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAbilityToUpgradeToAdmin() {
+
+            // Arrange
+            var sut = new User();
+
+            // Act
+            sut.UpgradeToAdmin();
+
+            // Assert
+            Assert.That(sut.IsAdmin(), Is.EqualTo(true));
+            Assert.That(sut.Permissions.Any(p => p.PermissionLevel == PermissionLevel.ADMIN));
         }
     }
 }

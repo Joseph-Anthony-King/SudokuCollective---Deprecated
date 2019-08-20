@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using SudokuApp.Models;
+using SudokuApp.Models.Enums;
 using SudokuApp.Utilities;
 using SudokuApp.ConsoleDev.Classes;
 

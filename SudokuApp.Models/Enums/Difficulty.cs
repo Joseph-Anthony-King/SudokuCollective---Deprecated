@@ -1,4 +1,4 @@
-namespace SudokuApp.Models {
+namespace SudokuApp.Models.Enums {
 
     public enum Difficulty {
 

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using SudokuApp.Utilities;
-using SudokuApp.Models;
+using SudokuApp.Models.Enums;
 
-namespace SudokuApp.Tests
-{
+namespace SudokuApp.Tests {
 
     public class SudokuSolverShould {
 

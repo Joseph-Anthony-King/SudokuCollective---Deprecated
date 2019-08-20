@@ -19,6 +19,18 @@ namespace SudokuApp.Tests {
 
             populatedTestMatrix = new SudokuMatrix(intList);
         }
+        
+        [Test]
+        [Category("Models")]
+        public void HaveAnID() {
+
+            // Arrange and Act
+           var sut = populatedTestMatrix.SudokuCells[0];
+           
+            // Assert
+            Assert.That(sut.Id, Is.TypeOf<int>());
+            Assert.That(sut.Id, Is.EqualTo(0));
+        }
 
         [Test]
         [Category("Models")]
