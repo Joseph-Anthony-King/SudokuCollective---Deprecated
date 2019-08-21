@@ -129,12 +129,12 @@ namespace SudokuApp.WebApp.Models.DataModel {
 
             modelBuilder.Entity<UserPermission>()
                 .HasOne(up => up.User)
-                .WithMany(user => user.UsersPermissions)
+                .WithMany(user => user.Permissions)
                 .HasForeignKey(up => up.UserId);
 
             modelBuilder.Entity<UserPermission>()
                 .HasOne(up => up.Permission)
-                .WithMany(permission => permission.UsersPermissions)
+                .WithMany(permission => permission.Users)
                 .HasForeignKey(up => up.PermissionId);
         }
     }
