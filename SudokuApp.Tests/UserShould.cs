@@ -28,11 +28,7 @@ namespace SudokuApp.Tests {
             var sut = new User(
                 "John", 
                 "Doe", 
-                "Password",
-                new Permission() {
-                    Name = "User",
-                    PermissionLevel = PermissionLevel.USER
-                });
+                "Password");
 
             // Assert
             Assert.That(sut.FirstName, Is.EqualTo("John"));
@@ -89,45 +85,6 @@ namespace SudokuApp.Tests {
 
             // Assert
             Assert.That(sut.Password, Is.TypeOf<string>());
-        }
-
-        [Test]
-        [Category("Models")]
-        public void HaveDefaultPermissionLevelOfUser() {
-
-            // Arrange and Act
-            var sut = new User(
-                "John", 
-                "Doe", 
-                "Password",
-                new Permission() {
-                    Name = "User",
-                    PermissionLevel = PermissionLevel.USER
-                });
-
-            // Assert
-            Assert.That(sut.IsAdmin(), Is.EqualTo(false));
-            Assert.That(sut.Permissions.Any(p => p.PermissionLevel == PermissionLevel.USER));
-        }
-
-        [Test]
-        [Category("Models")]
-        public void HaveAbilityToUpgradeToAdmin() {
-
-            // Arrange
-            var sut = new User();
-
-            // Act
-            sut.UpgradeToAdmin(
-                new Permission() {
-                    Name = "Admin",
-                    PermissionLevel = PermissionLevel.ADMIN
-                }
-            );
-
-            // Assert
-            Assert.That(sut.IsAdmin(), Is.EqualTo(true));
-            Assert.That(sut.Permissions.Any(p => p.PermissionLevel == PermissionLevel.ADMIN));
         }
     }
 }

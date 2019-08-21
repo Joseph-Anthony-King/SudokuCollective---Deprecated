@@ -13,6 +13,7 @@ namespace SudokuApp.Models {
 
         #region Properties
         public int Id { get; set; }
+        public SudokuMatrix SudokuMatrix { get; set; }
         public int Index { get; set; }
         public int Column { get; set; }
         public int Region { get; set; }

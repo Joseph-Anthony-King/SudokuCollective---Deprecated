@@ -10,11 +10,10 @@ namespace SudokuApp.Models {
     public class SudokuMatrix : ISudokuMatrix {
 
         public int Id { get; set; }
-
-        internal Difficulty Difficulty;
-
+        public Game Game { get; set; }
+        public Difficulty Difficulty { get; set; }
         public List<SudokuCell> SudokuCells { get; set; }
-
+        
         public List<List<SudokuCell>> Columns {
 
             get {
@@ -34,7 +33,6 @@ namespace SudokuApp.Models {
                 return result;
             }
         }
-
         public List<List<SudokuCell>> Regions {
 
             get {
@@ -54,7 +52,6 @@ namespace SudokuApp.Models {
                 return result;
             }
         }
-
         public List<List<SudokuCell>> Rows {
 
             get {

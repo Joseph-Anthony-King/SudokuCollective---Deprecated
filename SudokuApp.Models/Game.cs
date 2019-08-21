@@ -10,16 +10,24 @@ namespace SudokuApp.Models {
         public DateTime DateCreated { get; set; }
         public DateTime DateCompleted { get; set; }
         public User User { get; set; }
+        public int SudokuMatrixId { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
         public bool ContinueGame { get; set; }
 
-        public Game(User user, SudokuMatrix matrix, Difficulty difficulty) {
+        public Game() {
+
+            this.DateCreated = DateTime.Now;
+            this.ContinueGame = true;
+        }
+
+        public Game(
+            User user, 
+            SudokuMatrix matrix, 
+            Difficulty difficulty) : this() {
 
             this.SudokuMatrix = matrix;
-            this.DateCreated = DateTime.Now;
             this.User = user;
             this.SudokuMatrix.Difficulty = difficulty;
-            this.ContinueGame = true;
 
             this.User.Games.Add(this);
         }

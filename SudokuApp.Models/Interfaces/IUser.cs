@@ -12,7 +12,8 @@ namespace SudokuApp.Models.Interfaces {
         string FullName { get; }
         DateTime DateCreated { get; set; }
         string Email { get; set; }
-        List<Game> Games { get; set; }
-        List<Permission> Permissions { get; set; }
+        string Password { get; set; }
+        ICollection<Game> Games { get; set; }
+        ICollection<UserPermission> Permissions { get; set; }
     }
 }
