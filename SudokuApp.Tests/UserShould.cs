@@ -25,7 +25,14 @@ namespace SudokuApp.Tests {
         public void AcceptFirstAndLastName() {
 
             // Arrange and Act
-            var sut = new User("John", "Doe", "Password");
+            var sut = new User(
+                "John", 
+                "Doe", 
+                "Password",
+                new Permission() {
+                    Name = "User",
+                    PermissionLevel = PermissionLevel.USER
+                });
 
             // Assert
             Assert.That(sut.FirstName, Is.EqualTo("John"));
@@ -89,7 +96,14 @@ namespace SudokuApp.Tests {
         public void HaveDefaultPermissionLevelOfUser() {
 
             // Arrange and Act
-            var sut = new User();
+            var sut = new User(
+                "John", 
+                "Doe", 
+                "Password",
+                new Permission() {
+                    Name = "User",
+                    PermissionLevel = PermissionLevel.USER
+                });
 
             // Assert
             Assert.That(sut.IsAdmin(), Is.EqualTo(false));
@@ -104,7 +118,12 @@ namespace SudokuApp.Tests {
             var sut = new User();
 
             // Act
-            sut.UpgradeToAdmin();
+            sut.UpgradeToAdmin(
+                new Permission() {
+                    Name = "Admin",
+                    PermissionLevel = PermissionLevel.ADMIN
+                }
+            );
 
             // Assert
             Assert.That(sut.IsAdmin(), Is.EqualTo(true));
