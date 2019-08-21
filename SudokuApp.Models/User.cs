@@ -21,7 +21,15 @@ namespace SudokuApp.Models {
         public List<Permission> Permissions { get; set; }
         public string Password { get; set; }
 
-        public User(string firstName, string lastName, string password) : this() {
+        public User(string firstName, 
+            string lastName, 
+            string password,
+            Permission permission) : this() {
+                
+            if (permission.PermissionLevel == PermissionLevel.USER) {
+
+                this.Permissions.Add(permission);
+            }
 
             this.FirstName = firstName;
             this.LastName = lastName;
@@ -33,12 +41,6 @@ namespace SudokuApp.Models {
             this.DateCreated = GetCurrentTime();
             this.Games = new List<Game>();
             this.Permissions = new List<Permission>();
-            
-            this.Permissions.Add(
-                new Permission() { 
-                    Name = "User", 
-                    PermissionLevel = PermissionLevel.USER }
-                );
             
             if (string.IsNullOrEmpty(this.FirstName)) {
 
@@ -63,14 +65,17 @@ namespace SudokuApp.Models {
             return result;
         }
 
-        public void UpgradeToAdmin() {
+        public bool UpgradeToAdmin(Permission permission) {
 
-            this.Permissions.Add(
-                new Permission() { 
-                    Name = "Admin", 
-                    PermissionLevel = PermissionLevel.ADMIN
-                    }
-                );
+            var result = false;
+
+            if (permission.PermissionLevel == PermissionLevel.ADMIN) {
+
+                this.Permissions.Add(permission);
+                result = true;
+            }
+
+            return result;
         }
 
         protected virtual DateTime GetCurrentTime() {
