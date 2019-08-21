@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using SudokuApp.WebApp.Models;
 using SudokuApp.WebApp.Models.DataModel;
 
 namespace SudokuApp.WebApp {
@@ -48,6 +49,8 @@ namespace SudokuApp.WebApp {
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            SeedData.EnsurePopulated(app);
         }
     }
 }
