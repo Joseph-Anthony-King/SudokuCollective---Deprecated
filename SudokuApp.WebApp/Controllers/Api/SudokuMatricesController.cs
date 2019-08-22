@@ -25,14 +25,14 @@ namespace SudokuApp.WebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SudokuMatrix>>> GetSudokuMatrix_1()
         {
-            return await _context.SudokuMatrix_1.ToListAsync();
+            return await _context.SudokuMatrices.ToListAsync();
         }
 
         // GET: api/SudokuMatrices/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SudokuMatrix>> GetSudokuMatrix(int id)
         {
-            var sudokuMatrix = await _context.SudokuMatrix_1.FindAsync(id);
+            var sudokuMatrix = await _context.SudokuMatrices.FindAsync(id);
 
             if (sudokuMatrix == null)
             {
@@ -76,7 +76,7 @@ namespace SudokuApp.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult<SudokuMatrix>> PostSudokuMatrix(SudokuMatrix sudokuMatrix)
         {
-            _context.SudokuMatrix_1.Add(sudokuMatrix);
+            _context.SudokuMatrices.Add(sudokuMatrix);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetSudokuMatrix", new { id = sudokuMatrix.Id }, sudokuMatrix);
@@ -86,13 +86,13 @@ namespace SudokuApp.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<SudokuMatrix>> DeleteSudokuMatrix(int id)
         {
-            var sudokuMatrix = await _context.SudokuMatrix_1.FindAsync(id);
+            var sudokuMatrix = await _context.SudokuMatrices.FindAsync(id);
             if (sudokuMatrix == null)
             {
                 return NotFound();
             }
 
-            _context.SudokuMatrix_1.Remove(sudokuMatrix);
+            _context.SudokuMatrices.Remove(sudokuMatrix);
             await _context.SaveChangesAsync();
 
             return sudokuMatrix;
@@ -100,7 +100,7 @@ namespace SudokuApp.WebApp.Controllers
 
         private bool SudokuMatrixExists(int id)
         {
-            return _context.SudokuMatrix_1.Any(e => e.Id == id);
+            return _context.SudokuMatrices.Any(e => e.Id == id);
         }
     }
 }

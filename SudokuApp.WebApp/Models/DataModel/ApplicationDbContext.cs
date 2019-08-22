@@ -19,7 +19,7 @@ namespace SudokuApp.WebApp.Models.DataModel {
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<SudokuCell> SudokuCells { get; set; }
-        public DbSet<SudokuCell> SudokuMatrix { get; set; }
+        public DbSet<SudokuMatrix> SudokuMatrices { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserPermission> UsersPermissions { get; set; }
