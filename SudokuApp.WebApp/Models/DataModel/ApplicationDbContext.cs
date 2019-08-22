@@ -137,7 +137,5 @@ namespace SudokuApp.WebApp.Models.DataModel {
                 .WithMany(permission => permission.Users)
                 .HasForeignKey(up => up.PermissionId);
         }
-
-        public DbSet<SudokuApp.Models.SudokuMatrix> SudokuMatrix_1 { get; set; }
     }
 }

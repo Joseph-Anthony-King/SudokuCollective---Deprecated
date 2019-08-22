@@ -25,14 +25,14 @@ namespace SudokuApp.WebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Permission>>> GetPermissions()
         {
-            return await _context.Permissions.ToListAsync();
+            return await _context.Permissions.Include(u => u.Users).ToListAsync();
         }
 
         // GET: api/Permissions/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Permission>> GetPermission(int id)
         {
-            var permission = await _context.Permissions.FindAsync(id);
+            var permission = await _context.Permissions.Include(u => u.Users).SingleOrDefaultAsync(u => u.Id == id);
 
             if (permission == null)
             {
