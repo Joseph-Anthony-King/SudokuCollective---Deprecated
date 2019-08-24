@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using SudokuApp.WebApp.Models.DataModel;
@@ -11,7 +12,7 @@ namespace SudokuApp.WebApp.Models {
 
     public class SeedData {
 
-        public static void EnsurePopulated(IApplicationBuilder app) {
+        public static void EnsurePopulated(IApplicationBuilder app, IConfiguration config) {
 
             using (var servicesScope = app.ApplicationServices.CreateScope()) {
 
@@ -82,12 +83,12 @@ namespace SudokuApp.WebApp.Models {
 
                         new User {
 
-                            FirstName = "Admin",
-                            LastName = "User",
-                            NickName = "Administrator",
+                            FirstName = config.GetValue<string>("AdminUser:FirstName"),
+                            LastName = config.GetValue<string>("AdminUser:LastName"),
+                            NickName = config.GetValue<string>("AdminUser:NickName"),
                             DateCreated = DateTime.Now,
-                            Email = "Joseph.King.CA@gmail.com",
-                            Password = "P@ssw0rd"
+                            Email = config.GetValue<string>("AdminUser:Email"),
+                            Password = config.GetValue<string>("AdminUser:Password"),
                         }
                     );
 
