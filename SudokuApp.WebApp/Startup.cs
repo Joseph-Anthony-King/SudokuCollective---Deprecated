@@ -69,7 +69,7 @@ namespace SudokuApp.WebApp {
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            SeedData.EnsurePopulated(app);
+            SeedData.EnsurePopulated(app, Configuration);
         }
     }
 }
