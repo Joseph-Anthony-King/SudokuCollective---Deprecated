@@ -26,7 +26,10 @@ namespace SudokuApp.WebApp.Services {
 
             token = string.Empty;
 
-            if (!_userManagementService.IsValidUser(request.UserName, request.Password)) {
+            var validateUserTask = _userManagementService.IsValidUser(request.UserName, request.Password);
+            validateUserTask.Wait();
+
+            if (!validateUserTask.Result) {
 
                 return false;
             }

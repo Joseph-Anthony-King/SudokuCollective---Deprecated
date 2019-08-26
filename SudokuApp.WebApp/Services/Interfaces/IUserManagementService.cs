@@ -1,7 +1,9 @@
-﻿namespace SudokuApp.WebApp.Services.Interfaces {
+﻿using System.Threading.Tasks;
+
+namespace SudokuApp.WebApp.Services.Interfaces {
 
     public interface IUserManagementService {
 
-        bool IsValidUser(string email, string password);
+        Task<bool> IsValidUser(string email, string password);
     }
 }

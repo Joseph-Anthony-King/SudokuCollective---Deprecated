@@ -1,6 +1,8 @@
-﻿using SudokuApp.WebApp.Models.DataModel;
+﻿using Microsoft.EntityFrameworkCore;
+using SudokuApp.WebApp.Models.DataModel;
 using SudokuApp.WebApp.Services.Interfaces;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SudokuApp.WebApp.Services {
 
@@ -13,9 +15,9 @@ namespace SudokuApp.WebApp.Services {
             _context = context;
         }
 
-        public bool IsValidUser(string userName, string password) {
+        public async Task<bool> IsValidUser(string userName, string password) {
 
-            var user = _context.Users.Where(u => u.UserName == userName && u.Password == password).FirstOrDefault();
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == userName && u.Password == password);
 
             if (user != null) {
 
