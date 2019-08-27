@@ -125,12 +125,32 @@ namespace SudokuApp.WebApp.Models.DataModel {
                 .WithOne(game => game.User);
 
             modelBuilder.Entity<User>()
+                .Property(user => user.FirstName)
+                .IsRequired();
+
+            modelBuilder.Entity<User>()
+                .Property(user => user.LastName)
+                .IsRequired();
+
+            modelBuilder.Entity<User>()
+                .Property(user => user.Email)
+                .IsRequired();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(user => user.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
                 .Property(user => user.UserName)
                 .IsRequired();
 
             modelBuilder.Entity<User>()
                 .HasIndex(user => user.UserName)
                 .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .Property(user => user.Password)
+                .IsRequired();
 
             modelBuilder.Entity<UserPermission>()
                 .HasKey(up => new { up.UserId, up.PermissionId});
