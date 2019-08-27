@@ -1,41 +1,41 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
 using SudokuApp.WebApp.Models.DataModel;
 
-namespace SudokuApp.WebApp.Controllers
-{
+namespace SudokuApp.WebApp.Controllers {
+
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class SudokuMatricesController : ControllerBase
-    {
+    public class SudokuMatricesController : ControllerBase {
+
         private readonly ApplicationDbContext _context;
 
-        public SudokuMatricesController(ApplicationDbContext context)
-        {
+        public SudokuMatricesController(ApplicationDbContext context) {
+
             _context = context;
         }
 
         // GET: api/SudokuMatrices
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SudokuMatrix>>> GetSudokuMatrix_1()
-        {
+        public async Task<ActionResult<IEnumerable<SudokuMatrix>>> GetSudokuMatrix() {
+
             return await _context.SudokuMatrices.ToListAsync();
         }
 
         // GET: api/SudokuMatrices/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SudokuMatrix>> GetSudokuMatrix(int id)
-        {
+        public async Task<ActionResult<SudokuMatrix>> GetSudokuMatrix(int id) {
+
             var sudokuMatrix = await _context.SudokuMatrices.FindAsync(id);
 
-            if (sudokuMatrix == null)
-            {
+            if (sudokuMatrix == null) {
+
                 return NotFound();
             }
 
@@ -44,27 +44,27 @@ namespace SudokuApp.WebApp.Controllers
 
         // PUT: api/SudokuMatrices/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSudokuMatrix(int id, SudokuMatrix sudokuMatrix)
-        {
-            if (id != sudokuMatrix.Id)
-            {
+        public async Task<IActionResult> PutSudokuMatrix(int id, SudokuMatrix sudokuMatrix) {
+
+            if (id != sudokuMatrix.Id) {
+
                 return BadRequest();
             }
 
             _context.Entry(sudokuMatrix).State = EntityState.Modified;
 
-            try
-            {
+            try {
+
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SudokuMatrixExists(id))
-                {
+
+            } catch (DbUpdateConcurrencyException) {
+
+                if (!SudokuMatrixExists(id)) {
+
                     return NotFound();
-                }
-                else
-                {
+
+                } else {
+
                     throw;
                 }
             }
@@ -74,8 +74,8 @@ namespace SudokuApp.WebApp.Controllers
 
         // POST: api/SudokuMatrices
         [HttpPost]
-        public async Task<ActionResult<SudokuMatrix>> PostSudokuMatrix(SudokuMatrix sudokuMatrix)
-        {
+        public async Task<ActionResult<SudokuMatrix>> PostSudokuMatrix(SudokuMatrix sudokuMatrix) {
+
             _context.SudokuMatrices.Add(sudokuMatrix);
             await _context.SaveChangesAsync();
 
@@ -84,11 +84,12 @@ namespace SudokuApp.WebApp.Controllers
 
         // DELETE: api/SudokuMatrices/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<SudokuMatrix>> DeleteSudokuMatrix(int id)
-        {
+        public async Task<ActionResult<SudokuMatrix>> DeleteSudokuMatrix(int id) {
+
             var sudokuMatrix = await _context.SudokuMatrices.FindAsync(id);
-            if (sudokuMatrix == null)
-            {
+
+            if (sudokuMatrix == null) {
+
                 return NotFound();
             }
 
@@ -98,8 +99,8 @@ namespace SudokuApp.WebApp.Controllers
             return sudokuMatrix;
         }
 
-        private bool SudokuMatrixExists(int id)
-        {
+        private bool SudokuMatrixExists(int id) {
+
             return _context.SudokuMatrices.Any(e => e.Id == id);
         }
     }

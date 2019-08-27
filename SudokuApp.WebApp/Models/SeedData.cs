@@ -86,6 +86,7 @@ namespace SudokuApp.WebApp.Models {
                             FirstName = config.GetValue<string>("AdminUser:FirstName"),
                             LastName = config.GetValue<string>("AdminUser:LastName"),
                             NickName = config.GetValue<string>("AdminUser:NickName"),
+                            UserName = config.GetValue<string>("AdminUser:UserName"),
                             DateCreated = DateTime.Now,
                             Email = config.GetValue<string>("AdminUser:Email"),
                             Password = config.GetValue<string>("AdminUser:Password"),
