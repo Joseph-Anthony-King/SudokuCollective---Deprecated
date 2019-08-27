@@ -11,8 +11,8 @@ using SudokuApp.WebApp.Models.DataModel;
 namespace SudokuApp.WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190821223154_AddMatrixToDifficulyRelationship")]
-    partial class AddMatrixToDifficulyRelationship
+    [Migration("20190827003349_InitiateDatabase")]
+    partial class InitiateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,11 +70,7 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.Property<int>("PermissionLevel");
 
-                    b.Property<int?>("UserId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Permissions");
                 });
@@ -106,7 +102,7 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.HasIndex("SudokuMatrixId");
 
-                    b.ToTable("SudokuCell");
+                    b.ToTable("SudokuCells");
                 });
 
             modelBuilder.Entity("SudokuApp.Models.SudokuMatrix", b =>
@@ -120,7 +116,7 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.HasIndex("DifficultyId");
 
-                    b.ToTable("SudokuMatrix");
+                    b.ToTable("SudokuMatrices");
                 });
 
             modelBuilder.Entity("SudokuApp.Models.User", b =>
@@ -130,19 +126,45 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.Property<DateTime>("DateCreated");
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Email")
+                        .IsRequired();
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .IsRequired();
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .IsRequired();
 
                     b.Property<string>("NickName");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("Password")
+                        .IsRequired();
+
+                    b.Property<string>("UserName")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("SudokuApp.Models.UserPermission", b =>
+                {
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("PermissionId");
+
+                    b.HasKey("UserId", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("UsersPermissions");
                 });
 
             modelBuilder.Entity("SudokuApp.Models.Game", b =>
@@ -154,13 +176,6 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.HasOne("SudokuApp.Models.User", "User")
                         .WithMany("Games")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("SudokuApp.Models.Permission", b =>
-                {
-                    b.HasOne("SudokuApp.Models.User")
-                        .WithMany("Permissions")
                         .HasForeignKey("UserId");
                 });
 
@@ -176,6 +191,19 @@ namespace SudokuApp.WebApp.Migrations
                     b.HasOne("SudokuApp.Models.Difficulty", "Difficulty")
                         .WithMany("Matrices")
                         .HasForeignKey("DifficultyId");
+                });
+
+            modelBuilder.Entity("SudokuApp.Models.UserPermission", b =>
+                {
+                    b.HasOne("SudokuApp.Models.Permission", "Permission")
+                        .WithMany("Users")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SudokuApp.Models.User", "User")
+                        .WithMany("Permissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
