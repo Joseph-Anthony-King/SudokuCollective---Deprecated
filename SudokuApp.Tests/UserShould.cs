@@ -59,7 +59,7 @@ namespace SudokuApp.Tests {
 
             // Arrange and Act
             var sut = new User();
-            var currentDateTime = DateTime.Now;
+            var currentDateTime = DateTime.UtcNow;
 
             // Assert
             Assert.That(sut.DateCreated, Is.EqualTo(currentDateTime).Within(1).Seconds);

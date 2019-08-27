@@ -54,7 +54,7 @@ namespace SudokuApp.Models {
 
         protected virtual DateTime GetCurrentTime() {
 
-            return DateTime.Now;
+            return DateTime.UtcNow;
         }
     }
 }

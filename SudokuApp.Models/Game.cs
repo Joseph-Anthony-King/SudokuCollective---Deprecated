@@ -16,7 +16,7 @@ namespace SudokuApp.Models {
 
         public Game() {
 
-            this.DateCreated = DateTime.Now;
+            this.DateCreated = DateTime.UtcNow;
             this.ContinueGame = true;
         }
 

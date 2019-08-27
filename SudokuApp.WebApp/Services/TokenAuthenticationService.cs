@@ -46,7 +46,7 @@ namespace SudokuApp.WebApp.Services {
                     _tokenManagement.Issuer,
                     _tokenManagement.Audience,
                     claim,
-                    expires:DateTime.Now.AddMinutes(_tokenManagement.AccessExpiration),
+                    expires:DateTime.UtcNow.AddMinutes(_tokenManagement.AccessExpiration),
                     signingCredentials: credentials
                 );
 
