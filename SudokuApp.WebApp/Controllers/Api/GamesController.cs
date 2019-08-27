@@ -1,37 +1,37 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
 using SudokuApp.WebApp.Models.DataModel;
 
-namespace SudokuApp.WebApp.Controllers
-{
+namespace SudokuApp.WebApp.Controllers {
+
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class GamesController : ControllerBase
-    {
+    public class GamesController : ControllerBase {
+
         private readonly ApplicationDbContext _context;
 
-        public GamesController(ApplicationDbContext context)
-        {
+        public GamesController(ApplicationDbContext context) {
+
             _context = context;
         }
 
         // GET: api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGames()
-        {
+        public async Task<ActionResult<IEnumerable<Game>>> GetGames() {
+
             return await _context.Games.ToListAsync();
         }
 
         // GET: api/Games/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id)
-        {
+        public async Task<ActionResult<Game>> GetGame(int id) {
+
             var game = await _context.Games.FindAsync(id);
 
             if (game == null)
@@ -44,27 +44,27 @@ namespace SudokuApp.WebApp.Controllers
 
         // PUT: api/Games/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGame(int id, Game game)
-        {
-            if (id != game.Id)
-            {
+        public async Task<IActionResult> PutGame(int id, Game game) {
+
+            if (id != game.Id) {
+
                 return BadRequest();
             }
 
             _context.Entry(game).State = EntityState.Modified;
 
-            try
-            {
+            try {
+
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GameExists(id))
-                {
+
+            } catch (DbUpdateConcurrencyException) {
+
+                if (!GameExists(id)) {
+
                     return NotFound();
-                }
-                else
-                {
+
+                } else {
+
                     throw;
                 }
             }
@@ -74,8 +74,8 @@ namespace SudokuApp.WebApp.Controllers
 
         // POST: api/Games
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame(Game game)
-        {
+        public async Task<ActionResult<Game>> PostGame(Game game) {
+
             _context.Games.Add(game);
             await _context.SaveChangesAsync();
 
@@ -84,11 +84,12 @@ namespace SudokuApp.WebApp.Controllers
 
         // DELETE: api/Games/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Game>> DeleteGame(int id)
-        {
+        public async Task<ActionResult<Game>> DeleteGame(int id) {
+
             var game = await _context.Games.FindAsync(id);
-            if (game == null)
-            {
+
+            if (game == null) {
+
                 return NotFound();
             }
 
@@ -98,8 +99,8 @@ namespace SudokuApp.WebApp.Controllers
             return game;
         }
 
-        private bool GameExists(int id)
-        {
+        private bool GameExists(int id) {
+
             return _context.Games.Any(e => e.Id == id);
         }
     }

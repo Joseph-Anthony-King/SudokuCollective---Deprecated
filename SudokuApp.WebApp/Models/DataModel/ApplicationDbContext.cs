@@ -124,6 +124,14 @@ namespace SudokuApp.WebApp.Models.DataModel {
                 .HasMany(user => user.Games)
                 .WithOne(game => game.User);
 
+            modelBuilder.Entity<User>()
+                .Property(user => user.UserName)
+                .IsRequired();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(user => user.UserName)
+                .IsUnique();
+
             modelBuilder.Entity<UserPermission>()
                 .HasKey(up => new { up.UserId, up.PermissionId});
 
