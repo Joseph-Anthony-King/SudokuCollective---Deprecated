@@ -13,9 +13,9 @@ namespace SudokuApp.WebApp.Controllers {
     [ApiController]
     public class UsersController : ControllerBase {
 
-        private readonly IUserService _userService;
+        private readonly IUsersService _userService;
 
-        public UsersController(IUserService userService) {
+        public UsersController(IUsersService userService) {
 
             _userService = userService;
         }

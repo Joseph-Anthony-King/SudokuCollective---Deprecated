@@ -12,7 +12,7 @@ using SudokuApp.WebApp.Services.Interfaces;
 namespace SudokuApp.WebApp.Services
 {
 
-    public class UsersService : IUserService {
+    public class UsersService : IUsersService {
 
         private readonly ApplicationDbContext _context;
 

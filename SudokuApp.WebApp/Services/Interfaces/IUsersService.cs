@@ -6,7 +6,7 @@ using SudokuApp.WebApp.Models.DTO;
 
 namespace SudokuApp.WebApp.Services.Interfaces {
     
-    public interface IUserService {
+    public interface IUsersService {
 
         Task<ActionResult<User>> GetUser(int userId);
         Task<ActionResult<IEnumerable<User>>> GetUsers();
