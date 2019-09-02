@@ -57,15 +57,6 @@ namespace SudokuApp.WebApp.Controllers {
             return NoContent();
         }
 
-        // POST: api/Users
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(UserDTO userDTO) {
-            
-            var user = await  _userService.CreateUser(userDTO);
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
-        }
-
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id) {
