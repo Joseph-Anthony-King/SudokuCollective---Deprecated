@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +60,21 @@ namespace SudokuApp.WebApp.Services
             };
 
             _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            // Add default user permission to the new user
+            var savedUser = _context.Users.Where(u => u.UserName.Equals(user.UserName)).FirstOrDefault();
+            var defaultPermission = _context.Permissions.Where(p => p.Id == 2).FirstOrDefault();
+
+            UserPermission newUserPermissions = new UserPermission {
+
+                UserId = savedUser.Id,
+                User = savedUser,
+                PermissionId = defaultPermission.Id,
+                Permission = defaultPermission
+            };
+
+            _context.UsersPermissions.Add(newUserPermissions);
             await _context.SaveChangesAsync();
             
             return user;
