@@ -31,10 +31,13 @@ namespace SudokuApp.WebApp {
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseNpgsql(Configuration.GetConnectionString("DatabaseConnection")));
 
-            services.AddMvc().AddJsonOptions(options => {
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services
+                .AddMvc(options => 
+                    options.Filters.Add(new RequireHttpsAttribute()))
+                .AddJsonOptions(options => {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<TokenManagement>(Configuration.GetSection("TokenManagement"));
             var token = Configuration.GetSection("tokenManagement").Get<TokenManagement>();
