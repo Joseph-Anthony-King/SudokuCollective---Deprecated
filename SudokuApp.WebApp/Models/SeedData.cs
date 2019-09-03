@@ -89,7 +89,7 @@ namespace SudokuApp.WebApp.Models {
                             UserName = config.GetValue<string>("AdminUser:UserName"),
                             DateCreated = DateTime.UtcNow,
                             Email = config.GetValue<string>("AdminUser:Email"),
-                            Password = config.GetValue<string>("AdminUser:Password"),
+                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("AdminUser:Password"))
                         }
                     );
 

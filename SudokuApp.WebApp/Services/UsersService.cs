@@ -56,7 +56,7 @@ namespace SudokuApp.WebApp.Services
                 NickName = userDTO.NickName,
                 DateCreated = DateTime.Now,
                 Email = userDTO.Email,
-                Password = userDTO.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password)
             };
 
             _context.Users.Add(user);
@@ -83,6 +83,9 @@ namespace SudokuApp.WebApp.Services
         public async Task UpdateUser(int id, User user) {
 
             if (id == user.Id) {
+
+                // Encrypt the users password
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
                 _context.Entry(user).State = EntityState.Modified;
                 
