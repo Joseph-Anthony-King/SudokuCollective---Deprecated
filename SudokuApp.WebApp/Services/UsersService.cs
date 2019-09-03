@@ -54,7 +54,7 @@ namespace SudokuApp.WebApp.Services
                 FirstName = userDTO.FirstName, 
                 LastName = userDTO.LastName,
                 NickName = userDTO.NickName,
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow,
                 Email = userDTO.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password)
             };
