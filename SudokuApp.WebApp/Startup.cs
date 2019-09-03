@@ -32,8 +32,7 @@ namespace SudokuApp.WebApp {
                 options.UseNpgsql(Configuration.GetConnectionString("DatabaseConnection")));
 
             services
-                .AddMvc(options => 
-                    options.Filters.Add(new RequireHttpsAttribute()))
+                .AddMvc()
                 .AddJsonOptions(options => {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
