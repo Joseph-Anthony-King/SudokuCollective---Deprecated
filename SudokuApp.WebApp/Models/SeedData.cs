@@ -25,6 +25,12 @@ namespace SudokuApp.WebApp.Models {
                         
                         new Permission {
 
+                            Name = "Null",
+                            PermissionLevel = PermissionLevel.NULL
+                        },
+                        
+                        new Permission {
+
                             Name = "Admin",
                             PermissionLevel = PermissionLevel.ADMIN
                         },
@@ -42,6 +48,12 @@ namespace SudokuApp.WebApp.Models {
                 if (!context.Difficulties.Any()) {
 
                     context.Difficulties.AddRange(
+
+                        new Difficulty {
+
+                            Name = "Null",
+                            DifficultyLevel = DifficultyLevel.NULL
+                        },
 
                         new Difficulty {
 

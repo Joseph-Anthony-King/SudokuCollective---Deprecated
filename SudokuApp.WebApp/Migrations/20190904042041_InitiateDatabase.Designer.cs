@@ -11,7 +11,7 @@ using SudokuApp.WebApp.Models.DataModel;
 namespace SudokuApp.WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190827003349_InitiateDatabase")]
+    [Migration("20190904042041_InitiateDatabase")]
     partial class InitiateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

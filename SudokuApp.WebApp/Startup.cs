@@ -61,6 +61,8 @@ namespace SudokuApp.WebApp {
             services.AddScoped<IAuthenticateService, TokenAuthenticationService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IGamesService, GamesService>();
+            services.AddScoped<IDifficultiesService, DifficultiesService>();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>

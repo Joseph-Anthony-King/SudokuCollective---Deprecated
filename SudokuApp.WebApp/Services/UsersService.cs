@@ -23,7 +23,7 @@ namespace SudokuApp.WebApp.Services
 
         public async Task<ActionResult<User>> GetUser(int id) {
 
-            var user = await _context.Users.Include(u => u.Games).Include(u => u.Permissions).SingleOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users.Include(u => u.Games).Include(u => u.Permissions).FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) {
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,9 +31,19 @@ namespace SudokuApp.WebApp.Services {
             return game;
         }
 
-        public async Task<Game> DeleteGame(int gameId) {
+        public async Task UpdateGame(int id, Game game) {
 
-            var game = await _context.Games.FindAsync(gameId);
+            if (id == game.Id) {
+
+                _context.Entry(game).State = EntityState.Modified;
+                
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<Game> DeleteGame(int id) {
+
+            var game = await _context.Games.FindAsync(id);
 
             if (game == null) {
 
@@ -45,39 +56,50 @@ namespace SudokuApp.WebApp.Services {
             return game;
         }
 
-        public Task<ActionResult<Game>> GetGame(int gameId) {
+        public async Task<ActionResult<Game>> GetGame(int id) {
 
-            throw new System.NotImplementedException();
-        }
+            var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == id);
 
-        public Task<ActionResult<IEnumerable<Game>>> GetGames() {
+            if (game == null) {
 
-            throw new System.NotImplementedException();
-        }
-
-        public Task<ActionResult<Game>> GetMyGame(int userId, int gameId) {
-
-            throw new System.NotImplementedException();
-        }
-
-        public Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId) {
-
-            throw new System.NotImplementedException();
-        }
-
-        public Task<Game> DeleteMyGame(int userId, int gameId) {
-
-            throw new System.NotImplementedException();
-        }
-
-        public async Task UpdateGame(int gameId, Game game) {
-
-            if (gameId == game.Id) {
-
-                _context.Entry(game).State = EntityState.Modified;
-                
-                await _context.SaveChangesAsync();
+                return game = new Game();
             }
+
+            return game;
+        }
+
+        public async Task<ActionResult<IEnumerable<Game>>> GetGames() {
+
+            return await _context.Games.ToListAsync();
+        }
+
+        public async Task<ActionResult<Game>> GetMyGame(int userId) {
+
+            var game = await _context.Games.FirstOrDefaultAsync(g => g.User.Id == userId);
+
+            if (game == null) {
+
+                return game = new Game();
+            }
+
+            return game;
+        }
+
+        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId) {
+
+            return await _context.Games.Where(g => g.User.Id == userId).ToListAsync();
+        }
+
+        public async Task<Game> DeleteMyGame(int userId, int gameId) {
+
+            var game = await _context.Games.FirstOrDefaultAsync(predicate: g => g.Id == gameId && g.User.Id == userId);
+
+            if (game == null) {
+
+                return game = new Game();
+            }
+
+            return game;
         }
     }
 }
