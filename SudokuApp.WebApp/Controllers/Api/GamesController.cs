@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
-using SudokuApp.WebApp.Models.DataModel;
+using SudokuApp.WebApp.Models.DTO;
 using SudokuApp.WebApp.Services.Interfaces;
 
-namespace SudokuApp.WebApp.Controllers {
+namespace SudokuApp.WebApp.Controllers
+{
 
     [Authorize]
     [Route("api/[controller]")]
@@ -68,12 +67,10 @@ namespace SudokuApp.WebApp.Controllers {
 
         // POST: api/Games
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame(
-            int userId,
-            int difficultyId) {
+        public async Task<ActionResult<Game>> PostGame([FromBody] CreateGameDTO createGame) {
 
-            var userActionResult = await _userService.GetUser(userId);
-            var difficultyActionResult = await _difficultiesService.GetDifficulty(difficultyId);
+            var userActionResult = await _userService.GetUser(createGame.UserId);
+            var difficultyActionResult = await _difficultiesService.GetDifficulty(createGame.DifficultyId);
             
             var game = await _gamesService.CreateGame(
                 userActionResult.Value, 

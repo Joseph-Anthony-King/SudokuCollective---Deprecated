@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {
@@ -76,6 +77,7 @@ namespace SudokuApp.Models {
             }
         }
         public bool Obscured { get; set; }
+        [JsonIgnore]
         public List<int> AvailableValues { get; set; }
         #endregion
 

@@ -25,7 +25,7 @@ namespace SudokuApp.WebApp.Services {
 
             Game game = new Game(user, matrix, difficulty);
 
-            _context.Games.Add(game);
+            _context.Games.Update(game);
             await _context.SaveChangesAsync();
 
             return game;
@@ -58,7 +58,15 @@ namespace SudokuApp.WebApp.Services {
 
         public async Task<ActionResult<Game>> GetGame(int id) {
 
-            var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _context.Games
+                .Include(g => g.User).ThenInclude(u => u.Permissions)
+                .Include(g => g.SudokuMatrix)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            // Reset the matrix sudoku cells
+            game.SudokuMatrix.SudokuCells = null;
+            var cells = await _context.SudokuCells.Where(cell => cell.SudokuMatrix.Id == game.SudokuMatrixId).OrderBy(cell => cell.Index).ToListAsync();
+            game.SudokuMatrix.SudokuCells = cells;
 
             if (game == null) {
 

@@ -28,6 +28,7 @@ namespace SudokuApp.Models {
             this.SudokuMatrix = matrix;
             this.User = user;
             this.SudokuMatrix.Difficulty = difficulty;
+            this.SudokuMatrix.SetDifficulty(this.SudokuMatrix.Difficulty);
 
             this.User.Games.Add(this);
         }

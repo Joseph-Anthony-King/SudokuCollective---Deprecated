@@ -1,10 +1,10 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using SudokuApp.Models.Enums;
 using SudokuApp.Models.Interfaces;
+using Newtonsoft.Json;
 
-namespace SudokuApp.Models {
+namespace SudokuApp.Models
+{
 
     public class User : IUser {
 
@@ -18,11 +18,13 @@ namespace SudokuApp.Models {
         }
         public DateTime DateCreated { get; set; }
         public string Email { get; set; }
+        [JsonIgnore]
         public string Password { get; set; }
         public ICollection<Game> Games { get; set; }
         public ICollection<UserPermission> Permissions { get; set; }
 
-        public User(string firstName, 
+        public User(
+            string firstName, 
             string lastName, 
             string password) : this() {
 
