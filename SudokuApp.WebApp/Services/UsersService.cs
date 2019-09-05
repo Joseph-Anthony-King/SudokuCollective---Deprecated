@@ -1,19 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
 using SudokuApp.WebApp.Helpers;
 using SudokuApp.WebApp.Models.DataModel;
-using SudokuApp.WebApp.Models.DTO;
+using SudokuApp.WebApp.Models.RequestObjects;
 using SudokuApp.WebApp.Services.Interfaces;
 
-namespace SudokuApp.WebApp.Services
-{
+namespace SudokuApp.WebApp.Services {
 
     public class UsersService : IUsersService {
 
@@ -67,19 +64,19 @@ namespace SudokuApp.WebApp.Services
             return users;
         }
 
-        public async Task<User> CreateUser(UserDTO userDTO) {
+        public async Task<User> CreateUser(UserRO userRO) {
 
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
             User user = new User {
 
-                UserName = userDTO.UserName,
-                FirstName = userDTO.FirstName, 
-                LastName = userDTO.LastName,
-                NickName = userDTO.NickName,
+                UserName = userRO.UserName,
+                FirstName = userRO.FirstName, 
+                LastName = userRO.LastName,
+                NickName = userRO.NickName,
                 DateCreated = DateTime.UtcNow,
-                Email = userDTO.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password, salt)
+                Email = userRO.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(userRO.Password, salt)
             };
 
             _context.Users.Add(user);
