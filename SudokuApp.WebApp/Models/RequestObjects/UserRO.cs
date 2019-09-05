@@ -1,6 +1,6 @@
-namespace SudokuApp.WebApp.Models.DTO {
+namespace SudokuApp.WebApp.Models.RequestObjects {
     
-    public class UserDTO {
+    public class UserRO {
 
         public string UserName { get; set; }
         public string FirstName { get; set; }
