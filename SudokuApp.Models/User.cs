@@ -35,7 +35,7 @@ namespace SudokuApp.Models
 
         public User() {
 
-            this.DateCreated = GetCurrentTime();
+            this.DateCreated = DateTime.UtcNow;
             this.Games = new List<Game>();
             
             if (string.IsNullOrEmpty(this.FirstName)) {
