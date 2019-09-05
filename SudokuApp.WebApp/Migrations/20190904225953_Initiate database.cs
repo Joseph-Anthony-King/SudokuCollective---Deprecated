@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SudokuApp.WebApp.Migrations
 {
-    public partial class InitiateDatabase : Migration
+    public partial class Initiatedatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -141,8 +140,7 @@ namespace SudokuApp.WebApp.Migrations
                     Row = table.Column<int>(nullable: false),
                     Value = table.Column<int>(nullable: false),
                     DisplayValue = table.Column<int>(nullable: false),
-                    Obscured = table.Column<bool>(nullable: false),
-                    AvailableValues = table.Column<List<int>>(nullable: true)
+                    Obscured = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

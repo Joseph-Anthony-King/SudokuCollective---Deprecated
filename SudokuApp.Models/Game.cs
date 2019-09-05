@@ -16,7 +16,7 @@ namespace SudokuApp.Models {
 
         public Game() {
 
-            this.DateCreated = DateTime.Now;
+            this.DateCreated = DateTime.UtcNow;
             this.ContinueGame = true;
         }
 
@@ -28,6 +28,7 @@ namespace SudokuApp.Models {
             this.SudokuMatrix = matrix;
             this.User = user;
             this.SudokuMatrix.Difficulty = difficulty;
+            this.SudokuMatrix.SetDifficulty(this.SudokuMatrix.Difficulty);
 
             this.User.Games.Add(this);
         }

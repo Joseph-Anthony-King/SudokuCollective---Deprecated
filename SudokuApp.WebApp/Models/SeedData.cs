@@ -25,6 +25,12 @@ namespace SudokuApp.WebApp.Models {
                         
                         new Permission {
 
+                            Name = "Null",
+                            PermissionLevel = PermissionLevel.NULL
+                        },
+                        
+                        new Permission {
+
                             Name = "Admin",
                             PermissionLevel = PermissionLevel.ADMIN
                         },
@@ -42,6 +48,12 @@ namespace SudokuApp.WebApp.Models {
                 if (!context.Difficulties.Any()) {
 
                     context.Difficulties.AddRange(
+
+                        new Difficulty {
+
+                            Name = "Null",
+                            DifficultyLevel = DifficultyLevel.NULL
+                        },
 
                         new Difficulty {
 
@@ -87,9 +99,9 @@ namespace SudokuApp.WebApp.Models {
                             LastName = config.GetValue<string>("AdminUser:LastName"),
                             NickName = config.GetValue<string>("AdminUser:NickName"),
                             UserName = config.GetValue<string>("AdminUser:UserName"),
-                            DateCreated = DateTime.Now,
+                            DateCreated = DateTime.UtcNow,
                             Email = config.GetValue<string>("AdminUser:Email"),
-                            Password = config.GetValue<string>("AdminUser:Password"),
+                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("AdminUser:Password"))
                         }
                     );
 

@@ -5,6 +5,7 @@ using SudokuApp.WebApp.Services.Interfaces;
 
 namespace SudokuApp.WebApp.Controllers {
 
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticateController : ControllerBase {
