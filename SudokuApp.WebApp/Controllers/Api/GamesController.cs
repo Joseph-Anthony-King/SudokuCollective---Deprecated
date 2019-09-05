@@ -6,8 +6,7 @@ using SudokuApp.Models;
 using SudokuApp.WebApp.Models.RequestObjects;
 using SudokuApp.WebApp.Services.Interfaces;
 
-namespace SudokuApp.WebApp.Controllers
-{
+namespace SudokuApp.WebApp.Controllers {
 
     [Authorize]
     [Route("api/[controller]")]
