@@ -356,11 +356,7 @@ namespace SudokuApp.Models {
                 sudokuCell.Obscured = true;
             }
 
-            this.Difficulty = new Difficulty() {
-
-                Name = difficulty.Name,
-                DifficultyLevel = difficulty.DifficultyLevel
-            };
+            this.Difficulty = difficulty;
             
             int index;
 

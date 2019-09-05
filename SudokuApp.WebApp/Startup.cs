@@ -31,10 +31,12 @@ namespace SudokuApp.WebApp {
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseNpgsql(Configuration.GetConnectionString("DatabaseConnection")));
 
-            services.AddMvc().AddJsonOptions(options => {
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services
+                .AddMvc()
+                .AddJsonOptions(options => {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<TokenManagement>(Configuration.GetSection("TokenManagement"));
             var token = Configuration.GetSection("tokenManagement").Get<TokenManagement>();
@@ -58,6 +60,9 @@ namespace SudokuApp.WebApp {
 
             services.AddScoped<IAuthenticateService, TokenAuthenticationService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IGamesService, GamesService>();
+            services.AddScoped<IDifficultiesService, DifficultiesService>();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>

@@ -44,6 +44,9 @@ namespace SudokuApp.WebApp.Models.DataModel {
             modelBuilder.Entity<SudokuCell>()
                 .HasKey(cell => cell.Id);
 
+            modelBuilder.Entity<SudokuCell>()
+                .Ignore(cell => cell.AvailableValues);
+
             modelBuilder.Entity<SudokuMatrix>()
                 .HasKey(matrix => matrix.Id);
                 
