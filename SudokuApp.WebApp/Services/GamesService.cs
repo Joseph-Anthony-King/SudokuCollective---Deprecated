@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
+using SudokuApp.WebApp.Helpers;
 using SudokuApp.WebApp.Models.DataModel;
 using SudokuApp.WebApp.Services.Interfaces;
 
@@ -68,10 +69,7 @@ namespace SudokuApp.WebApp.Services {
                 return game = new Game();
             }
 
-            // Reset the matrix sudoku cells
-            game.SudokuMatrix.SudokuCells = null;
-            var cells = await _context.SudokuCells.Where(cell => cell.SudokuMatrix.Id == game.SudokuMatrixId).OrderBy(cell => cell.Index).ToListAsync();
-            game.SudokuMatrix.SudokuCells = cells;
+            game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
 
             return game;
         }
@@ -79,16 +77,14 @@ namespace SudokuApp.WebApp.Services {
         public async Task<ActionResult<IEnumerable<Game>>> GetGames() {
 
             var games = await _context.Games
+                .OrderBy(g => g.Id)
                 .Include(g => g.User).ThenInclude(u => u.Permissions)
                 .Include(g => g.SudokuMatrix)
                 .ToListAsync();
             
             foreach (var game in games) {
-
-                // Reset the matrix sudoku cells
-                game.SudokuMatrix.SudokuCells = null;
-                var cells = await _context.SudokuCells.Where(cell => cell.SudokuMatrix.Id == game.SudokuMatrixId).OrderBy(cell => cell.Index).ToListAsync();
-                game.SudokuMatrix.SudokuCells = cells;
+                
+                game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
             }
 
             return games;
@@ -106,27 +102,23 @@ namespace SudokuApp.WebApp.Services {
                 return game = new Game();
             }
 
-            // Reset the matrix sudoku cells
-            game.SudokuMatrix.SudokuCells = null;
-            var cells = await _context.SudokuCells.Where(cell => cell.SudokuMatrix.Id == game.SudokuMatrixId).OrderBy(cell => cell.Index).ToListAsync();
-            game.SudokuMatrix.SudokuCells = cells;
+            game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
 
             return game;
         }
 
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId) {
 
-            var games = await _context.Games.Where(g => g.User.Id == userId)
+            var games = await _context.Games
+                .Where(g => g.User.Id == userId)
+                .OrderBy(g => g.Id)
                 .Include(g => g.User).ThenInclude(u => u.Permissions)
                 .Include(g => g.SudokuMatrix)
                 .ToListAsync();
             
             foreach (var game in games) {
 
-                // Reset the matrix sudoku cells
-                game.SudokuMatrix.SudokuCells = null;
-                var cells = await _context.SudokuCells.Where(cell => cell.SudokuMatrix.Id == game.SudokuMatrixId).OrderBy(cell => cell.Index).ToListAsync();
-                game.SudokuMatrix.SudokuCells = cells;
+                game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
             }
 
             return games;
@@ -134,7 +126,8 @@ namespace SudokuApp.WebApp.Services {
 
         public async Task<Game> DeleteMyGame(int userId, int gameId) {
 
-            var game = await _context.Games.FirstOrDefaultAsync(predicate: g => g.Id == gameId && g.User.Id == userId);
+            var game = await _context.Games
+                .FirstOrDefaultAsync(predicate: g => g.Id == gameId && g.User.Id == userId);
 
             if (game == null) {
 

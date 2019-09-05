@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
+using SudokuApp.WebApp.Helpers;
 using SudokuApp.WebApp.Models.DataModel;
 using SudokuApp.WebApp.Models.DTO;
 using SudokuApp.WebApp.Services.Interfaces;
@@ -23,7 +26,10 @@ namespace SudokuApp.WebApp.Services
 
         public async Task<ActionResult<User>> GetUser(int id) {
 
-            var user = await _context.Users.Include(u => u.Games).Include(u => u.Permissions).FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users
+                .Include(u => u.Games)
+                .Include(u => u.Permissions)
+                .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) {
 
@@ -44,18 +50,17 @@ namespace SudokuApp.WebApp.Services
         public async Task<ActionResult<IEnumerable<User>>> GetUsers() {
 
             var users = await _context.Users
+                .OrderBy(u => u.Id)
                 .Include(u => u.Games)
                 .ThenInclude(g => g.SudokuMatrix)
-                .Include(u => u.Permissions).ToListAsync();
+                .Include(u => u.Permissions)
+                .ToListAsync();
 
             foreach (var user in users) {
 
                 foreach (var game in user.Games) {
-
-                    // Reset the matrix sudoku cells
-                    game.SudokuMatrix.SudokuCells = null;
-                    var cells = await _context.SudokuCells.Where(cell => cell.SudokuMatrix.Id == game.SudokuMatrixId).OrderBy(cell => cell.Index).ToListAsync();
-                    game.SudokuMatrix.SudokuCells = cells;
+                    
+                    game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
                 }
             }
 
@@ -63,6 +68,8 @@ namespace SudokuApp.WebApp.Services
         }
 
         public async Task<User> CreateUser(UserDTO userDTO) {
+
+            var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
             User user = new User {
 
@@ -72,7 +79,7 @@ namespace SudokuApp.WebApp.Services
                 NickName = userDTO.NickName,
                 DateCreated = DateTime.UtcNow,
                 Email = userDTO.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password)
+                Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password, salt)
             };
 
             _context.Users.Add(user);
