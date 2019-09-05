@@ -12,7 +12,7 @@ namespace SudokuApp.WebApp.Services.Interfaces {
         Task<Game> DeleteGame(int id);
         Task<ActionResult<Game>> GetGame(int id);
         Task<ActionResult<IEnumerable<Game>>> GetGames();
-        Task<ActionResult<Game>> GetMyGame(int userId);
+        Task<ActionResult<Game>> GetMyGame(int userId, int gameId);
         Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId);
         Task<Game> DeleteMyGame(int userId, int gameId);
     }

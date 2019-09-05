@@ -28,13 +28,6 @@ namespace SudokuApp.WebApp.Controllers
             _difficultiesService = difficultiesService;
         }
 
-        // GET: api/Games
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGames() {
-
-            return await _gamesService.GetGames();
-        }
-
         // GET: api/Games/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id) {
@@ -47,6 +40,43 @@ namespace SudokuApp.WebApp.Controllers
             }
 
             return game;
+        }
+
+        // GET: api/Games
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Game>>> GetGames() {
+
+            return await _gamesService.GetGames();
+        }
+
+        // GET: api/Games/GetMyGame
+        [HttpGet, Route("GetMyGame")]
+        public async Task<ActionResult<Game>> GetMyGame([FromBody] GetMyGameDTO getMyGameDTO) {
+
+            var game = await _gamesService.GetMyGame(getMyGameDTO.UserId, getMyGameDTO.GameId);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            return game;
+        }
+
+        // GET: api/Games/GetMyGames/5
+        [HttpGet, Route("GetMyGames/{userId}")]
+        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId) {
+
+            return await _gamesService.GetMyGames(userId);
+        }
+
+        // DELETE: api/Games/DeleteMyGame
+        [HttpDelete("DeleteMyGame")]
+        public async Task<ActionResult<Game>> DeleteMyGame([FromBody] GetMyGameDTO getMyGameDTO) {
+
+           var game = await _gamesService.DeleteMyGame(getMyGameDTO.UserId, getMyGameDTO.GameId);
+
+           return game;
         }
 
         // PUT: api/Games/5
