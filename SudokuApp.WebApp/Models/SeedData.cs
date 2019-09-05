@@ -33,6 +33,12 @@ namespace SudokuApp.WebApp.Models {
                         
                         new Permission {
 
+                            Name = "Super User",
+                            PermissionLevel = PermissionLevel.SUPERUSER
+                        },
+                        
+                        new Permission {
+
                             Name = "Admin",
                             PermissionLevel = PermissionLevel.ADMIN
                         },
@@ -130,12 +136,6 @@ namespace SudokuApp.WebApp.Models {
                         new UserPermission {
 
                             UserId = 1,
-                            PermissionId = 1
-                        },
-
-                        new UserPermission {
-
-                            UserId = 1,
                             PermissionId = 2
                         },
 
@@ -147,14 +147,20 @@ namespace SudokuApp.WebApp.Models {
 
                         new UserPermission {
 
-                            UserId = 2,
-                            PermissionId = 2
+                            UserId = 1,
+                            PermissionId = 4
                         },
 
                         new UserPermission {
 
                             UserId = 2,
                             PermissionId = 3
+                        },
+
+                        new UserPermission {
+
+                            UserId = 2,
+                            PermissionId = 4
                         }
                     );
 
