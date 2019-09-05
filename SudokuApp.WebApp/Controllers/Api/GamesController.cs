@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuApp.Models;
-using SudokuApp.WebApp.Models.DTO;
+using SudokuApp.WebApp.Models.RequestObjects;
 using SudokuApp.WebApp.Services.Interfaces;
 
 namespace SudokuApp.WebApp.Controllers
@@ -51,9 +51,9 @@ namespace SudokuApp.WebApp.Controllers
 
         // GET: api/Games/GetMyGame
         [HttpGet, Route("GetMyGame")]
-        public async Task<ActionResult<Game>> GetMyGame([FromBody] GetMyGameDTO getMyGameDTO) {
+        public async Task<ActionResult<Game>> GetMyGame([FromBody] GetMyGameRO getMyGameRO) {
 
-            var game = await _gamesService.GetMyGame(getMyGameDTO.UserId, getMyGameDTO.GameId);
+            var game = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId);
 
             if (game == null)
             {
@@ -72,9 +72,9 @@ namespace SudokuApp.WebApp.Controllers
 
         // DELETE: api/Games/DeleteMyGame
         [HttpDelete("DeleteMyGame")]
-        public async Task<ActionResult<Game>> DeleteMyGame([FromBody] GetMyGameDTO getMyGameDTO) {
+        public async Task<ActionResult<Game>> DeleteMyGame([FromBody] GetMyGameRO getMyGameRO) {
 
-           var game = await _gamesService.DeleteMyGame(getMyGameDTO.UserId, getMyGameDTO.GameId);
+           var game = await _gamesService.DeleteMyGame(getMyGameRO.UserId, getMyGameRO.GameId);
 
            return game;
         }
@@ -97,10 +97,10 @@ namespace SudokuApp.WebApp.Controllers
 
         // POST: api/Games
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame([FromBody] CreateGameDTO createGame) {
+        public async Task<ActionResult<Game>> PostGame([FromBody] CreateGameRO createGameRO) {
 
-            var userActionResult = await _userService.GetUser(createGame.UserId);
-            var difficultyActionResult = await _difficultiesService.GetDifficulty(createGame.DifficultyId);
+            var userActionResult = await _userService.GetUser(createGameRO.UserId);
+            var difficultyActionResult = await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
             
             var game = await _gamesService.CreateGame(
                 userActionResult.Value, 

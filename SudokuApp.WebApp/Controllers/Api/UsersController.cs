@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuApp.Models;
-using SudokuApp.WebApp.Models.DTO;
 using SudokuApp.WebApp.Services.Interfaces;
 
 namespace SudokuApp.WebApp.Controllers {
