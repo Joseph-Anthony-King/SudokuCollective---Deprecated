@@ -43,7 +43,23 @@ namespace SudokuApp.WebApp.Services
 
         public async Task<ActionResult<IEnumerable<User>>> GetUsers() {
 
-            return await _context.Users.Include(u => u.Games).Include(u => u.Permissions).ToListAsync();
+            var users = await _context.Users
+                .Include(u => u.Games)
+                .ThenInclude(g => g.SudokuMatrix)
+                .Include(u => u.Permissions).ToListAsync();
+
+            foreach (var user in users) {
+
+                foreach (var game in user.Games) {
+
+                    // Reset the matrix sudoku cells
+                    game.SudokuMatrix.SudokuCells = null;
+                    var cells = await _context.SudokuCells.Where(cell => cell.SudokuMatrix.Id == game.SudokuMatrixId).OrderBy(cell => cell.Index).ToListAsync();
+                    game.SudokuMatrix.SudokuCells = cells;
+                }
+            }
+
+            return users;
         }
 
         public async Task<User> CreateUser(UserDTO userDTO) {
