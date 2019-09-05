@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using SudokuApp.WebApp.Models.DataModel;
 using SudokuApp.Models;
 using SudokuApp.Models.Enums;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace SudokuApp.WebApp.Models {
 
@@ -27,6 +29,12 @@ namespace SudokuApp.WebApp.Models {
 
                             Name = "Null",
                             PermissionLevel = PermissionLevel.NULL
+                        },
+                        
+                        new Permission {
+
+                            Name = "Super User",
+                            PermissionLevel = PermissionLevel.SUPERUSER
                         },
                         
                         new Permission {
@@ -91,7 +99,20 @@ namespace SudokuApp.WebApp.Models {
 
                 if (!context.Users.Any()) {
 
+                    var salt = BCrypt.Net.BCrypt.GenerateSalt();
+
                     context.Users.AddRange(
+
+                        new User {
+
+                            FirstName = config.GetValue<string>("SuperUser:FirstName"),
+                            LastName = config.GetValue<string>("SuperUser:LastName"),
+                            NickName = config.GetValue<string>("SuperUser:NickName"),
+                            UserName = config.GetValue<string>("SuperUser:UserName"),
+                            DateCreated = DateTime.UtcNow,
+                            Email = config.GetValue<string>("SuperUser:Email"),
+                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("SuperUser:Password", salt))
+                        },
 
                         new User {
 
@@ -101,7 +122,7 @@ namespace SudokuApp.WebApp.Models {
                             UserName = config.GetValue<string>("AdminUser:UserName"),
                             DateCreated = DateTime.UtcNow,
                             Email = config.GetValue<string>("AdminUser:Email"),
-                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("AdminUser:Password"))
+                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("AdminUser:Password", salt))
                         }
                     );
 
@@ -115,13 +136,31 @@ namespace SudokuApp.WebApp.Models {
                         new UserPermission {
 
                             UserId = 1,
-                            PermissionId = 1
+                            PermissionId = 2
                         },
 
                         new UserPermission {
 
                             UserId = 1,
-                            PermissionId = 2
+                            PermissionId = 3
+                        },
+
+                        new UserPermission {
+
+                            UserId = 1,
+                            PermissionId = 4
+                        },
+
+                        new UserPermission {
+
+                            UserId = 2,
+                            PermissionId = 3
+                        },
+
+                        new UserPermission {
+
+                            UserId = 2,
+                            PermissionId = 4
                         }
                     );
 
