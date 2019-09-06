@@ -20,6 +20,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // GET: api/Users
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers() {
 
@@ -27,6 +28,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // GET: api/Users/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id) {
 
@@ -43,6 +45,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // PUT: api/Users/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user) {
 
@@ -57,6 +60,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // DELETE: api/Users/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id) {
 

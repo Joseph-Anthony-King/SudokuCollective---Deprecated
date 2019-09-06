@@ -84,7 +84,7 @@ namespace SudokuApp.WebApp.Services {
 
             // Add default user permission to the new user
             var savedUser = await _context.Users.Where(u => u.UserName.Equals(user.UserName)).FirstOrDefaultAsync();
-            var defaultRole = await _context.Roles.Where(p => p.Id == 2).FirstOrDefaultAsync();
+            var defaultRole = await _context.Roles.Where(p => p.Id == 4).FirstOrDefaultAsync();
 
             UserRole newUserPermissions = new UserRole {
 
