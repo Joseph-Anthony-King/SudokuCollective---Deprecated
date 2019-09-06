@@ -86,15 +86,16 @@ namespace SudokuApp.WebApp.Services {
             var savedUser = await _context.Users.Where(u => u.UserName.Equals(user.UserName)).FirstOrDefaultAsync();
             var defaultRole = await _context.Roles.Where(p => p.Id == 4).FirstOrDefaultAsync();
 
-            UserRole newUserPermissions = new UserRole {
+            UserRole newUserRole = new UserRole {
 
                 UserId = savedUser.Id,
                 User = savedUser,
                 RoleId = defaultRole.Id,
-                Role = defaultRole
+                Role = defaultRole,
+                RoleName = defaultRole.Name
             };
 
-            _context.UsersRoles.Add(newUserPermissions);
+            _context.UsersRoles.Add(newUserRole);
             await _context.SaveChangesAsync();
             
             return user;

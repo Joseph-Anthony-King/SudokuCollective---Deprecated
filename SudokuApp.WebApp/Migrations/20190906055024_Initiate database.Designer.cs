@@ -10,7 +10,7 @@ using SudokuApp.WebApp.Models.DataModel;
 namespace SudokuApp.WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190906031119_Initiate database")]
+    [Migration("20190906055024_Initiate database")]
     partial class Initiatedatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,6 +158,8 @@ namespace SudokuApp.WebApp.Migrations
                     b.Property<int>("UserId");
 
                     b.Property<int>("RoleId");
+
+                    b.Property<string>("RoleName");
 
                     b.HasKey("UserId", "RoleId");
 

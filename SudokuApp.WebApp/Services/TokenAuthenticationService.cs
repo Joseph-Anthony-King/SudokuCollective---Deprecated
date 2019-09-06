@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using SudokuApp.WebApp.Models;
 using SudokuApp.WebApp.Models.DataModel;
 using SudokuApp.WebApp.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace SudokuApp.WebApp.Services {
 
@@ -39,19 +41,21 @@ namespace SudokuApp.WebApp.Services {
                 return false;
             }
             
-            var user = _context.Users.Where(u => u.UserName.Equals(request.UserName)).FirstOrDefault();
+            var user = _context.Users
+                .Where(u => u.UserName.Equals(request.UserName))
+                .Include(u => u.Roles)
+                .FirstOrDefault();
 
-            var claim = new[] {
+            var claim = new List<Claim> {
 
                 new Claim(ClaimTypes.Name, request.UserName)
             };
 
-            var i = 1;
-
             foreach (var role in user.Roles) {
+
+                var r = _context.Roles.Where(x => x.Id == role.RoleId).FirstOrDefault();
                 
-                claim[i] = new Claim(ClaimTypes.Role, role.Role.RoleLevel.ToString());
-                i++;
+                claim.Add(new Claim(ClaimTypes.Role, r.RoleLevel.ToString()));
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenManagement.Secret));
@@ -60,7 +64,7 @@ namespace SudokuApp.WebApp.Services {
             var jwtToken = new JwtSecurityToken(
                     _tokenManagement.Issuer,
                     _tokenManagement.Audience,
-                    claim,
+                    claim.ToArray(),
                     expires:DateTime.UtcNow.AddMinutes(_tokenManagement.AccessExpiration),
                     signingCredentials: credentials
                 );

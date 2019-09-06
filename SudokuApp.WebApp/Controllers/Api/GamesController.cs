@@ -28,6 +28,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // GET: api/Games/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id) {
 
@@ -42,6 +43,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // GET: api/Games
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames() {
 
@@ -49,6 +51,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // GET: api/Games/GetMyGame
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame([FromBody] GetMyGameRO getMyGameRO) {
 
@@ -63,6 +66,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // GET: api/Games/GetMyGames/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetMyGames/{userId}")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId) {
 
@@ -70,6 +74,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // DELETE: api/Games/DeleteMyGame
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("DeleteMyGame")]
         public async Task<ActionResult<Game>> DeleteMyGame([FromBody] GetMyGameRO getMyGameRO) {
 
@@ -79,6 +84,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // PUT: api/Games/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(
             int id, 
@@ -95,6 +101,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // POST: api/Games
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame([FromBody] CreateGameRO createGameRO) {
 
@@ -109,6 +116,7 @@ namespace SudokuApp.WebApp.Controllers {
         }
 
         // DELETE: api/Games/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Game>> DeleteGame(int id) {
 
