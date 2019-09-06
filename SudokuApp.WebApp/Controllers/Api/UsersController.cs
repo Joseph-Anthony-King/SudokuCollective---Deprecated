@@ -19,14 +19,6 @@ namespace SudokuApp.WebApp.Controllers {
             _userService = userService;
         }
 
-        // GET: api/Users
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers() {
-
-            return await _userService.GetUsers();
-        }
-
         // GET: api/Users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
@@ -42,6 +34,14 @@ namespace SudokuApp.WebApp.Controllers {
 
                 return user;
             }
+        }
+
+        // GET: api/Users
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers() {
+
+            return await _userService.GetUsers();
         }
 
         // PUT: api/Users/5

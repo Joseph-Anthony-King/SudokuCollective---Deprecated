@@ -1,48 +1,53 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
-using SudokuApp.WebApp.Models.DataModel;
+using SudokuApp.WebApp.Models.RequestObjects;
+using SudokuApp.WebApp.Services.Interfaces;
 
-namespace SudokuApp.WebApp.Controllers {
+namespace SudokuApp.WebApp.Controllers
+{
 
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DifficultiesController : ControllerBase {
 
-        private readonly ApplicationDbContext _context;
+        private readonly IDifficultiesService _difficultiesService;
 
-        public DifficultiesController(ApplicationDbContext context) {
+        public DifficultiesController(IDifficultiesService difficultiesService) {
 
-            _context = context;
-        }
-
-        // GET: api/Difficulties
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties() {
-
-            return await _context.Difficulties.ToListAsync();
+            _difficultiesService = difficultiesService;
         }
 
         // GET: api/Difficulties/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Difficulty>> GetDifficulty(int id) {
 
-            var difficulty = await _context.Difficulties.FindAsync(id);
+            var difficulty = await _difficultiesService.GetDifficulty(id);
 
-            if (difficulty == null)
-            {
-                return NotFound();
+            if (string.IsNullOrEmpty(difficulty.Value.Name)) {
+
+                return BadRequest();
+
+            } else {
+
+                return difficulty;
             }
+        }
 
-            return difficulty;
+        // GET: api/Difficulties
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties() {
+
+            return await _difficultiesService.GetDifficulties();
         }
 
         // PUT: api/Difficulties/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDifficulty(int id, Difficulty difficulty) {
 
@@ -50,58 +55,31 @@ namespace SudokuApp.WebApp.Controllers {
 
                 return BadRequest();
             }
-
-            _context.Entry(difficulty).State = EntityState.Modified;
-
-            try {
-
-                await _context.SaveChangesAsync();
-
-            } catch (DbUpdateConcurrencyException) {
-
-                if (!DifficultyExists(id)) {
-
-                    return NotFound();
-
-                } else {
-
-                    throw;
-                }
-            }
+            
+            await _difficultiesService.UpdateDifficulty(id, difficulty);
 
             return NoContent();
         }
 
         // POST: api/Difficulties
+        [Authorize(Roles = "SUPERUSER")]
         [HttpPost]
-        public async Task<ActionResult<Difficulty>> PostDifficulty(Difficulty difficulty) {
-
-            _context.Difficulties.Add(difficulty);
-            await _context.SaveChangesAsync();
+        public async Task<ActionResult<Difficulty>> PostDifficulty([FromBody] CreateDifficultyRO createDifficultyRO) {
+            
+            var difficulty = await _difficultiesService
+                .CreateDifficulty(createDifficultyRO.Name, createDifficultyRO.DifficultyLevel);
 
             return CreatedAtAction("GetDifficulty", new { id = difficulty.Id }, difficulty);
         }
 
         // DELETE: api/Difficulties/5
+        [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Difficulty>> DeleteDifficulty(int id) {
-
-            var difficulty = await _context.Difficulties.FindAsync(id);
-
-            if (difficulty == null) {
-
-                return NotFound();
-            }
-
-            _context.Difficulties.Remove(difficulty);
-            await _context.SaveChangesAsync();
+            
+            var difficulty = await _difficultiesService.DeleteDifficulty(id);
 
             return difficulty;
-        }
-
-        private bool DifficultyExists(int id) {
-
-            return _context.Difficulties.Any(e => e.Id == id);
         }
     }
 }

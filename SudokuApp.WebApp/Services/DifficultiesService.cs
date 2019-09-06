@@ -40,6 +40,16 @@ namespace SudokuApp.WebApp.Services {
             return await _context.Difficulties.Include(d => d.Matrices).ToListAsync();
         }
 
+        public async Task<Difficulty> CreateDifficulty(string name, DifficultyLevel difficultyLevel) {
+
+            Difficulty difficulty = new Difficulty() { Name = name, DifficultyLevel = difficultyLevel };
+
+            _context.Difficulties.Add(difficulty);
+            await _context.SaveChangesAsync();
+
+            return difficulty;
+        }
+
         public async Task UpdateDifficulty(int id, Difficulty difficulty) {
 
             if (id == difficulty.Id) {

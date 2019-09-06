@@ -1,48 +1,53 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
-using SudokuApp.WebApp.Models.DataModel;
+using SudokuApp.WebApp.Models.RequestObjects;
+using SudokuApp.WebApp.Services.Interfaces;
 
-namespace SudokuApp.WebApp.Controllers {
+namespace SudokuApp.WebApp.Controllers
+{
 
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RolesController : ControllerBase {
 
-        private readonly ApplicationDbContext _context;
+        private readonly IRolesService _rolesService;
 
-        public RolesController(ApplicationDbContext context) {
-
-            _context = context;
-        }
-
-        // GET: api/Roles
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles() {
-
-            return await _context.Roles.Include(u => u.Users).ToListAsync();
+        public RolesController(IRolesService rolesService) {
+            
+            _rolesService = rolesService;
         }
 
         // GET: api/Roles/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>> GetRole(int id) {
 
-            var role = await _context.Roles.Include(u => u.Users).SingleOrDefaultAsync(u => u.Id == id);
+            var role = await _rolesService.GetRole(id);
 
-            if (role == null)
-            {
-                return NotFound();
+            if (string.IsNullOrEmpty(role.Value.Name)) {
+
+                return BadRequest();
+
+            } else {
+
+                return role;
             }
+        }
 
-            return role;
+        // GET: api/Roles
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles() {
+
+            return await _rolesService.GeRoles();
         }
 
         // PUT: api/Roles/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRole(int id, Role role) {
 
@@ -50,57 +55,31 @@ namespace SudokuApp.WebApp.Controllers {
 
                 return BadRequest();
             }
-
-            _context.Entry(role).State = EntityState.Modified;
-
-            try {
-                await _context.SaveChangesAsync();
-
-            } catch (DbUpdateConcurrencyException) {
-
-                if (!RoleExists(id)) {
-
-                    return NotFound();
-
-                } else {
-
-                    throw;
-                }
-            }
+            
+            await _rolesService.UpdateRole(id, role);
 
             return NoContent();
         }
 
         // POST: api/Roles
+        [Authorize(Roles = "SUPERUSER")]
         [HttpPost]
-        public async Task<ActionResult<Role>> PostRole(Role role) {
-
-            _context.Roles.Add(role);
-            await _context.SaveChangesAsync();
+        public async Task<ActionResult<Role>> PostRole([FromBody] CreateRoleRO createRoleRO) {
+            
+            var role = await _rolesService
+                .CreateRole(createRoleRO.Name, createRoleRO.RoleLevel);
 
             return CreatedAtAction("GetRole", new { id = role.Id }, role);
         }
 
         // DELETE: api/Roles/5
+        [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Role>> DeleteRole(int id) {
 
-            var role = await _context.Roles.FindAsync(id);
-
-            if (role == null) {
-
-                return NotFound();
-            }
-
-            _context.Roles.Remove(role);
-            await _context.SaveChangesAsync();
+            var role = await _rolesService.DeleteRole(id);
 
             return role;
-        }
-
-        private bool RoleExists(int id) {
-
-            return _context.Roles.Any(e => e.Id == id);
         }
     }
 }
