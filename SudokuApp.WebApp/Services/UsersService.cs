@@ -29,6 +29,8 @@ namespace SudokuApp.WebApp.Services {
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) {
+                
+                var createdDate = DateTime.UtcNow;
 
                 return new User {
 
@@ -36,6 +38,8 @@ namespace SudokuApp.WebApp.Services {
                     FirstName = String.Empty,
                     LastName = String.Empty,
                     NickName = string.Empty,
+                    DateCreated = createdDate,
+                    DateUpdated = createdDate,
                     Email = string.Empty,
                     Password = string.Empty
                 };
@@ -68,13 +72,16 @@ namespace SudokuApp.WebApp.Services {
 
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
+            var createdDate = DateTime.UtcNow;
+
             User user = new User {
 
                 UserName = userRO.UserName,
                 FirstName = userRO.FirstName, 
                 LastName = userRO.LastName,
                 NickName = userRO.NickName,
-                DateCreated = DateTime.UtcNow,
+                DateCreated = createdDate,
+                DateUpdated = createdDate,
                 Email = userRO.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(userRO.Password, salt)
             };
@@ -121,6 +128,8 @@ namespace SudokuApp.WebApp.Services {
             var user = await _context.Users.FindAsync(id);
 
             if (user == null) {
+                
+                var createdDate = DateTime.UtcNow;
 
                 return new User {
 
@@ -128,6 +137,8 @@ namespace SudokuApp.WebApp.Services {
                     FirstName = String.Empty,
                     LastName = String.Empty,
                     NickName = string.Empty,
+                    DateCreated = createdDate,
+                    DateUpdated = createdDate,
                     Email = string.Empty,
                     Password = string.Empty
                 };

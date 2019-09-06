@@ -100,6 +100,7 @@ namespace SudokuApp.WebApp.Models {
                 if (!context.Users.Any()) {
 
                     var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                    var createdDate = DateTime.UtcNow;
 
                     context.Users.AddRange(
 
@@ -109,7 +110,8 @@ namespace SudokuApp.WebApp.Models {
                             LastName = config.GetValue<string>("DefaultUserAccounts:SuperUser:LastName"),
                             NickName = config.GetValue<string>("DefaultUserAccounts:SuperUser:NickName"),
                             UserName = config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName"),
-                            DateCreated = DateTime.UtcNow,
+                            DateCreated = createdDate,
+                            DateUpdated = createdDate,
                             Email = config.GetValue<string>("DefaultUserAccounts:SuperUser:Email"),
                             Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt))
                         },
@@ -120,7 +122,8 @@ namespace SudokuApp.WebApp.Models {
                             LastName = config.GetValue<string>("DefaultUserAccounts:AdminUser:LastName"),
                             NickName = config.GetValue<string>("DefaultUserAccounts:AdminUser:NickName"),
                             UserName = config.GetValue<string>("DefaultUserAccounts:AdminUser:UserName"),
-                            DateCreated = DateTime.UtcNow,
+                            DateCreated = createdDate,
+                            DateUpdated = createdDate,
                             Email = config.GetValue<string>("DefaultUserAccounts:AdminUser:Email"),
                             Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt))
                         }
