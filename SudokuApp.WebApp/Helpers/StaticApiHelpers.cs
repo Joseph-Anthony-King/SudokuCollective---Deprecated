@@ -9,7 +9,9 @@ namespace SudokuApp.WebApp.Helpers {
 
     public static class StaticApiHelpers {
 
-        public async static Task<List<SudokuCell>> ResetSudokuCells(Game game, ApplicationDbContext context) {
+        public async static Task<List<SudokuCell>> ResetSudokuCells(
+            Game game, 
+            ApplicationDbContext context) {
 
             // Reset the matrix sudoku cells
             game.SudokuMatrix.SudokuCells = null;

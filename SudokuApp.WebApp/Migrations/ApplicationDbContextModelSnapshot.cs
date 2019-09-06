@@ -157,8 +157,6 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.Property<int>("RoleId");
 
-                    b.Property<string>("RoleName");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");

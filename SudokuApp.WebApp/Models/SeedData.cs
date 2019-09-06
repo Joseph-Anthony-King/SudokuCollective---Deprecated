@@ -139,36 +139,31 @@ namespace SudokuApp.WebApp.Models {
                         new UserRole {
 
                             UserId = 1,
-                            RoleId = 2,
-                            RoleName = "Super User"
+                            RoleId = 2
                         },
 
                         new UserRole {
 
                             UserId = 1,
-                            RoleId = 3,
-                            RoleName = "Admin"
+                            RoleId = 3
                         },
 
                         new UserRole {
 
                             UserId = 1,
-                            RoleId = 4,
-                            RoleName = "User"
+                            RoleId = 4
                         },
 
                         new UserRole {
 
                             UserId = 2,
-                            RoleId = 3,
-                            RoleName = "Admin"
+                            RoleId = 3
                         },
 
                         new UserRole {
 
                             UserId = 2,
-                            RoleId = 4,
-                            RoleName = "User"
+                            RoleId = 4
                         }
                     );
 

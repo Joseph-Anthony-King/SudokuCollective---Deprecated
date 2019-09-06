@@ -52,8 +52,6 @@ namespace SudokuApp.WebApp.Services {
 
             var users = await _context.Users
                 .OrderBy(u => u.Id)
-                .Include(u => u.Games)
-                .ThenInclude(g => g.SudokuMatrix)
                 .Include(u => u.Roles)
                 .ToListAsync();
 
@@ -62,6 +60,12 @@ namespace SudokuApp.WebApp.Services {
                 foreach (var game in user.Games) {
                     
                     game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
+                }
+
+                foreach (var userRole in user.Roles) {
+
+                    userRole.Role = await _context.Roles.Where(r => r.Id == userRole.RoleId).FirstOrDefaultAsync();
+                    userRole.Role.Users = null;
                 }
             }
 
@@ -98,8 +102,7 @@ namespace SudokuApp.WebApp.Services {
                 UserId = savedUser.Id,
                 User = savedUser,
                 RoleId = defaultRole.Id,
-                Role = defaultRole,
-                RoleName = defaultRole.Name
+                Role = defaultRole
             };
 
             _context.UsersRoles.Add(newUserRole);

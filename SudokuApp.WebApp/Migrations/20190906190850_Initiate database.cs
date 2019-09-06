@@ -80,8 +80,7 @@ namespace SudokuApp.WebApp.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false),
-                    RoleId = table.Column<int>(nullable: false),
-                    RoleName = table.Column<string>(nullable: true)
+                    RoleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

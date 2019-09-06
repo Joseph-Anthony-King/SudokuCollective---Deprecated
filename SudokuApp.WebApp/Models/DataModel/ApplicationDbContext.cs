@@ -156,17 +156,17 @@ namespace SudokuApp.WebApp.Models.DataModel {
                 .IsRequired();
 
             modelBuilder.Entity<UserRole>()
-                .HasKey(up => new { up.UserId, up.RoleId});
+                .HasKey(ur => new { ur.UserId, ur.RoleId});
 
             modelBuilder.Entity<UserRole>()
-                .HasOne(up => up.User)
+                .HasOne(ur => ur.User)
                 .WithMany(user => user.Roles)
-                .HasForeignKey(up => up.UserId);
+                .HasForeignKey(ur => ur.UserId);
 
             modelBuilder.Entity<UserRole>()
-                .HasOne(up => up.Role)
+                .HasOne(ur => ur.Role)
                 .WithMany(role => role.Users)
-                .HasForeignKey(up => up.RoleId);
+                .HasForeignKey(ur => ur.RoleId);
         }
     }
 }
