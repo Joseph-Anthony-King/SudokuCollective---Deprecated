@@ -60,7 +60,7 @@ namespace SudokuApp.WebApp.Services {
         public async Task<ActionResult<Game>> GetGame(int id) {
 
             var game = await _context.Games
-                .Include(g => g.User).ThenInclude(u => u.Permissions)
+                .Include(g => g.User).ThenInclude(u => u.Roles)
                 .Include(g => g.SudokuMatrix)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
@@ -78,7 +78,7 @@ namespace SudokuApp.WebApp.Services {
 
             var games = await _context.Games
                 .OrderBy(g => g.Id)
-                .Include(g => g.User).ThenInclude(u => u.Permissions)
+                .Include(g => g.User).ThenInclude(u => u.Roles)
                 .Include(g => g.SudokuMatrix)
                 .ToListAsync();
             
@@ -93,7 +93,7 @@ namespace SudokuApp.WebApp.Services {
         public async Task<ActionResult<Game>> GetMyGame(int userId, int gameId) {
 
             var game = await _context.Games
-                .Include(g => g.User).ThenInclude(u => u.Permissions)
+                .Include(g => g.User).ThenInclude(u => u.Roles)
                 .Include(g => g.SudokuMatrix)
                 .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
 
@@ -112,7 +112,7 @@ namespace SudokuApp.WebApp.Services {
             var games = await _context.Games
                 .Where(g => g.User.Id == userId)
                 .OrderBy(g => g.Id)
-                .Include(g => g.User).ThenInclude(u => u.Permissions)
+                .Include(g => g.User).ThenInclude(u => u.Roles)
                 .Include(g => g.SudokuMatrix)
                 .ToListAsync();
             

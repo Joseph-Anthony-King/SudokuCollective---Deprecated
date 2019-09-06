@@ -17,11 +17,12 @@ namespace SudokuApp.Models
             get => string.Format("{0} {1}", FirstName, LastName); 
         }
         public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
         public string Email { get; set; }
         [JsonIgnore]
         public string Password { get; set; }
         public ICollection<Game> Games { get; set; }
-        public ICollection<UserPermission> Permissions { get; set; }
+        public ICollection<UserRole> Roles { get; set; }
 
         public User(
             string firstName, 
@@ -36,6 +37,7 @@ namespace SudokuApp.Models
         public User() {
 
             this.DateCreated = DateTime.UtcNow;
+            this.DateUpdated = DateTime.UtcNow;
             this.Games = new List<Game>();
             
             if (string.IsNullOrEmpty(this.FirstName)) {
@@ -52,11 +54,6 @@ namespace SudokuApp.Models
 
                 this.Password = string.Empty;
             }
-        }
-
-        protected virtual DateTime GetCurrentTime() {
-
-            return DateTime.UtcNow;
         }
     }
 }

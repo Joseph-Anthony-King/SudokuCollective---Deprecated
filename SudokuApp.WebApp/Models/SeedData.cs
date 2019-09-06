@@ -21,32 +21,32 @@ namespace SudokuApp.WebApp.Models {
                 ApplicationDbContext context = servicesScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 context.Database.Migrate();
 
-                if (!context.Permissions.Any()) {
+                if (!context.Roles.Any()) {
 
-                    context.Permissions.AddRange(
+                    context.Roles.AddRange(
                         
-                        new Permission {
+                        new Role {
 
                             Name = "Null",
-                            PermissionLevel = PermissionLevel.NULL
+                            RoleLevel = RoleLevel.NULL
                         },
                         
-                        new Permission {
+                        new Role {
 
                             Name = "Super User",
-                            PermissionLevel = PermissionLevel.SUPERUSER
+                            RoleLevel = RoleLevel.SUPERUSER
                         },
                         
-                        new Permission {
+                        new Role {
 
                             Name = "Admin",
-                            PermissionLevel = PermissionLevel.ADMIN
+                            RoleLevel = RoleLevel.ADMIN
                         },
                         
-                        new Permission {
+                        new Role {
 
                             Name = "User",
-                            PermissionLevel = PermissionLevel.USER
+                            RoleLevel = RoleLevel.USER
                         }
                     );
 
@@ -105,62 +105,62 @@ namespace SudokuApp.WebApp.Models {
 
                         new User {
 
-                            FirstName = config.GetValue<string>("SuperUser:FirstName"),
-                            LastName = config.GetValue<string>("SuperUser:LastName"),
-                            NickName = config.GetValue<string>("SuperUser:NickName"),
-                            UserName = config.GetValue<string>("SuperUser:UserName"),
+                            FirstName = config.GetValue<string>("DefaultUserAccounts:SuperUser:FirstName"),
+                            LastName = config.GetValue<string>("DefaultUserAccounts:SuperUser:LastName"),
+                            NickName = config.GetValue<string>("DefaultUserAccounts:SuperUser:NickName"),
+                            UserName = config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName"),
                             DateCreated = DateTime.UtcNow,
-                            Email = config.GetValue<string>("SuperUser:Email"),
-                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("SuperUser:Password", salt))
+                            Email = config.GetValue<string>("DefaultUserAccounts:SuperUser:Email"),
+                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt))
                         },
 
                         new User {
 
-                            FirstName = config.GetValue<string>("AdminUser:FirstName"),
-                            LastName = config.GetValue<string>("AdminUser:LastName"),
-                            NickName = config.GetValue<string>("AdminUser:NickName"),
-                            UserName = config.GetValue<string>("AdminUser:UserName"),
+                            FirstName = config.GetValue<string>("DefaultUserAccounts:AdminUser:FirstName"),
+                            LastName = config.GetValue<string>("DefaultUserAccounts:AdminUser:LastName"),
+                            NickName = config.GetValue<string>("DefaultUserAccounts:AdminUser:NickName"),
+                            UserName = config.GetValue<string>("DefaultUserAccounts:AdminUser:UserName"),
                             DateCreated = DateTime.UtcNow,
-                            Email = config.GetValue<string>("AdminUser:Email"),
-                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("AdminUser:Password", salt))
+                            Email = config.GetValue<string>("DefaultUserAccounts:AdminUser:Email"),
+                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt))
                         }
                     );
 
                     context.SaveChanges();
                 }
 
-                if (!context.UsersPermissions.Any()) {
+                if (!context.UsersRoles.Any()) {
 
-                    context.UsersPermissions.AddRange(
+                    context.UsersRoles.AddRange(
 
-                        new UserPermission {
-
-                            UserId = 1,
-                            PermissionId = 2
-                        },
-
-                        new UserPermission {
+                        new UserRole {
 
                             UserId = 1,
-                            PermissionId = 3
+                            RoleId = 2
                         },
 
-                        new UserPermission {
+                        new UserRole {
 
                             UserId = 1,
-                            PermissionId = 4
+                            RoleId = 3
                         },
 
-                        new UserPermission {
+                        new UserRole {
+
+                            UserId = 1,
+                            RoleId = 4
+                        },
+
+                        new UserRole {
 
                             UserId = 2,
-                            PermissionId = 3
+                            RoleId = 3
                         },
 
-                        new UserPermission {
+                        new UserRole {
 
                             UserId = 2,
-                            PermissionId = 4
+                            RoleId = 4
                         }
                     );
 

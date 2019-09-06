@@ -25,7 +25,7 @@ namespace SudokuApp.WebApp.Services {
 
             var user = await _context.Users
                 .Include(u => u.Games)
-                .Include(u => u.Permissions)
+                .Include(u => u.Roles)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) {
@@ -50,7 +50,7 @@ namespace SudokuApp.WebApp.Services {
                 .OrderBy(u => u.Id)
                 .Include(u => u.Games)
                 .ThenInclude(g => g.SudokuMatrix)
-                .Include(u => u.Permissions)
+                .Include(u => u.Roles)
                 .ToListAsync();
 
             foreach (var user in users) {
@@ -84,17 +84,17 @@ namespace SudokuApp.WebApp.Services {
 
             // Add default user permission to the new user
             var savedUser = await _context.Users.Where(u => u.UserName.Equals(user.UserName)).FirstOrDefaultAsync();
-            var defaultPermission = await _context.Permissions.Where(p => p.Id == 2).FirstOrDefaultAsync();
+            var defaultRole = await _context.Roles.Where(p => p.Id == 2).FirstOrDefaultAsync();
 
-            UserPermission newUserPermissions = new UserPermission {
+            UserRole newUserPermissions = new UserRole {
 
                 UserId = savedUser.Id,
                 User = savedUser,
-                PermissionId = defaultPermission.Id,
-                Permission = defaultPermission
+                RoleId = defaultRole.Id,
+                Role = defaultRole
             };
 
-            _context.UsersPermissions.Add(newUserPermissions);
+            _context.UsersRoles.Add(newUserPermissions);
             await _context.SaveChangesAsync();
             
             return user;
@@ -103,6 +103,8 @@ namespace SudokuApp.WebApp.Services {
         public async Task UpdateUser(int id, User user) {
 
             if (id == user.Id) {
+
+                user.DateUpdated = DateTime.UtcNow;
 
                 // Encrypt the users password
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);

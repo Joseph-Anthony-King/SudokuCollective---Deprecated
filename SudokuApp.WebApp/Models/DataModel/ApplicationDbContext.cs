@@ -16,13 +16,13 @@ namespace SudokuApp.WebApp.Models.DataModel {
             configuration = iConfigService;
         }
 
-        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<SudokuCell> SudokuCells { get; set; }
         public DbSet<SudokuMatrix> SudokuMatrices { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserPermission> UsersPermissions { get; set; }
+        public DbSet<UserRole> UsersRoles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
             => optionsBuilder.UseNpgsql(configuration.GetValue<string>("ConnectionStrings:DatabaseConnection"));
@@ -31,8 +31,8 @@ namespace SudokuApp.WebApp.Models.DataModel {
 
             modelBuilder.ForNpgsqlUseIdentityColumns();
 
-            modelBuilder.Entity<Permission>()
-                .HasKey(permission => permission.Id);
+            modelBuilder.Entity<Role>()
+                .HasKey(role => role.Id);
 
             modelBuilder.Entity<Difficulty>()
                 .HasKey(difficulty => difficulty.Id);
@@ -155,18 +155,18 @@ namespace SudokuApp.WebApp.Models.DataModel {
                 .Property(user => user.Password)
                 .IsRequired();
 
-            modelBuilder.Entity<UserPermission>()
-                .HasKey(up => new { up.UserId, up.PermissionId});
+            modelBuilder.Entity<UserRole>()
+                .HasKey(up => new { up.UserId, up.RoleId});
 
-            modelBuilder.Entity<UserPermission>()
+            modelBuilder.Entity<UserRole>()
                 .HasOne(up => up.User)
-                .WithMany(user => user.Permissions)
+                .WithMany(user => user.Roles)
                 .HasForeignKey(up => up.UserId);
 
-            modelBuilder.Entity<UserPermission>()
-                .HasOne(up => up.Permission)
-                .WithMany(permission => permission.Users)
-                .HasForeignKey(up => up.PermissionId);
+            modelBuilder.Entity<UserRole>()
+                .HasOne(up => up.Role)
+                .WithMany(role => role.Users)
+                .HasForeignKey(up => up.RoleId);
         }
     }
 }

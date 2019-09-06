@@ -10,7 +10,7 @@ using SudokuApp.WebApp.Models.DataModel;
 namespace SudokuApp.WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190904225953_Initiate database")]
+    [Migration("20190906031119_Initiate database")]
     partial class Initiatedatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,18 +60,18 @@ namespace SudokuApp.WebApp.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.Permission", b =>
+            modelBuilder.Entity("SudokuApp.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("PermissionLevel");
+                    b.Property<int>("RoleLevel");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("SudokuApp.Models.SudokuCell", b =>
@@ -123,6 +123,8 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.Property<DateTime>("DateCreated");
 
+                    b.Property<DateTime>("DateUpdated");
+
                     b.Property<string>("Email")
                         .IsRequired();
 
@@ -151,17 +153,17 @@ namespace SudokuApp.WebApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.UserPermission", b =>
+            modelBuilder.Entity("SudokuApp.Models.UserRole", b =>
                 {
                     b.Property<int>("UserId");
 
-                    b.Property<int>("PermissionId");
+                    b.Property<int>("RoleId");
 
-                    b.HasKey("UserId", "PermissionId");
+                    b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("PermissionId");
+                    b.HasIndex("RoleId");
 
-                    b.ToTable("UsersPermissions");
+                    b.ToTable("UsersRoles");
                 });
 
             modelBuilder.Entity("SudokuApp.Models.Game", b =>
@@ -190,15 +192,15 @@ namespace SudokuApp.WebApp.Migrations
                         .HasForeignKey("DifficultyId");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.UserPermission", b =>
+            modelBuilder.Entity("SudokuApp.Models.UserRole", b =>
                 {
-                    b.HasOne("SudokuApp.Models.Permission", "Permission")
+                    b.HasOne("SudokuApp.Models.Role", "Role")
                         .WithMany("Users")
-                        .HasForeignKey("PermissionId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SudokuApp.Models.User", "User")
-                        .WithMany("Permissions")
+                        .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -23,17 +23,17 @@ namespace SudokuApp.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Permissions",
+                name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
-                    PermissionLevel = table.Column<int>(nullable: false)
+                    RoleLevel = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permissions", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,6 +47,7 @@ namespace SudokuApp.WebApp.Migrations
                     LastName = table.Column<string>(nullable: false),
                     NickName = table.Column<string>(nullable: true),
                     DateCreated = table.Column<DateTime>(nullable: false),
+                    DateUpdated = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: false)
                 },
@@ -75,23 +76,23 @@ namespace SudokuApp.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersPermissions",
+                name: "UsersRoles",
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false),
-                    PermissionId = table.Column<int>(nullable: false)
+                    RoleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersPermissions", x => new { x.UserId, x.PermissionId });
+                    table.PrimaryKey("PK_UsersRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_UsersPermissions_Permissions_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "Permissions",
+                        name: "FK_UsersRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UsersPermissions_Users_UserId",
+                        name: "FK_UsersRoles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -187,9 +188,9 @@ namespace SudokuApp.WebApp.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UsersPermissions_PermissionId",
-                table: "UsersPermissions",
-                column: "PermissionId");
+                name: "IX_UsersRoles_RoleId",
+                table: "UsersRoles",
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -201,13 +202,13 @@ namespace SudokuApp.WebApp.Migrations
                 name: "SudokuCells");
 
             migrationBuilder.DropTable(
-                name: "UsersPermissions");
+                name: "UsersRoles");
 
             migrationBuilder.DropTable(
                 name: "SudokuMatrices");
 
             migrationBuilder.DropTable(
-                name: "Permissions");
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Users");

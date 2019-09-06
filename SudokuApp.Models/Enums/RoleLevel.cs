@@ -1,6 +1,6 @@
 namespace SudokuApp.Models.Enums {
 
-    public enum PermissionLevel {
+    public enum RoleLevel {
 
         NULL,
         SUPERUSER,

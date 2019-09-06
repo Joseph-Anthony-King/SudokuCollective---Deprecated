@@ -3,11 +3,11 @@ using SudokuApp.Models.Enums;
 
 namespace SudokuApp.Models {
 
-    public class Permission {
+    public class Role {
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public PermissionLevel PermissionLevel { get; set; }
-        public ICollection<UserPermission> Users { get; set; }
+        public RoleLevel RoleLevel { get; set; }
+        public ICollection<UserRole> Users { get; set; }
     }
 }
