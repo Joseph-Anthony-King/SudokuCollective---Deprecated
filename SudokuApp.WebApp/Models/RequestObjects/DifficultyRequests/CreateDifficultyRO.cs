@@ -1,7 +1,7 @@
 using SudokuApp.Models.Enums;
 
-namespace SudokuApp.WebApp.Models.RequestObjects {
-    
+namespace SudokuApp.WebApp.Models.RequestObjects.DifficultyRequests {
+
     public class CreateDifficultyRO {
 
         public string Name { get; set; }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuApp.Models;
-using SudokuApp.WebApp.Models.RequestObjects;
+using SudokuApp.WebApp.Models.RequestObjects.GameRequests;
 using SudokuApp.WebApp.Services.Interfaces;
 
 namespace SudokuApp.WebApp.Controllers {
@@ -14,17 +14,10 @@ namespace SudokuApp.WebApp.Controllers {
     public class GamesController : ControllerBase {
 
         private readonly IGamesService _gamesService;
-        private readonly IUsersService _userService;
-        private readonly IDifficultiesService _difficultiesService;
 
-        public GamesController(
-            IGamesService gamesService,
-            IUsersService usersService,
-            IDifficultiesService difficultiesService) {
+        public GamesController(IGamesService gamesService) {
             
             _gamesService = gamesService;
-            _userService = usersService;
-            _difficultiesService = difficultiesService;
         }
 
         // GET: api/Games/5
@@ -88,7 +81,7 @@ namespace SudokuApp.WebApp.Controllers {
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(
             int id, 
-            Game game) {
+            [FromBody] Game game) {
 
             if (id != game.Id) {
 
@@ -104,13 +97,8 @@ namespace SudokuApp.WebApp.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame([FromBody] CreateGameRO createGameRO) {
-
-            var userActionResult = await _userService.GetUser(createGameRO.UserId);
-            var difficultyActionResult = await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
             
-            var game = await _gamesService.CreateGame(
-                userActionResult.Value, 
-                difficultyActionResult.Value);
+            var game = await _gamesService.CreateGame(createGameRO);
 
             return CreatedAtAction("GetGame", new { id = game.Id }, game);
         }

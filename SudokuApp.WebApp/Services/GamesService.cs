@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
 using SudokuApp.WebApp.Helpers;
 using SudokuApp.WebApp.Models.DataModel;
+using SudokuApp.WebApp.Models.RequestObjects.GameRequests;
 using SudokuApp.WebApp.Services.Interfaces;
 
 namespace SudokuApp.WebApp.Services {
@@ -13,18 +14,33 @@ namespace SudokuApp.WebApp.Services {
     public class GamesService : IGamesService {
 
         private readonly ApplicationDbContext _context;
+        private readonly IUsersService _userService;
+        private readonly IDifficultiesService _difficultiesService;
 
-        public GamesService(ApplicationDbContext context) {
+        public GamesService(
+            ApplicationDbContext context,
+            IUsersService usersService,
+            IDifficultiesService difficultiesService) {
 
             _context = context;
+            _userService = usersService;
+            _difficultiesService = difficultiesService;
         }
 
-        public async Task<Game> CreateGame(User user, Difficulty difficulty) {
+        public async Task<Game> CreateGame(CreateGameRO createGameRO) {
+
+            var userActionResult = 
+                await _userService.GetUser(createGameRO.UserId);
+            var difficultyActionResult = 
+                await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
 
             SudokuMatrix matrix = new SudokuMatrix();
             matrix.GenerateSolution();
 
-            Game game = new Game(user, matrix, difficulty);
+            Game game = new Game(
+                userActionResult.Value, 
+                matrix, 
+                difficultyActionResult.Value);
 
             _context.Games.Update(game);
             await _context.SaveChangesAsync();

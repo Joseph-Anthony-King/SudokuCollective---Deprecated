@@ -3,11 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuApp.Models;
-using SudokuApp.WebApp.Models.RequestObjects;
+using SudokuApp.WebApp.Models.RequestObjects.DifficultyRequests;
 using SudokuApp.WebApp.Services.Interfaces;
 
-namespace SudokuApp.WebApp.Controllers
-{
+namespace SudokuApp.WebApp.Controllers {
 
     [Authorize]
     [Route("api/[controller]")]
@@ -47,9 +46,9 @@ namespace SudokuApp.WebApp.Controllers
         }
 
         // PUT: api/Difficulties/5
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDifficulty(int id, Difficulty difficulty) {
+        public async Task<IActionResult> PutDifficulty(int id, [FromBody] Difficulty difficulty) {
 
             if (id != difficulty.Id) {
 

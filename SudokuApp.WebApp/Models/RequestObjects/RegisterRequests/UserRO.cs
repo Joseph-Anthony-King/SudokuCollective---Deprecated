@@ -1,6 +1,6 @@
-namespace SudokuApp.WebApp.Models.RequestObjects {
+namespace SudokuApp.WebApp.Models.RequestObjects.RegisterRequests {
     
-    public class UserRO {
+    public class RegisterRO {
 
         public string UserName { get; set; }
         public string FirstName { get; set; }

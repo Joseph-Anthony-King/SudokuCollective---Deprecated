@@ -1,4 +1,4 @@
-namespace SudokuApp.WebApp.Models.RequestObjects {
+namespace SudokuApp.WebApp.Models.RequestObjects.GameRequests {
     
     public class CreateGameRO {
 

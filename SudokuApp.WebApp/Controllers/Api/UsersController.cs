@@ -47,7 +47,7 @@ namespace SudokuApp.WebApp.Controllers {
         // PUT: api/Users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user) {
+        public async Task<IActionResult> PutUser(int id, [FromBody] User user) {
 
             if (id != user.Id) {
 

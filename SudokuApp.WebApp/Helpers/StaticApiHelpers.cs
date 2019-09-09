@@ -12,9 +12,7 @@ namespace SudokuApp.WebApp.Helpers {
         public async static Task<List<SudokuCell>> ResetSudokuCells(
             Game game, 
             ApplicationDbContext context) {
-
-            // Reset the matrix sudoku cells
-            game.SudokuMatrix.SudokuCells = null;
+                
 
             var cells = await context.SudokuCells
                 .Where(cell => cell.SudokuMatrix.Id == game.SudokuMatrixId)

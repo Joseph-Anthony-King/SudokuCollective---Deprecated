@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SudokuApp.Models;
 using SudokuApp.WebApp.Helpers;
 using SudokuApp.WebApp.Models.DataModel;
-using SudokuApp.WebApp.Models.RequestObjects;
+using SudokuApp.WebApp.Models.RequestObjects.RegisterRequests;
 using SudokuApp.WebApp.Services.Interfaces;
 
 namespace SudokuApp.WebApp.Services {
@@ -45,6 +45,15 @@ namespace SudokuApp.WebApp.Services {
                 };
             }
 
+            foreach (var userRole in user.Roles) {
+
+                userRole.Role = await _context.Roles
+                    .Where(r => r.Id == userRole.RoleId)
+                    .FirstOrDefaultAsync();
+
+                userRole.Role.Users = null;
+            }
+
             return user;
         }
 
@@ -52,19 +61,24 @@ namespace SudokuApp.WebApp.Services {
 
             var users = await _context.Users
                 .OrderBy(u => u.Id)
+                .Include(u => u.Games)
                 .Include(u => u.Roles)
                 .ToListAsync();
 
             foreach (var user in users) {
-
+                
                 foreach (var game in user.Games) {
-                    
-                    game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
+                
+                    game.SudokuMatrix.SudokuCells = 
+                        await StaticApiHelpers.ResetSudokuCells(game, _context);
                 }
 
                 foreach (var userRole in user.Roles) {
 
-                    userRole.Role = await _context.Roles.Where(r => r.Id == userRole.RoleId).FirstOrDefaultAsync();
+                    userRole.Role = await _context.Roles
+                        .Where(r => r.Id == userRole.RoleId)
+                        .FirstOrDefaultAsync();
+
                     userRole.Role.Users = null;
                 }
             }
@@ -72,7 +86,7 @@ namespace SudokuApp.WebApp.Services {
             return users;
         }
 
-        public async Task<User> CreateUser(UserRO userRO) {
+        public async Task<User> CreateUser(RegisterRO registerRO) {
 
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
@@ -80,22 +94,28 @@ namespace SudokuApp.WebApp.Services {
 
             User user = new User {
 
-                UserName = userRO.UserName,
-                FirstName = userRO.FirstName, 
-                LastName = userRO.LastName,
-                NickName = userRO.NickName,
+                UserName = registerRO.UserName,
+                FirstName = registerRO.FirstName, 
+                LastName = registerRO.LastName,
+                NickName = registerRO.NickName,
                 DateCreated = createdDate,
                 DateUpdated = createdDate,
-                Email = userRO.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(userRO.Password, salt)
+                Email = registerRO.Email,
+                Password = BCrypt.Net.BCrypt
+                    .HashPassword(registerRO.Password, salt)
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             // Add default user permission to the new user
-            var savedUser = await _context.Users.Where(u => u.UserName.Equals(user.UserName)).FirstOrDefaultAsync();
-            var defaultRole = await _context.Roles.Where(p => p.Id == 4).FirstOrDefaultAsync();
+            var savedUser = await _context.Users
+                .Where(u => u.UserName.Equals(user.UserName))
+                .FirstOrDefaultAsync();
+
+            var defaultRole = await _context.Roles
+                .Where(p => p.Id == 4)
+                .FirstOrDefaultAsync();
 
             UserRole newUserRole = new UserRole {
 
@@ -118,7 +138,8 @@ namespace SudokuApp.WebApp.Services {
                 user.DateUpdated = DateTime.UtcNow;
 
                 // Encrypt the users password
-                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                user.Password = BCrypt.Net.BCrypt
+                    .HashPassword(user.Password);
 
                 _context.Entry(user).State = EntityState.Modified;
                 

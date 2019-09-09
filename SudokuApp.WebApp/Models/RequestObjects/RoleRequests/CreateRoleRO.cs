@@ -1,6 +1,6 @@
 using SudokuApp.Models.Enums;
 
-namespace SudokuApp.WebApp.Models.RequestObjects {
+namespace SudokuApp.WebApp.Models.RequestObjects.RoleRequests {
     
     public class CreateRoleRO {
 

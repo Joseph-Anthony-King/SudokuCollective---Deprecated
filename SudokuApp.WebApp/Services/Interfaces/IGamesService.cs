@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SudokuApp.Models;
+using SudokuApp.WebApp.Models.RequestObjects.GameRequests;
 
 namespace SudokuApp.WebApp.Services.Interfaces {
 
     public interface IGamesService {
 
-        Task<Game> CreateGame(User user, Difficulty difficulty);
+        Task<Game> CreateGame(CreateGameRO createGameRO);
         Task UpdateGame(int id, Game game);
         Task<Game> DeleteGame(int id);
         Task<ActionResult<Game>> GetGame(int id);
