@@ -24,9 +24,10 @@ namespace SudokuApp.WebApp.Controllers
         // GET: api/Roles/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Role>> GetRole(int id) {
+        public async Task<ActionResult<Role>> GetRole(
+            int id, [FromQuery] bool fullRecord = true) {
 
-            var role = await _rolesService.GetRole(id);
+            var role = await _rolesService.GetRole(id, fullRecord);
 
             if (string.IsNullOrEmpty(role.Value.Name)) {
 
@@ -41,9 +42,10 @@ namespace SudokuApp.WebApp.Controllers
         // GET: api/Roles
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles() {
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles(
+            [FromQuery] bool fullRecord = true) {
 
-            return await _rolesService.GeRoles();
+            return await _rolesService.GetRoles(fullRecord);
         }
 
         // PUT: api/Roles/5
@@ -64,7 +66,8 @@ namespace SudokuApp.WebApp.Controllers
         // POST: api/Roles
         [Authorize(Roles = "SUPERUSER")]
         [HttpPost]
-        public async Task<ActionResult<Role>> PostRole([FromBody] CreateRoleRO createRoleRO) {
+        public async Task<ActionResult<Role>> PostRole(
+            [FromBody] CreateRoleRO createRoleRO) {
             
             var role = await _rolesService
                 .CreateRole(createRoleRO.Name, createRoleRO.RoleLevel);

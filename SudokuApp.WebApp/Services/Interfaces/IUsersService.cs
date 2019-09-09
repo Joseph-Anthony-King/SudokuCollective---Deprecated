@@ -8,8 +8,8 @@ namespace SudokuApp.WebApp.Services.Interfaces {
     
     public interface IUsersService {
 
-        Task<ActionResult<User>> GetUser(int id);
-        Task<ActionResult<IEnumerable<User>>> GetUsers();
+        Task<ActionResult<User>> GetUser(int id, bool fullRecord = true);
+        Task<ActionResult<IEnumerable<User>>> GetUsers(bool fullRecord = true);
         Task<User> CreateUser(RegisterRO registerRO);
         Task UpdateUser(int id, User user);
         Task<User> DeleteUser(int id);

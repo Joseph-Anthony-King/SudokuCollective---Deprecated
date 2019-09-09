@@ -41,8 +41,17 @@ namespace SudokuApp.WebApp.Services {
                 userActionResult.Value, 
                 matrix, 
                 difficultyActionResult.Value);
+            
+            // EF Core loses reference to the users roles when creating new games.
+            // Before we save the new game we pull a reference to the users roles...
+            var user = game.User;
+            var userRoles = _context.UsersRoles.Where(u => u.UserId == user.Id).ToList();
 
-            _context.Games.Update(game);
+            _context.Games.Update(game).State = EntityState.Added;
+            await _context.SaveChangesAsync();
+            
+            // ...then we reattach the users roles to the data context.
+            _context.UsersRoles.AddRange(userRoles);
             await _context.SaveChangesAsync();
 
             return game;
@@ -85,56 +94,95 @@ namespace SudokuApp.WebApp.Services {
                 return game = new Game();
             }
 
-            game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
+            game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
 
             return game;
         }
 
-        public async Task<ActionResult<IEnumerable<Game>>> GetGames() {
+        public async Task<ActionResult<IEnumerable<Game>>> GetGames(bool fullRecord = true) {
 
-            var games = await _context.Games
-                .OrderBy(g => g.Id)
-                .Include(g => g.User).ThenInclude(u => u.Roles)
-                .Include(g => g.SudokuMatrix)
-                .ToListAsync();
-            
-            foreach (var game in games) {
+            var games = new List<Game>();
+
+            if (fullRecord) {
+
+                games = await _context.Games
+                    .OrderBy(g => g.Id)
+                    .Include(g => g.User).ThenInclude(u => u.Roles)
+                    .Include(g => g.SudokuMatrix)
+                    .ToListAsync();
                 
-                game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
+                foreach (var game in games) {
+                    
+                    game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                }
+
+            } else {
+
+                games = await _context.Games
+                    .OrderBy(g => g.Id)
+                    .Include(g => g.User)
+                    .ToListAsync();
             }
 
             return games;
         }
 
-        public async Task<ActionResult<Game>> GetMyGame(int userId, int gameId) {
+        public async Task<ActionResult<Game>> GetMyGame(int userId, int gameId, bool fullRecord = true) {
 
-            var game = await _context.Games
-                .Include(g => g.User).ThenInclude(u => u.Roles)
-                .Include(g => g.SudokuMatrix)
-                .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
+            var game = new Game();
+            
+            if (fullRecord) {
 
-            if (game == null) {
+                game = await _context.Games
+                    .Include(g => g.User).ThenInclude(u => u.Roles)
+                    .Include(g => g.SudokuMatrix)
+                    .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
 
-                return game = new Game();
+                if (game == null) {
+
+                    return game = new Game();
+                }
+
+                game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+
+            } else {
+
+                game = await _context.Games
+                    .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
+
+                if (game == null) {
+
+                    return game = new Game();
+                }
             }
-
-            game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
 
             return game;
         }
 
-        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId) {
+        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId, bool fullRecord = true) {
 
-            var games = await _context.Games
-                .Where(g => g.User.Id == userId)
-                .OrderBy(g => g.Id)
-                .Include(g => g.User).ThenInclude(u => u.Roles)
-                .Include(g => g.SudokuMatrix)
-                .ToListAsync();
-            
-            foreach (var game in games) {
+            var games = new List<Game>();
 
-                game.SudokuMatrix.SudokuCells = await StaticApiHelpers.ResetSudokuCells(game, _context);
+            if (fullRecord) {
+
+                games = await _context.Games
+                    .Where(g => g.User.Id == userId)
+                    .OrderBy(g => g.Id)
+                    .Include(g => g.User).ThenInclude(u => u.Roles)
+                    .Include(g => g.SudokuMatrix)
+                    .ToListAsync();
+                
+                foreach (var game in games) {
+
+                    game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                }
+
+            } else {                
+
+                games = await _context.Games
+                    .Where(g => g.User.Id == userId)
+                    .OrderBy(g => g.Id)
+                    .ToListAsync();
             }
 
             return games;

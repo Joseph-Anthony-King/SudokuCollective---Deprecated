@@ -22,9 +22,10 @@ namespace SudokuApp.WebApp.Controllers {
         // GET: api/Users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id) {
+        public async Task<ActionResult<User>> GetUser(
+            int id, [FromQuery] bool fullRecord = true) {
 
-            var user = await _userService.GetUser(id);
+            var user = await _userService.GetUser(id, fullRecord);
 
             if (string.IsNullOrEmpty(user.Value.UserName)) {
 
@@ -39,15 +40,17 @@ namespace SudokuApp.WebApp.Controllers {
         // GET: api/Users
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers() {
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers(
+            [FromQuery] bool fullRecord = true) {
 
-            return await _userService.GetUsers();
+            return await _userService.GetUsers(fullRecord);
         }
 
         // PUT: api/Users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, [FromBody] User user) {
+        public async Task<IActionResult> PutUser(
+            int id, [FromBody] User user) {
 
             if (id != user.Id) {
 

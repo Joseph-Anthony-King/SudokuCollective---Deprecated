@@ -21,56 +21,37 @@ namespace SudokuApp.WebApp.Services {
             _context = context;
         }
 
-        public async Task<ActionResult<User>> GetUser(int id) {
+        public async Task<ActionResult<User>> GetUser(int id, bool fullRecord = true) {
 
-            var user = await _context.Users
-                .Include(u => u.Games)
-                .Include(u => u.Roles)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var user = new User();
 
-            if (user == null) {
-                
-                var createdDate = DateTime.UtcNow;
+            if (fullRecord) {
 
-                return new User {
+                user = await _context.Users
+                    .Include(u => u.Games)
+                    .Include(u => u.Roles)
+                    .FirstOrDefaultAsync(u => u.Id == id);
 
-                    UserName = String.Empty,
-                    FirstName = String.Empty,
-                    LastName = String.Empty,
-                    NickName = string.Empty,
-                    DateCreated = createdDate,
-                    DateUpdated = createdDate,
-                    Email = string.Empty,
-                    Password = string.Empty
-                };
-            }
+                if (user == null) {
+                    
+                    var createdDate = DateTime.UtcNow;
 
-            foreach (var userRole in user.Roles) {
+                    return new User {
 
-                userRole.Role = await _context.Roles
-                    .Where(r => r.Id == userRole.RoleId)
-                    .FirstOrDefaultAsync();
+                        UserName = String.Empty,
+                        FirstName = String.Empty,
+                        LastName = String.Empty,
+                        NickName = string.Empty,
+                        DateCreated = createdDate,
+                        DateUpdated = createdDate,
+                        Email = string.Empty,
+                        Password = string.Empty
+                    };
+                }
 
-                userRole.Role.Users = null;
-            }
-
-            return user;
-        }
-
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers() {
-
-            var users = await _context.Users
-                .OrderBy(u => u.Id)
-                .Include(u => u.Games)
-                .Include(u => u.Roles)
-                .ToListAsync();
-
-            foreach (var user in users) {
-                
                 foreach (var game in user.Games) {
-                
-                    game.SudokuMatrix.SudokuCells = 
-                        await StaticApiHelpers.ResetSudokuCells(game, _context);
+                    
+                    game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
                 }
 
                 foreach (var userRole in user.Roles) {
@@ -80,6 +61,74 @@ namespace SudokuApp.WebApp.Services {
                         .FirstOrDefaultAsync();
 
                     userRole.Role.Users = null;
+                }
+
+            } else {
+
+                user = await _context.Users
+                    .Include(u => u.Roles)
+                    .FirstOrDefaultAsync(u => u.Id == id);
+
+                user.Games = null;
+            }
+
+            return user;
+        }
+
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers(bool fullRecord = true) {
+
+            var users = new List<User>();
+
+            if (fullRecord){
+
+                users = await _context.Users
+                    .OrderBy(u => u.Id)
+                    .Include(u => u.Games)
+                    .Include(u => u.Roles)
+                    .ToListAsync();
+
+                foreach (var user in users) {
+
+                    foreach (var game in user.Games) {
+                        
+                        // Attach the matrices for each game.
+                        game.SudokuMatrix = await _context.SudokuMatrices
+                            .Where(m => m.Id == game.SudokuMatrixId)
+                            .Include(m => m.Difficulty)
+                            .FirstOrDefaultAsync();
+
+                        // Remove the navigation reference to each difficulties matrices
+                        // to prevent circular references to all matrices.
+                        game.SudokuMatrix.Difficulty.Matrices = null;
+                    }
+
+                    foreach (var userRole in user.Roles) {
+
+                        userRole.Role = await _context.Roles
+                            .Where(r => r.Id == userRole.RoleId)
+                            .FirstOrDefaultAsync();
+
+                        userRole.Role.Users = null;
+                    }
+                }
+
+            } else {               
+
+                users = await _context.Users
+                    .OrderBy(u => u.Id)
+                    .Include(u => u.Roles)
+                    .ToListAsync();
+
+                foreach (var user in users) {
+
+                    foreach (var userRole in user.Roles) {
+
+                        userRole.Role = await _context.Roles
+                            .Where(r => r.Id == userRole.RoleId)
+                            .FirstOrDefaultAsync();
+
+                        userRole.Role.Users = null;
+                    }
                 }
             }
 

@@ -23,9 +23,10 @@ namespace SudokuApp.WebApp.Controllers {
         // GET: api/Difficulties/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Difficulty>> GetDifficulty(int id) {
+        public async Task<ActionResult<Difficulty>> GetDifficulty(
+            int id, [FromQuery] bool fullRecord = true) {
 
-            var difficulty = await _difficultiesService.GetDifficulty(id);
+            var difficulty = await _difficultiesService.GetDifficulty(id, fullRecord);
 
             if (string.IsNullOrEmpty(difficulty.Value.Name)) {
 
@@ -40,15 +41,17 @@ namespace SudokuApp.WebApp.Controllers {
         // GET: api/Difficulties
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties() {
+        public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
+            [FromQuery] bool fullRecord = true) {
 
-            return await _difficultiesService.GetDifficulties();
+            return await _difficultiesService.GetDifficulties(fullRecord);
         }
 
         // PUT: api/Difficulties/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDifficulty(int id, [FromBody] Difficulty difficulty) {
+        public async Task<IActionResult> PutDifficulty(int id, 
+            [FromBody] Difficulty difficulty) {
 
             if (id != difficulty.Id) {
 
@@ -63,7 +66,8 @@ namespace SudokuApp.WebApp.Controllers {
         // POST: api/Difficulties
         [Authorize(Roles = "SUPERUSER")]
         [HttpPost]
-        public async Task<ActionResult<Difficulty>> PostDifficulty([FromBody] CreateDifficultyRO createDifficultyRO) {
+        public async Task<ActionResult<Difficulty>> PostDifficulty(
+            [FromBody] CreateDifficultyRO createDifficultyRO) {
             
             var difficulty = await _difficultiesService
                 .CreateDifficulty(createDifficultyRO.Name, createDifficultyRO.DifficultyLevel);

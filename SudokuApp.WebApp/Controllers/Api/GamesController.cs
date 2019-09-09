@@ -38,17 +38,19 @@ namespace SudokuApp.WebApp.Controllers {
         // GET: api/Games
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGames() {
+        public async Task<ActionResult<IEnumerable<Game>>> GetGames(
+            [FromQuery] bool fullRecord = true) {
 
-            return await _gamesService.GetGames();
+            return await _gamesService.GetGames(fullRecord);
         }
 
         // GET: api/Games/GetMyGame
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetMyGame")]
-        public async Task<ActionResult<Game>> GetMyGame([FromBody] GetMyGameRO getMyGameRO) {
+        public async Task<ActionResult<Game>> GetMyGame(
+            [FromBody] GetMyGameRO getMyGameRO, [FromQuery] bool fullRecord = true) {
 
-            var game = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId);
+            var game = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId, fullRecord);
 
             if (game == null)
             {
@@ -61,15 +63,17 @@ namespace SudokuApp.WebApp.Controllers {
         // GET: api/Games/GetMyGames/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetMyGames/{userId}")]
-        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId) {
+        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
+            int userId, [FromQuery] bool fullRecord = true) {
 
-            return await _gamesService.GetMyGames(userId);
+            return await _gamesService.GetMyGames(userId, fullRecord);
         }
 
         // DELETE: api/Games/DeleteMyGame
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("DeleteMyGame")]
-        public async Task<ActionResult<Game>> DeleteMyGame([FromBody] GetMyGameRO getMyGameRO) {
+        public async Task<ActionResult<Game>> DeleteMyGame(
+            [FromBody] GetMyGameRO getMyGameRO) {
 
            var game = await _gamesService.DeleteMyGame(getMyGameRO.UserId, getMyGameRO.GameId);
 
@@ -96,7 +100,8 @@ namespace SudokuApp.WebApp.Controllers {
         // POST: api/Games
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame([FromBody] CreateGameRO createGameRO) {
+        public async Task<ActionResult<Game>> PostGame(
+            [FromBody] CreateGameRO createGameRO) {
             
             var game = await _gamesService.CreateGame(createGameRO);
 
