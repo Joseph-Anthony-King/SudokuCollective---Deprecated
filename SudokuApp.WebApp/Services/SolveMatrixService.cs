@@ -50,8 +50,11 @@ namespace SudokuApp.WebApp.Services {
                 new SudokuMatrix(sudokuSolver.ToInt32List()), 
                 new Difficulty() {Name = "Test", DifficultyLevel = DifficultyLevel.TEST});
             
-            result.ContinueGame = false;
-            result.DateCompleted = DateTime.UtcNow;
+            if (result.SudokuMatrix.IsSolved()) {
+                
+                result.ContinueGame = false;
+                result.DateCompleted = DateTime.UtcNow;
+            }
 
             return result;
         }
