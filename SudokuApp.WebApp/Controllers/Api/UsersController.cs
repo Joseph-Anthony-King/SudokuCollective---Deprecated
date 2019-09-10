@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuApp.Models;
+using SudokuApp.WebApp.Models.RequestObjects.UserRequests;
 using SudokuApp.WebApp.Services.Interfaces;
 
 namespace SudokuApp.WebApp.Controllers {
@@ -70,6 +72,32 @@ namespace SudokuApp.WebApp.Controllers {
            var user = await _userService.DeleteUser(id);
 
            return user;
+        }
+
+        // api/Users/AddRoles
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPost, Route("AddRoles")]
+        public async Task<IActionResult> AddRoles(
+            [FromBody] UpdateRoleRO addRolesRo) {
+            
+            await _userService.AddUserRoles(
+                addRolesRo.UserId, 
+                addRolesRo.RoleIds.ToList());
+
+            return NoContent();
+        }
+
+        // api/Users/AddRoles
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpDelete, Route("RemoveRoles")]
+        public async Task<IActionResult> RemoveRoles(
+            [FromBody] UpdateRoleRO addRolesRo) {
+            
+            await _userService.RemoveUserRoles(
+                addRolesRo.UserId, 
+                addRolesRo.RoleIds.ToList());
+
+            return NoContent();
         }
     }
 }

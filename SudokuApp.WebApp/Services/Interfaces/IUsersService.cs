@@ -13,5 +13,7 @@ namespace SudokuApp.WebApp.Services.Interfaces {
         Task<User> CreateUser(RegisterRO registerRO);
         Task UpdateUser(int id, User user);
         Task<User> DeleteUser(int id);
+        Task AddUserRoles(int userId, List<int> roleIds);
+        Task RemoveUserRoles(int userId, List<int> roleIds);
     }
 }

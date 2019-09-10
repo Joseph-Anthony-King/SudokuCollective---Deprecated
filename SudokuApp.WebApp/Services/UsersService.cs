@@ -222,5 +222,54 @@ namespace SudokuApp.WebApp.Services {
 
             return user;
         }
+
+        public async Task AddUserRoles(int userId, List<int> roleIds) {
+
+            var user = await _context.Users
+                .Include(u => u.Roles)
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
+
+            foreach (var userRole in user.Roles) {
+
+                userRole.Role = await _context.Roles
+                    .Where(r => r.Id == userRole.RoleId)
+                    .FirstOrDefaultAsync();
+            }
+
+            var roles = new List<Role>();
+            var userRoles = new List<UserRole>();
+
+            foreach (var roleId in roleIds) {
+
+                roles.Add(await _context.Roles.Where(r => r.Id == roleId).FirstOrDefaultAsync());
+            }
+
+            foreach (var role in roles) {
+
+                if (!user.Roles.Any(ur => ur.RoleId == role.Id)) {
+                    
+                    userRoles.Add(new UserRole(){ 
+                        UserId = user.Id, 
+                        User = user, 
+                        RoleId = role.Id, 
+                        Role = role });
+                }
+            }
+
+            if (userRoles.Count > 0) {
+                
+                _context.UsersRoles.AddRange(userRoles);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveUserRoles(int userId, List<int> roleIds) {
+
+            var usersRoles = _context.UsersRoles.Where(ur => ur.UserId == userId && roleIds.Contains(ur.RoleId));
+                
+            _context.UsersRoles.RemoveRange(usersRoles);
+            await _context.SaveChangesAsync();
+        }
     }
 }
