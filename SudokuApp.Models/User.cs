@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using SudokuApp.Models.Interfaces;
 using Newtonsoft.Json;
 
-namespace SudokuApp.Models
-{
+namespace SudokuApp.Models {
 
     public class User : IUser {
 
@@ -29,30 +28,30 @@ namespace SudokuApp.Models
             string lastName, 
             string password) : this() {
 
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.Password = password;
+            FirstName = firstName;
+            LastName = lastName;
+            Password = password;
         }
 
         public User() {
 
-            this.DateCreated = DateTime.UtcNow;
-            this.DateUpdated = DateTime.UtcNow;
-            this.Games = new List<Game>();
+            DateCreated = DateTime.UtcNow;
+            DateUpdated = DateTime.UtcNow;
+            Games = new List<Game>();
             
-            if (string.IsNullOrEmpty(this.FirstName)) {
+            if (string.IsNullOrEmpty(FirstName)) {
 
-                this.FirstName = string.Empty;
+                FirstName = string.Empty;
             }
             
-            if (string.IsNullOrEmpty(this.LastName)) {
+            if (string.IsNullOrEmpty(LastName)) {
 
-                this.LastName = string.Empty;
+                LastName = string.Empty;
             }
             
-            if (string.IsNullOrEmpty(this.Password)) {
+            if (string.IsNullOrEmpty(Password)) {
 
-                this.Password = string.Empty;
+                Password = string.Empty;
             }
         }
     }

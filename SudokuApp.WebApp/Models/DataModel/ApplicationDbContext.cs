@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 using SudokuApp.Models;
 
@@ -23,11 +27,19 @@ namespace SudokuApp.WebApp.Models.DataModel {
         public DbSet<Game> Games { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UsersRoles { get; set; }
+        public DbSet<SudokuSolution> SudokuSolutions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
             => optionsBuilder.UseNpgsql(configuration.GetValue<string>("ConnectionStrings:DatabaseConnection"));
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+            var intListConverter = new ValueConverter<List<int>, string>(
+                v => string.Join(",", v),
+                v => v.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                    .Select(val => int.Parse(val))
+                    .ToList()
+            );
 
             modelBuilder.ForNpgsqlUseIdentityColumns();
 
@@ -119,6 +131,11 @@ namespace SudokuApp.WebApp.Models.DataModel {
             modelBuilder.Entity<Game>()
                 .HasOne(game => game.SudokuMatrix)
                 .WithOne(matrix => matrix.Game);
+
+            modelBuilder.Entity<Game>()
+                .HasOne(g => g.SudokuSolution)
+                .WithOne(s => s.Game)
+                .HasForeignKey<SudokuSolution>(s => s.GameId);
             
             modelBuilder.Entity<User>()
                 .HasKey(user => user.Id);
@@ -167,6 +184,24 @@ namespace SudokuApp.WebApp.Models.DataModel {
                 .HasOne(ur => ur.Role)
                 .WithMany(role => role.Users)
                 .HasForeignKey(ur => ur.RoleId);
+
+            modelBuilder.Entity<SudokuSolution>()
+                .HasKey(solution => solution.Id);
+
+            modelBuilder.Entity<SudokuSolution>()
+                .Property(solution => solution.SolutionList)
+                .HasConversion(intListConverter);
+
+            modelBuilder.Entity<SudokuSolution>()
+                .Ignore(solution => solution.FirstRow)
+                .Ignore(solution => solution.SecondRow)
+                .Ignore(solution => solution.ThirdRow)
+                .Ignore(solution => solution.FourthRow)
+                .Ignore(solution => solution.FifthRow)
+                .Ignore(solution => solution.SixthRow)
+                .Ignore(solution => solution.SeventhRow)
+                .Ignore(solution => solution.EighthRow)
+                .Ignore(solution => solution.NinthRow);
         }
     }
 }

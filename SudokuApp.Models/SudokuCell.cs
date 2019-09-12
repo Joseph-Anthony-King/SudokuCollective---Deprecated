@@ -26,33 +26,33 @@ namespace SudokuApp.Models {
 
                 if (value == 0) {
 
-                    if (!this._initializing) {
+                    if (!_initializing) {
 
                         OnSuccessfulSudokuCellReset(
                             new ResetSudokuCellEventArgs(
-                                this.Index,
-                                this._value,
-                                this.Column,
-                                this.Region,
-                                this.Row
+                                Index,
+                                _value,
+                                Column,
+                                Region,
+                                Row
                             )
                         );
 
-                        this._value = value;
+                        _value = value;
                     }
 
                 } else {
 
-                    this.AvailableValues = new List<int>();
-                    this._value = value;
+                    AvailableValues = new List<int>();
+                    _value = value;
 
                     OnSuccessfulSudokuCellUpdate(
                         new UpdateSudokuCellEventArgs(
-                            this.Index,
-                            this._value,
-                            this.Column,
-                            this.Region,
-                            this.Row
+                            Index,
+                            _value,
+                            Column,
+                            Region,
+                            Row
                         )
                     );
                 }
@@ -62,7 +62,7 @@ namespace SudokuApp.Models {
 
             get {
                 
-                if (!this.Obscured) {
+                if (!Obscured) {
 
                     return _value;
 
@@ -84,77 +84,77 @@ namespace SudokuApp.Models {
         #region Constructors
         public SudokuCell(int index, int column, int region, int row) {
 
-            this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-            this.Index = index;
-            this.Column = column;
-            this.Region = region;
-            this.Row = row;
+            Index = index;
+            Column = column;
+            Region = region;
+            Row = row;
 
-            this.Value = 0;
-            this.Obscured = true;
+            Value = 0;
+            Obscured = true;
 
-            this._initializing = false;
+            _initializing = false;
         }
 
         public SudokuCell(int index, int column, int region, int row, int value) {
 
-            if (this.Value == 0) {
+            if (Value == 0) {
 
-                this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
                 
             } else {
 
-                this.AvailableValues = new List<int>();
+                AvailableValues = new List<int>();
             }
 
-            this.Index = index;
-            this.Column = column;
-            this.Region = region;
-            this.Row = row;
+            Index = index;
+            Column = column;
+            Region = region;
+            Row = row;
 
-            this.Value = value;
-            this.Obscured = true;
+            Value = value;
+            Obscured = true;
 
-            this._initializing = false;
+            _initializing = false;
         }
         #endregion
 
-        public int ToInt32() => this.DisplayValue;
+        public int ToInt32() => DisplayValue;
 
-        public override string ToString() => this.DisplayValue.ToString();
+        public override string ToString() => DisplayValue.ToString();
 
         public void UpdateAvailableValues(int i) {
 
             if (i == 0) {
 
-                this.AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
             } else {
 
-                if (this.AvailableValues.Contains(i) && this.AvailableValues.Count > 0) {
+                if (AvailableValues.Contains(i) && AvailableValues.Count > 0) {
 
-                    this.AvailableValues.Remove(i);
+                    AvailableValues.Remove(i);
                 }
 
-                if (this.AvailableValues.Count == 1) {
+                if (AvailableValues.Count == 1) {
 
-                    this.Value = this.AvailableValues[0];
+                    Value = AvailableValues[0];
                 }
             }
         }
 
         public void ResetAvailableValues(int i) {
 
-            if (this.Value == 0 && !this.AvailableValues.Contains(i)) {
+            if (Value == 0 && !AvailableValues.Contains(i)) {
 
-                this.AvailableValues.Add(i);
-                var tmp = this.AvailableValues.Distinct().ToList();
+                AvailableValues.Add(i);
+                var tmp = AvailableValues.Distinct().ToList();
                 tmp.Remove(0);
                 tmp.Sort();
 
-                this.AvailableValues = new List<int>();
-                this.AvailableValues.AddRange(tmp);
+                AvailableValues = new List<int>();
+                AvailableValues.AddRange(tmp);
             }
         }
 

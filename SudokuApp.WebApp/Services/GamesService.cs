@@ -87,6 +87,7 @@ namespace SudokuApp.WebApp.Services {
             var game = await _context.Games
                 .Include(g => g.User).ThenInclude(u => u.Roles)
                 .Include(g => g.SudokuMatrix)
+                .Include(g => g.SudokuSolution)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
             if (game == null) {
@@ -109,6 +110,7 @@ namespace SudokuApp.WebApp.Services {
                     .OrderBy(g => g.Id)
                     .Include(g => g.User).ThenInclude(u => u.Roles)
                     .Include(g => g.SudokuMatrix)
+                    .Include(g => g.SudokuSolution)
                     .ToListAsync();
                 
                 foreach (var game in games) {
@@ -136,6 +138,7 @@ namespace SudokuApp.WebApp.Services {
                 game = await _context.Games
                     .Include(g => g.User).ThenInclude(u => u.Roles)
                     .Include(g => g.SudokuMatrix)
+                    .Include(g => g.SudokuSolution)
                     .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
 
                 if (game == null) {
@@ -170,6 +173,7 @@ namespace SudokuApp.WebApp.Services {
                     .OrderBy(g => g.Id)
                     .Include(g => g.User).ThenInclude(u => u.Roles)
                     .Include(g => g.SudokuMatrix)
+                    .Include(g => g.SudokuSolution)
                     .ToListAsync();
                 
                 foreach (var game in games) {

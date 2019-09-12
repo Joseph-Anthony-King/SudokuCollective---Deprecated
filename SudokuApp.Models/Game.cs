@@ -12,12 +12,15 @@ namespace SudokuApp.Models {
         public User User { get; set; }
         public int SudokuMatrixId { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
+        public SudokuSolution SudokuSolution { get; set; }
         public bool ContinueGame { get; set; }
 
         public Game() {
 
-            this.DateCreated = DateTime.UtcNow;
-            this.ContinueGame = true;
+            DateCreated = DateTime.UtcNow;
+            SudokuSolution = new SudokuSolution();
+            SudokuSolution.GameId = Id;
+            ContinueGame = true;
         }
 
         public Game(
@@ -25,22 +28,23 @@ namespace SudokuApp.Models {
             SudokuMatrix matrix, 
             Difficulty difficulty) : this() {
 
-            this.SudokuMatrix = matrix;
-            this.User = user;
-            this.SudokuMatrix.Difficulty = difficulty;
-            this.SudokuMatrix.SetDifficulty(this.SudokuMatrix.Difficulty);
+            SudokuMatrix = matrix;
+            User = user;
+            SudokuMatrix.Difficulty = difficulty;
+            SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
 
-            this.User.Games.Add(this);
+            User.Games.Add(this);
         }
 
         public bool IsSolved() {
 
-            if (this.SudokuMatrix.IsSolved()) {
+            if (SudokuMatrix.IsSolved()) {
 
-                this.ContinueGame = false;
+                ContinueGame = false;
+                SudokuSolution.SolutionList = SudokuMatrix.ToInt32List();
             }
 
-            return !this.ContinueGame;
+            return !ContinueGame;
         }
     }
 }
