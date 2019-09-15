@@ -47,7 +47,7 @@ namespace SudokuApp.WebApp.Services {
             var user = game.User;
             var userRoles = _context.UsersRoles.Where(u => u.UserId == user.Id).ToList();
 
-            _context.Games.Update(game).State = EntityState.Added;
+            _context.Games.Update(game);
             await _context.SaveChangesAsync();
             
             // ...then we reattach the users roles to the data context.
@@ -57,12 +57,24 @@ namespace SudokuApp.WebApp.Services {
             return game;
         }
 
-        public async Task UpdateGame(int id, Game game) {
+        public async Task UpdateGame(int id, UpdateGameRO updateGameRO) {
 
-            if (id == game.Id) {
+            if (id == updateGameRO.GameId) {
 
-                _context.Entry(game).State = EntityState.Modified;
-                
+                var game = await _context.Games
+                        .Include(g => g.User).ThenInclude(u => u.Roles)
+                        .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
+                        .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRO.GameId);
+
+                game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
+
+                game.IsSolved();
+
+                foreach (var cell in game.SudokuMatrix.SudokuCells) {
+
+                    _context.SudokuCells.Update(cell);
+                }
+
                 await _context.SaveChangesAsync();
             }
         }
@@ -201,6 +213,27 @@ namespace SudokuApp.WebApp.Services {
 
                 return game = new Game();
             }
+
+            return game;
+        }
+
+        public async Task<Game> CheckGame(UpdateGameRO updateGameRO) {
+
+            var game = await _context.Games
+                    .Include(g => g.User).ThenInclude(u => u.Roles)
+                    .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
+                    .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRO.GameId);
+
+            game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
+
+            game.IsSolved();
+
+            foreach (var cell in game.SudokuMatrix.SudokuCells) {
+
+                _context.SudokuCells.Update(cell);
+            }
+            
+            await _context.SaveChangesAsync();
 
             return game;
         }

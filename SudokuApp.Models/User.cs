@@ -54,5 +54,26 @@ namespace SudokuApp.Models {
                 Password = string.Empty;
             }
         }
+
+        [JsonConstructor]
+        public User(
+            int id, 
+            string firstName, 
+            string lastName, 
+            string nickName,
+            DateTime dateCreated, 
+            DateTime dateUpdated, 
+            string email, 
+            string password) : this() {
+
+            Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            NickName = nickName;
+            DateCreated = dateCreated;
+            DateUpdated = dateUpdated;
+            Email = email;
+            Password = password;
+        }
     }
 }

@@ -1,5 +1,5 @@
 using System;
-using SudokuApp.Models.Enums;
+using Newtonsoft.Json;
 using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {
@@ -10,17 +10,18 @@ namespace SudokuApp.Models {
         public DateTime DateCreated { get; set; }
         public DateTime DateCompleted { get; set; }
         public User User { get; set; }
+        public int UserId { get; set; }
         public int SudokuMatrixId { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
+        public int SudokuSolutionId { get; set; }
         public SudokuSolution SudokuSolution { get; set; }
         public bool ContinueGame { get; set; }
 
         public Game() {
 
             DateCreated = DateTime.UtcNow;
-            SudokuSolution = new SudokuSolution();
-            SudokuSolution.GameId = Id;
             ContinueGame = true;
+            SudokuSolution = new SudokuSolution();
         }
 
         public Game(
@@ -34,6 +35,23 @@ namespace SudokuApp.Models {
             SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
 
             User.Games.Add(this);
+        }
+
+        [JsonConstructor]
+        public Game(
+            int id,
+            DateTime dateCreated,
+            DateTime dateCompleted,
+            int userId,
+            int sudokuMatrixId,
+            bool continueGame) : this() {
+
+            Id = id;
+            DateCreated = dateCreated;
+            DateCompleted = dateCompleted;
+            UserId = userId;
+            SudokuMatrixId = sudokuMatrixId;
+            ContinueGame = continueGame;
         }
 
         public bool IsSolved() {

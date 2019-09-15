@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using SudokuApp.Models.Enums;
 using SudokuApp.Models.Interfaces;
 
@@ -11,6 +12,7 @@ namespace SudokuApp.Models {
 
         public int Id { get; set; }
         public Game Game { get; set; }
+        public int DifficultyId { get; set; }
         public Difficulty Difficulty { get; set; }
         public List<SudokuCell> SudokuCells { get; set; }
         
@@ -133,6 +135,38 @@ namespace SudokuApp.Models {
         public  List<int> NinthRowValues { get => SudokuCells.Where(row => row.Row == 9).Select(i => i.Value).Distinct().ToList(); }
 
         #region Constructors
+        public SudokuMatrix(List<int> intList) : this() {
+
+            for (var i = 0; i < SudokuCells.Count; i++) {
+
+                SudokuCells[i].Value = intList[i];
+            }
+        }
+
+        public SudokuMatrix(string values) : this() {
+
+            var intList = new List<int>();
+
+            foreach (var value in values) {
+
+                var s = char.ToString(value);
+
+                if (Int32.TryParse(s, out var number)) {
+
+                    intList.Add(number);
+
+                } else {
+
+                    intList.Add(0);
+                }
+            }
+
+            for (var i = 0; i < SudokuCells.Count; i++) {
+
+                SudokuCells[i].Value = intList[i];
+            }
+        }
+
         public SudokuMatrix() {
 
             var rowColumnDeliminators = new List<int>() {
@@ -223,36 +257,11 @@ namespace SudokuApp.Models {
             }
         }
 
-        public SudokuMatrix(List<int> intList) : this() {
-
-            for (var i = 0; i < SudokuCells.Count; i++) {
-
-                SudokuCells[i].Value = intList[i];
-            }
-        }
-
-        public SudokuMatrix(string values) : this() {
-
-            var intList = new List<int>();
-
-            foreach (var value in values) {
-
-                var s = char.ToString(value);
-
-                if (Int32.TryParse(s, out var number)) {
-
-                    intList.Add(number);
-
-                } else {
-
-                    intList.Add(0);
-                }
-            }
-
-            for (var i = 0; i < SudokuCells.Count; i++) {
-
-                SudokuCells[i].Value = intList[i];
-            }
+        [JsonConstructor]
+        public SudokuMatrix(int id, int difficultyId) : this() {
+            
+            Id = id;
+            DifficultyId = difficultyId;
         }
         #endregion
 
@@ -357,6 +366,7 @@ namespace SudokuApp.Models {
             }
 
             Difficulty = difficulty;
+            DifficultyId = difficulty.Id;
             
             int index;
 

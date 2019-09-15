@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using SudokuApp.Models.Interfaces;
 
 namespace SudokuApp.Models {
@@ -17,7 +18,6 @@ namespace SudokuApp.Models {
         public List<int> SeventhRow { get => GetValues(54, 9); }
         public List<int> EighthRow { get => GetValues(63, 9); }
         public List<int> NinthRow { get => GetValues(72, 9); }
-        public int? GameId { get; set; }
         public virtual Game Game { get; set; }
 
         public SudokuSolution() {
@@ -25,6 +25,7 @@ namespace SudokuApp.Models {
             SolutionList = new List<int>();
         }
 
+        [JsonConstructor]
         public SudokuSolution(List<int> intList) : this() {
 
             SolutionList = intList;

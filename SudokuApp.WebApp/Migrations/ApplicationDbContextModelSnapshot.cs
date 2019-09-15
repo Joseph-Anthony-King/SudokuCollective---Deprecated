@@ -46,11 +46,16 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.Property<int>("SudokuMatrixId");
 
-                    b.Property<int?>("UserId");
+                    b.Property<int>("SudokuSolutionId");
+
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SudokuMatrixId")
+                        .IsUnique();
+
+                    b.HasIndex("SudokuSolutionId")
                         .IsUnique();
 
                     b.HasIndex("UserId");
@@ -89,7 +94,7 @@ namespace SudokuApp.WebApp.Migrations
 
                     b.Property<int>("Row");
 
-                    b.Property<int?>("SudokuMatrixId");
+                    b.Property<int>("SudokuMatrixId");
 
                     b.Property<int>("Value");
 
@@ -105,7 +110,7 @@ namespace SudokuApp.WebApp.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("DifficultyId");
+                    b.Property<int>("DifficultyId");
 
                     b.HasKey("Id");
 
@@ -119,14 +124,9 @@ namespace SudokuApp.WebApp.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("GameId");
-
                     b.Property<string>("SolutionList");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GameId")
-                        .IsUnique();
 
                     b.ToTable("SudokuSolutions");
                 });
@@ -188,30 +188,31 @@ namespace SudokuApp.WebApp.Migrations
                         .HasForeignKey("SudokuApp.Models.Game", "SudokuMatrixId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("SudokuApp.Models.SudokuSolution", "SudokuSolution")
+                        .WithOne("Game")
+                        .HasForeignKey("SudokuApp.Models.Game", "SudokuSolutionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("SudokuApp.Models.User", "User")
                         .WithMany("Games")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SudokuApp.Models.SudokuCell", b =>
                 {
                     b.HasOne("SudokuApp.Models.SudokuMatrix", "SudokuMatrix")
                         .WithMany("SudokuCells")
-                        .HasForeignKey("SudokuMatrixId");
+                        .HasForeignKey("SudokuMatrixId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SudokuApp.Models.SudokuMatrix", b =>
                 {
                     b.HasOne("SudokuApp.Models.Difficulty", "Difficulty")
                         .WithMany("Matrices")
-                        .HasForeignKey("DifficultyId");
-                });
-
-            modelBuilder.Entity("SudokuApp.Models.SudokuSolution", b =>
-                {
-                    b.HasOne("SudokuApp.Models.Game", "Game")
-                        .WithOne("SudokuSolution")
-                        .HasForeignKey("SudokuApp.Models.SudokuSolution", "GameId");
+                        .HasForeignKey("DifficultyId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SudokuApp.Models.UserRole", b =>

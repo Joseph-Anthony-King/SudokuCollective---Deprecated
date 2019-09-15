@@ -49,22 +49,24 @@ namespace SudokuApp.WebApp.Models.DataModel {
             modelBuilder.Entity<Difficulty>()
                 .HasKey(difficulty => difficulty.Id);
 
-            modelBuilder.Entity<Difficulty>()
-                .HasMany(difficulty => difficulty.Matrices)
-                .WithOne(matrix => matrix.Difficulty);
-
             modelBuilder.Entity<SudokuCell>()
                 .HasKey(cell => cell.Id);
+                
+            modelBuilder.Entity<SudokuCell>()
+                .HasOne(cell => cell.SudokuMatrix)
+                .WithMany(matrix => matrix.SudokuCells)
+                .HasForeignKey(cell => cell.SudokuMatrixId);
 
             modelBuilder.Entity<SudokuCell>()
                 .Ignore(cell => cell.AvailableValues);
 
             modelBuilder.Entity<SudokuMatrix>()
                 .HasKey(matrix => matrix.Id);
-                
+
             modelBuilder.Entity<SudokuMatrix>()
-                .HasMany(matrix => matrix.SudokuCells)
-                .WithOne(cell => cell.SudokuMatrix);
+                .HasOne(matrix => matrix.Difficulty)
+                .WithMany(difficulty => difficulty.Matrices)
+                .HasForeignKey(matrix => matrix.DifficultyId);
                 
             modelBuilder.Entity<SudokuMatrix>()
                 .Ignore(matrix => matrix.Columns)
@@ -133,16 +135,16 @@ namespace SudokuApp.WebApp.Models.DataModel {
                 .WithOne(matrix => matrix.Game);
 
             modelBuilder.Entity<Game>()
-                .HasOne(g => g.SudokuSolution)
-                .WithOne(s => s.Game)
-                .HasForeignKey<SudokuSolution>(s => s.GameId);
+                .HasOne(game => game.SudokuSolution)
+                .WithOne(solution => solution.Game);
+
+            modelBuilder.Entity<Game>()
+                .HasOne(game => game.User)
+                .WithMany(user => user.Games)
+                .HasForeignKey(game => game.UserId);
             
             modelBuilder.Entity<User>()
                 .HasKey(user => user.Id);
-            
-            modelBuilder.Entity<User>()
-                .HasMany(user => user.Games)
-                .WithOne(game => game.User);
 
             modelBuilder.Entity<User>()
                 .Property(user => user.UserName)

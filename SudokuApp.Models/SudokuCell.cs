@@ -15,6 +15,7 @@ namespace SudokuApp.Models {
         #region Properties
         public int Id { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
+        public int SudokuMatrixId { get; set; }
         public int Index { get; set; }
         public int Column { get; set; }
         public int Region { get; set; }
@@ -90,10 +91,9 @@ namespace SudokuApp.Models {
             Column = column;
             Region = region;
             Row = row;
-
             Value = 0;
-            Obscured = true;
 
+            Obscured = true;
             _initializing = false;
         }
 
@@ -112,11 +112,42 @@ namespace SudokuApp.Models {
             Column = column;
             Region = region;
             Row = row;
-
             Value = value;
-            Obscured = true;
 
+            Obscured = true;
             _initializing = false;
+        }
+
+        public SudokuCell() {
+
+            Obscured = true;
+            _initializing = false;
+        }
+
+        [JsonConstructor]
+        public SudokuCell(
+            int id, 
+            int sudokuMatrixId, 
+            int index, 
+            int column, 
+            int region, 
+            int row, 
+            int value, 
+            int displayValue, 
+            bool obscured) : this() {
+
+            AvailableValues = new List<int>();
+
+            Id = id;
+            SudokuMatrixId = sudokuMatrixId;
+            Index = index;
+            Column = column;
+            Region = region;
+            Row = row;
+            _value = value;
+            DisplayValue = displayValue;
+
+            Obscured = obscured;
         }
         #endregion
 

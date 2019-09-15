@@ -15,6 +15,5 @@ namespace SudokuApp.Models.Interfaces {
         List<int> SeventhRow { get; }
         List<int> EighthRow { get; }
         List<int> NinthRow { get; }
-        int? GameId { get; set; }
     }
 }

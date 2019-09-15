@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace SudokuApp.Models {
 
     public class UserRole {
@@ -7,6 +9,20 @@ namespace SudokuApp.Models {
 
         public int RoleId { get; set; }
         public Role Role { get; set; }
+
+        public UserRole() {
+
+            UserId = 0;
+            User = null;
+            RoleId = 0;
+            Role = null;
+        }
+
+        [JsonConstructor]
+        public UserRole(int userId, int roleId) : this() {
+
+            UserId = userId;
+            RoleId = roleId;
+        }
     }
 }
-

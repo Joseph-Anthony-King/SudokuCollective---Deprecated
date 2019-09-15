@@ -37,6 +37,19 @@ namespace SudokuApp.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SudokuSolutions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SolutionList = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SudokuSolutions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -62,7 +75,7 @@ namespace SudokuApp.WebApp.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DifficultyId = table.Column<int>(nullable: true)
+                    DifficultyId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,7 +85,7 @@ namespace SudokuApp.WebApp.Migrations
                         column: x => x.DifficultyId,
                         principalTable: "Difficulties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,8 +120,9 @@ namespace SudokuApp.WebApp.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateCompleted = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: true),
+                    UserId = table.Column<int>(nullable: false),
                     SudokuMatrixId = table.Column<int>(nullable: false),
+                    SudokuSolutionId = table.Column<int>(nullable: false),
                     ContinueGame = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -121,11 +135,17 @@ namespace SudokuApp.WebApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Games_SudokuSolutions_SudokuSolutionId",
+                        column: x => x.SudokuSolutionId,
+                        principalTable: "SudokuSolutions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Games_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,7 +154,7 @@ namespace SudokuApp.WebApp.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SudokuMatrixId = table.Column<int>(nullable: true),
+                    SudokuMatrixId = table.Column<int>(nullable: false),
                     Index = table.Column<int>(nullable: false),
                     Column = table.Column<int>(nullable: false),
                     Region = table.Column<int>(nullable: false),
@@ -151,13 +171,19 @@ namespace SudokuApp.WebApp.Migrations
                         column: x => x.SudokuMatrixId,
                         principalTable: "SudokuMatrices",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Games_SudokuMatrixId",
                 table: "Games",
                 column: "SudokuMatrixId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_SudokuSolutionId",
+                table: "Games",
+                column: "SudokuSolutionId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -203,6 +229,9 @@ namespace SudokuApp.WebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "UsersRoles");
+
+            migrationBuilder.DropTable(
+                name: "SudokuSolutions");
 
             migrationBuilder.DropTable(
                 name: "SudokuMatrices");

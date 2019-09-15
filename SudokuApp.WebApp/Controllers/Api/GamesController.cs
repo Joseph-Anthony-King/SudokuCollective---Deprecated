@@ -23,7 +23,7 @@ namespace SudokuApp.WebApp.Controllers {
         // GET: api/Games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id) {
+        public async Task<ActionResult<Game>> GetGame([FromQuery] int id) {
 
             var game = await _gamesService.GetGame(id);
 
@@ -48,7 +48,8 @@ namespace SudokuApp.WebApp.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame(
-            [FromBody] GetMyGameRO getMyGameRO, [FromQuery] bool fullRecord = true) {
+            [FromBody] GetMyGameRO getMyGameRO, 
+            [FromQuery] bool fullRecord = true) {
 
             var game = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId, fullRecord);
 
@@ -64,7 +65,8 @@ namespace SudokuApp.WebApp.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetMyGames/{userId}")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            int userId, [FromQuery] bool fullRecord = true) {
+            [FromQuery] int userId, 
+            [FromQuery] bool fullRecord = true) {
 
             return await _gamesService.GetMyGames(userId, fullRecord);
         }
@@ -84,15 +86,15 @@ namespace SudokuApp.WebApp.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(
-            int id, 
-            [FromBody] Game game) {
+            [FromQuery] int id, 
+            [FromBody] UpdateGameRO updateGameRO) {
 
-            if (id != game.Id) {
+            if (id != updateGameRO.GameId) {
 
                 return BadRequest();
             }
 
-            await _gamesService.UpdateGame(id, game);
+            await _gamesService.UpdateGame(id, updateGameRO);
 
             return NoContent();
         }
@@ -111,11 +113,20 @@ namespace SudokuApp.WebApp.Controllers {
         // DELETE: api/Games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Game>> DeleteGame(int id) {
+        public async Task<ActionResult<Game>> DeleteGame([FromQuery] int id) {
 
            var game = await _gamesService.DeleteGame(id);
 
            return game;
+        }
+
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPut, Route("CheckGame")]
+        public async Task<ActionResult<Game>> CheckGame([FromBody] UpdateGameRO checkGameRO) {
+
+            var game = await _gamesService.CheckGame(checkGameRO);
+
+            return game;
         }
     }
 }
