@@ -42,16 +42,25 @@ namespace SudokuApp.WebApp.Services {
                 matrix, 
                 difficultyActionResult.Value);
             
-            // EF Core loses reference to the users roles when creating new games.
-            // Before we save the new game we pull a reference to the users roles...
-            var user = game.User;
-            var userRoles = _context.UsersRoles.Where(u => u.UserId == user.Id).ToList();
+            var user = await _context.Users
+                .Include(u => u.Games)
+                .FirstOrDefaultAsync(u => u.Id == userActionResult.Value.Id);
+
+            var userRoles = await _context.UsersRoles
+                .Where(ur => ur.UserId == user.Id)
+                .ToListAsync();
+            
+            var userGames = await _context.Games
+                .Where(g => g.UserId == user.Id)
+                .ToListAsync();
 
             _context.Games.Update(game);
             await _context.SaveChangesAsync();
-            
-            // ...then we reattach the users roles to the data context.
+
             _context.UsersRoles.AddRange(userRoles);
+            await _context.SaveChangesAsync();
+
+            _context.Games.UpdateRange(userGames);
             await _context.SaveChangesAsync();
 
             return game;
