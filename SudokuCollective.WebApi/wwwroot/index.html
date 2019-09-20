@@ -32,9 +32,27 @@
                         role="button">View Code on Github</a>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">            
+                    <p>Sudoku Collective is a project that serves as a ready made Web API that you can use to learn client 
+                    side technologies.  The API is documented and the end points and code can be reviewed by using the 
+                    above links so you can fully integrate this API into your own projects.  My particular implementation 
+                    will include console and Vue apps.</p>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
         </div>
     </body>
 </html>
+
+<style>
+
+    .red {
+        color: red;
+    }
+    
+</style>
 
 <script>
     $(document).ready(function () {
@@ -50,18 +68,19 @@
 
             if (apiUp) {
 
-                $("#apiMessage").show();
                 $("#apiMessage")
                     .text("The Sudoku Collective API is up and running!");
+                $("#apiMessage").show();
 
             }
 
         }).fail(function(e) {
 
-            $("#apiMessage").show();
             $("#apiMessage")
-                .text("There is an issue with the Sudoku Collective API: \n\t" 
-                    + e.status + "\n\t" + e.statusText);
+                .text("There is an issue with the Sudoku Collective API: " 
+                    + e.status + " - " + e.statusText);
+            $("#apiMessage").addClass("red");
+            $("#apiMessage").show();
         });
     });
 </script>
