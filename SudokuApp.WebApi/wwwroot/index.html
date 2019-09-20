@@ -21,8 +21,16 @@
                 <p id="apiUpMessage" class="text-center"></p>
                 <p id="apiDownMessage" class="text-center"></p>
                 <div class="col-md-12 text-center">
-                    <a href="/swagger/index.html" target="_blank" title="API Documentation" class="btn btn-primary" role="button">API Documentation</a>
-                    <a href="https://github.com/Joseph-Anthony-King/SudokuApp" target="_blank" title="Sudoku Collective on Github" class="btn btn-primary" role="button">View Code on Github</a>
+                    <a href="/swagger/index.html" 
+                        target="_blank" 
+                        title="API Documentation" 
+                        class="btn btn-primary" 
+                        role="button">API Documentation</a>
+                    <a href="https://github.com/Joseph-Anthony-King/SudokuApp" 
+                        target="_blank" 
+                        title="Sudoku Collective on Github" 
+                        class="btn btn-primary" 
+                        role="button">View Code on Github</a>
                 </div>
             </div>
         </div>
@@ -48,13 +56,15 @@
 
                 $("#apiUpMessage").show();
                 $("#apiDownMessage").hide();
-                $("#apiUpMessage").text("The Sudoku Collective API is up and running!");
+                $("#apiUpMessage")
+                    .text("The Sudoku Collective API is up and running!");
 
             } else {
 
                 $("#apiUpMessage").hide();
                 $("#apiDownMessage").show();
-                $("#apiDownMessage").text("The Sudoku Collective API is down.");
+                $("#apiDownMessage")
+                    .text("The Sudoku Collective API is down.");
             }
         });
     });
