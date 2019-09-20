@@ -96,8 +96,17 @@ namespace SudokuApp.WebApp {
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            // Initialize and set the path for the welcome page saved in wwwroot
+            DefaultFilesOptions defaultFile = new DefaultFilesOptions();
+            defaultFile.DefaultFileNames.Clear();
+            defaultFile.DefaultFileNames.Add("index.html");
+
+            app.UseDefaultFiles(defaultFile);
+
             app.UseStaticFiles();
+
+            app.UseMvc();
 
             SeedData.EnsurePopulated(app, Configuration);
         }
