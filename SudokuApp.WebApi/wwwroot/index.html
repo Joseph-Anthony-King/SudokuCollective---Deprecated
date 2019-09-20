@@ -1,25 +1,27 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sudoku Collective</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-</head>
-<body>
-    <h1 id="apiUpMessage"></h1>
-    <h1 id="apiDownMessage"></h1>
-    <a href="/swagger/index.html" target="_self" title="API Documentation">API Documentation</a>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Sudoku Collective</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <h1 id="apiUpMessage"></h1>
+        <h1 id="apiDownMessage"></h1>
+        <a href="/swagger/index.html" target="_self" title="API Documentation">API Documentation</a>
+    </body>
+</html>
+
 <script>
-    $(document).ready(function() {
-        $.get("api/helloworld", function(data) {
-            
+    $(document).ready(function () {
+        $.get("api/helloworld", function (data) {
+
             var apiUp;
 
             if ('Hello World from Sudoku Collective!' === data) {
-                
+
                 apiUp = true;
 
             } else {
@@ -34,7 +36,7 @@
                 $("#apiUpMessage").text("The Sudoku Collective API is up and running!");
 
             } else {
-                
+
                 $("#apiUpMessage").hide();
                 $("#apiDownMessage").show();
                 $("#apiDownMessage").text("The Sudoku Collective API is down.");
@@ -42,4 +44,3 @@
         });
     });
 </script>
-</html>
