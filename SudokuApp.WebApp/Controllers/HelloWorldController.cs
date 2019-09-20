@@ -12,7 +12,7 @@ namespace SudokuApp.WebApp.Controllers {
         [HttpGet]
         public ActionResult Get() {
 
-            return Ok("Hello World from Sudoku Collective.com!");
+            return Ok("Hello World from Sudoku Collective!");
         }
     }
 }
