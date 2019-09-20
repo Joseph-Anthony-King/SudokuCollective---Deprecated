@@ -18,8 +18,7 @@
         <div class="container">
             <div class="jumbotron">
                 <h1 class="text-center">Welcome to Sudoku Collective</h1>
-                <p id="apiUpMessage" class="text-center"></p>
-                <p id="apiDownMessage" class="text-center"></p>
+                <p id="apiMessage" class="text-center"></p>
                 <div class="col-md-12 text-center">
                     <a href="/swagger/index.html" 
                         target="_blank" 
@@ -47,25 +46,22 @@
 
                 apiUp = true;
 
-            } else {
-
-                apiUp = false;
             }
 
             if (apiUp) {
 
-                $("#apiUpMessage").show();
-                $("#apiDownMessage").hide();
-                $("#apiUpMessage")
+                $("#apiMessage").show();
+                $("#apiMessage")
                     .text("The Sudoku Collective API is up and running!");
 
-            } else {
-
-                $("#apiUpMessage").hide();
-                $("#apiDownMessage").show();
-                $("#apiDownMessage")
-                    .text("The Sudoku Collective API is down.");
             }
+
+        }).fail(function(e) {
+
+            $("#apiMessage").show();
+            $("#apiMessage")
+                .text("There is an issue with the Sudoku Collective API: \n\t" 
+                    + e.status + "\n\t" + e.statusText);
         });
     });
 </script>
