@@ -6,11 +6,26 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Sudoku Collective</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     </head>
     <body>
-        <h1 id="apiUpMessage"></h1>
-        <h1 id="apiDownMessage"></h1>
-        <a href="/swagger/index.html" target="_self" title="API Documentation">API Documentation</a>
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <a class="navbar-brand" href="/">Sudoku Collective</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="jumbotron">
+                <h1 class="text-center">Welcome to Sudoku Collective</h1>
+                <p id="apiUpMessage" class="text-center"></p>
+                <p id="apiDownMessage" class="text-center"></p>
+                <div class="col-md-12 text-center">
+                    <a href="/swagger/index.html" target="_blank" title="API Documentation" class="btn btn-primary" role="button">API Documentation</a>
+                    <a href="https://github.com/Joseph-Anthony-King/SudokuApp" target="_blank" title="Sudoku Collective on Github" class="btn btn-primary" role="button">View on Github</a>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
 
