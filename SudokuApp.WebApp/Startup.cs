@@ -69,7 +69,7 @@ namespace SudokuApp.WebApp {
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sudoku App API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sudoku Collective API", Version = "v1" });
             });
         }
 
@@ -97,6 +97,7 @@ namespace SudokuApp.WebApp {
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseStaticFiles();
 
             SeedData.EnsurePopulated(app, Configuration);
         }
