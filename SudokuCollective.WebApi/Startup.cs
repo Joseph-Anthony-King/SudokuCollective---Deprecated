@@ -90,7 +90,7 @@ namespace SudokuCollective.WebApi {
 
             app.UseSwaggerUI(c => {
 
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sudoku App API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sudoku Collective API V1");
             });
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
