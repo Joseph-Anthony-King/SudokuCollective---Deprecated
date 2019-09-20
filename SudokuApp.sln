@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuApp.Tests", "SudokuApp.Tests\SudokuApp.Tests.csproj", "{F852B147-9264-41A9-B126-6E127191C74A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuApp.WebApp", "SudokuApp.WebApp\SudokuApp.WebApp.csproj", "{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuApp.WebApi", "SudokuApp.WebApi\SudokuApp.WebApi.csproj", "{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
