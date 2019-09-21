@@ -183,7 +183,7 @@ namespace SudokuCollective.WebApi.Services {
             return user;
         }
 
-        public async Task<ActionResult<User>> UpdateUser(
+        public async Task<User> UpdateUser(
             int id, UpdateUserRO updateUserRO) {
 
             var emailIsUnique = true;

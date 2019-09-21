@@ -56,12 +56,12 @@ namespace SudokuCollective.WebApi.Controllers {
             
             var user = await _userService.UpdateUser(id, updateUserRO);
 
-            if (!_userService.IsUserValid(user.Value)) {
+            if (!_userService.IsUserValid(user)) {
 
                 return NotFound();
 
-            } else if (user.Value.Email.Equals(updateUserRO.Email) 
-                && user.Value.Id == 0) {
+            } else if (user.Email.Equals(updateUserRO.Email) 
+                && user.Id == 0) {
 
                 return BadRequest("Email is not unique");
 
