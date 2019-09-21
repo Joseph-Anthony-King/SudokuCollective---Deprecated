@@ -27,12 +27,14 @@ namespace SudokuCollective.WebApi.Controllers {
 
             var game = await _gamesService.GetGame(id);
 
-            if (game == null)
-            {
-                return NotFound();
-            }
+            if (_gamesService.IsGameValid(game)) {
+                
+                return game;
 
-            return game;
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // GET: api/Games
@@ -53,12 +55,14 @@ namespace SudokuCollective.WebApi.Controllers {
 
             var game = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId, fullRecord);
 
-            if (game == null)
-            {
-                return NotFound();
-            }
+            if (_gamesService.IsGameValid(game)) {
+                
+                return game;
 
-            return game;
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // GET: api/Games/GetMyGames/5
@@ -79,7 +83,14 @@ namespace SudokuCollective.WebApi.Controllers {
 
            var game = await _gamesService.DeleteMyGame(getMyGameRO.UserId, getMyGameRO.GameId);
 
-           return game;
+            if (_gamesService.IsGameValid(game)) {
+                
+                return game;
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // PUT: api/Games/5
@@ -94,9 +105,17 @@ namespace SudokuCollective.WebApi.Controllers {
                 return BadRequest();
             }
 
-            await _gamesService.UpdateGame(id, updateGameRO);
+            var gameSuccessfullyUpdated = 
+                await _gamesService.UpdateGame(id, updateGameRO);
+            
+            if (gameSuccessfullyUpdated) {
 
-            return NoContent();
+                return NoContent();
+
+            } else {
+
+                return BadRequest("Issue updating the game");
+            }
         }
 
         // POST: api/Games
@@ -117,7 +136,14 @@ namespace SudokuCollective.WebApi.Controllers {
 
            var game = await _gamesService.DeleteGame(id);
 
-           return game;
+            if (_gamesService.IsGameValid(game)) {
+                
+                return game;
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
@@ -126,7 +152,14 @@ namespace SudokuCollective.WebApi.Controllers {
 
             var game = await _gamesService.CheckGame(checkGameRO);
 
-            return game;
+            if (_gamesService.IsGameValid(game)) {
+                
+                return game;
+
+            } else {
+
+                return BadRequest();
+            }            
         }
     }
 }

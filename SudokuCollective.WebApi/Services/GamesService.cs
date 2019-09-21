@@ -61,7 +61,9 @@ namespace SudokuCollective.WebApi.Services {
             return game;
         }
 
-        public async Task UpdateGame(int id, UpdateGameRO updateGameRO) {
+        public async Task<bool> UpdateGame(int id, UpdateGameRO updateGameRO) {
+
+            var result = false;
 
             if (id == updateGameRO.GameId) {
 
@@ -80,7 +82,11 @@ namespace SudokuCollective.WebApi.Services {
                 }
 
                 await _context.SaveChangesAsync();
+                result = true;
+
             }
+            
+            return result;
         }
 
         public async Task<Game> DeleteGame(int id) {
@@ -89,7 +95,14 @@ namespace SudokuCollective.WebApi.Services {
 
             if (game == null) {
 
-                return game = new Game();
+                return game = new Game() {
+
+                    Id = 0,
+                    UserId = 0,
+                    User = null,
+                    SudokuMatrixId = 0,
+                    SudokuMatrix = null
+                };
             }
 
             _context.Games.Remove(game);
@@ -98,7 +111,7 @@ namespace SudokuCollective.WebApi.Services {
             return game;
         }
 
-        public async Task<ActionResult<Game>> GetGame(int id) {
+        public async Task<Game> GetGame(int id) {
 
             var game = await _context.Games
                 .Include(g => g.User).ThenInclude(u => u.Roles)
@@ -108,7 +121,14 @@ namespace SudokuCollective.WebApi.Services {
 
             if (game == null) {
 
-                return game = new Game();
+                return game = new Game() {
+
+                    Id = 0,
+                    UserId = 0,
+                    User = null,
+                    SudokuMatrixId = 0,
+                    SudokuMatrix = null
+                };
             }
 
             game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
@@ -145,7 +165,7 @@ namespace SudokuCollective.WebApi.Services {
             return games;
         }
 
-        public async Task<ActionResult<Game>> GetMyGame(int userId, int gameId, bool fullRecord = true) {
+        public async Task<Game> GetMyGame(int userId, int gameId, bool fullRecord = true) {
 
             var game = new Game();
             
@@ -159,7 +179,14 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    return game = new Game();
+                    return game = new Game() {
+
+                        Id = 0,
+                        UserId = 0,
+                        User = null,
+                        SudokuMatrixId = 0,
+                        SudokuMatrix = null
+                    };
                 }
 
                 game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
@@ -171,7 +198,14 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    return game = new Game();
+                    return game = new Game() {
+
+                        Id = 0,
+                        UserId = 0,
+                        User = null,
+                        SudokuMatrixId = 0,
+                        SudokuMatrix = null
+                    };
                 }
             }
 
@@ -215,8 +249,18 @@ namespace SudokuCollective.WebApi.Services {
 
             if (game == null) {
 
-                return game = new Game();
+                return game = new Game() {
+
+                    Id = 0,
+                    UserId = 0,
+                    User = null,
+                    SudokuMatrixId = 0,
+                    SudokuMatrix = null
+                };
             }
+
+            _context.Games.Remove(game);
+            await _context.SaveChangesAsync();
 
             return game;
         }
@@ -228,18 +272,46 @@ namespace SudokuCollective.WebApi.Services {
                     .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
                     .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRO.GameId);
 
-            game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
+            if (game != null) {
 
-            game.IsSolved();
+                game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
 
-            foreach (var cell in game.SudokuMatrix.SudokuCells) {
+                game.IsSolved();
 
-                _context.SudokuCells.Update(cell);
+                foreach (var cell in game.SudokuMatrix.SudokuCells) {
+
+                    _context.SudokuCells.Update(cell);
+                }
+                
+                await _context.SaveChangesAsync();
+
+                return game;
+
+            } else {
+
+                return game = new Game() {
+
+                    Id = 0,
+                    UserId = 0,
+                    User = null,
+                    SudokuMatrixId = 0,
+                    SudokuMatrix = null
+                };
             }
-            
-            await _context.SaveChangesAsync();
+        }
 
-            return game;
+        public bool IsGameValid(Game game) {
+
+            var result = true;
+
+            if (game.Id == 0 &&
+                game.UserId == 0 &&
+                game.SudokuSolutionId == 0) {
+
+                result = false;
+            }
+
+            return result;
         }
     }
 }
