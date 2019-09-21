@@ -69,6 +69,18 @@
 
         var date = new Date();
         $("#year").text(date.getFullYear());
+        
+        checkAPI();
+
+        setInterval(function() {
+
+            checkAPI();
+            console.log("Ran CheckAPI()");
+
+        }, 600000);
+    });
+
+    function checkAPI() {
 
         $.get("api/helloworld", function (data) {
 
@@ -96,5 +108,5 @@
             $("#apiMessage").addClass("red");
             $("#apiMessage").show();
         });
-    });
+    }
 </script>
