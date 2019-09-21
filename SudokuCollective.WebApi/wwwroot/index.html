@@ -8,6 +8,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"/>
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -22,7 +23,7 @@
                 <div class="col-md-12 text-center">
                     <a href="/swagger/index.html" 
                         target="_blank" 
-                        title="API Documentation" 
+                        title="Sudoku Collective API Documentation" 
                         class="btn btn-primary" 
                         role="button">API Documentation</a>
                     <a href="https://github.com/Joseph-Anthony-King/SudokuCollective" 
@@ -43,6 +44,15 @@
                 <div class="col-sm-2"></div>
             </div>
         </div>
+        <footer>
+            <div class="container">
+                <div class="footer-copyright text-right py-3">© Copyright <span id="year"></span>:
+                    <a href="https://www.linkedin.com/in/joseph-king-23650256/"
+                        target="_blank"
+                        title="LinkedIn Profile: Joseph Anthony King"> Joseph-Anthony-King</a>
+                </div>
+            </container>
+        </footer>
     </body>
 </html>
 
@@ -56,6 +66,10 @@
 
 <script>
     $(document).ready(function () {
+
+        var date = new Date();
+        $("#year").text(date.getFullYear());
+
         $.get("api/helloworld", function (data) {
 
             var apiUp;
