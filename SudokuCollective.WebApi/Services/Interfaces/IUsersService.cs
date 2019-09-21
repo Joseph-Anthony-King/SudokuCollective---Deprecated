@@ -9,10 +9,11 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
     
     public interface IUsersService {
 
-        Task<ActionResult<User>> GetUser(int id, bool fullRecord = true);
+        Task<User> GetUser(int id, bool fullRecord = true);
         Task<ActionResult<IEnumerable<User>>> GetUsers(bool fullRecord = true);
         Task<User> CreateUser(RegisterRO registerRO);
         Task<User> UpdateUser(int id, UpdateUserRO updateUserRO);
+        Task<bool> UpdatePassword(int id, UpdatePasswordRO updatePasswordRO);
         Task<User> DeleteUser(int id);
         Task AddUserRoles(int userId, List<int> roleIds);
         Task RemoveUserRoles(int userId, List<int> roleIds);

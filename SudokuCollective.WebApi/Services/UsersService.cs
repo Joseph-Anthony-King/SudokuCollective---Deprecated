@@ -22,7 +22,7 @@ namespace SudokuCollective.WebApi.Services {
             _context = context;
         }
 
-        public async Task<ActionResult<User>> GetUser(int id, bool fullRecord = true) {
+        public async Task<User> GetUser(int id, bool fullRecord = true) {
 
             var user = new User();
 
@@ -188,7 +188,6 @@ namespace SudokuCollective.WebApi.Services {
 
             var emailIsUnique = true;
             var userIdExists = false;
-            var user = new User();
             var users = await _context.Users.ToListAsync();
             var updatedDate = DateTime.UtcNow;
 
@@ -207,7 +206,7 @@ namespace SudokuCollective.WebApi.Services {
 
             if (emailIsUnique && userIdExists) {
             
-                user = await _context.Users.FindAsync(id);
+                var user = await _context.Users.FindAsync(id);
 
                 user.UserName = updateUserRO.UserName;
                 user.FirstName = updateUserRO.FirstName;
@@ -219,6 +218,8 @@ namespace SudokuCollective.WebApi.Services {
                 _context.Entry(user).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
+                return user;
+
             } else {
 
                 var outGoingEmail = string.Empty;
@@ -228,7 +229,7 @@ namespace SudokuCollective.WebApi.Services {
                     outGoingEmail = updateUserRO.Email;
                 }
 
-                user = new User {
+                var user = new User {
 
                     Id = 0,
                     UserName = String.Empty,
@@ -240,9 +241,32 @@ namespace SudokuCollective.WebApi.Services {
                     Email = outGoingEmail,
                     Password = string.Empty
                 };
+
+                return user;
+            }
+        }
+
+        public async Task<bool> UpdatePassword(int id, UpdatePasswordRO updatePasswordRO) {
+
+            var result = false;
+
+            var user = await _context.Users.SingleOrDefaultAsync(u =>
+                u.Id == id &&
+                BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, u.Password));
+
+            if (user != null) {
+
+                var salt = BCrypt.Net.BCrypt.GenerateSalt();
+
+                user.Password = BCrypt.Net.BCrypt
+                    .HashPassword(updatePasswordRO.NewPassword, salt);
+
+                _context.Entry<User>(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                result = true;
             }
 
-            return user;
+            return result;
         }
 
         public async Task<User> DeleteUser(int id) {
@@ -291,7 +315,8 @@ namespace SudokuCollective.WebApi.Services {
 
             foreach (var roleId in roleIds) {
 
-                roles.Add(await _context.Roles.Where(r => r.Id == roleId).FirstOrDefaultAsync());
+                roles.Add(await _context.Roles.Where(r => r.Id == roleId)
+                    .FirstOrDefaultAsync());
             }
 
             foreach (var role in roles) {
@@ -315,7 +340,8 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task RemoveUserRoles(int userId, List<int> roleIds) {
 
-            var usersRoles = _context.UsersRoles.Where(ur => ur.UserId == userId && roleIds.Contains(ur.RoleId));
+            var usersRoles = _context.UsersRoles
+                .Where(ur => ur.UserId == userId && roleIds.Contains(ur.RoleId));
                 
             _context.UsersRoles.RemoveRange(usersRoles);
             await _context.SaveChangesAsync();

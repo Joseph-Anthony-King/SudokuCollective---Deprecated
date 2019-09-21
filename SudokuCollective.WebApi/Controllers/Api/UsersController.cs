@@ -29,7 +29,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
             var user = await _userService.GetUser(id, fullRecord);
 
-            if (!_userService.IsUserValid(user.Value)) {
+            if (!_userService.IsUserValid(user)) {
 
                 return NotFound();
 
@@ -68,6 +68,24 @@ namespace SudokuCollective.WebApi.Controllers {
             } else {
 
                 return NoContent();
+            }
+        }
+
+        // PUT: api/Users/UpdatePassword/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPut("UpdatePassword/{id}")]
+        public async Task<IActionResult> UpdatePassword(
+            int id, [FromBody] UpdatePasswordRO updatePasswordRO) {
+
+            var passwordUpdated = await _userService.UpdatePassword(id, updatePasswordRO);
+
+            if (passwordUpdated) {
+
+                return Ok();
+
+            } else {
+
+                return BadRequest("Issue updating password");
             }
         }
 

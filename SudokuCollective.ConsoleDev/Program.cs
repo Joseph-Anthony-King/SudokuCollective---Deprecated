@@ -6,7 +6,7 @@ namespace SudokuCollective.ConsoleDev {
     class Program {
         static void Main(string[] args) {
 
-            Console.WriteLine("\nWelcome to the Sudoku Console App!");
+            Console.WriteLine("\nWelcome to the Sudoku Collecive Dev App!");
             DisplayScreens.ProgramPrompt();
 
         begin:

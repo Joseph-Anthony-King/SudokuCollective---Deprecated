@@ -29,8 +29,7 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<Game> CreateGame(CreateGameRO createGameRO) {
 
-            var userActionResult = 
-                await _userService.GetUser(createGameRO.UserId);
+            var user = await _userService.GetUser(createGameRO.UserId);
             var difficultyActionResult = 
                 await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
 
@@ -38,13 +37,9 @@ namespace SudokuCollective.WebApi.Services {
             matrix.GenerateSolution();
 
             Game game = new Game(
-                userActionResult.Value, 
+                user, 
                 matrix, 
                 difficultyActionResult.Value);
-            
-            var user = await _context.Users
-                .Include(u => u.Games)
-                .FirstOrDefaultAsync(u => u.Id == userActionResult.Value.Id);
 
             var userRoles = await _context.UsersRoles
                 .Where(ur => ur.UserId == user.Id)
