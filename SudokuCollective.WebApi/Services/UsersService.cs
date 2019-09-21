@@ -8,6 +8,7 @@ using SudokuCollective.Models;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestObjects.RegisterRequests;
+using SudokuCollective.WebApi.Models.RequestObjects.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -38,6 +39,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     return new User {
 
+                        Id = 0,
                         UserName = String.Empty,
                         FirstName = String.Empty,
                         LastName = String.Empty,
@@ -51,7 +53,8 @@ namespace SudokuCollective.WebApi.Services {
 
                 foreach (var game in user.Games) {
                     
-                    game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                    game.SudokuMatrix = await StaticApiHelpers
+                        .AttachSudokuMatrix(game, _context);
                 }
 
                 foreach (var userRole in user.Roles) {
@@ -180,20 +183,66 @@ namespace SudokuCollective.WebApi.Services {
             return user;
         }
 
-        public async Task UpdateUser(int id, User user) {
+        public async Task<ActionResult<User>> UpdateUser(
+            int id, UpdateUserRO updateUserRO) {
 
-            if (id == user.Id) {
+            var emailIsUnique = true;
+            var userIdExists = false;
+            var user = new User();
+            var users = await _context.Users.ToListAsync();
+            var updatedDate = DateTime.UtcNow;
 
-                user.DateUpdated = DateTime.UtcNow;
+            foreach (var u in users) {
 
-                // Encrypt the users password
-                user.Password = BCrypt.Net.BCrypt
-                    .HashPassword(user.Password);
+                if (u.Email.Equals(updateUserRO.Email) && id != u.Id) {
 
-                _context.Entry(user).State = EntityState.Modified;
-                
-                await _context.SaveChangesAsync();
+                    emailIsUnique = false;
+                }
+
+                if (u.Id == id) {
+
+                    userIdExists = true;
+                }
             }
+
+            if (emailIsUnique && userIdExists) {
+            
+                user = await _context.Users.FindAsync(id);
+
+                user.UserName = updateUserRO.UserName;
+                user.FirstName = updateUserRO.FirstName;
+                user.LastName = updateUserRO.LastName;
+                user.NickName = updateUserRO.NickName;
+                user.Email = updateUserRO.Email;
+                user.DateUpdated = updatedDate;
+                
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+            } else {
+
+                var outGoingEmail = string.Empty;
+
+                if (!emailIsUnique) {
+
+                    outGoingEmail = updateUserRO.Email;
+                }
+
+                user = new User {
+
+                    Id = 0,
+                    UserName = String.Empty,
+                    FirstName = String.Empty,
+                    LastName = String.Empty,
+                    NickName = string.Empty,
+                    DateCreated = updatedDate,
+                    DateUpdated = updatedDate,
+                    Email = outGoingEmail,
+                    Password = string.Empty
+                };
+            }
+
+            return user;
         }
 
         public async Task<User> DeleteUser(int id) {
@@ -270,6 +319,24 @@ namespace SudokuCollective.WebApi.Services {
                 
             _context.UsersRoles.RemoveRange(usersRoles);
             await _context.SaveChangesAsync();
+        }
+
+        public bool IsUserValid(User user) {
+
+            var result = true;
+
+            if (string.IsNullOrEmpty(user.UserName) &&
+                string.IsNullOrEmpty(user.FirstName) &&
+                string.IsNullOrEmpty(user.LastName) &&
+                string.IsNullOrEmpty(user.NickName) &&
+                string.IsNullOrEmpty(user.Email) &&
+                string.IsNullOrEmpty(user.Password) &&
+                user.Id == 0) {
+
+                result = false;
+            }
+
+            return result;
         }
     }
 }

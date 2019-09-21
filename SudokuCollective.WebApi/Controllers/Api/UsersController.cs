@@ -29,9 +29,9 @@ namespace SudokuCollective.WebApi.Controllers {
 
             var user = await _userService.GetUser(id, fullRecord);
 
-            if (string.IsNullOrEmpty(user.Value.UserName)) {
+            if (!_userService.IsUserValid(user.Value)) {
 
-                return BadRequest();
+                return NotFound();
 
             } else {
 
@@ -52,26 +52,40 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(
-            int id, [FromBody] User user) {
-
-            if (id != user.Id) {
-
-                return BadRequest();
-            }
+            int id, [FromBody] UpdateUserRO updateUserRO) {
             
-            await _userService.UpdateUser(id, user);
+            var user = await _userService.UpdateUser(id, updateUserRO);
 
-            return NoContent();
+            if (!_userService.IsUserValid(user.Value)) {
+
+                return NotFound();
+
+            } else if (user.Value.Email.Equals(updateUserRO.Email) 
+                && user.Value.Id == 0) {
+
+                return BadRequest("Email is not unique");
+
+            } else {
+
+                return NoContent();
+            }
         }
 
         // DELETE: api/Users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id) {
+            
+            var user = await _userService.DeleteUser(id);
 
-           var user = await _userService.DeleteUser(id);
+            if (!_userService.IsUserValid(user)) {
 
-           return user;
+                return NotFound();
+
+            } else {
+
+                return user;
+            }           
         }
 
         // api/Users/AddRoles
