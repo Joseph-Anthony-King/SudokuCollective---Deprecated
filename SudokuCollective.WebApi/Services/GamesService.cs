@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
 using SudokuCollective.WebApi.Helpers;
@@ -11,7 +10,8 @@ using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
 using SudokuCollective.WebApi.Models.TaskModels.GameRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.WebApi.Services {
+namespace SudokuCollective.WebApi.Services
+{
 
     public class GamesService : IGamesService {
 
