@@ -2,8 +2,7 @@ using System.Threading.Tasks;
 using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
 using SudokuCollective.WebApi.Models.TaskModels.GameRequests;
 
-namespace SudokuCollective.WebApi.Services.Interfaces
-{
+namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IGamesService {
 

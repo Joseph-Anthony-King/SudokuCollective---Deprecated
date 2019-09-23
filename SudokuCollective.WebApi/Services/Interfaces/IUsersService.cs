@@ -5,8 +5,7 @@ using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
 using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
 
-namespace SudokuCollective.WebApi.Services.Interfaces
-{
+namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IUsersService {
 
