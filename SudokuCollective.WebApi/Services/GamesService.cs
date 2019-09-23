@@ -43,24 +43,24 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var result = await _userService.GetUser(createGameRO.UserId);
-                var difficultyActionResult =
+                var userResult = await _userService.GetUser(createGameRO.UserId);
+                var difficultyResult =
                     await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
 
                 SudokuMatrix matrix = new SudokuMatrix();
                 matrix.GenerateSolution();
 
                 var game = new Game(
-                    result.User,
+                    userResult.User,
                     matrix,
-                    difficultyActionResult.Value);
+                    difficultyResult.Difficulty);
 
                 var userRoles = await _context.UsersRoles
-                    .Where(ur => ur.UserId == result.User.Id)
+                    .Where(ur => ur.UserId == userResult.User.Id)
                     .ToListAsync();
 
                 var userGames = await _context.Games
-                    .Where(g => g.UserId == result.User.Id)
+                    .Where(g => g.UserId == userResult.User.Id)
                     .ToListAsync();
 
                 _context.Games.Update(game);
