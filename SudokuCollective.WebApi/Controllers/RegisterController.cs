@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
-using SudokuCollective.WebApi.Models.RequestObjects.RegisterRequests;
+using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
@@ -22,9 +22,20 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPost, Route("signup")]
         public async Task<ActionResult<User>> SignUp([FromBody] RegisterRO registerRO) {
             
-            var user = await _usersService.CreateUser(registerRO);
-            
-            return CreatedAtAction("GetUser", "Users", new { id = user.Id }, user);
+            var result = await _usersService.CreateUser(registerRO);
+
+            if (result.Result) {
+
+                return CreatedAtAction(
+                    "GetUser", 
+                    "Users", 
+                    new { id = result.User.Id }, 
+                    result.User);
+
+            } else {
+
+                return BadRequest("Error creating user");
+            }
         }
     }
 }

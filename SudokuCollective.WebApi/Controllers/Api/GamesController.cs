@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
-using SudokuCollective.WebApi.Models.RequestObjects.GameRequests;
+using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
@@ -25,11 +25,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame([FromQuery] int id) {
 
-            var game = await _gamesService.GetGame(id);
+            var result = await _gamesService.GetGame(id);
 
-            if (_gamesService.IsGameValid(game)) {
+            if (result.Result) {
                 
-                return game;
+                return Ok(result.Game);
 
             } else {
 
@@ -43,7 +43,16 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
             [FromQuery] bool fullRecord = true) {
 
-            return await _gamesService.GetGames(fullRecord);
+            var result = await _gamesService.GetGames(fullRecord);
+
+            if (result.Result) {
+
+                return Ok(result.Games);
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // GET: api/Games/GetMyGame
@@ -53,11 +62,11 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] GetMyGameRO getMyGameRO, 
             [FromQuery] bool fullRecord = true) {
 
-            var game = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId, fullRecord);
+            var result = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId, fullRecord);
 
-            if (_gamesService.IsGameValid(game)) {
-                
-                return game;
+            if (result.Result) {
+
+                return Ok(result.Game);
 
             } else {
 
@@ -72,7 +81,16 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromQuery] int userId, 
             [FromQuery] bool fullRecord = true) {
 
-            return await _gamesService.GetMyGames(userId, fullRecord);
+            var result = await _gamesService.GetMyGames(userId, fullRecord);
+
+            if (result.Result) {
+
+                return Ok(result.Games);
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // DELETE: api/Games/DeleteMyGame
@@ -81,11 +99,11 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Game>> DeleteMyGame(
             [FromBody] GetMyGameRO getMyGameRO) {
 
-           var game = await _gamesService.DeleteMyGame(getMyGameRO.UserId, getMyGameRO.GameId);
+           var result = await _gamesService.DeleteMyGame(getMyGameRO.UserId, getMyGameRO.GameId);
 
-            if (_gamesService.IsGameValid(game)) {
+            if (result) {
                 
-                return game;
+                return Ok();
 
             } else {
 
@@ -105,10 +123,10 @@ namespace SudokuCollective.WebApi.Controllers {
                 return BadRequest();
             }
 
-            var gameSuccessfullyUpdated = 
+            var result = 
                 await _gamesService.UpdateGame(id, updateGameRO);
             
-            if (gameSuccessfullyUpdated) {
+            if (result.Result) {
 
                 return NoContent();
 
@@ -124,9 +142,20 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Game>> PostGame(
             [FromBody] CreateGameRO createGameRO) {
             
-            var game = await _gamesService.CreateGame(createGameRO);
+            var result = await _gamesService.CreateGame(createGameRO);
 
-            return CreatedAtAction("GetGame", new { id = game.Id }, game);
+            if (result.Result) {
+
+                return CreatedAtAction(
+                    "GetUser",
+                    "Users",
+                    new { id = result.Game.Id },
+                    result.Game);
+
+            } else {
+
+                return BadRequest("Error creating user");
+            }
         }
 
         // DELETE: api/Games/5
@@ -134,11 +163,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpDelete("{id}")]
         public async Task<ActionResult<Game>> DeleteGame([FromQuery] int id) {
 
-           var game = await _gamesService.DeleteGame(id);
+            var result = await _gamesService.DeleteGame(id);
 
-            if (_gamesService.IsGameValid(game)) {
-                
-                return game;
+            if (result) {
+
+                return Ok();
 
             } else {
 
@@ -150,11 +179,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPut, Route("CheckGame")]
         public async Task<ActionResult<Game>> CheckGame([FromBody] UpdateGameRO checkGameRO) {
 
-            var game = await _gamesService.CheckGame(checkGameRO);
+            var result = await _gamesService.CheckGame(checkGameRO);
 
-            if (_gamesService.IsGameValid(game)) {
+            if (result.Result) {
                 
-                return game;
+                return Ok(result.Game);
 
             } else {
 

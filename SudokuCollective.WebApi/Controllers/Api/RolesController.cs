@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
-using SudokuCollective.WebApi.Models.RequestObjects.RoleRequests;
+using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers

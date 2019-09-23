@@ -1,4 +1,4 @@
-namespace SudokuCollective.WebApi.Models.RequestObjects.UserRequests {
+namespace SudokuCollective.WebApi.Models.RequestModels.UserRequests {
 
     public class UpdateUserRO {
 

@@ -1,4 +1,4 @@
-namespace SudokuCollective.WebApi.Models.RequestObjects.SolveRequests {
+namespace SudokuCollective.WebApi.Models.RequestModels.SolveRequests {
     
     public class SolveRequestsRO {
 

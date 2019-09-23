@@ -1,6 +1,6 @@
 using SudokuCollective.Models.Enums;
 
-namespace SudokuCollective.WebApi.Models.RequestObjects.DifficultyRequests {
+namespace SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests {
 
     public class CreateDifficultyRO {
 

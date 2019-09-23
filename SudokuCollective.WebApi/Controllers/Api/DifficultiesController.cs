@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
-using SudokuCollective.WebApi.Models.RequestObjects.DifficultyRequests;
+using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {

@@ -7,7 +7,7 @@ using SudokuCollective.Models;
 using SudokuCollective.Utilities;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
-using SudokuCollective.WebApi.Models.RequestObjects.SolveRequests;
+using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services

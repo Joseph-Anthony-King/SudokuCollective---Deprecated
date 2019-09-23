@@ -1,4 +1,4 @@
-namespace SudokuCollective.WebApi.Models.RequestObjects.GameRequests {
+namespace SudokuCollective.WebApi.Models.RequestModels.GameRequests {
     
     public class CreateGameRO {
 

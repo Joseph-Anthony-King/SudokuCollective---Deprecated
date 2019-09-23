@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
-using SudokuCollective.WebApi.Models.RequestObjects.SolveRequests;
+using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
 
 namespace SudokuCollective.WebApi.Services.Interfaces
 {

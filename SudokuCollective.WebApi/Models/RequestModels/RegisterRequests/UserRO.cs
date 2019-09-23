@@ -1,4 +1,4 @@
-namespace SudokuCollective.WebApi.Models.RequestObjects.RegisterRequests {
+namespace SudokuCollective.WebApi.Models.RequestModels.RegisterRequests {
     
     public class RegisterRO {
 

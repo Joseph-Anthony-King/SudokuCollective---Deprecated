@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
-using SudokuCollective.WebApi.Models.RequestObjects.UserRequests;
+using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
@@ -27,15 +27,15 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<User>> GetUser(
             int id, [FromQuery] bool fullRecord = true) {
 
-            var user = await _userService.GetUser(id, fullRecord);
+            var result = await _userService.GetUser(id, fullRecord);
 
-            if (!_userService.IsUserValid(user)) {
+            if (result.Result) {
 
-                return NotFound();
+                return Ok(result.User);
 
             } else {
 
-                return user;
+                return NotFound();
             }
         }
 
@@ -45,7 +45,16 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
             [FromQuery] bool fullRecord = true) {
 
-            return await _userService.GetUsers(fullRecord);
+            var result = await _userService.GetUsers(fullRecord);
+
+            if (result.Result) {
+
+                return Ok(result.Users);
+
+            } else {
+
+                return BadRequest("Issue obtaining users");
+            }
         }
 
         // PUT: api/Users/5
@@ -54,20 +63,23 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> PutUser(
             int id, [FromBody] UpdateUserRO updateUserRO) {
             
-            var user = await _userService.UpdateUser(id, updateUserRO);
+            var result = await _userService.UpdateUser(id, updateUserRO);
 
-            if (!_userService.IsUserValid(user)) {
+            if (result.Result) {
 
-                return NotFound();
-
-            } else if (user.Email.Equals(updateUserRO.Email) 
-                && user.Id == 0) {
-
-                return BadRequest("Email is not unique");
+                return Ok();
 
             } else {
 
-                return NoContent();
+                if (result.User.Email.Equals(updateUserRO.Email)
+                    && result.User.Id == 0) {
+
+                    return BadRequest("Email is not unique");
+
+                } else {
+
+                    return BadRequest();
+                }
             }
         }
 
@@ -77,9 +89,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> UpdatePassword(
             int id, [FromBody] UpdatePasswordRO updatePasswordRO) {
 
-            var passwordUpdated = await _userService.UpdatePassword(id, updatePasswordRO);
+            var result = await _userService.UpdatePassword(id, updatePasswordRO);
 
-            if (passwordUpdated) {
+            if (result) {
 
                 return Ok();
 
@@ -94,15 +106,15 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id) {
             
-            var user = await _userService.DeleteUser(id);
+            var result = await _userService.DeleteUser(id);
 
-            if (!_userService.IsUserValid(user)) {
+            if (result) {
 
-                return NotFound();
+                return Ok();
 
             } else {
 
-                return user;
+                return NotFound();
             }           
         }
 
@@ -112,11 +124,18 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> AddRoles(
             [FromBody] UpdateRoleRO addRolesRo) {
             
-            await _userService.AddUserRoles(
-                addRolesRo.UserId, 
+            var result = await _userService.AddUserRoles( 
+                addRolesRo.UserId,
                 addRolesRo.RoleIds.ToList());
 
-            return NoContent();
+            if (result) {
+
+                return Ok();
+
+            } else {
+
+                return NotFound();
+            }
         }
 
         // api/Users/AddRoles
@@ -125,11 +144,18 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> RemoveRoles(
             [FromBody] UpdateRoleRO addRolesRo) {
             
-            await _userService.RemoveUserRoles(
+            var result = await _userService.RemoveUserRoles(
                 addRolesRo.UserId, 
                 addRolesRo.RoleIds.ToList());
 
-            return NoContent();
+            if (result) {
+
+                return Ok();
+
+            } else {
+
+                return NotFound();
+            }
         }
     }
 }

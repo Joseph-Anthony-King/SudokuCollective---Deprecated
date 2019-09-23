@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
-using SudokuCollective.WebApi.Models.RequestObjects.GameRequests;
+using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
+using SudokuCollective.WebApi.Models.TaskModels.GameRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -27,291 +29,409 @@ namespace SudokuCollective.WebApi.Services {
             _difficultiesService = difficultiesService;
         }
 
-        public async Task<Game> CreateGame(CreateGameRO createGameRO) {
+        public async Task<GameTaskResult> CreateGame(CreateGameRO createGameRO) {
 
-            var user = await _userService.GetUser(createGameRO.UserId);
-            var difficultyActionResult = 
-                await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
+            var gameTaskResult = new GameTaskResult() {
 
-            SudokuMatrix matrix = new SudokuMatrix();
-            matrix.GenerateSolution();
+                Result = false,
+                Game = new Game() {
 
-            Game game = new Game(
-                user, 
-                matrix, 
-                difficultyActionResult.Value);
+                    Id = 0,
+                    UserId = 0,
+                    SudokuMatrixId = 0
+                }
+            };
 
-            var userRoles = await _context.UsersRoles
-                .Where(ur => ur.UserId == user.Id)
-                .ToListAsync();
-            
-            var userGames = await _context.Games
-                .Where(g => g.UserId == user.Id)
-                .ToListAsync();
+            try {
 
-            _context.Games.Update(game);
-            await _context.SaveChangesAsync();
+                var result = await _userService.GetUser(createGameRO.UserId);
+                var difficultyActionResult =
+                    await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
 
-            _context.UsersRoles.AddRange(userRoles);
-            await _context.SaveChangesAsync();
+                SudokuMatrix matrix = new SudokuMatrix();
+                matrix.GenerateSolution();
 
-            _context.Games.UpdateRange(userGames);
-            await _context.SaveChangesAsync();
+                var game = new Game(
+                    result.User,
+                    matrix,
+                    difficultyActionResult.Value);
 
-            return game;
+                var userRoles = await _context.UsersRoles
+                    .Where(ur => ur.UserId == result.User.Id)
+                    .ToListAsync();
+
+                var userGames = await _context.Games
+                    .Where(g => g.UserId == result.User.Id)
+                    .ToListAsync();
+
+                _context.Games.Update(game);
+                await _context.SaveChangesAsync();
+
+                _context.UsersRoles.AddRange(userRoles);
+                await _context.SaveChangesAsync();
+
+                _context.Games.UpdateRange(userGames);
+                await _context.SaveChangesAsync();
+
+                gameTaskResult.Result = true;
+                gameTaskResult.Game = game;
+
+                return gameTaskResult;
+
+            } catch (Exception) {
+
+                return gameTaskResult;
+            }
         }
 
-        public async Task<bool> UpdateGame(int id, UpdateGameRO updateGameRO) {
+        public async Task<GameTaskResult> UpdateGame(int id, UpdateGameRO updateGameRO) {
+
+            var gameTaskResult = new GameTaskResult() {
+
+                Result = false,
+                Game = new Game()
+                {
+
+                    Id = 0,
+                    UserId = 0,
+                    SudokuMatrixId = 0
+                }
+            };
+
+            try {
+
+                if (id == updateGameRO.GameId) {
+
+                    var game = await _context.Games
+                            .Include(g => g.User).ThenInclude(u => u.Roles)
+                            .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
+                            .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRO.GameId);
+
+                    game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
+
+                    game.IsSolved();
+
+                    foreach (var cell in game.SudokuMatrix.SudokuCells) {
+
+                        _context.SudokuCells.Update(cell);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    gameTaskResult.Result = true;
+                    gameTaskResult.Game = game;
+
+                }
+
+                return gameTaskResult;
+
+            } catch (Exception) {
+
+                return gameTaskResult;
+            }
+        }
+
+        public async Task<bool> DeleteGame(int id) {
 
             var result = false;
 
-            if (id == updateGameRO.GameId) {
+            try {
+
+                var game = await _context.Games.FindAsync(id);
+
+                if (game != null) {
+
+                    _context.Games.Remove(game);
+                    await _context.SaveChangesAsync();
+
+                    result = true;
+                }
+
+                return result;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
+        public async Task<GameTaskResult> GetGame(int id) {
+
+            var gameTaskResult = new GameTaskResult() {
+
+                Result = false,
+                Game = new Game() {
+
+                    Id = 0,
+                    UserId = 0,
+                    SudokuMatrixId = 0
+                }
+            };
+
+            try {
+
+                var game = await _context.Games
+                    .Include(g => g.User).ThenInclude(u => u.Roles)
+                    .Include(g => g.SudokuMatrix)
+                    .Include(g => g.SudokuSolution)
+                    .FirstOrDefaultAsync(g => g.Id == id);
+
+                if (game == null) {
+
+                    game = new Game()
+                    {
+
+                        Id = 0,
+                        UserId = 0,
+                        SudokuMatrixId = 0
+                    };
+
+                } else {
+
+                    game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                    gameTaskResult.Result = true;
+                    gameTaskResult.Game = game;
+                }
+
+                return gameTaskResult;
+
+            } catch(Exception) {
+
+                return gameTaskResult;
+            }
+        }
+
+        public async Task<GameListTaskResult> GetGames(bool fullRecord = true) {
+
+            var gameListTaskResult = new GameListTaskResult() {
+
+                Result = false,
+                Games = new List<Game>()
+            };
+
+            try {
+
+                var games = new List<Game>();
+
+                if (fullRecord) {
+
+                    games = await _context.Games
+                        .OrderBy(g => g.Id)
+                        .Include(g => g.User).ThenInclude(u => u.Roles)
+                        .Include(g => g.SudokuMatrix)
+                        .Include(g => g.SudokuSolution)
+                        .ToListAsync();
+
+                    foreach (var game in games) {
+
+                        game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                    }
+
+                } else {
+
+                    games = await _context.Games
+                        .OrderBy(g => g.Id)
+                        .Include(g => g.User)
+                        .ToListAsync();
+                }
+
+                gameListTaskResult.Result = true;
+                gameListTaskResult.Games = games;
+
+                return gameListTaskResult;
+
+            } catch(Exception) {
+
+                return gameListTaskResult;
+            }
+        }
+
+        public async Task<GameTaskResult> GetMyGame(int userId, int gameId, bool fullRecord = true) {
+
+            var gameTaskResult = new GameTaskResult() {
+
+                Result = false,
+                Game = new Game() {
+
+                    Id = 0,
+                    UserId = 0,
+                    SudokuMatrixId = 0
+                }
+            };
+
+            try {
+
+                var game = new Game();
+
+                if (fullRecord) {
+
+                    game = await _context.Games
+                        .Include(g => g.User).ThenInclude(u => u.Roles)
+                        .Include(g => g.SudokuMatrix)
+                        .Include(g => g.SudokuSolution)
+                        .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
+
+                    if (game == null) {
+
+                        game = new Game() {
+
+                            Id = 0,
+                            UserId = 0,
+                            SudokuMatrixId = 0
+                        };
+
+                    } else {
+
+                        game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                        gameTaskResult.Result = true;
+                        gameTaskResult.Game = game;
+                    }
+
+                } else {
+
+                    game = await _context.Games
+                        .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
+
+                    if (game == null) {
+
+                        game = new Game() {
+
+                            Id = 0,
+                            UserId = 0,
+                            SudokuMatrixId = 0
+                        };
+
+                    } else {
+
+                        gameTaskResult.Result = true;
+                        gameTaskResult.Game = game;
+                    }
+                }
+
+                return gameTaskResult;
+
+            } catch(Exception) {
+
+                return gameTaskResult;
+            }
+        }
+
+        public async Task<GameListTaskResult> GetMyGames(int userId, bool fullRecord = true) {
+
+            var gameListTaskResult = new GameListTaskResult() {
+
+                Result = false,
+                Games = new List<Game>()
+            };
+
+            try {
+
+                if (fullRecord) {
+
+                    var games = await _context.Games
+                        .Where(g => g.User.Id == userId)
+                        .OrderBy(g => g.Id)
+                        .Include(g => g.User).ThenInclude(u => u.Roles)
+                        .Include(g => g.SudokuMatrix)
+                        .Include(g => g.SudokuSolution)
+                        .ToListAsync();
+
+                    foreach (var game in games){
+
+                        game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                    }
+
+                    gameListTaskResult.Result = true;
+                    gameListTaskResult.Games = games;
+
+                } else {
+
+                    var games = await _context.Games
+                        .Where(g => g.User.Id == userId)
+                        .OrderBy(g => g.Id)
+                        .ToListAsync();
+
+                    gameListTaskResult.Result = true;
+                    gameListTaskResult.Games = games;
+                }
+
+                return gameListTaskResult;
+
+            } catch(Exception) {
+
+                return gameListTaskResult;
+            }
+        }
+
+        public async Task<bool> DeleteMyGame(int userId, int gameId) {
+
+            var result = false;
+
+            try {
+
+                var game = await _context.Games
+                    .FirstOrDefaultAsync(predicate: g => g.Id == gameId && g.User.Id == userId);
+
+                if (game != null) {
+
+                    _context.Games.Remove(game);
+                    await _context.SaveChangesAsync();
+
+                    result = true;
+                }
+
+                return result;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
+        public async Task<GameTaskResult> CheckGame(UpdateGameRO updateGameRO) {
+
+            var gameTaskResult = new GameTaskResult() {
+
+                Result = false,
+                Game = new Game() {
+
+                    Id = 0,
+                    UserId = 0,
+                    SudokuMatrixId = 0
+                }
+            };
+
+            try {
 
                 var game = await _context.Games
                         .Include(g => g.User).ThenInclude(u => u.Roles)
                         .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
                         .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRO.GameId);
 
-                game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
+                if (game != null) {
 
-                game.IsSolved();
+                    game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
 
-                foreach (var cell in game.SudokuMatrix.SudokuCells) {
+                    game.IsSolved();
 
-                    _context.SudokuCells.Update(cell);
+                    foreach (var cell in game.SudokuMatrix.SudokuCells) {
+
+                        _context.SudokuCells.Update(cell);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    gameTaskResult.Result = true;
+                    gameTaskResult.Game = game;
+
                 }
 
-                await _context.SaveChangesAsync();
-                result = true;
+                return gameTaskResult;
 
+            } catch(Exception) {
+
+                return gameTaskResult;
             }
-            
-            return result;
-        }
-
-        public async Task<Game> DeleteGame(int id) {
-
-            var game = await _context.Games.FindAsync(id);
-
-            if (game == null) {
-
-                return game = new Game() {
-
-                    Id = 0,
-                    UserId = 0,
-                    User = null,
-                    SudokuMatrixId = 0,
-                    SudokuMatrix = null
-                };
-            }
-
-            _context.Games.Remove(game);
-            await _context.SaveChangesAsync();
-
-            return game;
-        }
-
-        public async Task<Game> GetGame(int id) {
-
-            var game = await _context.Games
-                .Include(g => g.User).ThenInclude(u => u.Roles)
-                .Include(g => g.SudokuMatrix)
-                .Include(g => g.SudokuSolution)
-                .FirstOrDefaultAsync(g => g.Id == id);
-
-            if (game == null) {
-
-                return game = new Game() {
-
-                    Id = 0,
-                    UserId = 0,
-                    User = null,
-                    SudokuMatrixId = 0,
-                    SudokuMatrix = null
-                };
-            }
-
-            game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
-
-            return game;
-        }
-
-        public async Task<ActionResult<IEnumerable<Game>>> GetGames(bool fullRecord = true) {
-
-            var games = new List<Game>();
-
-            if (fullRecord) {
-
-                games = await _context.Games
-                    .OrderBy(g => g.Id)
-                    .Include(g => g.User).ThenInclude(u => u.Roles)
-                    .Include(g => g.SudokuMatrix)
-                    .Include(g => g.SudokuSolution)
-                    .ToListAsync();
-                
-                foreach (var game in games) {
-                    
-                    game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
-                }
-
-            } else {
-
-                games = await _context.Games
-                    .OrderBy(g => g.Id)
-                    .Include(g => g.User)
-                    .ToListAsync();
-            }
-
-            return games;
-        }
-
-        public async Task<Game> GetMyGame(int userId, int gameId, bool fullRecord = true) {
-
-            var game = new Game();
-            
-            if (fullRecord) {
-
-                game = await _context.Games
-                    .Include(g => g.User).ThenInclude(u => u.Roles)
-                    .Include(g => g.SudokuMatrix)
-                    .Include(g => g.SudokuSolution)
-                    .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
-
-                if (game == null) {
-
-                    return game = new Game() {
-
-                        Id = 0,
-                        UserId = 0,
-                        User = null,
-                        SudokuMatrixId = 0,
-                        SudokuMatrix = null
-                    };
-                }
-
-                game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
-
-            } else {
-
-                game = await _context.Games
-                    .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
-
-                if (game == null) {
-
-                    return game = new Game() {
-
-                        Id = 0,
-                        UserId = 0,
-                        User = null,
-                        SudokuMatrixId = 0,
-                        SudokuMatrix = null
-                    };
-                }
-            }
-
-            return game;
-        }
-
-        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(int userId, bool fullRecord = true) {
-
-            var games = new List<Game>();
-
-            if (fullRecord) {
-
-                games = await _context.Games
-                    .Where(g => g.User.Id == userId)
-                    .OrderBy(g => g.Id)
-                    .Include(g => g.User).ThenInclude(u => u.Roles)
-                    .Include(g => g.SudokuMatrix)
-                    .Include(g => g.SudokuSolution)
-                    .ToListAsync();
-                
-                foreach (var game in games) {
-
-                    game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
-                }
-
-            } else {                
-
-                games = await _context.Games
-                    .Where(g => g.User.Id == userId)
-                    .OrderBy(g => g.Id)
-                    .ToListAsync();
-            }
-
-            return games;
-        }
-
-        public async Task<Game> DeleteMyGame(int userId, int gameId) {
-
-            var game = await _context.Games
-                .FirstOrDefaultAsync(predicate: g => g.Id == gameId && g.User.Id == userId);
-
-            if (game == null) {
-
-                return game = new Game() {
-
-                    Id = 0,
-                    UserId = 0,
-                    User = null,
-                    SudokuMatrixId = 0,
-                    SudokuMatrix = null
-                };
-            }
-
-            _context.Games.Remove(game);
-            await _context.SaveChangesAsync();
-
-            return game;
-        }
-
-        public async Task<Game> CheckGame(UpdateGameRO updateGameRO) {
-
-            var game = await _context.Games
-                    .Include(g => g.User).ThenInclude(u => u.Roles)
-                    .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
-                    .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRO.GameId);
-
-            if (game != null) {
-
-                game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
-
-                game.IsSolved();
-
-                foreach (var cell in game.SudokuMatrix.SudokuCells) {
-
-                    _context.SudokuCells.Update(cell);
-                }
-                
-                await _context.SaveChangesAsync();
-
-                return game;
-
-            } else {
-
-                return game = new Game() {
-
-                    Id = 0,
-                    UserId = 0,
-                    User = null,
-                    SudokuMatrixId = 0,
-                    SudokuMatrix = null
-                };
-            }
-        }
-
-        public bool IsGameValid(Game game) {
-
-            var result = true;
-
-            if (game.Id == 0 &&
-                game.UserId == 0 &&
-                game.SudokuSolutionId == 0) {
-
-                result = false;
-            }
-
-            return result;
         }
     }
 }
