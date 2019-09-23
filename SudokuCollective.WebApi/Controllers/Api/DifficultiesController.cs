@@ -26,15 +26,15 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Difficulty>> GetDifficulty(
             int id, [FromQuery] bool fullRecord = true) {
 
-            var difficulty = await _difficultiesService.GetDifficulty(id, fullRecord);
+            var result = await _difficultiesService.GetDifficulty(id, fullRecord);
 
-            if (string.IsNullOrEmpty(difficulty.Value.Name)) {
+            if (result.Result) {
 
-                return BadRequest();
+                return Ok(result.Difficulty);
 
             } else {
 
-                return difficulty;
+                return BadRequest();
             }
         }
 
@@ -44,7 +44,16 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
             [FromQuery] bool fullRecord = true) {
 
-            return await _difficultiesService.GetDifficulties(fullRecord);
+            var result = await _difficultiesService.GetDifficulties(fullRecord);
+
+            if (result.Result) {
+
+                return Ok(result.Difficulties);
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // PUT: api/Difficulties/5
@@ -58,9 +67,16 @@ namespace SudokuCollective.WebApi.Controllers {
                 return BadRequest();
             }
             
-            await _difficultiesService.UpdateDifficulty(id, difficulty);
+            var result = await _difficultiesService.UpdateDifficulty(id, difficulty);
 
-            return NoContent();
+            if (result) {
+
+                return Ok();
+
+            } else {
+
+                return NoContent();
+            }            
         }
 
         // POST: api/Difficulties
@@ -69,20 +85,37 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Difficulty>> PostDifficulty(
             [FromBody] CreateDifficultyRO createDifficultyRO) {
             
-            var difficulty = await _difficultiesService
+            var result = await _difficultiesService
                 .CreateDifficulty(createDifficultyRO.Name, createDifficultyRO.DifficultyLevel);
 
-            return CreatedAtAction("GetDifficulty", new { id = difficulty.Id }, difficulty);
+            if (result.Result) {
+
+                return CreatedAtAction(
+                    "GetDifficulty", 
+                    new { id = result.Difficulty.Id }, 
+                    result.Difficulty);
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // DELETE: api/Difficulties/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Difficulty>> DeleteDifficulty(int id) {
+        public async Task<ActionResult> DeleteDifficulty(int id) {
             
-            var difficulty = await _difficultiesService.DeleteDifficulty(id);
+            var result = await _difficultiesService.DeleteDifficulty(id);
 
-            return difficulty;
+            if (result) {
+
+                return Ok();
+
+            } else {
+
+                return BadRequest();
+            }
         }
     }
 }

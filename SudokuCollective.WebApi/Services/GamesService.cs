@@ -10,8 +10,7 @@ using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
 using SudokuCollective.WebApi.Models.TaskModels.GameRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.WebApi.Services
-{
+namespace SudokuCollective.WebApi.Services {
 
     public class GamesService : IGamesService {
 
@@ -195,7 +194,7 @@ namespace SudokuCollective.WebApi.Services
 
                 return gameTaskResult;
 
-            } catch(Exception) {
+            } catch (Exception) {
 
                 return gameTaskResult;
             }
@@ -240,7 +239,7 @@ namespace SudokuCollective.WebApi.Services
 
                 return gameListTaskResult;
 
-            } catch(Exception) {
+            } catch (Exception) {
 
                 return gameListTaskResult;
             }
@@ -310,7 +309,7 @@ namespace SudokuCollective.WebApi.Services
 
                 return gameTaskResult;
 
-            } catch(Exception) {
+            } catch (Exception) {
 
                 return gameTaskResult;
             }
@@ -357,7 +356,7 @@ namespace SudokuCollective.WebApi.Services
 
                 return gameListTaskResult;
 
-            } catch(Exception) {
+            } catch (Exception) {
 
                 return gameListTaskResult;
             }
@@ -428,7 +427,7 @@ namespace SudokuCollective.WebApi.Services
 
                 return gameTaskResult;
 
-            } catch(Exception) {
+            } catch (Exception) {
 
                 return gameTaskResult;
             }

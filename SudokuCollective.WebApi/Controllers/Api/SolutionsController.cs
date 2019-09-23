@@ -26,14 +26,16 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<SudokuSolution>> GetSolution(
             int id, [FromQuery] bool fullRecord = true) {
 
-            var solution = await _solutionService.GetSolution(id, fullRecord);
+            var result = await _solutionService.GetSolution(id, fullRecord);
 
-            if (solution == null)
-            {
-                return NotFound();
+            if (result.Result) {
+
+                return Ok(result.Solution);
+
+            } else {
+
+                return BadRequest();
             }
-
-            return solution;
         }
 
         // GET: api/solutions
@@ -42,14 +44,16 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<IEnumerable<SudokuSolution>>>  GetSolutions(
             [FromQuery] bool fullRecord = true) {
 
-            var solutions = await _solutionService.GetSolutions(fullRecord);
+            var result = await _solutionService.GetSolutions(fullRecord);
 
-            if (solutions == null)
-            {
-                return NotFound();
+            if (result.Result) {
+
+                return Ok(result.Solutions);
+
+            } else {
+
+                return BadRequest();
             }
-
-            return solutions;
         }
 
         // GET: api/solutions/solve
@@ -58,14 +62,16 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<SudokuSolution>> Solve(
             [FromBody] SolveRequestsRO solveRequestsRO) {
 
-            var solution = await _solutionService.Solve(solveRequestsRO);
+            var result = await _solutionService.Solve(solveRequestsRO);
 
-            if (solution == null)
-            {
-                return NotFound();
+            if (result.Result) {
+
+                return Ok(result.Solution);
+
+            } else {
+
+                return BadRequest();
             }
-
-            return solution;
         }
     }
 }

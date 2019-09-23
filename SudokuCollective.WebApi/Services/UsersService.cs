@@ -11,8 +11,7 @@ using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
 using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.WebApi.Services
-{
+namespace SudokuCollective.WebApi.Services {
 
     public class UsersService : IUsersService {
 
@@ -255,7 +254,7 @@ namespace SudokuCollective.WebApi.Services
 
                 return userTaskResult;
 
-            } catch(Exception) {
+            } catch (Exception) {
 
                 return userTaskResult;
             }
