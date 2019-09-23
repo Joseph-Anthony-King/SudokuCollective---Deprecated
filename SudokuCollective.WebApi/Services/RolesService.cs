@@ -1,15 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
 using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.TaskModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.WebApi.Services {
+namespace SudokuCollective.WebApi.Services
+{
 
     public class RolesService : IRolesService {
 
@@ -20,67 +22,41 @@ namespace SudokuCollective.WebApi.Services {
             _context = context;
         }
 
-        public async Task<ActionResult<Role>> GetRole(
+        public async Task<RoleTaskResult> GetRole(
             int id, bool fullRecord = true) {
 
-            var role = new Role();
+            var roleTaskResult = new RoleTaskResult() {
 
-            if (fullRecord) {
+                Result = false,
+                Role = new Role() {
 
-                role = await _context.Roles
-                    .Include(r => r.Users)
-                    .SingleOrDefaultAsync(d => d.Id == id);
-
-                if (role == null) {
-
-                    return new Role {
-                        
-                        Name = string.Empty,
-                        RoleLevel = RoleLevel.NULL,
-                        Users = new List<UserRole>()
-                    };
+                    Id = 0,
+                    Name = string.Empty,
+                    RoleLevel = RoleLevel.NULL,
+                    Users = new List<UserRole>()
                 }
+            };
 
-                foreach (var r in role.Users) {
+            try {
 
-                    r.User = await _context.Users
-                        .Where(u => u.Id == r.UserId)
-                        .Include(u => u.Roles)
-                        .FirstOrDefaultAsync();
+                var role = new Role();
 
-                    r.User.Games = await _context.Games
-                        .Where(g => g.User.Id == r.UserId)
-                        .Include(g => g.SudokuMatrix)
-                        .ToListAsync();                    
-                    
-                    foreach (var game in r.User.Games) {
+                if (fullRecord) {
 
-                        game.SudokuMatrix = 
-                            await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                    role = await _context.Roles
+                        .Include(r => r.Users)
+                        .SingleOrDefaultAsync(d => d.Id == id);
+
+                    if (role == null) {
+
+                        role = new Role {
+
+                            Id = 0,
+                            Name = string.Empty,
+                            RoleLevel = RoleLevel.NULL,
+                            Users = new List<UserRole>()
+                        };
                     }
-                }
-
-            } else {
-
-                role = await _context.Roles
-                    .SingleOrDefaultAsync(d => d.Id == id);
-            }
-
-            return role;
-        }
-
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles(
-            bool fullRecord = true) {
-
-            var roles = new List<Role>();
-
-            if (fullRecord) {
-
-                roles = await _context.Roles
-                    .Include(r => r.Users)
-                    .ToListAsync();
-
-                foreach (var role in roles) {
 
                     foreach (var r in role.Users) {
 
@@ -100,55 +76,165 @@ namespace SudokuCollective.WebApi.Services {
                                 await StaticApiHelpers.AttachSudokuMatrix(game, _context);
                         }
                     }
+
+                    roleTaskResult.Result = true;
+                    roleTaskResult.Role = role;
+
+                } else {
+
+                    role = await _context.Roles
+                        .SingleOrDefaultAsync(d => d.Id == id);
+
+                    roleTaskResult.Result = true;
+                    roleTaskResult.Role = role;
                 }
 
-            } else {
-
-                return await _context.Roles.ToListAsync();
+                return roleTaskResult;
             }
-
-            return roles;
+            catch (Exception) 
+            {
+                return roleTaskResult;
+            }
         }
 
-        public async Task<Role> CreateRole(string name, 
+        public async Task<RoleListTaskResult> GetRoles(
+            bool fullRecord = true) {
+
+            var roleListTaskResult = new RoleListTaskResult() {
+
+                Result = false,
+                Roles = new List<Role>()
+            };
+
+            try {
+
+                var roles = new List<Role>();
+
+                if (fullRecord) {
+
+                    roles = await _context.Roles
+                        .Include(r => r.Users)
+                        .ToListAsync();
+
+                    foreach (var role in roles) {
+
+                        foreach (var r in role.Users) {
+
+                            r.User = await _context.Users
+                                .Where(u => u.Id == r.UserId)
+                                .Include(u => u.Roles)
+                                .FirstOrDefaultAsync();
+
+                            r.User.Games = await _context.Games
+                                .Where(g => g.User.Id == r.UserId)
+                                .Include(g => g.SudokuMatrix)
+                                .ToListAsync();                    
+                            
+                            foreach (var game in r.User.Games) {
+
+                                game.SudokuMatrix = 
+                                    await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                            }
+                        }
+                    }
+
+                    roleListTaskResult.Result = true;
+                    roleListTaskResult.Roles = roles;
+
+                } else {
+
+                    roles = await _context.Roles.ToListAsync();
+
+                    roleListTaskResult.Result = true;
+                    roleListTaskResult.Roles = roles;
+                }
+
+                return roleListTaskResult;
+
+            } catch (Exception) {
+
+                return roleListTaskResult;
+            }
+        }
+
+        public async Task<RoleTaskResult> CreateRole(string name, 
             RoleLevel roleLevel) {
 
-            Role role = new Role() { Name = name, RoleLevel = roleLevel };
+            var roleTaskResult = new RoleTaskResult() {
 
-            _context.Roles.Add(role);
-            await _context.SaveChangesAsync();
+                Result = false,
+                Role = new Role() {
 
-            return role;
-        }
-
-        public async Task UpdateRole(int id, Role role) {
-
-            if (id == role.Id) {
-
-                _context.Entry(role).State = EntityState.Modified;
-                
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task<Role> DeleteRole(int id) {
-
-            var role = await _context.Roles.FindAsync(id);
-
-            if (role == null) {
-
-                return new Role {
-                    
+                    Id = 0,
                     Name = string.Empty,
                     RoleLevel = RoleLevel.NULL,
                     Users = new List<UserRole>()
-                };
+                }
+            };
+
+            try {
+
+                Role role = new Role() { Name = name, RoleLevel = roleLevel };
+
+                _context.Roles.Add(role);
+                await _context.SaveChangesAsync();
+                
+                roleTaskResult.Result = true;
+                roleTaskResult.Role = role;
+
+                return roleTaskResult;
+
+            } catch (Exception) {
+
+                return roleTaskResult;
             }
+        }
 
-            _context.Roles.Remove(role);
-            await _context.SaveChangesAsync();
+        public async Task<bool> UpdateRole(int id, Role role) {
 
-            return role;
+            var result = false;
+            
+            try {
+
+                if (id == role.Id) {
+
+                    _context.Entry(role).State = EntityState.Modified;
+                    
+                    await _context.SaveChangesAsync();
+
+                    result = true;
+                }
+
+                return result;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
+        public async Task<bool> DeleteRole(int id) {
+
+            var result = false;
+
+            try {
+
+                var role = await _context.Roles.FindAsync(id);
+
+                if (role != null) {
+
+                    _context.Roles.Remove(role);
+                    await _context.SaveChangesAsync();
+
+                    result = true;
+                }
+
+                return result;
+
+            } catch (Exception) {
+
+                return result;
+            }
         }
     }
 }

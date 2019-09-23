@@ -27,15 +27,15 @@ namespace SudokuCollective.WebApi.Controllers
         public async Task<ActionResult<Role>> GetRole(
             int id, [FromQuery] bool fullRecord = true) {
 
-            var role = await _rolesService.GetRole(id, fullRecord);
+            var result = await _rolesService.GetRole(id, fullRecord);
 
-            if (string.IsNullOrEmpty(role.Value.Name)) {
+            if (result.Result) {
 
-                return BadRequest();
+                return Ok(result.Role);
 
             } else {
 
-                return role;
+                return BadRequest();
             }
         }
 
@@ -45,7 +45,16 @@ namespace SudokuCollective.WebApi.Controllers
         public async Task<ActionResult<IEnumerable<Role>>> GetRoles(
             [FromQuery] bool fullRecord = true) {
 
-            return await _rolesService.GetRoles(fullRecord);
+            var result = await _rolesService.GetRoles(fullRecord);
+
+            if (result.Result) {
+
+                return Ok (result.Roles);
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // PUT: api/Roles/5
@@ -58,9 +67,16 @@ namespace SudokuCollective.WebApi.Controllers
                 return BadRequest();
             }
             
-            await _rolesService.UpdateRole(id, role);
+            var result = await _rolesService.UpdateRole(id, role);
+            
+            if (result) {
 
-            return NoContent();
+                return Ok();
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // POST: api/Roles
@@ -69,10 +85,20 @@ namespace SudokuCollective.WebApi.Controllers
         public async Task<ActionResult<Role>> PostRole(
             [FromBody] CreateRoleRO createRoleRO) {
             
-            var role = await _rolesService
+            var result = await _rolesService
                 .CreateRole(createRoleRO.Name, createRoleRO.RoleLevel);
 
-            return CreatedAtAction("GetRole", new { id = role.Id }, role);
+            if (result.Result) {
+                
+                return CreatedAtAction(
+                    "GetRole", 
+                    new { id = result.Role.Id }, 
+                    result.Role);
+
+            } else {
+
+                return BadRequest();
+            }
         }
 
         // DELETE: api/Roles/5
@@ -80,9 +106,16 @@ namespace SudokuCollective.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Role>> DeleteRole(int id) {
 
-            var role = await _rolesService.DeleteRole(id);
+            var result = await _rolesService.DeleteRole(id);
+            
+            if (result) {
 
-            return role;
+                return Ok();
+
+            } else {
+
+                return BadRequest();
+            }
         }
     }
 }
