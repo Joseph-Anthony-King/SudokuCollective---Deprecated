@@ -10,8 +10,7 @@ using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.TaskModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.WebApi.Services
-{
+namespace SudokuCollective.WebApi.Services {
 
     public class RolesService : IRolesService {
 

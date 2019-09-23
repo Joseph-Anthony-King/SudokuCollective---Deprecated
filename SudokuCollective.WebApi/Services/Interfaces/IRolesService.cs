@@ -3,8 +3,7 @@ using SudokuCollective.Models;
 using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Models.TaskModels.RoleRequests;
 
-namespace SudokuCollective.WebApi.Services.Interfaces
-{
+namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IRolesService {
 

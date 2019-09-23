@@ -6,8 +6,7 @@ using SudokuCollective.Models;
 using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.WebApi.Controllers
-{
+namespace SudokuCollective.WebApi.Controllers {
 
     [Authorize]
     [Route("api/[controller]")]
