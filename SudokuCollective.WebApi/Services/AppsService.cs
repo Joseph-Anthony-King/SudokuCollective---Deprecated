@@ -261,7 +261,7 @@ namespace SudokuCollective.WebApi.Services {
                 if (_context.Apps.Any(app => app.License.Equals(license))) {
 
                     var app = await _context.Apps
-                        .Where(app => app.License.Equals(license))
+                        .Where(a => a.License.Equals(license))
                         .FirstOrDefaultAsync();
 
                     appTaskResult.Result = true;
