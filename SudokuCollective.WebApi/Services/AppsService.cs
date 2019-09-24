@@ -189,6 +189,13 @@ namespace SudokuCollective.WebApi.Services {
                         .Where(u => u.Id == licenseRequestRO.OwnerId)
                         .FirstOrDefaultAsync();
 
+                    foreach (var userRole in owner.Roles) {
+
+                        userRole.Role = await _context.Roles
+                            .Where(r => r.Id == userRole.RoleId)
+                            .FirstOrDefaultAsync();
+                    }
+
                     var app = new App(
                         licenseRequestRO.Name, 
                         license.ToString(), 
@@ -208,22 +215,31 @@ namespace SudokuCollective.WebApi.Services {
                     _context.UsersApps.Add(userApp);
                     await _context.SaveChangesAsync();
 
-                    if (owner.Roles.Any(ur => ur.Role.RoleLevel != RoleLevel.ADMIN)) {
+                    var addAdminRole = true;
+
+                    foreach (var userRole in owner.Roles) {
                         
-                        var role = await _context.Roles
+                        if (userRole.Role.RoleLevel == RoleLevel.ADMIN) {
+
+                            addAdminRole = false;
+                        }
+                    }
+
+                    if (addAdminRole) {
+                        
+                        var adminRole = await _context.Roles
                             .Where(r => r.RoleLevel == RoleLevel.ADMIN)
                             .FirstOrDefaultAsync();
 
-                        owner.Roles.Add(
-
-                            new UserRole () {
+                        var newUserAdminRole = new UserRole () {
 
                                 UserId = owner.Id,
-                                RoleId = role.Id
-                            }
-                        );
+                                User = owner,
+                                RoleId = adminRole.Id,
+                                Role = adminRole
+                            };
 
-                        _context.UsersRoles.UpdateRange(owner.Roles);
+                        _context.UsersRoles.Add(newUserAdminRole);
                         await _context.SaveChangesAsync();
                     }
                     
