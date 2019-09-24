@@ -160,6 +160,7 @@ namespace SudokuCollective.WebApi.Services {
                 return appListTaskResult;
             }
         }
+
         public async Task<AppTaskResult> CreateApp(LicenseRequestRO licenseRequestRO) {
 
             var appTaskResult = new AppTaskResult() {
@@ -230,6 +231,43 @@ namespace SudokuCollective.WebApi.Services {
                     appTaskResult.App = app;
                 }
                 
+                return appTaskResult;
+
+            } catch (Exception) {
+
+                return appTaskResult;
+            }
+        }
+        
+        public async Task<AppTaskResult> GetAppByLicense(string license) {
+
+            var appTaskResult = new AppTaskResult() {
+
+                Result = false,
+                App = new App() {
+
+                    Id = 0,
+                    Name = string.Empty,
+                    License = "Unauthorized",
+                    OwnerId = 0,
+                    DateCreated = DateTime.UtcNow,
+                    DevUrl = string.Empty,
+                    LiveUrl = string.Empty
+                }
+            };
+
+            try {
+
+                if (_context.Apps.Any(app => app.License.Equals(license))) {
+
+                    var app = await _context.Apps
+                        .Where(app => app.License.Equals(license))
+                        .FirstOrDefaultAsync();
+
+                    appTaskResult.Result = true;
+                    appTaskResult.App = app;
+                }
+
                 return appTaskResult;
 
             } catch (Exception) {

@@ -227,6 +227,17 @@ namespace SudokuCollective.WebApi.Services {
                 Password = string.Empty
             };
 
+            var app = new App() {
+
+                Id = 0,
+                Name = string.Empty,
+                License = string.Empty,
+                OwnerId = 0,
+                DateCreated = createdDate,
+                DevUrl = string.Empty,
+                LiveUrl = string.Empty
+            };
+
             var userTaskResult = new UserTaskResult() {
 
                 Result = false,
@@ -234,6 +245,13 @@ namespace SudokuCollective.WebApi.Services {
             };
 
             try {
+
+                if (_context.Apps.Any(a => a.License.Equals(registerRO.License))) {
+
+                    app = await _context.Apps
+                        .Where(a => a.License.Equals(registerRO.License))
+                        .FirstOrDefaultAsync();
+                }
 
                 var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
@@ -271,6 +289,17 @@ namespace SudokuCollective.WebApi.Services {
                 };
 
                 _context.UsersRoles.Add(newUserRole);
+                await _context.SaveChangesAsync();
+
+                UserApp newUserApp = new UserApp {
+
+                    UserId = savedUser.Id,
+                    User = savedUser,
+                    AppId = app.Id,
+                    App = app
+                };
+
+                _context.UsersApps.Add(newUserApp);
                 await _context.SaveChangesAsync();
 
                 userTaskResult.Result = true;
