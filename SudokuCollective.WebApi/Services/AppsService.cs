@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
+using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.TaskModels.AppRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -158,8 +160,7 @@ namespace SudokuCollective.WebApi.Services {
                 return appListTaskResult;
             }
         }
-        public async Task<AppTaskResult> CreateApp(
-            string name, int ownerId, string devUrl, string liveUrl) {
+        public async Task<AppTaskResult> CreateApp(LicenseRequestRO licenseRequestRO) {
 
             var appTaskResult = new AppTaskResult() {
 
@@ -178,21 +179,57 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var license = Guid.NewGuid();
+                if (_context.Users.Any(u => u.Id == licenseRequestRO.OwnerId)) {
 
-                var app = new App(
-                    name, 
-                    license.ToString(), 
-                    ownerId, 
-                    devUrl, 
-                    liveUrl);
+                    var license = Guid.NewGuid();
 
-                _context.Apps.Add(app);
-                await _context.SaveChangesAsync();
+                    var owner = await _context.Users
+                        .Include(u => u.Roles)
+                        .Where(u => u.Id == licenseRequestRO.OwnerId)
+                        .FirstOrDefaultAsync();
 
-                appTaskResult.Result = true;
-                appTaskResult.App = app;
+                    var app = new App(
+                        licenseRequestRO.Name, 
+                        license.ToString(), 
+                        licenseRequestRO.OwnerId, 
+                        licenseRequestRO.DevUrl, 
+                        licenseRequestRO.LiveUrl);
 
+                    _context.Apps.Add(app);
+                    await _context.SaveChangesAsync();
+
+                    var userApp = new UserApp() {
+
+                        UserId = owner.Id,
+                        AppId = app.Id
+                    };
+
+                    _context.UsersApps.Add(userApp);
+                    await _context.SaveChangesAsync();
+
+                    if (owner.Roles.Any(ur => ur.Role.RoleLevel != RoleLevel.ADMIN)) {
+                        
+                        var role = await _context.Roles
+                            .Where(r => r.RoleLevel == RoleLevel.ADMIN)
+                            .FirstOrDefaultAsync();
+
+                        owner.Roles.Add(
+
+                            new UserRole () {
+
+                                UserId = owner.Id,
+                                RoleId = role.Id
+                            }
+                        );
+
+                        _context.UsersRoles.UpdateRange(owner.Roles);
+                        await _context.SaveChangesAsync();
+                    }
+                    
+                    appTaskResult.Result = true;                        
+                    appTaskResult.App = app;
+                }
+                
                 return appTaskResult;
 
             } catch (Exception) {
@@ -245,6 +282,35 @@ namespace SudokuCollective.WebApi.Services {
             } catch (Exception) {
 
                 return result;
+            }
+        }
+
+        public async Task<LicenseTaskResult> GetLicense(int id) {
+
+            var licenseTaskResult = new LicenseTaskResult() {
+
+                Result = false,
+                License = string.Empty
+            };
+
+            try {
+
+                if (_context.Apps.Any(a => a.Id == id)) {
+
+                    var license = await _context.Apps
+                        .Where(a => a.Id == id)
+                        .Select(a => a.License)
+                        .FirstOrDefaultAsync();
+                    
+                    licenseTaskResult.Result = true;
+                    licenseTaskResult.License = license;
+                }
+
+                return licenseTaskResult;
+
+            } catch (Exception) {
+
+                return licenseTaskResult;
             }
         }
 
