@@ -2,8 +2,9 @@ using SudokuCollective.Models.Enums;
 
 namespace SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests {
 
-    public class CreateDifficultyRO : BaseRequestRO {
+    public class UpdateDifficultyRO : BaseRequestRO {
 
+        public int Id { get; set; }
         public string Name { get; set; }
         public DifficultyLevel DifficultyLevel { get; set; }
     }

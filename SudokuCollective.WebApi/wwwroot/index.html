@@ -95,6 +95,12 @@
 
                 $("#apiMessage")
                     .text("The Sudoku Collective API is up and running!");
+
+                if ($("#apiMessage").hasClass("red")) {
+
+                    $("#apiMessage").removeClass("red");
+                }
+
                 $("#apiMessage").show();
 
             }
@@ -104,7 +110,12 @@
             $("#apiMessage")
                 .text("There is an issue with the Sudoku Collective API: " 
                     + e.status + " - " + e.statusText);
-            $("#apiMessage").addClass("red");
+
+            if (!$("#apiMessage").hasClass("red")) {
+
+                $("#apiMessage").addClass("red");
+            }
+
             $("#apiMessage").show();
         });
     }

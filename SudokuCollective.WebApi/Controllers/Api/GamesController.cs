@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
+using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -14,26 +15,37 @@ namespace SudokuCollective.WebApi.Controllers {
     public class GamesController : ControllerBase {
 
         private readonly IGamesService _gamesService;
+        private readonly IAppsService _appsService;
 
-        public GamesController(IGamesService gamesService) {
+        public GamesController(IGamesService gamesService, 
+            IAppsService appsService) {
             
             _gamesService = gamesService;
+            _appsService = appsService;
         }
 
         // GET: api/Games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame([FromQuery] int id) {
+        public async Task<ActionResult<Game>> GetGame([FromQuery] int id, 
+            [FromBody] BaseRequestRO baseRequestRO) {
 
-            var result = await _gamesService.GetGame(id);
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            if (result.Result) {
-                
-                return Ok(result.Game);
+                var result = await _gamesService.GetGame(id);
+
+                if (result.Result) {
+                    
+                    return Ok(result.Game);
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -41,17 +53,25 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
+            [FromBody] BaseRequestRO baseRequestRO, 
             [FromQuery] bool fullRecord = true) {
 
-            var result = await _gamesService.GetGames(fullRecord);
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            if (result.Result) {
+                var result = await _gamesService.GetGames(fullRecord);
 
-                return Ok(result.Games);
+                if (result.Result) {
+
+                    return Ok(result.Games);
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -62,15 +82,22 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] GetMyGameRO getMyGameRO, 
             [FromQuery] bool fullRecord = true) {
 
-            var result = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId, fullRecord);
+            if (_appsService.ValidLicense(getMyGameRO.License)) {
 
-            if (result.Result) {
+                var result = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId, fullRecord);
 
-                return Ok(result.Game);
+                if (result.Result) {
+
+                    return Ok(result.Game);
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -78,18 +105,26 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetMyGames/{userId}")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            [FromQuery] int userId, 
+            [FromQuery] int userId,
+            [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
 
-            var result = await _gamesService.GetMyGames(userId, fullRecord);
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            if (result.Result) {
+                var result = await _gamesService.GetMyGames(userId, fullRecord);
 
-                return Ok(result.Games);
+                if (result.Result) {
+
+                    return Ok(result.Games);
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -99,15 +134,24 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Game>> DeleteMyGame(
             [FromBody] GetMyGameRO getMyGameRO) {
 
-           var result = await _gamesService.DeleteMyGame(getMyGameRO.UserId, getMyGameRO.GameId);
-
-            if (result) {
+            if (_appsService.ValidLicense(getMyGameRO.License)) {
                 
-                return Ok();
+                var result = await _gamesService.DeleteMyGame(
+                    getMyGameRO.UserId, 
+                    getMyGameRO.GameId);
+
+                if (result) {
+                    
+                    return Ok();
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -118,22 +162,29 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromQuery] int id, 
             [FromBody] UpdateGameRO updateGameRO) {
 
-            if (id != updateGameRO.GameId) {
+            if (_appsService.ValidLicense(updateGameRO.License)) {
 
-                return BadRequest();
-            }
+                if (id != updateGameRO.GameId) {
 
-            var result = 
-                await _gamesService.UpdateGame(id, updateGameRO);
-            
-            if (result.Result) {
+                    return BadRequest();
+                }
 
-                return NoContent();
+                var result = 
+                    await _gamesService.UpdateGame(id, updateGameRO);
+                
+                if (result.Result) {
+
+                    return NoContent();
+
+                } else {
+
+                    return BadRequest("Issue updating the game");
+                }
 
             } else {
 
-                return BadRequest("Issue updating the game");
-            }
+                return BadRequest("Invalid License");
+            } 
         }
 
         // POST: api/Games
@@ -141,54 +192,78 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(
             [FromBody] CreateGameRO createGameRO) {
+
+            if (_appsService.ValidLicense(createGameRO.License)) {
             
-            var result = await _gamesService.CreateGame(createGameRO);
+                var result = await _gamesService.CreateGame(createGameRO);
 
-            if (result.Result) {
+                if (result.Result) {
 
-                return CreatedAtAction(
-                    "GetUser",
-                    "Users",
-                    new { id = result.Game.Id },
-                    result.Game);
+                    return CreatedAtAction(
+                        "GetUser",
+                        "Users",
+                        new { id = result.Game.Id },
+                        result.Game);
+
+                } else {
+
+                    return BadRequest("Error creating user");
+                }
 
             } else {
 
-                return BadRequest("Error creating user");
+                return BadRequest("Invalid License");
             }
         }
 
         // DELETE: api/Games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Game>> DeleteGame([FromQuery] int id) {
+        public async Task<ActionResult<Game>> DeleteGame(
+            [FromQuery] int id,
+            [FromBody] BaseRequestRO baseRequestRO) {
 
-            var result = await _gamesService.DeleteGame(id);
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            if (result) {
+                var result = await _gamesService.DeleteGame(id);
 
-                return Ok();
+                if (result) {
+
+                    return Ok();
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut, Route("CheckGame")]
-        public async Task<ActionResult<Game>> CheckGame([FromBody] UpdateGameRO checkGameRO) {
+        public async Task<ActionResult<Game>> CheckGame(
+            [FromBody] UpdateGameRO checkGameRO) {
 
-            var result = await _gamesService.CheckGame(checkGameRO);
+            if (_appsService.ValidLicense(checkGameRO.License)) {
 
-            if (result.Result) {
-                
-                return Ok(result.Game);
+                var result = await _gamesService.CheckGame(checkGameRO);
+
+                if (result.Result) {
+                    
+                    return Ok(result.Game);
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
-            }            
+                return BadRequest("Invalid License");
+            }
         }
     }
 }

@@ -28,6 +28,8 @@ namespace SudokuCollective.WebApi.Models.DataModel {
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UsersRoles { get; set; }
         public DbSet<SudokuSolution> SudokuSolutions { get; set; }
+        public DbSet<App> Apps { get; set; }
+        public DbSet<UserApp> UsersApps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
             => optionsBuilder.UseNpgsql(configuration.GetValue<string>("ConnectionStrings:DatabaseConnection"));
@@ -204,6 +206,22 @@ namespace SudokuCollective.WebApi.Models.DataModel {
                 .Ignore(solution => solution.SeventhRow)
                 .Ignore(solution => solution.EighthRow)
                 .Ignore(solution => solution.NinthRow);
+
+            modelBuilder.Entity<App>()
+                .HasKey(app => app.Id);
+
+            modelBuilder.Entity<UserApp>()
+                .HasKey(ua => new { ua.UserId, ua.AppId});
+
+            modelBuilder.Entity<UserApp>()
+                .HasOne(ua => ua.User)
+                .WithMany(user => user.Apps)
+                .HasForeignKey(ua => ua.UserId);
+
+            modelBuilder.Entity<UserApp>()
+                .HasOne(ua => ua.App)
+                .WithMany(app => app.Users)
+                .HasForeignKey(ua => ua.AppId);
         }
     }
 }

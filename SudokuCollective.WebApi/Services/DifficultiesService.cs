@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
 using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
 using SudokuCollective.WebApi.Models.TaskModels.DifficultyRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -175,15 +176,22 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<bool> UpdateDifficulty(int id, 
-            Difficulty difficulty) {
+            UpdateDifficultyRO updateDifficultyRO) {
 
             var result = false;
 
             try {
 
-                if (id == difficulty.Id) {
+                if (id == updateDifficultyRO.Id) {
 
-                    _context.Entry(difficulty).State = EntityState.Modified;
+                    var difficulty = await _context.Difficulties
+                        .Where(d => d.Id == updateDifficultyRO.Id)
+                        .FirstOrDefaultAsync();
+
+                    difficulty.Name = updateDifficultyRO.Name;
+                    difficulty.DifficultyLevel = updateDifficultyRO.DifficultyLevel;
+
+                    _context.Difficulties.Update(difficulty);
 
                     await _context.SaveChangesAsync();
                     result = true;

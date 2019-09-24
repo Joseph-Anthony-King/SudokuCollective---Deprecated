@@ -60,6 +60,7 @@ namespace SudokuCollective.WebApi {
 
             services.AddScoped<IAuthenticateService, TokenAuthenticationService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IAppsService, AppsService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IGamesService, GamesService>();
             services.AddScoped<IDifficultiesService, DifficultiesService>();

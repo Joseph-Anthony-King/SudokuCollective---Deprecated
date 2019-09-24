@@ -1,6 +1,6 @@
 namespace SudokuCollective.WebApi.Models.RequestModels.RegisterRequests {
     
-    public class RegisterRO {
+    public class RegisterRO : BaseRequestRO {
 
         public string UserName { get; set; }
         public string FirstName { get; set; }

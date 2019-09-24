@@ -1,10 +1,9 @@
 ﻿using SudokuCollective.Models;
 using System.Collections.Generic;
 
-namespace SudokuCollective.WebApi.Models.RequestModels.GameRequests
-{
+namespace SudokuCollective.WebApi.Models.RequestModels.GameRequests {
 
-    public class UpdateGameRO {
+    public class UpdateGameRO : BaseRequestRO {
 
         public int GameId { get; set; }
         public List<SudokuCell> SudokuCells { get; set; }

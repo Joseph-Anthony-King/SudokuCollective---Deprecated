@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
+using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -14,27 +15,39 @@ namespace SudokuCollective.WebApi.Controllers {
     public class DifficultiesController : ControllerBase {
 
         private readonly IDifficultiesService _difficultiesService;
+        private readonly IAppsService _appsService;
 
-        public DifficultiesController(IDifficultiesService difficultiesService) {
+        public DifficultiesController(IDifficultiesService difficultiesService,
+            IAppsService appsService) {
 
             _difficultiesService = difficultiesService;
+            _appsService = appsService;
         }
 
         // GET: api/Difficulties/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Difficulty>> GetDifficulty(
-            int id, [FromQuery] bool fullRecord = true) {
+            int id, 
+            [FromBody] BaseRequestRO baseRequestRO, 
+            [FromQuery] bool fullRecord = true) {
+                
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            var result = await _difficultiesService.GetDifficulty(id, fullRecord);
+                var result = await _difficultiesService.GetDifficulty(id, fullRecord);
 
-            if (result.Result) {
+                if (result.Result) {
 
-                return Ok(result.Difficulty);
+                    return Ok(result.Difficulty);
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -42,17 +55,24 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
-            [FromQuery] bool fullRecord = true) {
+            [FromBody] BaseRequestRO baseRequestRO, [FromQuery] bool fullRecord = true) {
+                
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            var result = await _difficultiesService.GetDifficulties(fullRecord);
+                var result = await _difficultiesService.GetDifficulties(fullRecord);
 
-            if (result.Result) {
+                if (result.Result) {
 
-                return Ok(result.Difficulties);
+                    return Ok(result.Difficulties);
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -60,23 +80,30 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDifficulty(int id, 
-            [FromBody] Difficulty difficulty) {
+            [FromBody] UpdateDifficultyRO updateDifficultyRO) {
+                
+            if (_appsService.ValidLicense(updateDifficultyRO.License)) {
 
-            if (id != difficulty.Id) {
+                if (id != updateDifficultyRO.Id) {
 
-                return BadRequest();
-            }
-            
-            var result = await _difficultiesService.UpdateDifficulty(id, difficulty);
+                    return BadRequest();
+                }
+                
+                var result = await _difficultiesService.UpdateDifficulty(id, updateDifficultyRO);
 
-            if (result) {
+                if (result) {
 
-                return Ok();
+                    return Ok();
+
+                } else {
+
+                    return NoContent();
+                }
 
             } else {
 
-                return NoContent();
-            }            
+                return BadRequest("Invalid License");
+            }         
         }
 
         // POST: api/Difficulties
@@ -84,37 +111,52 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPost]
         public async Task<ActionResult<Difficulty>> PostDifficulty(
             [FromBody] CreateDifficultyRO createDifficultyRO) {
+                
+            if (_appsService.ValidLicense(createDifficultyRO.License)) {  
             
-            var result = await _difficultiesService
-                .CreateDifficulty(createDifficultyRO.Name, createDifficultyRO.DifficultyLevel);
+                var result = await _difficultiesService
+                    .CreateDifficulty(createDifficultyRO.Name, createDifficultyRO.DifficultyLevel);
 
-            if (result.Result) {
+                if (result.Result) {
 
-                return CreatedAtAction(
-                    "GetDifficulty", 
-                    new { id = result.Difficulty.Id }, 
-                    result.Difficulty);
+                    return CreatedAtAction(
+                        "GetDifficulty", 
+                        new { id = result.Difficulty.Id }, 
+                        result.Difficulty);
+
+                } else {
+
+                    return BadRequest();
+                }
 
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
 
         // DELETE: api/Difficulties/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteDifficulty(int id) {
-            
-            var result = await _difficultiesService.DeleteDifficulty(id);
+        public async Task<ActionResult> DeleteDifficulty(int id, 
+            [FromBody] BaseRequestRO baseRequestRO) {
+                
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            if (result) {
+                var result = await _difficultiesService.DeleteDifficulty(id);
 
-                return Ok();
+                if (result) {
 
+                    return Ok();
+
+                } else {
+
+                    return BadRequest();
+                }
+                
             } else {
 
-                return BadRequest();
+                return BadRequest("Invalid License");
             }
         }
     }

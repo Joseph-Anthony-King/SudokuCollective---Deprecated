@@ -1,6 +1,6 @@
 namespace SudokuCollective.WebApi.Models.RequestModels.SolveRequests {
     
-    public class SolveRequestsRO {
+    public class SolveRequestsRO : BaseRequestRO {
 
         public int UserId { get; set; }
         public int Minutes { get; set; }

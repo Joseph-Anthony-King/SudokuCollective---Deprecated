@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.Models;
 using SudokuCollective.Models.Enums;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 
 namespace SudokuCollective.WebApi.Models {
 
@@ -17,6 +15,8 @@ namespace SudokuCollective.WebApi.Models {
         public static void EnsurePopulated(IApplicationBuilder app, IConfiguration config) {
 
             using (var servicesScope = app.ApplicationServices.CreateScope()) {
+                
+                var createdDate = DateTime.UtcNow;
 
                 ApplicationDbContext context = servicesScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 context.Database.Migrate();
@@ -100,7 +100,6 @@ namespace SudokuCollective.WebApi.Models {
                 if (!context.Users.Any()) {
 
                     var salt = BCrypt.Net.BCrypt.GenerateSalt();
-                    var createdDate = DateTime.UtcNow;
 
                     context.Users.AddRange(
 
@@ -130,6 +129,40 @@ namespace SudokuCollective.WebApi.Models {
                     );
 
                     context.SaveChanges();
+                }
+
+                if (!context.Apps.Any()) {
+
+                    context.Apps.Add(
+
+                        new App {
+                            
+                            Name = config.GetValue<string>("DefaultClientApp:Name"),
+                            License = config.GetValue<string>("DefaultClientApp:License"),
+                            OwnerId = 1,
+                            DateCreated = createdDate,
+                            DevUrl = config.GetValue<string>("DefaultClientApp:DevUrl"),
+                            LiveUrl = config.GetValue<string>("DefaultClientApp:LiveUrl")
+                        }
+                    );
+                }
+
+                if (!context.UsersApps.Any()) {
+                    
+                    context.UsersApps.AddRange(
+
+                        new UserApp {
+
+                            UserId = 1,
+                            AppId = 1
+                        },
+
+                        new UserApp {
+
+                            UserId = 2,
+                            AppId = 1
+                        }
+                    );
                 }
 
                 if (!context.UsersRoles.Any()) {

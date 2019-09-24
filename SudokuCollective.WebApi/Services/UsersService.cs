@@ -16,10 +16,12 @@ namespace SudokuCollective.WebApi.Services {
     public class UsersService : IUsersService {
 
         private readonly ApplicationDbContext _context;
+        private readonly IAppsService _appsService;
 
-        public UsersService(ApplicationDbContext context) {
+        public UsersService(ApplicationDbContext context, IAppsService appsService) {
 
             _context = context;
+            _appsService = appsService;
         }
 
         public async Task<UserTaskResult> GetUser(int id, bool fullRecord = true) {
@@ -51,6 +53,7 @@ namespace SudokuCollective.WebApi.Services {
                     user = await _context.Users
                         .Include(u => u.Games)
                         .Include(u => u.Roles)
+                        .Include(u => u.Apps)
                         .FirstOrDefaultAsync(u => u.Id == id);
 
                     if (user == null) {
@@ -88,6 +91,15 @@ namespace SudokuCollective.WebApi.Services {
                         userRole.Role.Users = null;
                     }
 
+                    foreach (var userApp in user.Apps) {
+
+                        userApp.App = await _context.Apps
+                            .Where(a => a.Id == userApp.AppId)
+                            .FirstOrDefaultAsync();
+
+                        userApp.App.Users = null;
+                    }
+
                     userTaskResult.Result = true;
                     userTaskResult.User = user;
 
@@ -95,6 +107,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     user = await _context.Users
                         .Include(u => u.Roles)
+                        .Include(u => u.Apps)
                         .FirstOrDefaultAsync(u => u.Id == id);
 
                     user.Games = null;
@@ -129,6 +142,7 @@ namespace SudokuCollective.WebApi.Services {
                         .OrderBy(u => u.Id)
                         .Include(u => u.Games)
                         .Include(u => u.Roles)
+                        .Include(u => u.Apps)
                         .ToListAsync();
 
                     foreach (var user in users) {
@@ -151,6 +165,15 @@ namespace SudokuCollective.WebApi.Services {
 
                             userRole.Role.Users = null;
                         }
+
+                        foreach (var userApp in user.Apps) {
+
+                            userApp.App = await _context.Apps
+                                .Where(a => a.Id == userApp.AppId)
+                                .FirstOrDefaultAsync();
+
+                            userApp.App.Users = null;
+                        }
                     }
 
                     userListTaskResult.Result = true;
@@ -161,6 +184,7 @@ namespace SudokuCollective.WebApi.Services {
                     users = await _context.Users
                         .OrderBy(u => u.Id)
                         .Include(u => u.Roles)
+                        .Include(u => u.Apps)
                         .ToListAsync();
 
                     foreach (var user in users) {

@@ -1,6 +1,6 @@
 namespace SudokuCollective.WebApi.Models.RequestModels.UserRequests {
 
-    public class UpdateUserRO {
+    public class UpdateUserRO : BaseRequestRO {
 
         public string UserName { get; set; }
         public string FirstName { get; set; }

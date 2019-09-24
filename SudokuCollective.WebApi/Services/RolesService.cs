@@ -7,6 +7,7 @@ using SudokuCollective.Models;
 using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
 using SudokuCollective.WebApi.Models.TaskModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -189,15 +190,22 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<bool> UpdateRole(int id, Role role) {
+        public async Task<bool> UpdateRole(int id, UpdateRoleRO updateRoleRO) {
 
             var result = false;
             
             try {
 
-                if (id == role.Id) {
+                if (id == updateRoleRO.Id) {
 
-                    _context.Entry(role).State = EntityState.Modified;
+                    var role = await _context.Roles
+                        .Where(d => d.Id == updateRoleRO.Id)
+                        .FirstOrDefaultAsync();
+
+                    role.Name = updateRoleRO.Name;
+                    role.RoleLevel = updateRoleRO.RoleLevel;
+
+                    _context.Roles.Update(role);
                     
                     await _context.SaveChangesAsync();
 

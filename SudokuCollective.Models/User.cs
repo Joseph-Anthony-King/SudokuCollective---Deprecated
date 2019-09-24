@@ -22,6 +22,7 @@ namespace SudokuCollective.Models {
         public string Password { get; set; }
         public ICollection<Game> Games { get; set; }
         public ICollection<UserRole> Roles { get; set; }
+        public ICollection<UserApp> Apps { get; set; }
 
         public User(
             string firstName, 

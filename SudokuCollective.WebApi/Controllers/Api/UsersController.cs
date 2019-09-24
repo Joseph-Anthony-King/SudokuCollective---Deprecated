@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
+using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -15,27 +16,39 @@ namespace SudokuCollective.WebApi.Controllers {
     public class UsersController : ControllerBase {
 
         private readonly IUsersService _userService;
+        private readonly IAppsService _appsService;
 
-        public UsersController(IUsersService userService) {
+        public UsersController(IUsersService userService,
+            IAppsService appsService) {
 
             _userService = userService;
+            _appsService = appsService;
         }
 
         // GET: api/Users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(
-            int id, [FromQuery] bool fullRecord = true) {
+            int id, 
+            [FromBody] BaseRequestRO baseRequestRO, 
+            [FromQuery] bool fullRecord = true) {
+                
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            var result = await _userService.GetUser(id, fullRecord);
+                var result = await _userService.GetUser(id, fullRecord);
 
-            if (result.Result) {
+                if (result.Result) {
 
-                return Ok(result.User);
+                    return Ok(result.User);
+
+                } else {
+
+                    return NotFound();
+                }
 
             } else {
 
-                return NotFound();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -43,17 +56,25 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
+            [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
+            
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-            var result = await _userService.GetUsers(fullRecord);
+                var result = await _userService.GetUsers(fullRecord);
 
-            if (result.Result) {
+                if (result.Result) {
 
-                return Ok(result.Users);
+                    return Ok(result.Users);
+
+                } else {
+
+                    return BadRequest("Issue obtaining users");
+                }
 
             } else {
 
-                return BadRequest("Issue obtaining users");
+                return BadRequest("Invalid License");
             }
         }
 
@@ -63,23 +84,30 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> PutUser(
             int id, [FromBody] UpdateUserRO updateUserRO) {
             
-            var result = await _userService.UpdateUser(id, updateUserRO);
+            if (_appsService.ValidLicense(updateUserRO.License)) {
+            
+                var result = await _userService.UpdateUser(id, updateUserRO);
 
-            if (result.Result) {
+                if (result.Result) {
 
-                return Ok();
-
-            } else {
-
-                if (result.User.Email.Equals(updateUserRO.Email)
-                    && result.User.Id == 0) {
-
-                    return BadRequest("Email is not unique");
+                    return Ok();
 
                 } else {
 
-                    return BadRequest();
+                    if (result.User.Email.Equals(updateUserRO.Email)
+                        && result.User.Id == 0) {
+
+                        return BadRequest("Email is not unique");
+
+                    } else {
+
+                        return BadRequest();
+                    }
                 }
+
+            } else {
+
+                return BadRequest("Invalid License");
             }
         }
 
@@ -88,53 +116,75 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPut("UpdatePassword/{id}")]
         public async Task<IActionResult> UpdatePassword(
             int id, [FromBody] UpdatePasswordRO updatePasswordRO) {
+            
+            if (_appsService.ValidLicense(updatePasswordRO.License)) {
 
-            var result = await _userService.UpdatePassword(id, updatePasswordRO);
+                var result = await _userService.UpdatePassword(id, updatePasswordRO);
 
-            if (result) {
+                if (result) {
 
-                return Ok();
+                    return Ok();
+
+                } else {
+
+                    return BadRequest("Issue updating password");
+                }
 
             } else {
 
-                return BadRequest("Issue updating password");
+                return BadRequest("Invalid License");
             }
         }
 
         // DELETE: api/Users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(int id) {
+        public async Task<ActionResult<User>> DeleteUser(
+            int id, [FromBody] BaseRequestRO baseRequestRO) {
             
-            var result = await _userService.DeleteUser(id);
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            
+                var result = await _userService.DeleteUser(id);
 
-            if (result) {
+                if (result) {
 
-                return Ok();
+                    return Ok();
+
+                } else {
+
+                    return NotFound();
+                }
 
             } else {
 
-                return NotFound();
-            }           
+                return BadRequest("Invalid License");
+            }
         }
 
         // api/Users/AddRoles
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("AddRoles")]
         public async Task<IActionResult> AddRoles(
-            [FromBody] UpdateRoleRO addRolesRo) {
+            [FromBody] UpdateUserRolesRO updateRoleRO) {
             
-            var result = await _userService.AddUserRoles( 
-                addRolesRo.UserId,
-                addRolesRo.RoleIds.ToList());
+            if (_appsService.ValidLicense(updateRoleRO.License)) {
+            
+                var result = await _userService.AddUserRoles( 
+                    updateRoleRO.UserId,
+                    updateRoleRO.RoleIds.ToList());
 
-            if (result) {
+                if (result) {
 
-                return Ok();
+                    return Ok();
+
+                } else {
+
+                    return NotFound();
+                }
 
             } else {
 
-                return NotFound();
+                return BadRequest("Invalid License");
             }
         }
 
@@ -142,19 +192,26 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete, Route("RemoveRoles")]
         public async Task<IActionResult> RemoveRoles(
-            [FromBody] UpdateRoleRO addRolesRo) {
+            [FromBody] UpdateUserRolesRO updateRoleRO) {
             
-            var result = await _userService.RemoveUserRoles(
-                addRolesRo.UserId, 
-                addRolesRo.RoleIds.ToList());
+            if (_appsService.ValidLicense(updateRoleRO.License)) {
+            
+                var result = await _userService.RemoveUserRoles(
+                    updateRoleRO.UserId, 
+                    updateRoleRO.RoleIds.ToList());
 
-            if (result) {
+                if (result) {
 
-                return Ok();
+                    return Ok();
+
+                } else {
+
+                    return NotFound();
+                }
 
             } else {
 
-                return NotFound();
+                return BadRequest("Invalid License");
             }
         }
     }
