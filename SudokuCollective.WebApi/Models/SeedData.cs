@@ -141,6 +141,7 @@ namespace SudokuCollective.WebApi.Models {
                             License = config.GetValue<string>("DefaultClientApp:License"),
                             OwnerId = 1,
                             DateCreated = createdDate,
+                            DateUpdated = createdDate,
                             DevUrl = config.GetValue<string>("DefaultClientApp:DevUrl"),
                             LiveUrl = config.GetValue<string>("DefaultClientApp:LiveUrl")
                         }

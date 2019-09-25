@@ -8,6 +8,7 @@ using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
+using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
 using SudokuCollective.WebApi.Models.TaskModels.AppRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -24,6 +25,8 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<AppTaskResult> GetApp(int id, bool fullRecord = true) {
 
+            var createdDate = DateTime.UtcNow;
+
             var appTaskResult = new AppTaskResult() {
 
                 Result = false,
@@ -33,7 +36,8 @@ namespace SudokuCollective.WebApi.Services {
                     Name = string.Empty,
                     License = "Unauthorized",
                     OwnerId = 0,
-                    DateCreated = DateTime.UtcNow,
+                    DateCreated = createdDate,
+                    DateUpdated = createdDate,
                     DevUrl = string.Empty,
                     LiveUrl = string.Empty
                 }
@@ -170,6 +174,8 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<AppTaskResult> CreateApp(LicenseRequestRO licenseRequestRO) {
 
+            var createdDate = DateTime.UtcNow;
+
             var appTaskResult = new AppTaskResult() {
 
                 Result = false,
@@ -179,7 +185,8 @@ namespace SudokuCollective.WebApi.Services {
                     Name = string.Empty,
                     License = "Unauthorized",
                     OwnerId = 0,
-                    DateCreated = DateTime.UtcNow,
+                    DateCreated = createdDate,
+                    DateUpdated = createdDate,
                     DevUrl = string.Empty,
                     LiveUrl = string.Empty
                 }
@@ -264,6 +271,8 @@ namespace SudokuCollective.WebApi.Services {
         
         public async Task<AppTaskResult> GetAppByLicense(string license, bool fullRecord = true) {
 
+            var createdDate = DateTime.UtcNow;
+
             var appTaskResult = new AppTaskResult() {
 
                 Result = false,
@@ -273,7 +282,8 @@ namespace SudokuCollective.WebApi.Services {
                     Name = string.Empty,
                     License = "Unauthorized",
                     OwnerId = 0,
-                    DateCreated = DateTime.UtcNow,
+                    DateCreated = createdDate,
+                    DateUpdated = createdDate,
                     DevUrl = string.Empty,
                     LiveUrl = string.Empty
                 }
@@ -338,22 +348,27 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<bool> UpdateApp(int id, App app) {
+        public async Task<bool> UpdateApp(UpdateAppRO updateAppRO) {
 
             var result = false;
             
             try {
 
-                if (id == app.Id) {
+                var app = await _context.Apps
+                    .Include(a => a.Users)
+                    .Where(a => a.License.Equals(updateAppRO.License))
+                    .FirstOrDefaultAsync();
+                
+                app.Name = updateAppRO.Name;
+                app.DevUrl = updateAppRO.DevUrl;
+                app.LiveUrl = updateAppRO.LiveUrl;
+                app.DateUpdated = DateTime.UtcNow;
 
-                    _context.Entry(app).State = EntityState.Modified;
-                    
-                    await _context.SaveChangesAsync();
+                _context.Entry(app).State = EntityState.Modified;
+                
+                await _context.SaveChangesAsync();
 
-                    result = true;
-                }
-
-                return result;
+                return result = true;
 
             } catch (Exception) {
 

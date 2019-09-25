@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
 using SudokuCollective.WebApi.Models.RequestModels;
+using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
@@ -94,6 +95,31 @@ namespace SudokuCollective.WebApi.Controllers {
             } else {
 
                 return BadRequest("Invalid License");
-            }}
+            }
+        }
+
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateApp(
+            [FromBody] UpdateAppRO updateAppRO) {
+            
+            if (_appsService.ValidLicense(updateAppRO.License)) {
+                
+                var result = await _appsService.UpdateApp(updateAppRO);
+
+                if (result) {
+
+                    return Ok();
+
+                } else {
+
+                    return BadRequest("Error updating app");
+                }
+
+            } else {
+
+                return BadRequest("Invalid License");
+            }            
+        }
     }
 }

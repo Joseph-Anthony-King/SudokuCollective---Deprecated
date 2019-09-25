@@ -10,6 +10,7 @@ namespace SudokuCollective.Models.Interfaces {
         string License { get; set; }
         int OwnerId { get; set; }
         DateTime DateCreated { get; set; }
+        DateTime DateUpdated { get; set; }
         string DevUrl { get; set; }
         string LiveUrl { get; set; }
         ICollection<UserApp> Users { get; set; }
