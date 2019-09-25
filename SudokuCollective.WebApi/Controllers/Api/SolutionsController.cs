@@ -93,7 +93,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return Ok("Requires more values in order to solve this puzzle");
                 }
 
             } else {

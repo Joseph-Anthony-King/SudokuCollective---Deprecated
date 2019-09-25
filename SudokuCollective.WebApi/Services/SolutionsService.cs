@@ -188,10 +188,29 @@ namespace SudokuCollective.WebApi.Services {
 
                 var result = new SudokuSolution(sudokuSolver.ToInt32List());
 
-                _context.SudokuSolutions.Add(result);
-                await _context.SaveChangesAsync();
+                var addResultToDataContext = true;
+                var solutions = await _context.SudokuSolutions.ToListAsync();
 
-                solutionTaskResult.Result = true;
+                foreach (var solution in solutions) {
+
+                    if (solution.ToString().Equals(result.ToString())) {
+
+                        addResultToDataContext = false;
+                        result = solution;
+                    }
+                }
+
+                if (addResultToDataContext && !result.ToString().Contains('0')) {
+
+                    _context.SudokuSolutions.Add(result);
+                    await _context.SaveChangesAsync();
+                }
+                
+                if (!result.ToString().Contains('0')) {
+                    
+                    solutionTaskResult.Result = true;
+                }
+
                 solutionTaskResult.Solution = result;
 
                 return solutionTaskResult;

@@ -19,7 +19,7 @@ namespace SudokuCollective.WebApi.Controllers {
         }
         
         [AllowAnonymous]
-        [HttpPost, Route("signup")]
+        [HttpPost]
         public async Task<ActionResult<User>> SignUp([FromBody] RegisterRO registerRO) {
             
             var result = await _usersService.CreateUser(registerRO);

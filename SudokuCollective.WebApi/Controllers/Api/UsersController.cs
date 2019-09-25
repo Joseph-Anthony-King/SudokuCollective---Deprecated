@@ -165,13 +165,13 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("AddRoles")]
         public async Task<IActionResult> AddRoles(
-            [FromBody] UpdateUserRolesRO updateRoleRO) {
+            [FromBody] UpdateUserRolesRO updateUserRoles) {
             
-            if (_appsService.ValidLicense(updateRoleRO.License)) {
+            if (_appsService.ValidLicense(updateUserRoles.License)) {
             
                 var result = await _userService.AddUserRoles( 
-                    updateRoleRO.UserId,
-                    updateRoleRO.RoleIds.ToList());
+                    updateUserRoles.UserId,
+                    updateUserRoles.RoleIds.ToList());
 
                 if (result) {
 
@@ -192,13 +192,13 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete, Route("RemoveRoles")]
         public async Task<IActionResult> RemoveRoles(
-            [FromBody] UpdateUserRolesRO updateRoleRO) {
+            [FromBody] UpdateUserRolesRO updateUserRoles) {
             
-            if (_appsService.ValidLicense(updateRoleRO.License)) {
+            if (_appsService.ValidLicense(updateUserRoles.License)) {
             
                 var result = await _userService.RemoveUserRoles(
-                    updateRoleRO.UserId, 
-                    updateRoleRO.RoleIds.ToList());
+                    updateUserRoles.UserId, 
+                    updateUserRoles.RoleIds.ToList());
 
                 if (result) {
 

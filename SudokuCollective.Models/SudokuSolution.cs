@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 using SudokuCollective.Models.Interfaces;
 
@@ -29,6 +30,18 @@ namespace SudokuCollective.Models {
         public SudokuSolution(List<int> intList) : this() {
 
             SolutionList = intList;
+        }
+
+        public override string ToString() {
+
+            StringBuilder result = new StringBuilder();
+
+            foreach (var solutionListInt in SolutionList) {
+
+                result.Append(solutionListInt);
+            }
+
+            return result.ToString();
         }
 
         private List<int> GetValues (int skipValue, int takeValue) {

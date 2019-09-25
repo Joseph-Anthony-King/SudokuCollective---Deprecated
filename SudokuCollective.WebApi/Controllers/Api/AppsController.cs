@@ -48,7 +48,7 @@ namespace SudokuCollective.WebApi.Controllers {
         }
         
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpGet, Route("GetApp")]
+        [HttpGet, Route("GetByLicense")]
         public async Task<ActionResult<App>> GetApp(
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
