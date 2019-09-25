@@ -10,6 +10,7 @@ using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
 using SudokuCollective.WebApi.Models.TaskModels.AppRequests;
+using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -69,9 +70,6 @@ namespace SudokuCollective.WebApi.Services {
                                 .Where(ur => ur.UserId == user.UserId)
                                 .ToListAsync();
 
-                            user.User.Apps = await _context.UsersApps
-                                .ToListAsync();
-
                             foreach (var userRole in user.User.Roles) {
 
                                 userRole.Role.Users = null;
@@ -82,7 +80,7 @@ namespace SudokuCollective.WebApi.Services {
 
                         app = await _context.Apps
                             .Include(a => a.Users)
-                            .Where(a => app.Id == id)
+                            .Where(a => a.Id == id)
                             .FirstOrDefaultAsync();
 
                         foreach (var user in app.Users) {
@@ -90,13 +88,6 @@ namespace SudokuCollective.WebApi.Services {
                             user.User = await _context.Users
                                 .Where(u => u.Id == user.UserId)
                                 .FirstOrDefaultAsync();
-
-                            user.User.Roles = await _context.UsersRoles
-                                .Where(ur => ur.UserId == user.UserId)
-                                .ToListAsync();
-
-                            user.User.Apps = await _context.UsersApps
-                                .ToListAsync();
                         }
                     }
 
@@ -348,6 +339,102 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
+        public async Task<LicenseTaskResult> GetLicense(int id) {
+
+            var licenseTaskResult = new LicenseTaskResult() {
+
+                Result = false,
+                License = string.Empty
+            };
+
+            try {
+
+                if (_context.Apps.Any(a => a.Id == id)) {
+
+                    var license = await _context.Apps
+                        .Where(a => a.Id == id)
+                        .Select(a => a.License)
+                        .FirstOrDefaultAsync();
+                    
+                    licenseTaskResult.Result = true;
+                    licenseTaskResult.License = license;
+                }
+
+                return licenseTaskResult;
+
+            } catch (Exception) {
+
+                return licenseTaskResult;
+            }
+        }
+        public async Task<UserListTaskResult> GetAppUsers(
+            BaseRequestRO baseRequest, bool fullRecord = true) {
+
+            var users = new List<User>();
+
+            var userListTaskResult = new UserListTaskResult() {
+
+                Result = false,
+                Users = users
+            };
+
+            try {
+
+                var app = await _context.Apps
+                    .Include(a => a.Users)
+                    .Where(a => a.License.Equals(baseRequest.License))
+                    .FirstOrDefaultAsync();
+
+                if (fullRecord) {
+
+                    foreach (var user in app.Users) {
+
+                        user.User = await _context.Users
+                            .Include(u => u.Games)
+                            .Include(u => u.Roles)
+                            .Where(u => u.Id == user.UserId)
+                            .FirstOrDefaultAsync();
+
+                        user.User.Roles = await _context.UsersRoles
+                            .Include(ur => ur.Role)
+                            .Where(ur => ur.UserId == user.UserId)
+                            .ToListAsync();
+
+                        foreach (var userRole in user.User.Roles) {
+
+                            userRole.Role.Users = null;
+                        }
+                    }
+
+                } else {
+
+                    foreach (var user in app.Users) {
+
+                        user.User = await _context.Users
+                            .Include(u => u.Games)
+                            .Where(u => u.Id == user.UserId)
+                            .FirstOrDefaultAsync();
+                    }
+                }
+
+                users = app.Users.Select(ua => ua.User).ToList();
+
+                foreach (var user in users) {
+
+                    user.Apps = null;
+                }
+
+                userListTaskResult.Result = true;
+                userListTaskResult.Users = users;
+
+                return userListTaskResult;
+
+            } catch (Exception) {
+
+                return userListTaskResult;
+            }
+        }
+
         public async Task<bool> UpdateApp(UpdateAppRO updateAppRO) {
 
             var result = false;
@@ -397,35 +484,6 @@ namespace SudokuCollective.WebApi.Services {
             } catch (Exception) {
 
                 return result;
-            }
-        }
-
-        public async Task<LicenseTaskResult> GetLicense(int id) {
-
-            var licenseTaskResult = new LicenseTaskResult() {
-
-                Result = false,
-                License = string.Empty
-            };
-
-            try {
-
-                if (_context.Apps.Any(a => a.Id == id)) {
-
-                    var license = await _context.Apps
-                        .Where(a => a.Id == id)
-                        .Select(a => a.License)
-                        .FirstOrDefaultAsync();
-                    
-                    licenseTaskResult.Result = true;
-                    licenseTaskResult.License = license;
-                }
-
-                return licenseTaskResult;
-
-            } catch (Exception) {
-
-                return licenseTaskResult;
             }
         }
 

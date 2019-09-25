@@ -121,5 +121,31 @@ namespace SudokuCollective.WebApi.Controllers {
                 return BadRequest("Invalid License");
             }            
         }
+
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpGet, Route("GetUsers")]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers(
+            [FromBody] BaseRequestRO baseRequest,
+            [FromQuery] bool fullRecord = true) {
+            
+            if (_appsService.ValidLicense(baseRequest.License)) {
+                
+                var result = await _appsService
+                    .GetAppUsers(baseRequest, fullRecord);
+
+                if (result.Result) {
+
+                    return Ok(result.Users);
+
+                } else {
+
+                    return BadRequest("Error getting app users");
+                }
+
+            } else {
+
+                return BadRequest("Invalid License");
+            }  
+        }
     }
 }

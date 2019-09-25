@@ -10,7 +10,7 @@ using SudokuCollective.WebApi.Models.DataModel;
 namespace SudokuCollective.WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190915012837_Initiate database")]
+    [Migration("20190925042427_Initiate database")]
     partial class Initiatedatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,31 @@ namespace SudokuCollective.WebApi.Migrations
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("SudokuApp.Models.Difficulty", b =>
+            modelBuilder.Entity("SudokuCollective.Models.App", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<string>("DevUrl");
+
+                    b.Property<string>("License");
+
+                    b.Property<string>("LiveUrl");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("OwnerId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Apps");
+                });
+
+            modelBuilder.Entity("SudokuCollective.Models.Difficulty", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -35,7 +59,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Difficulties");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.Game", b =>
+            modelBuilder.Entity("SudokuCollective.Models.Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -65,7 +89,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.Role", b =>
+            modelBuilder.Entity("SudokuCollective.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -79,7 +103,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.SudokuCell", b =>
+            modelBuilder.Entity("SudokuCollective.Models.SudokuCell", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -107,7 +131,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuCells");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.SudokuMatrix", b =>
+            modelBuilder.Entity("SudokuCollective.Models.SudokuMatrix", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -121,7 +145,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuMatrices");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.SudokuSolution", b =>
+            modelBuilder.Entity("SudokuCollective.Models.SudokuSolution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -133,7 +157,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuSolutions");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.User", b =>
+            modelBuilder.Entity("SudokuCollective.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -170,7 +194,20 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.UserRole", b =>
+            modelBuilder.Entity("SudokuCollective.Models.UserApp", b =>
+                {
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("AppId");
+
+                    b.HasKey("UserId", "AppId");
+
+                    b.HasIndex("AppId");
+
+                    b.ToTable("UsersApps");
+                });
+
+            modelBuilder.Entity("SudokuCollective.Models.UserRole", b =>
                 {
                     b.Property<int>("UserId");
 
@@ -183,48 +220,61 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("UsersRoles");
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.Game", b =>
+            modelBuilder.Entity("SudokuCollective.Models.Game", b =>
                 {
-                    b.HasOne("SudokuApp.Models.SudokuMatrix", "SudokuMatrix")
+                    b.HasOne("SudokuCollective.Models.SudokuMatrix", "SudokuMatrix")
                         .WithOne("Game")
-                        .HasForeignKey("SudokuApp.Models.Game", "SudokuMatrixId")
+                        .HasForeignKey("SudokuCollective.Models.Game", "SudokuMatrixId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SudokuApp.Models.SudokuSolution", "SudokuSolution")
+                    b.HasOne("SudokuCollective.Models.SudokuSolution", "SudokuSolution")
                         .WithOne("Game")
-                        .HasForeignKey("SudokuApp.Models.Game", "SudokuSolutionId")
+                        .HasForeignKey("SudokuCollective.Models.Game", "SudokuSolutionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SudokuApp.Models.User", "User")
+                    b.HasOne("SudokuCollective.Models.User", "User")
                         .WithMany("Games")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.SudokuCell", b =>
+            modelBuilder.Entity("SudokuCollective.Models.SudokuCell", b =>
                 {
-                    b.HasOne("SudokuApp.Models.SudokuMatrix", "SudokuMatrix")
+                    b.HasOne("SudokuCollective.Models.SudokuMatrix", "SudokuMatrix")
                         .WithMany("SudokuCells")
                         .HasForeignKey("SudokuMatrixId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.SudokuMatrix", b =>
+            modelBuilder.Entity("SudokuCollective.Models.SudokuMatrix", b =>
                 {
-                    b.HasOne("SudokuApp.Models.Difficulty", "Difficulty")
+                    b.HasOne("SudokuCollective.Models.Difficulty", "Difficulty")
                         .WithMany("Matrices")
                         .HasForeignKey("DifficultyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SudokuApp.Models.UserRole", b =>
+            modelBuilder.Entity("SudokuCollective.Models.UserApp", b =>
                 {
-                    b.HasOne("SudokuApp.Models.Role", "Role")
+                    b.HasOne("SudokuCollective.Models.App", "App")
+                        .WithMany("Users")
+                        .HasForeignKey("AppId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SudokuCollective.Models.User", "User")
+                        .WithMany("Apps")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SudokuCollective.Models.UserRole", b =>
+                {
+                    b.HasOne("SudokuCollective.Models.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SudokuApp.Models.User", "User")
+                    b.HasOne("SudokuCollective.Models.User", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

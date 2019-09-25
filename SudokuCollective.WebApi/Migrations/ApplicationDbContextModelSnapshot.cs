@@ -26,6 +26,8 @@ namespace SudokuCollective.WebApi.Migrations
 
                     b.Property<DateTime>("DateCreated");
 
+                    b.Property<DateTime>("DateUpdated");
+
                     b.Property<string>("DevUrl");
 
                     b.Property<string>("License");
