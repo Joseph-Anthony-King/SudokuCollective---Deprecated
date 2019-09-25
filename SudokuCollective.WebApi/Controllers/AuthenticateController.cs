@@ -18,7 +18,7 @@ namespace SudokuCollective.WebApi.Controllers {
         }
         
         [AllowAnonymous]
-        [HttpPost, Route("request")]
+        [HttpGet]
         public ActionResult RequestToken([FromBody] TokenRequest request) {
 
             if (!ModelState.IsValid) {

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Models;
 using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.TaskModels.AppRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
@@ -11,11 +10,11 @@ namespace SudokuCollective.WebApi.Controllers {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class LicenseController : ControllerBase {
+    public class LicensesController : ControllerBase {
 
         private readonly IAppsService _appsService;
 
-        public LicenseController(IAppsService appsService) {
+        public LicensesController(IAppsService appsService) {
 
             _appsService = appsService;
         }

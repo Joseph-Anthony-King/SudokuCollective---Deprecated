@@ -41,54 +41,60 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var app = new App();
+                if (_context.Apps.Any(app => app.Id == id)) {
 
-                if (fullRecord) {
+                    var app = new App();
 
-                    app = await _context.Apps
-                        .Include(a => a.Users)
-                        .SingleOrDefaultAsync(d => d.Id == id);
+                    if (fullRecord) {
 
-                    if (app == null) {
-
-                        app = new App() {
-
-                            Id = 0,
-                            Name = string.Empty,
-                            License = "Unauthorized",
-                            OwnerId = 0,
-                            DateCreated = DateTime.UtcNow,
-                            DevUrl = string.Empty,
-                            LiveUrl = string.Empty
-                        };
-                    }
-
-                    foreach (var ua in app.Users) {
-
-                        ua.User = await _context.Users
-                            .Where(u => u.Id == ua.UserId)
-                            .Include(u => u.Roles)
+                        app = await _context.Apps
+                            .Include(a => a.Users)
+                            .Where(a => a.Id == id)
                             .FirstOrDefaultAsync();
 
-                        ua.User.Games = await _context.Games
-                            .Where(g => g.User.Id == ua.UserId)
-                            .Include(g => g.SudokuMatrix)
-                            .ToListAsync();                    
-                        
-                        foreach (var game in ua.User.Games) {
+                        foreach (var user in app.Users) {
 
-                            game.SudokuMatrix = 
-                                await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                            user.User = await _context.Users
+                                .Include(u => u.Games)
+                                .Include(u => u.Roles)
+                                .Where(u => u.Id == user.UserId)
+                                .FirstOrDefaultAsync();
+
+                            user.User.Roles = await _context.UsersRoles
+                                .Include(ur => ur.Role)
+                                .Where(ur => ur.UserId == user.UserId)
+                                .ToListAsync();
+
+                            user.User.Apps = await _context.UsersApps
+                                .ToListAsync();
+
+                            foreach (var userRole in user.User.Roles) {
+
+                                userRole.Role.Users = null;
+                            }
+                        }
+
+                    } else {
+
+                        app = await _context.Apps
+                            .Include(a => a.Users)
+                            .Where(a => app.Id == id)
+                            .FirstOrDefaultAsync();
+
+                        foreach (var user in app.Users) {
+
+                            user.User = await _context.Users
+                                .Where(u => u.Id == user.UserId)
+                                .FirstOrDefaultAsync();
+
+                            user.User.Roles = await _context.UsersRoles
+                                .Where(ur => ur.UserId == user.UserId)
+                                .ToListAsync();
+
+                            user.User.Apps = await _context.UsersApps
+                                .ToListAsync();
                         }
                     }
-
-                    appTaskResult.Result = true;
-                    appTaskResult.App = app;
-
-                } else {
-
-                    app = await _context.Apps
-                        .SingleOrDefaultAsync(d => d.Id == id);
 
                     appTaskResult.Result = true;
                     appTaskResult.App = app;
@@ -125,13 +131,14 @@ namespace SudokuCollective.WebApi.Services {
                         foreach (var ua in app.Users) {
 
                             ua.User = await _context.Users
-                                .Where(u => u.Id == ua.UserId)
+                                .Include(u => u.Games)
                                 .Include(u => u.Roles)
+                                .Where(u => u.Id == ua.UserId)
                                 .FirstOrDefaultAsync();
 
                             ua.User.Games = await _context.Games
-                                .Where(g => g.User.Id == ua.UserId)
                                 .Include(g => g.SudokuMatrix)
+                                .Where(g => g.User.Id == ua.UserId)
                                 .ToListAsync();                    
                             
                             foreach (var game in ua.User.Games) {
@@ -255,7 +262,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
         
-        public async Task<AppTaskResult> GetAppByLicense(string license) {
+        public async Task<AppTaskResult> GetAppByLicense(string license, bool fullRecord = true) {
 
             var appTaskResult = new AppTaskResult() {
 
@@ -276,9 +283,48 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (_context.Apps.Any(app => app.License.Equals(license))) {
 
-                    var app = await _context.Apps
-                        .Where(a => a.License.Equals(license))
-                        .FirstOrDefaultAsync();
+                    var app = new App();
+
+                    if (fullRecord) {
+
+                        app = await _context.Apps
+                            .Include(a => a.Users)
+                            .Where(a => a.License.Equals(license))
+                            .FirstOrDefaultAsync();
+
+                        foreach (var user in app.Users) {
+
+                            user.User = await _context.Users
+                                .Include(u => u.Games)
+                                .Include(u => u.Roles)
+                                .Where(u => u.Id == user.UserId)
+                                .FirstOrDefaultAsync();
+
+                            user.User.Roles = await _context.UsersRoles
+                                .Include(ur => ur.Role)
+                                .Where(ur => ur.UserId == user.UserId)
+                                .ToListAsync();
+
+                            foreach (var userRole in user.User.Roles) {
+
+                                userRole.Role.Users = null;
+                            }
+                        }
+
+                    } else {
+
+                        app = await _context.Apps
+                            .Include(a => a.Users)
+                            .Where(a => a.License.Equals(license))
+                            .FirstOrDefaultAsync();
+
+                        foreach (var user in app.Users) {
+
+                            user.User = await _context.Users
+                                .Where(u => u.Id == user.UserId)
+                                .FirstOrDefaultAsync();
+                        }
+                    }
 
                     appTaskResult.Result = true;
                     appTaskResult.App = app;
