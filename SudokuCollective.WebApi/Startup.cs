@@ -33,7 +33,7 @@ namespace SudokuCollective.WebApi {
                 options.UseNpgsql(Configuration.GetConnectionString("DatabaseConnection")));
 
             services
-                .AddMvc()
+                .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson(options => {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
@@ -112,10 +112,7 @@ namespace SudokuCollective.WebApi {
 
             app.UseStaticFiles();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseMvc();
 
             SeedData.EnsurePopulated(app, Configuration);
         }

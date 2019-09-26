@@ -18,10 +18,9 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<bool> IsValidUser(string userName, string password) {
 
             var user = await _context.Users.SingleOrDefaultAsync(u => 
-                u.UserName.Equals(userName) && 
-                BCrypt.Net.BCrypt.Verify(password, u.Password));
+                u.UserName.Equals(userName));
 
-            if (user != null) {
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password)) {
 
                 return true;
 
