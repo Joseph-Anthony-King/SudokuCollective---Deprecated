@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,10 +34,10 @@ namespace SudokuCollective.WebApi {
 
             services
                 .AddMvc()
-                .AddJsonOptions(options => {
+                .AddNewtonsoftJson(options => {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.Configure<TokenManagement>(Configuration.GetSection("TokenManagement"));
             var token = Configuration.GetSection("tokenManagement").Get<TokenManagement>();
@@ -75,17 +76,25 @@ namespace SudokuCollective.WebApi {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 
             if (env.IsDevelopment()) {
 
                 app.UseDeveloperExceptionPage();
 
-            } else {
-
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
             }
+
+            app.UseCors(x => x.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseAuthentication();
 
             app.UseSwagger();
 
@@ -93,10 +102,6 @@ namespace SudokuCollective.WebApi {
 
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sudoku Collective API V1");
             });
-
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            app.UseAuthentication();
-            app.UseHttpsRedirection();
 
             // Initialize and set the path for the welcome page saved in wwwroot
             DefaultFilesOptions defaultFile = new DefaultFilesOptions();
@@ -107,7 +112,10 @@ namespace SudokuCollective.WebApi {
 
             app.UseStaticFiles();
 
-            app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             SeedData.EnsurePopulated(app, Configuration);
         }

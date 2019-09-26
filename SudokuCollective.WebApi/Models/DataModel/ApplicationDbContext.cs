@@ -43,7 +43,7 @@ namespace SudokuCollective.WebApi.Models.DataModel {
                     .ToList()
             );
 
-            modelBuilder.ForNpgsqlUseIdentityColumns();
+            modelBuilder.UseIdentityColumns();
 
             modelBuilder.Entity<Role>()
                 .HasKey(role => role.Id);
