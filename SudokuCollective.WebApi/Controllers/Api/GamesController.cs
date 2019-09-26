@@ -27,7 +27,7 @@ namespace SudokuCollective.WebApi.Controllers {
         // GET: api/Games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame([FromQuery] int id, 
+        public async Task<ActionResult<Game>> GetGame(int id, 
             [FromBody] BaseRequestRO baseRequestRO) {
 
             if (_appsService.ValidLicense(baseRequestRO.License)) {
@@ -105,7 +105,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetMyGames/{userId}")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            [FromQuery] int userId,
+            int userId,
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
 
@@ -159,7 +159,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(
-            [FromQuery] int id, 
+            int id, 
             [FromBody] UpdateGameRO updateGameRO) {
 
             if (_appsService.ValidLicense(updateGameRO.License)) {
@@ -174,7 +174,7 @@ namespace SudokuCollective.WebApi.Controllers {
                 
                 if (result.Result) {
 
-                    return NoContent();
+                    return Ok();
 
                 } else {
 
@@ -220,7 +220,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Game>> DeleteGame(
-            [FromQuery] int id,
+            int id,
             [FromBody] BaseRequestRO baseRequestRO) {
 
             if (_appsService.ValidLicense(baseRequestRO.License)) {
@@ -245,11 +245,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut, Route("CheckGame")]
         public async Task<ActionResult<Game>> CheckGame(
-            [FromBody] UpdateGameRO checkGameRO) {
+            [FromBody] UpdateGameRO updateGameRO) {
 
-            if (_appsService.ValidLicense(checkGameRO.License)) {
+            if (_appsService.ValidLicense(updateGameRO.License)) {
 
-                var result = await _gamesService.CheckGame(checkGameRO);
+                var result = await _gamesService.CheckGame(updateGameRO);
 
                 if (result.Result) {
                     
