@@ -133,7 +133,18 @@ namespace SudokuCollective.WebApi.Models {
 
                 if (!context.Apps.Any()) {
 
-                    context.Apps.Add(
+                    context.Apps.AddRange(
+
+                        new App {
+                            
+                            Name = config.GetValue<string>("DefaultAdminApp:Name"),
+                            License = config.GetValue<string>("DefaultAdminApp:License"),
+                            OwnerId = 1,
+                            DateCreated = createdDate,
+                            DateUpdated = createdDate,
+                            DevUrl = config.GetValue<string>("DefaultAdminApp:DevUrl"),
+                            LiveUrl = config.GetValue<string>("DefaultAdminApp:LiveUrl")
+                        },
 
                         new App {
                             
@@ -162,6 +173,18 @@ namespace SudokuCollective.WebApi.Models {
 
                             UserId = 2,
                             AppId = 1
+                        },
+
+                        new UserApp {
+
+                            UserId = 1,
+                            AppId = 2
+                        },
+
+                        new UserApp {
+
+                            UserId = 2,
+                            AppId = 2
                         }
                     );
                 }

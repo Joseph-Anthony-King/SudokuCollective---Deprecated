@@ -187,7 +187,21 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (_context.Users.Any(u => u.Id == licenseRequestRO.OwnerId)) {
 
-                    var license = Guid.NewGuid();
+                    var generatingGuid = true;
+                    var license = new Guid();
+
+                    var apps = await _context.Apps.ToListAsync();
+
+                    do {
+
+                        license = Guid.NewGuid();
+
+                        if (apps.Any(a => a.License.Equals(license.ToString()))) {
+
+                            generatingGuid = false;
+                        }
+
+                    } while (generatingGuid);
 
                     var owner = await _context.Users
                         .Include(u => u.Roles)
