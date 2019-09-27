@@ -133,7 +133,7 @@ namespace SudokuCollective.WebApi.Models {
 
                 if (!context.Apps.Any()) {
 
-                    context.Apps.AddRange(
+                    context.Apps.Add(
 
                         new App {
                             
@@ -144,7 +144,12 @@ namespace SudokuCollective.WebApi.Models {
                             DateUpdated = createdDate,
                             DevUrl = config.GetValue<string>("DefaultAdminApp:DevUrl"),
                             LiveUrl = config.GetValue<string>("DefaultAdminApp:LiveUrl")
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Apps.Add(
 
                         new App {
                             
@@ -157,6 +162,8 @@ namespace SudokuCollective.WebApi.Models {
                             LiveUrl = config.GetValue<string>("DefaultClientApp:LiveUrl")
                         }
                     );
+
+                    context.SaveChanges();
                 }
 
                 if (!context.UsersApps.Any()) {
