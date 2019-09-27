@@ -136,9 +136,22 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var game = await _context.Games.FindAsync(id);
+                var game = await _context.Games
+                    .Include(g => g.SudokuMatrix)
+                    .FirstOrDefaultAsync(predicate: g => g.Id == id);
 
                 if (game != null) {
+
+                    game.SudokuMatrix = await StaticApiHelpers
+                        .AttachSudokuMatrix(game, _context);
+
+                    if (game.ContinueGame) {
+
+                        var solution = await _context.SudokuSolutions
+                            .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
+
+                        _context.SudokuSolutions.Remove(solution);
+                    }
 
                     _context.Games.Remove(game);
                     await _context.SaveChangesAsync();
@@ -369,9 +382,21 @@ namespace SudokuCollective.WebApi.Services {
             try {
 
                 var game = await _context.Games
+                    .Include(g => g.SudokuMatrix)
                     .FirstOrDefaultAsync(predicate: g => g.Id == gameId && g.User.Id == userId);
 
                 if (game != null) {
+
+                    game.SudokuMatrix = await StaticApiHelpers
+                        .AttachSudokuMatrix(game, _context);
+
+                    if (game.ContinueGame) {
+
+                        var solution = await _context.SudokuSolutions
+                            .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
+
+                        _context.SudokuSolutions.Remove(solution);
+                    }
 
                     _context.Games.Remove(game);
                     await _context.SaveChangesAsync();

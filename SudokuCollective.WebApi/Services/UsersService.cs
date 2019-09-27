@@ -249,8 +249,8 @@ namespace SudokuCollective.WebApi.Services {
                 if (_context.Apps.Any(a => a.License.Equals(registerRO.License))) {
 
                     app = await _context.Apps
-                        .Where(a => a.License.Equals(registerRO.License))
-                        .FirstOrDefaultAsync();
+                        .Include(a => a.Users)
+                        .FirstOrDefaultAsync(predicate: a => a.License.Equals(registerRO.License));
                 }
 
                 var salt = BCrypt.Net.BCrypt.GenerateSalt();
@@ -444,11 +444,31 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var user = await _context.Users.FindAsync(id);
+                var user = await _context.Users
+                    .Include(u => u.Games)
+                    .ThenInclude(g => g.SudokuMatrix)
+                    .FirstOrDefaultAsync(predicate: u => u.Id == id);
 
                 if (user == null) {
 
                     return result;
+                }
+
+                if (user.Games.Count > 0) {
+                
+                    foreach (var game in user.Games) {
+
+                        game.SudokuMatrix = await StaticApiHelpers
+                            .AttachSudokuMatrix(game, _context);
+
+                        if (game.ContinueGame) {
+
+                            var solution = await _context.SudokuSolutions
+                                .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
+
+                            _context.SudokuSolutions.Remove(solution);
+                        }
+                    }
                 }
 
                 _context.Users.Remove(user);

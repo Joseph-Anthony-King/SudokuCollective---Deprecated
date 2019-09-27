@@ -57,7 +57,8 @@ namespace SudokuCollective.WebApi.Models.DataModel {
             modelBuilder.Entity<SudokuCell>()
                 .HasOne(cell => cell.SudokuMatrix)
                 .WithMany(matrix => matrix.SudokuCells)
-                .HasForeignKey(cell => cell.SudokuMatrixId);
+                .HasForeignKey(cell => cell.SudokuMatrixId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<SudokuCell>()
                 .Ignore(cell => cell.AvailableValues);
@@ -134,7 +135,8 @@ namespace SudokuCollective.WebApi.Models.DataModel {
                 
             modelBuilder.Entity<Game>()
                 .HasOne(game => game.SudokuMatrix)
-                .WithOne(matrix => matrix.Game);
+                .WithOne(matrix => matrix.Game)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Game>()
                 .HasOne(game => game.SudokuSolution)
@@ -143,7 +145,8 @@ namespace SudokuCollective.WebApi.Models.DataModel {
             modelBuilder.Entity<Game>()
                 .HasOne(game => game.User)
                 .WithMany(user => user.Games)
-                .HasForeignKey(game => game.UserId);
+                .HasForeignKey(game => game.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             
             modelBuilder.Entity<User>()
                 .HasKey(user => user.Id);
