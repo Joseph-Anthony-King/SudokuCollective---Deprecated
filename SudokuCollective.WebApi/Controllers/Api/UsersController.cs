@@ -113,7 +113,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // PUT: api/Users/UpdatePassword/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut("UpdatePassword/{id}")]
+        [HttpPut("{id}/UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(
             int id, [FromBody] UpdatePasswordRO updatePasswordRO) {
             
@@ -163,14 +163,15 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // api/Users/AddRoles
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPost, Route("AddRoles")]
+        [HttpPost, Route("{id}/AddRoles")]
         public async Task<IActionResult> AddRoles(
+            int id,
             [FromBody] UpdateUserRolesRO updateUserRoles) {
             
             if (_appsService.ValidLicense(updateUserRoles.License)) {
             
-                var result = await _userService.AddUserRoles( 
-                    updateUserRoles.UserId,
+                var result = await _userService.AddUserRoles(
+                    id,
                     updateUserRoles.RoleIds.ToList());
 
                 if (result) {
@@ -190,14 +191,15 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // api/Users/AddRoles
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpDelete, Route("RemoveRoles")]
+        [HttpDelete, Route("{id}/RemoveRoles")]
         public async Task<IActionResult> RemoveRoles(
+            int id,
             [FromBody] UpdateUserRolesRO updateUserRoles) {
             
             if (_appsService.ValidLicense(updateUserRoles.License)) {
             
                 var result = await _userService.RemoveUserRoles(
-                    updateUserRoles.UserId, 
+                    id, 
                     updateUserRoles.RoleIds.ToList());
 
                 if (result) {

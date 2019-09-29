@@ -414,11 +414,10 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var user = await _context.Users.SingleOrDefaultAsync(u =>
-                    u.Id == id &&
-                    BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, u.Password));
+                var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
 
-                if (user != null) {
+                if (user != null &&
+                    BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, user.Password)) {
 
                     var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
@@ -482,7 +481,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<bool> AddUserRoles(int userId, List<int> roleIds) {
+        public async Task<bool> AddUserRoles(int id, List<int> roleIds) {
 
             var result = false;
 
@@ -490,7 +489,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 var user = await _context.Users
                     .Include(u => u.Roles)
-                    .Where(u => u.Id == userId)
+                    .Where(u => u.Id == id)
                     .FirstOrDefaultAsync();
 
                 foreach (var userRole in user.Roles) {
@@ -536,14 +535,14 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<bool> RemoveUserRoles(int userId, List<int> roleIds) {
+        public async Task<bool> RemoveUserRoles(int id, List<int> roleIds) {
 
             var result = false;
 
             try {
 
                 var usersRoles = _context.UsersRoles
-                    .Where(ur => ur.UserId == userId && roleIds.Contains(ur.RoleId));
+                    .Where(ur => ur.UserId == id && roleIds.Contains(ur.RoleId));
 
                 _context.UsersRoles.RemoveRange(usersRoles);
                 await _context.SaveChangesAsync();
