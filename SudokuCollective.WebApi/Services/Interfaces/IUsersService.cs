@@ -17,6 +17,8 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
         Task<bool> DeleteUser(int id);
         Task<bool> AddUserRoles(int id, List<int> roleIds);
         Task<bool> RemoveUserRoles(int id, List<int> roleIds);
+        Task<bool> ActivateUser(int id);
+        Task<bool> DeactivateUser(int id);
         bool IsUserValid(User user);
     }
 }

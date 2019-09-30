@@ -101,7 +101,7 @@ namespace SudokuCollective.WebApi.Models {
 
                     var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
-                    context.Users.AddRange(
+                    context.Users.Add(
 
                         new User {
 
@@ -112,8 +112,14 @@ namespace SudokuCollective.WebApi.Models {
                             DateCreated = createdDate,
                             DateUpdated = createdDate,
                             Email = config.GetValue<string>("DefaultUserAccounts:SuperUser:Email"),
-                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt))
-                        },
+                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt)),
+                            IsActive = true
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Users.Add(
 
                         new User {
 
@@ -124,7 +130,8 @@ namespace SudokuCollective.WebApi.Models {
                             DateCreated = createdDate,
                             DateUpdated = createdDate,
                             Email = config.GetValue<string>("DefaultUserAccounts:AdminUser:Email"),
-                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt))
+                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt)),
+                            IsActive = true
                         }
                     );
 
@@ -143,7 +150,8 @@ namespace SudokuCollective.WebApi.Models {
                             DateCreated = createdDate,
                             DateUpdated = createdDate,
                             DevUrl = config.GetValue<string>("DefaultAdminApp:DevUrl"),
-                            LiveUrl = config.GetValue<string>("DefaultAdminApp:LiveUrl")
+                            LiveUrl = config.GetValue<string>("DefaultAdminApp:LiveUrl"),
+                            IsActive = true
                         }
                     );
 
@@ -159,7 +167,8 @@ namespace SudokuCollective.WebApi.Models {
                             DateCreated = createdDate,
                             DateUpdated = createdDate,
                             DevUrl = config.GetValue<string>("DefaultClientApp:DevUrl"),
-                            LiveUrl = config.GetValue<string>("DefaultClientApp:LiveUrl")
+                            LiveUrl = config.GetValue<string>("DefaultClientApp:LiveUrl"),
+                            IsActive = true
                         }
                     );
 

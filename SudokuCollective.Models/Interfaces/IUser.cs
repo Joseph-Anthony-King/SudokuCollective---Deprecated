@@ -17,5 +17,6 @@ namespace SudokuCollective.Models.Interfaces {
         ICollection<Game> Games { get; set; }
         ICollection<UserRole> Roles { get; set; }
         ICollection<UserApp> Apps { get; set; }
+        bool IsActive { get; set; }
     }
 }

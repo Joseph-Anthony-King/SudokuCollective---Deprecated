@@ -179,7 +179,8 @@ namespace SudokuCollective.WebApi.Services {
                     DateCreated = createdDate,
                     DateUpdated = createdDate,
                     DevUrl = string.Empty,
-                    LiveUrl = string.Empty
+                    LiveUrl = string.Empty,
+                    IsActive = false
                 }
             };
 
@@ -196,7 +197,7 @@ namespace SudokuCollective.WebApi.Services {
 
                         license = Guid.NewGuid();
 
-                        if (apps.Any(a => a.License.Equals(license.ToString()))) {
+                        if (!apps.Any(a => a.License.Equals(license.ToString()))) {
 
                             generatingGuid = false;
                         }
@@ -490,6 +491,62 @@ namespace SudokuCollective.WebApi.Services {
 
                     _context.Apps.Remove(app);
                     await _context.SaveChangesAsync();
+
+                    result = true;
+                }
+
+                return result;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
+        public async Task<bool> ActivateApp(int id) {
+
+            var result = false;
+
+            try {
+
+                var app = await _context.Apps.FindAsync(id);
+
+                if (app != null) {
+
+                    if (!app.IsActive) {
+
+                        app.ActivateApp();
+                        _context.Apps.Update(app);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    result = true;
+                }
+
+                return result;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
+        public async Task<bool> DeactivateApp(int id) {
+
+            var result = false;
+
+            try {
+
+                var app = await _context.Apps.FindAsync(id);
+
+                if (app != null) {
+
+                    if (app.IsActive) {
+                        
+                        app.DeactivateApp();
+                        _context.Apps.Update(app);
+                        await _context.SaveChangesAsync();
+                    }
 
                     result = true;
                 }

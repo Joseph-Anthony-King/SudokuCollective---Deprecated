@@ -23,6 +23,7 @@ namespace SudokuCollective.Models {
         public ICollection<Game> Games { get; set; }
         public ICollection<UserRole> Roles { get; set; }
         public ICollection<UserApp> Apps { get; set; }
+        public bool IsActive { get; set; }
 
         public User(
             string firstName, 
@@ -54,6 +55,8 @@ namespace SudokuCollective.Models {
 
                 Password = string.Empty;
             }
+
+            IsActive = true;
         }
 
         [JsonConstructor]
@@ -65,7 +68,8 @@ namespace SudokuCollective.Models {
             DateTime dateCreated, 
             DateTime dateUpdated, 
             string email, 
-            string password) : this() {
+            string password,
+            bool isActive) : this() {
 
             Id = id;
             FirstName = firstName;
@@ -75,6 +79,17 @@ namespace SudokuCollective.Models {
             DateUpdated = dateUpdated;
             Email = email;
             Password = password;
+            IsActive = isActive;
+        }
+
+        public void ActivateUser() {
+
+            IsActive = true;
+        }
+
+        public void DeactiveUser() {
+
+            IsActive = false;
         }
     }
 }

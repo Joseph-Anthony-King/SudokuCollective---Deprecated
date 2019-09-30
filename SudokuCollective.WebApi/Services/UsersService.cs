@@ -555,6 +555,102 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
+        public async Task<bool> ActivateUser(int id) {
+
+            var result = false;
+
+            try {
+
+                var user = await _context.Users
+                    .Include(u => u.Games)
+                    .ThenInclude(g => g.SudokuMatrix)
+                    .FirstOrDefaultAsync(predicate: u => u.Id == id);
+
+                if (user == null) {
+
+                    return result;
+                }
+
+                if (user.Games.Count > 0) {
+                
+                    foreach (var game in user.Games) {
+
+                        game.SudokuMatrix = await StaticApiHelpers
+                            .AttachSudokuMatrix(game, _context);
+
+                        if (game.ContinueGame) {
+
+                            var solution = await _context.SudokuSolutions
+                                .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
+
+                            _context.SudokuSolutions.Remove(solution);
+                        }
+                    }
+                }
+
+                if (!user.IsActive) {
+                    
+                    user.ActivateUser();
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+
+                return result = true;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
+        public async Task<bool> DeactivateUser(int id) {
+
+            var result = false;
+
+            try {
+
+                var user = await _context.Users
+                    .Include(u => u.Games)
+                    .ThenInclude(g => g.SudokuMatrix)
+                    .FirstOrDefaultAsync(predicate: u => u.Id == id);
+
+                if (user == null) {
+
+                    return result;
+                }
+
+                if (user.Games.Count > 0) {
+                
+                    foreach (var game in user.Games) {
+
+                        game.SudokuMatrix = await StaticApiHelpers
+                            .AttachSudokuMatrix(game, _context);
+
+                        if (game.ContinueGame) {
+
+                            var solution = await _context.SudokuSolutions
+                                .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
+
+                            _context.SudokuSolutions.Remove(solution);
+                        }
+                    }
+                }
+
+                if (user.IsActive) {
+                    
+                    user.DeactiveUser();
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+
+                return result = true;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
         public bool IsUserValid(User user) {
 
             var result = true;

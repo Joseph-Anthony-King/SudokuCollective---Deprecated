@@ -216,5 +216,39 @@ namespace SudokuCollective.WebApi.Controllers {
                 return BadRequest("Invalid License");
             }
         }
+
+        // Put: api/Users/5/ActivateUser
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPut, Route("{id}/ActivateUser")]
+        public async Task<IActionResult> ActivateUser(int id) {            
+                
+            var result = await _userService.ActivateUser(id);
+
+            if (result) {
+
+                return Ok();
+
+            } else {
+
+                return BadRequest("Error activating user");
+            }         
+        }
+
+        // Put: api/Users/5/DeactivateUser
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPut, Route("{id}/DeactivateUser")]
+        public async Task<IActionResult> DeactivateUser(int id) {            
+                
+            var result = await _userService.DeactivateUser(id);
+
+            if (result) {
+
+                return Ok();
+
+            } else {
+
+                return BadRequest("Error deactivating user");
+            }         
+        }
     }
 }

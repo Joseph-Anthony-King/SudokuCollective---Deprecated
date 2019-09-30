@@ -14,5 +14,6 @@ namespace SudokuCollective.Models.Interfaces {
         string DevUrl { get; set; }
         string LiveUrl { get; set; }
         ICollection<UserApp> Users { get; set; }
+        bool IsActive { get; set; }
     }
 }

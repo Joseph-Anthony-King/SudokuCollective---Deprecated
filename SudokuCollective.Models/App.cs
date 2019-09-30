@@ -17,6 +17,7 @@ namespace SudokuCollective.Models {
         public string DevUrl { get; set; }
         public string LiveUrl { get; set; }
         public ICollection<UserApp> Users { get; set; }
+        public bool IsActive { get; set; }
 
         public App() {
 
@@ -27,6 +28,7 @@ namespace SudokuCollective.Models {
             DateCreated = DateTime.UtcNow;
             DevUrl = string.Empty;
             LiveUrl = string.Empty;
+            IsActive = true;
         }
 
         public App(string name, string license, 
@@ -38,11 +40,19 @@ namespace SudokuCollective.Models {
             DateCreated = DateTime.UtcNow;
             DevUrl = devUrl;
             LiveUrl = liveUrl;
+            IsActive = true;
         }
 
         [JsonConstructor]
-        public App(int id, string name, string license, int ownerId, 
-            DateTime dateCreated, string devUrl, string liveUrl) {
+        public App(
+            int id, 
+            string name, 
+            string license, 
+            int ownerId, 
+            DateTime dateCreated, 
+            string devUrl, 
+            string liveUrl,
+            bool isActive) : this() {
 
             Id = id;
             Name = name;
@@ -51,6 +61,7 @@ namespace SudokuCollective.Models {
             DateCreated = dateCreated;
             DevUrl = devUrl;
             LiveUrl = liveUrl;
+            IsActive = isActive;
         }
         
         public string GetLicense(int id, int ownerId) {
@@ -63,6 +74,16 @@ namespace SudokuCollective.Models {
             }
 
             return License;
+        }
+
+        public void ActivateApp() {
+            
+            IsActive = true;
+        }
+
+        public void DeactivateApp() {
+
+            IsActive = false;
         }
     }
 }
