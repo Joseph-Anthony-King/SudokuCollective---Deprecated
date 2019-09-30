@@ -381,6 +381,7 @@ namespace SudokuCollective.WebApi.Services {
                 return licenseTaskResult;
             }
         }
+        
         public async Task<UserListTaskResult> GetAppUsers(
             BaseRequestRO baseRequest, bool fullRecord = true) {
 

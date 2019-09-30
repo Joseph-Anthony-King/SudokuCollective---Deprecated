@@ -9,7 +9,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
     
-    [Authorize]
+    [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/[controller]")]
     [ApiController]
     public class AppsController : ControllerBase {
@@ -21,6 +21,7 @@ namespace SudokuCollective.WebApi.Controllers {
             _appsService = appsService;
         }
         
+        // GET: api/Apps/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet, Route("{id}")]
         public async Task<ActionResult<App>> GetApp(
@@ -47,6 +48,7 @@ namespace SudokuCollective.WebApi.Controllers {
             }
         }
         
+        // GET: api/Apps/GetByLicense
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet, Route("GetByLicense")]
         public async Task<ActionResult<App>> GetApp(
@@ -73,8 +75,9 @@ namespace SudokuCollective.WebApi.Controllers {
             }
         }
 
+        // GET: api/Apps
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpGet, Route("GetApps")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<App>>> GetApps(
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
@@ -98,6 +101,7 @@ namespace SudokuCollective.WebApi.Controllers {
             }
         }
 
+        // Put: api/Apps
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut]
         public async Task<IActionResult> UpdateApp(
@@ -122,7 +126,8 @@ namespace SudokuCollective.WebApi.Controllers {
             }            
         }
 
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        // GET: api/Apps/GetUsers
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
             [FromBody] BaseRequestRO baseRequest,

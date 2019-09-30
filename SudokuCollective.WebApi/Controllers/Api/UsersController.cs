@@ -10,7 +10,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
 
-    [Authorize]
+    [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase {
@@ -53,7 +53,7 @@ namespace SudokuCollective.WebApi.Controllers {
         }
 
         // GET: api/Users
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
             [FromBody] BaseRequestRO baseRequestRO,
@@ -111,8 +111,8 @@ namespace SudokuCollective.WebApi.Controllers {
             }
         }
 
-        // PUT: api/Users/UpdatePassword/5
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        // PUT: api/Users/5/UpdatePassword
+        [Authorize(Roles = "USER")]
         [HttpPut("{id}/UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(
             int id, [FromBody] UpdatePasswordRO updatePasswordRO) {

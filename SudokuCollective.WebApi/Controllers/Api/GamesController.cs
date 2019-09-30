@@ -9,7 +9,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
 
-    [Authorize]
+    [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/[controller]")]
     [ApiController]
     public class GamesController : ControllerBase {
@@ -75,74 +75,19 @@ namespace SudokuCollective.WebApi.Controllers {
             }
         }
 
-        // GET: api/Games/GetMyGame
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet, Route("{id}/GetMyGame")]
-        public async Task<ActionResult<Game>> GetMyGame(
+        // DELETE: api/Games/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Game>> DeleteGame(
             int id,
-            [FromBody] GetMyGameRO getMyGameRO, 
-            [FromQuery] bool fullRecord = true) {
+            [FromBody] BaseRequestRO baseRequestRO) {
 
-            if (_appsService.ValidLicense(getMyGameRO.License)) {
+            if (_appsService.ValidLicense(baseRequestRO.License)) {
 
-                var result = await _gamesService.GetMyGame(getMyGameRO.UserId, id, fullRecord);
-
-                if (result.Result) {
-
-                    return Ok(result.Game);
-
-                } else {
-
-                    return BadRequest();
-                }
-
-            } else {
-
-                return BadRequest("Invalid License");
-            }
-        }
-
-        // GET: api/Games/GetMyGames/5
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet, Route("GetMyGames")]
-        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            [FromBody] GetMyGameRO getMyGameRO,
-            [FromQuery] bool fullRecord = true) {
-
-            if (_appsService.ValidLicense(getMyGameRO.License)) {
-
-                var result = await _gamesService.GetMyGames(getMyGameRO.UserId, fullRecord);
-
-                if (result.Result) {
-
-                    return Ok(result.Games);
-
-                } else {
-
-                    return BadRequest();
-                }
-
-            } else {
-
-                return BadRequest("Invalid License");
-            }
-        }
-
-        // DELETE: api/Games/DeleteMyGame
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpDelete("{id}/DeleteMyGame")]
-        public async Task<ActionResult<Game>> DeleteMyGame(
-            int id,
-            [FromBody] GetMyGameRO getMyGameRO) {
-
-            if (_appsService.ValidLicense(getMyGameRO.License)) {
-                
-                var result = await _gamesService.DeleteMyGame(
-                    getMyGameRO.UserId, 
-                    id);
+                var result = await _gamesService.DeleteGame(id);
 
                 if (result) {
-                    
+
                     return Ok();
 
                 } else {
@@ -217,32 +162,7 @@ namespace SudokuCollective.WebApi.Controllers {
             }
         }
 
-        // DELETE: api/Games/5
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Game>> DeleteGame(
-            int id,
-            [FromBody] BaseRequestRO baseRequestRO) {
-
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
-
-                var result = await _gamesService.DeleteGame(id);
-
-                if (result) {
-
-                    return Ok();
-
-                } else {
-
-                    return BadRequest();
-                }
-
-            } else {
-
-                return BadRequest("Invalid License");
-            }
-        }
-
+        // PUT: api/Games/5/CheckGame
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut, Route("{id}/CheckGame")]
         public async Task<ActionResult<Game>> CheckGame(
@@ -256,6 +176,87 @@ namespace SudokuCollective.WebApi.Controllers {
                 if (result.Result) {
                     
                     return Ok(result.Game);
+
+                } else {
+
+                    return BadRequest();
+                }
+
+            } else {
+
+                return BadRequest("Invalid License");
+            }
+        }
+        
+        // GET: api/Games/5/GetMyGame
+        [Authorize(Roles = "USER")]
+        [HttpGet, Route("{id}/GetMyGame")]
+        public async Task<ActionResult<Game>> GetMyGame(
+            int id,
+            [FromBody] GetMyGameRO getMyGameRO, 
+            [FromQuery] bool fullRecord = true) {
+
+            if (_appsService.ValidLicense(getMyGameRO.License)) {
+
+                var result = await _gamesService.GetMyGame(getMyGameRO.UserId, id, fullRecord);
+
+                if (result.Result) {
+
+                    return Ok(result.Game);
+
+                } else {
+
+                    return BadRequest();
+                }
+
+            } else {
+
+                return BadRequest("Invalid License");
+            }
+        }
+
+        // GET: api/Games/GetMyGames
+        [Authorize(Roles = "USER")]
+        [HttpGet, Route("GetMyGames")]
+        public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
+            [FromBody] GetMyGameRO getMyGameRO,
+            [FromQuery] bool fullRecord = true) {
+
+            if (_appsService.ValidLicense(getMyGameRO.License)) {
+
+                var result = await _gamesService.GetMyGames(getMyGameRO.UserId, fullRecord);
+
+                if (result.Result) {
+
+                    return Ok(result.Games);
+
+                } else {
+
+                    return BadRequest();
+                }
+
+            } else {
+
+                return BadRequest("Invalid License");
+            }
+        }
+
+        // DELETE: api/Games/5/DeleteMyGame
+        [Authorize(Roles = "USER")]
+        [HttpDelete("{id}/DeleteMyGame")]
+        public async Task<ActionResult<Game>> DeleteMyGame(
+            int id,
+            [FromBody] GetMyGameRO getMyGameRO) {
+
+            if (_appsService.ValidLicense(getMyGameRO.License)) {
+                
+                var result = await _gamesService.DeleteMyGame(
+                    getMyGameRO.UserId, 
+                    id);
+
+                if (result) {
+                    
+                    return Ok();
 
                 } else {
 

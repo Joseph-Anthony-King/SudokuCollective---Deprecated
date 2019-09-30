@@ -9,7 +9,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
 
-    [Authorize]
+    [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/[controller]")]
     [ApiController]
     public class RolesController : ControllerBase {
@@ -78,7 +78,7 @@ namespace SudokuCollective.WebApi.Controllers {
         }
 
         // PUT: api/Roles/5
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRole(
             int id,

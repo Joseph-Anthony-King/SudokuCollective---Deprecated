@@ -9,7 +9,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
 
-    [Authorize]
+    [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/[controller]")]
     [ApiController]
     public class SolutionsController : ControllerBase {
@@ -77,9 +77,9 @@ namespace SudokuCollective.WebApi.Controllers {
             }
         }
 
-        // GET: api/solutions/solve
+        // GET: api/solutions
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet, Route("Solve")]
+        [HttpPost]
         public async Task<ActionResult<SudokuSolution>> Solve(
             [FromBody] SolveRequestsRO solveRequestsRO) {
                 

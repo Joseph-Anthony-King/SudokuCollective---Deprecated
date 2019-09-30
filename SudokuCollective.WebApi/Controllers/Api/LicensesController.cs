@@ -7,7 +7,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
 
-    [Authorize]
+    [Authorize(Roles = "SUPERUSER, ADMIN")]
     [Route("api/[controller]")]
     [ApiController]
     public class LicensesController : ControllerBase {
@@ -19,23 +19,8 @@ namespace SudokuCollective.WebApi.Controllers {
             _appsService = appsService;
         }
         
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost]
-        public async Task<ActionResult<App>> PostApp([FromBody] LicenseRequestRO licenseRequestRO) {
-            
-            var result = await _appsService.CreateApp(licenseRequestRO);
-
-            if (result.Result) {
-                
-                return Ok(result.App);
-
-            } else {
-
-                return BadRequest("Error creating app");
-            }
-        }
-        
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        // GET: api/Licenses/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet, Route("{id}")]
         public async Task<ActionResult> GetLicense(int id) {
             
@@ -48,6 +33,23 @@ namespace SudokuCollective.WebApi.Controllers {
             } else {
 
                 return BadRequest("Error getting license");
+            }
+        }
+        
+        // POST: api/Licenses
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPost]
+        public async Task<ActionResult<App>> PostApp([FromBody] LicenseRequestRO licenseRequestRO) {
+            
+            var result = await _appsService.CreateApp(licenseRequestRO);
+
+            if (result.Result) {
+                
+                return Ok(result.App);
+
+            } else {
+
+                return BadRequest("Error creating app");
             }
         }
     }
