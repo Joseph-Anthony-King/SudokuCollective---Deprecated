@@ -77,14 +77,15 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // GET: api/Games/GetMyGame
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet, Route("GetMyGame")]
+        [HttpGet, Route("{id}/GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame(
+            int id,
             [FromBody] GetMyGameRO getMyGameRO, 
             [FromQuery] bool fullRecord = true) {
 
             if (_appsService.ValidLicense(getMyGameRO.License)) {
 
-                var result = await _gamesService.GetMyGame(getMyGameRO.UserId, getMyGameRO.GameId, fullRecord);
+                var result = await _gamesService.GetMyGame(getMyGameRO.UserId, id, fullRecord);
 
                 if (result.Result) {
 
@@ -103,15 +104,14 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // GET: api/Games/GetMyGames/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet, Route("GetMyGames/{userId}")]
+        [HttpGet, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            int userId,
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] GetMyGameRO getMyGameRO,
             [FromQuery] bool fullRecord = true) {
 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (_appsService.ValidLicense(getMyGameRO.License)) {
 
-                var result = await _gamesService.GetMyGames(userId, fullRecord);
+                var result = await _gamesService.GetMyGames(getMyGameRO.UserId, fullRecord);
 
                 if (result.Result) {
 
@@ -130,15 +130,16 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // DELETE: api/Games/DeleteMyGame
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpDelete("DeleteMyGame")]
+        [HttpDelete("{id}/DeleteMyGame")]
         public async Task<ActionResult<Game>> DeleteMyGame(
+            int id,
             [FromBody] GetMyGameRO getMyGameRO) {
 
             if (_appsService.ValidLicense(getMyGameRO.License)) {
                 
                 var result = await _gamesService.DeleteMyGame(
                     getMyGameRO.UserId, 
-                    getMyGameRO.GameId);
+                    id);
 
                 if (result) {
                     
@@ -243,13 +244,14 @@ namespace SudokuCollective.WebApi.Controllers {
         }
 
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut, Route("CheckGame")]
+        [HttpPut, Route("{id}/CheckGame")]
         public async Task<ActionResult<Game>> CheckGame(
+            int id,
             [FromBody] UpdateGameRO updateGameRO) {
 
             if (_appsService.ValidLicense(updateGameRO.License)) {
 
-                var result = await _gamesService.CheckGame(updateGameRO);
+                var result = await _gamesService.CheckGame(id, updateGameRO);
 
                 if (result.Result) {
                     

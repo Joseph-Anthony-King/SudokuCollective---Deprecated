@@ -14,6 +14,6 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
         Task<GameTaskResult> GetMyGame(int userId, int gameId, bool fullRecord = true);
         Task<GameListTaskResult> GetMyGames(int userId, bool fullRecord = true);
         Task<bool> DeleteMyGame(int userId, int gameId);
-        Task<GameTaskResult> CheckGame(UpdateGameRO checkGameRO);
+        Task<GameTaskResult> CheckGame(int id, UpdateGameRO checkGameRO);
     }
 }

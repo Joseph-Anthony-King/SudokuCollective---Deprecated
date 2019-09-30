@@ -412,7 +412,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameTaskResult> CheckGame(UpdateGameRO updateGameRO) {
+        public async Task<GameTaskResult> CheckGame(int id, UpdateGameRO updateGameRO) {
 
             var gameTaskResult = new GameTaskResult() {
 
@@ -430,7 +430,7 @@ namespace SudokuCollective.WebApi.Services {
                 var game = await _context.Games
                         .Include(g => g.User).ThenInclude(u => u.Roles)
                         .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
-                        .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRO.GameId);
+                        .FirstOrDefaultAsync(predicate: g => g.Id == id);
 
                 if (game != null) {
 
