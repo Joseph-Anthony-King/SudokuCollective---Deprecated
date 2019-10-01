@@ -621,7 +621,7 @@ namespace SudokuCollective.WebApi.Services {
             /* The superuser has access system wide to all apps.  The if statement
                checks if the requestor is not the superuser, if they aren't it then
                checks if the requestor is a registered user for this app.  The else 
-               if statement checks if the requestor is the superuser  and if the 
+               if statement checks if the requestor is the superuser and if the 
                request is submitted with a valid license.  The final else statement 
                denies access if the license is invalid. */
             if (userId != 1 && validLicense) {
