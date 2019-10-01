@@ -7,7 +7,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
 
-    [Authorize(Roles = "SUPERUSER, ADMIN")]
+    [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/[controller]")]
     [ApiController]
     public class LicensesController : ControllerBase {
@@ -37,9 +37,10 @@ namespace SudokuCollective.WebApi.Controllers {
         }
         
         // POST: api/Licenses
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
-        public async Task<ActionResult<App>> PostApp([FromBody] LicenseRequestRO licenseRequestRO) {
+        public async Task<ActionResult<App>> PostApp(
+            [FromBody] LicenseRequestRO licenseRequestRO) {
             
             var result = await _appsService.CreateApp(licenseRequestRO);
 

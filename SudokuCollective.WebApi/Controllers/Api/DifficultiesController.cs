@@ -32,7 +32,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequestRO, 
             [FromQuery] bool fullRecord = true) {
                 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _difficultiesService.GetDifficulty(id, fullRecord);
 
@@ -42,12 +44,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return NotFound();
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -57,7 +59,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
             [FromBody] BaseRequestRO baseRequestRO, [FromQuery] bool fullRecord = true) {
                 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _difficultiesService.GetDifficulties(fullRecord);
 
@@ -67,12 +71,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return BadRequest("Issue Getting Difficulties");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -82,11 +86,13 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> PutDifficulty(int id, 
             [FromBody] UpdateDifficultyRO updateDifficultyRO) {
                 
-            if (_appsService.ValidLicense(updateDifficultyRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                updateDifficultyRO.License, 
+                updateDifficultyRO.RequestorId)) {
 
                 if (id != updateDifficultyRO.Id) {
 
-                    return BadRequest();
+                    return BadRequest("Invalid Request: Difficulty Id Incorrect");
                 }
                 
                 var result = await _difficultiesService.UpdateDifficulty(id, updateDifficultyRO);
@@ -97,12 +103,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return NoContent();
+                    return BadRequest("Issue Updating Difficulty");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }         
         }
 
@@ -112,7 +118,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Difficulty>> PostDifficulty(
             [FromBody] CreateDifficultyRO createDifficultyRO) {
                 
-            if (_appsService.ValidLicense(createDifficultyRO.License)) {  
+            if (await _appsService.IsRequestValidOnThisLicense(
+                createDifficultyRO.License, 
+                createDifficultyRO.RequestorId)) {  
             
                 var result = await _difficultiesService
                     .CreateDifficulty(createDifficultyRO.Name, createDifficultyRO.DifficultyLevel);
@@ -126,12 +134,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return BadRequest("Issue Creating Difficulty");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -141,7 +149,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult> DeleteDifficulty(int id, 
             [FromBody] BaseRequestRO baseRequestRO) {
                 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _difficultiesService.DeleteDifficulty(id);
 
@@ -151,12 +161,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return BadRequest("Issue Deleting Difficulty");
                 }
                 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
     }

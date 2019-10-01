@@ -33,7 +33,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequestRO, 
             [FromQuery] bool fullRecord = true) {
                 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _userService.GetUser(id, fullRecord);
 
@@ -48,7 +50,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -59,7 +61,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
             
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _userService.GetUsers(fullRecord);
 
@@ -69,12 +73,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Issue obtaining users");
+                    return BadRequest("Issue Obtaining Users");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -84,7 +88,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> PutUser(
             int id, [FromBody] UpdateUserRO updateUserRO) {
             
-            if (_appsService.ValidLicense(updateUserRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                updateUserRO.License, 
+                updateUserRO.RequestorId)) {
             
                 var result = await _userService.UpdateUser(id, updateUserRO);
 
@@ -97,17 +103,17 @@ namespace SudokuCollective.WebApi.Controllers {
                     if (result.User.Email.Equals(updateUserRO.Email)
                         && result.User.Id == 0) {
 
-                        return BadRequest("Email is not unique");
+                        return BadRequest("Email is not Unique");
 
                     } else {
 
-                        return BadRequest();
+                        return NotFound();
                     }
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -117,7 +123,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> UpdatePassword(
             int id, [FromBody] UpdatePasswordRO updatePasswordRO) {
             
-            if (_appsService.ValidLicense(updatePasswordRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                updatePasswordRO.License, 
+                updatePasswordRO.RequestorId)) {
 
                 var result = await _userService.UpdatePassword(id, updatePasswordRO);
 
@@ -127,12 +135,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Issue updating password");
+                    return BadRequest("Issue Updating Password");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -142,7 +150,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<User>> DeleteUser(
             int id, [FromBody] BaseRequestRO baseRequestRO) {
             
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
             
                 var result = await _userService.DeleteUser(id);
 
@@ -157,7 +167,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -166,13 +176,15 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPost, Route("{id}/AddRoles")]
         public async Task<IActionResult> AddRoles(
             int id,
-            [FromBody] UpdateUserRolesRO updateUserRoles) {
+            [FromBody] UpdateUserRolesRO updateUserRolesRO) {
             
-            if (_appsService.ValidLicense(updateUserRoles.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                updateUserRolesRO.License, 
+                updateUserRolesRO.RequestorId)) {
             
                 var result = await _userService.AddUserRoles(
                     id,
-                    updateUserRoles.RoleIds.ToList());
+                    updateUserRolesRO.RoleIds.ToList());
 
                 if (result) {
 
@@ -185,7 +197,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -194,13 +206,15 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpDelete, Route("{id}/RemoveRoles")]
         public async Task<IActionResult> RemoveRoles(
             int id,
-            [FromBody] UpdateUserRolesRO updateUserRoles) {
+            [FromBody] UpdateUserRolesRO updateUserRolesRO) {
             
-            if (_appsService.ValidLicense(updateUserRoles.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                updateUserRolesRO.License, 
+                updateUserRolesRO.RequestorId)) {
             
                 var result = await _userService.RemoveUserRoles(
                     id, 
-                    updateUserRoles.RoleIds.ToList());
+                    updateUserRolesRO.RoleIds.ToList());
 
                 if (result) {
 
@@ -213,7 +227,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -230,7 +244,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
             } else {
 
-                return BadRequest("Error activating user");
+                return BadRequest("Error Activating User");
             }         
         }
 
@@ -247,7 +261,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
             } else {
 
-                return BadRequest("Error deactivating user");
+                return BadRequest("Error Deactivating User");
             }         
         }
     }

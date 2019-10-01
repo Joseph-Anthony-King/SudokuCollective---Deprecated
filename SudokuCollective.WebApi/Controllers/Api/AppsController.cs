@@ -29,7 +29,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
             
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
                 
                 var result = await _appsService.GetApp(id, fullRecord);
 
@@ -39,23 +41,25 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Error getting app");
+                    return NotFound();
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
         
         // GET: api/Apps/GetByLicense
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet, Route("GetByLicense")]
-        public async Task<ActionResult<App>> GetApp(
+        public async Task<ActionResult<App>> GetAppByLicense(
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
             
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
                 
                 var result = await _appsService
                     .GetAppByLicense(baseRequestRO.License, fullRecord);
@@ -66,12 +70,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Error creating app");
+                    return NotFound();
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -82,7 +86,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
             
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
                 
                 var result = await _appsService.GetApps();
 
@@ -92,12 +98,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Error creating app");
+                    return BadRequest("Error Getting Apps");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -107,7 +113,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<IActionResult> UpdateApp(
             [FromBody] UpdateAppRO updateAppRO) {
             
-            if (_appsService.ValidLicense(updateAppRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                updateAppRO.License, 
+                updateAppRO.RequestorId)) {
                 
                 var result = await _appsService.UpdateApp(updateAppRO);
 
@@ -117,12 +125,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Error updating app");
+                    return BadRequest("Error Updating App");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }            
         }
 
@@ -133,7 +141,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequest,
             [FromQuery] bool fullRecord = true) {
             
-            if (_appsService.ValidLicense(baseRequest.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
                 
                 var result = await _appsService
                     .GetAppUsers(baseRequest, fullRecord);
@@ -144,13 +154,65 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Error getting app users");
+                    return BadRequest("Error Getting App Users");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }  
+        }
+
+        // PUT: api/Apps/AddUser/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("AddUser/{userId}")]
+        public async Task<IActionResult> AddUser(int userId, BaseRequestRO baseRequestRO) {
+
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
+
+                var result = await _appsService.AddAppUser(userId, baseRequestRO);
+
+                if (result) {
+
+                    return Ok();
+
+                } else {
+
+                    return BadRequest("Error Adding User to App");
+                }
+
+            } else {
+
+                return BadRequest("Invalid Request on this License");
+            }
+        }
+
+        // DELETE: api/Apps/RemoveUser/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpDelete, Route("RemoveUser/{userId}")]
+        public async Task<IActionResult> RemoveUser(int userId, BaseRequestRO baseRequestRO) {
+
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
+
+                var result = await _appsService.RemoveAppUser(userId, baseRequestRO);
+
+                if (result) {
+
+                    return Ok();
+
+                } else {
+
+                    return BadRequest("Error Removing User from App");
+                }
+
+            } else {
+
+                return BadRequest("Invalid Request on this License");
+            }
         }
 
         // Put: api/Apps/5/ActivateApp

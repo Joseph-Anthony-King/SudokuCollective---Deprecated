@@ -32,7 +32,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
                 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _solutionService.GetSolution(id, fullRecord);
 
@@ -42,12 +44,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return NotFound();
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -58,7 +60,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequestRO,
             [FromQuery] bool fullRecord = true) {
                 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _solutionService.GetSolutions(fullRecord);
 
@@ -68,12 +72,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return BadRequest("Issue Getting Solutions");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -83,7 +87,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<SudokuSolution>> Solve(
             [FromBody] SolveRequestsRO solveRequestsRO) {
                 
-            if (_appsService.ValidLicense(solveRequestsRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                solveRequestsRO.License, 
+                solveRequestsRO.RequestorId)) {
 
                 var result = await _solutionService.Solve(solveRequestsRO);
 
@@ -93,12 +99,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return Ok("Requires more values in order to solve this puzzle");
+                    return NotFound("Requires more values in order to solve this puzzle");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
     }

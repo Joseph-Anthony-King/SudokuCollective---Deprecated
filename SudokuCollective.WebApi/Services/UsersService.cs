@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
+using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
@@ -54,7 +55,8 @@ namespace SudokuCollective.WebApi.Services {
                         .Include(u => u.Games)
                         .Include(u => u.Roles)
                         .Include(u => u.Apps)
-                        .FirstOrDefaultAsync(u => u.Id == id);
+                        .FirstOrDefaultAsync(
+                            predicate: u => u.Id == id);
 
                     if (user == null) {
 
@@ -85,8 +87,8 @@ namespace SudokuCollective.WebApi.Services {
                     foreach (var userRole in user.Roles) {
 
                         userRole.Role = await _context.Roles
-                            .Where(r => r.Id == userRole.RoleId)
-                            .FirstOrDefaultAsync();
+                            .FirstOrDefaultAsync(
+                                predicate: r => r.Id == userRole.RoleId);
 
                         userRole.Role.Users = null;
                     }
@@ -94,11 +96,15 @@ namespace SudokuCollective.WebApi.Services {
                     foreach (var userApp in user.Apps) {
 
                         userApp.App = await _context.Apps
-                            .Where(a => a.Id == userApp.AppId)
-                            .FirstOrDefaultAsync();
+                            .FirstOrDefaultAsync(
+                                predicate: a => a.Id == userApp.AppId);
 
                         userApp.App.Users = null;
                     }
+
+                    user.Games.OrderBy(g => g.Id);
+                    user.Roles.OrderBy(r => r.RoleId);
+                    user.Apps.OrderBy(a => a.AppId);
 
                     userTaskResult.Result = true;
                     userTaskResult.User = user;
@@ -108,9 +114,12 @@ namespace SudokuCollective.WebApi.Services {
                     user = await _context.Users
                         .Include(u => u.Roles)
                         .Include(u => u.Apps)
-                        .FirstOrDefaultAsync(u => u.Id == id);
+                        .FirstOrDefaultAsync(
+                            predicate: u => u.Id == id);
 
                     user.Games = null;
+                    user.Roles.OrderBy(r => r.RoleId);
+                    user.Apps.OrderBy(a => a.AppId);
 
                     userTaskResult.Result = true;
                     userTaskResult.User = user;
@@ -150,9 +159,9 @@ namespace SudokuCollective.WebApi.Services {
                         foreach (var game in user.Games) {
 
                             game.SudokuMatrix = await _context.SudokuMatrices
-                                .Where(m => m.Id == game.SudokuMatrixId)
                                 .Include(m => m.Difficulty)
-                                .FirstOrDefaultAsync();
+                                .FirstOrDefaultAsync(
+                                    predicate: m => m.Id == game.SudokuMatrixId);
 
                             game.SudokuMatrix.Difficulty.Matrices = null;
                         }
@@ -160,8 +169,8 @@ namespace SudokuCollective.WebApi.Services {
                         foreach (var userRole in user.Roles) {
 
                             userRole.Role = await _context.Roles
-                                .Where(r => r.Id == userRole.RoleId)
-                                .FirstOrDefaultAsync();
+                                .FirstOrDefaultAsync(
+                                    predicate: r => r.Id == userRole.RoleId);
 
                             userRole.Role.Users = null;
                         }
@@ -169,11 +178,15 @@ namespace SudokuCollective.WebApi.Services {
                         foreach (var userApp in user.Apps) {
 
                             userApp.App = await _context.Apps
-                                .Where(a => a.Id == userApp.AppId)
-                                .FirstOrDefaultAsync();
+                                .FirstOrDefaultAsync(
+                                    predicate: a => a.Id == userApp.AppId);
 
                             userApp.App.Users = null;
                         }
+
+                        user.Games.OrderBy(g => g.Id);
+                        user.Roles.OrderBy(r => r.RoleId);
+                        user.Apps.OrderBy(a => a.AppId);
                     }
 
                     userListTaskResult.Result = true;
@@ -192,11 +205,15 @@ namespace SudokuCollective.WebApi.Services {
                         foreach (var userRole in user.Roles) {
 
                             userRole.Role = await _context.Roles
-                                .Where(r => r.Id == userRole.RoleId)
-                                .FirstOrDefaultAsync();
+                                .FirstOrDefaultAsync(
+                                    predicate: r => r.Id == userRole.RoleId);
 
                             userRole.Role.Users = null;
                         }
+
+                        user.Games = null;
+                        user.Roles.OrderBy(r => r.RoleId);
+                        user.Apps.OrderBy(a => a.AppId);
                     }
 
                     userListTaskResult.Result = true;
@@ -250,7 +267,8 @@ namespace SudokuCollective.WebApi.Services {
 
                     app = await _context.Apps
                         .Include(a => a.Users)
-                        .FirstOrDefaultAsync(predicate: a => a.License.Equals(registerRO.License));
+                        .FirstOrDefaultAsync(
+                            predicate: a => a.License.Equals(registerRO.License));
                 }
 
                 var salt = BCrypt.Net.BCrypt.GenerateSalt();
@@ -271,39 +289,37 @@ namespace SudokuCollective.WebApi.Services {
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                // Add default user permission to the new user
-                var savedUser = await _context.Users
-                    .Where(u => u.UserName.Equals(user.UserName))
-                    .FirstOrDefaultAsync();
+                if (user.Id != 0) {
 
-                var defaultRole = await _context.Roles
-                    .Where(p => p.Id == 4)
-                    .FirstOrDefaultAsync();
+                    var defaultRole = await _context.Roles
+                        .FirstOrDefaultAsync(
+                            predicate: p => p.Id == 4);
 
-                UserRole newUserRole = new UserRole {
+                    UserRole newUserRole = new UserRole {
 
-                    UserId = savedUser.Id,
-                    User = savedUser,
-                    RoleId = defaultRole.Id,
-                    Role = defaultRole
-                };
+                        UserId = user.Id,
+                        User = user,
+                        RoleId = defaultRole.Id,
+                        Role = defaultRole
+                    };
 
-                _context.UsersRoles.Add(newUserRole);
-                await _context.SaveChangesAsync();
+                    _context.UsersRoles.Add(newUserRole);
+                    await _context.SaveChangesAsync();
 
-                UserApp newUserApp = new UserApp {
+                    UserApp newUserApp = new UserApp {
 
-                    UserId = savedUser.Id,
-                    User = savedUser,
-                    AppId = app.Id,
-                    App = app
-                };
+                        UserId = user.Id,
+                        User = user,
+                        AppId = app.Id,
+                        App = app
+                    };
 
-                _context.UsersApps.Add(newUserApp);
-                await _context.SaveChangesAsync();
+                    _context.UsersApps.Add(newUserApp);
+                    await _context.SaveChangesAsync();
 
-                userTaskResult.Result = true;
-                userTaskResult.User = user;
+                    userTaskResult.Result = true;
+                    userTaskResult.User = user;
+                }
 
                 return userTaskResult;
 
@@ -366,7 +382,7 @@ namespace SudokuCollective.WebApi.Services {
                     user.Email = updateUserRO.Email;
                     user.DateUpdated = updatedDate;
 
-                    _context.Entry(user).State = EntityState.Modified;
+                    _context.Users.Update(user);
                     await _context.SaveChangesAsync();
 
                     userTaskResult.Result = true;
@@ -414,7 +430,9 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
+                var user = await _context.Users
+                    .SingleOrDefaultAsync(
+                        predicate: u => u.Id == id);
 
                 if (user != null &&
                     BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, user.Password)) {
@@ -424,8 +442,13 @@ namespace SudokuCollective.WebApi.Services {
                     user.Password = BCrypt.Net.BCrypt
                         .HashPassword(updatePasswordRO.NewPassword, salt);
 
-                    _context.Entry<User>(user).State = EntityState.Modified;
+                    _context.Users.Update(user);
                     await _context.SaveChangesAsync();
+
+                    user.DateUpdated = DateTime.UtcNow;
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+
                     result = true;
                 }
 
@@ -463,7 +486,8 @@ namespace SudokuCollective.WebApi.Services {
                         if (game.ContinueGame) {
 
                             var solution = await _context.SudokuSolutions
-                                .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
+                                .FirstOrDefaultAsync(
+                                    predicate: s => s.Id == game.SudokuSolutionId);
 
                             _context.SudokuSolutions.Remove(solution);
                         }
@@ -489,14 +513,12 @@ namespace SudokuCollective.WebApi.Services {
 
                 var user = await _context.Users
                     .Include(u => u.Roles)
-                    .Where(u => u.Id == id)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(predicate: u => u.Id == id);
 
                 foreach (var userRole in user.Roles) {
 
                     userRole.Role = await _context.Roles
-                        .Where(r => r.Id == userRole.RoleId)
-                        .FirstOrDefaultAsync();
+                        .FirstOrDefaultAsync(predicate: r => r.Id == userRole.RoleId);
                 }
 
                 var roles = new List<Role>();
@@ -504,8 +526,13 @@ namespace SudokuCollective.WebApi.Services {
 
                 foreach (var roleId in roleIds) {
 
-                    roles.Add(await _context.Roles.Where(r => r.Id == roleId)
-                        .FirstOrDefaultAsync());
+                    var role = await _context.Roles
+                        .FirstOrDefaultAsync(predicate: r => r.Id == roleId);
+
+                    if (role.RoleLevel != RoleLevel.SUPERUSER) {
+
+                        roles.Add(role);
+                    }
                 }
 
                 foreach (var role in roles) {
@@ -525,6 +552,10 @@ namespace SudokuCollective.WebApi.Services {
 
                     _context.UsersRoles.AddRange(userRoles);
                     await _context.SaveChangesAsync();
+
+                    user.DateUpdated = DateTime.UtcNow;
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
                 }
 
                 return result = true;
@@ -541,10 +572,19 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var usersRoles = _context.UsersRoles
-                    .Where(ur => ur.UserId == id && roleIds.Contains(ur.RoleId));
+                var user = await _context.Users
+                    .Include(u => u.Roles)
+                    .FirstOrDefaultAsync(predicate: u => u.Id == id);
+
+                var usersRoles = await _context.UsersRoles
+                    .Where(ur => ur.UserId == id && roleIds.Contains(ur.RoleId))
+                    .ToListAsync();
 
                 _context.UsersRoles.RemoveRange(usersRoles);
+                await _context.SaveChangesAsync();
+
+                user.DateUpdated = DateTime.UtcNow;
+                _context.Users.Update(user);
                 await _context.SaveChangesAsync();
 
                 return result = true;
@@ -571,26 +611,13 @@ namespace SudokuCollective.WebApi.Services {
                     return result;
                 }
 
-                if (user.Games.Count > 0) {
-                
-                    foreach (var game in user.Games) {
-
-                        game.SudokuMatrix = await StaticApiHelpers
-                            .AttachSudokuMatrix(game, _context);
-
-                        if (game.ContinueGame) {
-
-                            var solution = await _context.SudokuSolutions
-                                .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
-
-                            _context.SudokuSolutions.Remove(solution);
-                        }
-                    }
-                }
-
                 if (!user.IsActive) {
                     
                     user.ActivateUser();
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+
+                    user.DateUpdated = DateTime.UtcNow;
                     _context.Users.Update(user);
                     await _context.SaveChangesAsync();
                 }
@@ -619,26 +646,13 @@ namespace SudokuCollective.WebApi.Services {
                     return result;
                 }
 
-                if (user.Games.Count > 0) {
-                
-                    foreach (var game in user.Games) {
-
-                        game.SudokuMatrix = await StaticApiHelpers
-                            .AttachSudokuMatrix(game, _context);
-
-                        if (game.ContinueGame) {
-
-                            var solution = await _context.SudokuSolutions
-                                .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
-
-                            _context.SudokuSolutions.Remove(solution);
-                        }
-                    }
-                }
-
                 if (user.IsActive) {
                     
                     user.DeactiveUser();
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+
+                    user.DateUpdated = DateTime.UtcNow;
                     _context.Users.Update(user);
                     await _context.SaveChangesAsync();
                 }

@@ -15,9 +15,11 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
         Task<LicenseTaskResult> GetLicense(int id);
         Task<UserListTaskResult> GetAppUsers(BaseRequestRO baseRequest, bool fullRecord = true);
         Task<bool> UpdateApp(UpdateAppRO updateAppRO);
+        Task<bool> AddAppUser(int id, BaseRequestRO baseRequestRO);
+        Task<bool> RemoveAppUser(int id, BaseRequestRO baseRequestRO);
         Task<bool> DeleteApp(int id);
         Task<bool> ActivateApp(int id);
         Task<bool> DeactivateApp(int id);
-        bool ValidLicense(string license);
+        Task<bool> IsRequestValidOnThisLicense(string license, int userId);
     }
 }

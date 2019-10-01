@@ -30,7 +30,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Game>> GetGame(int id, 
             [FromBody] BaseRequestRO baseRequestRO) {
 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _gamesService.GetGame(id);
 
@@ -40,12 +42,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return NotFound();
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -56,7 +58,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] BaseRequestRO baseRequestRO, 
             [FromQuery] bool fullRecord = true) {
 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _gamesService.GetGames(fullRecord);
 
@@ -66,12 +70,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return BadRequest("Issue Getting Games");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -82,7 +86,9 @@ namespace SudokuCollective.WebApi.Controllers {
             int id,
             [FromBody] BaseRequestRO baseRequestRO) {
 
-            if (_appsService.ValidLicense(baseRequestRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                baseRequestRO.License, 
+                baseRequestRO.RequestorId)) {
 
                 var result = await _gamesService.DeleteGame(id);
 
@@ -92,12 +98,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return BadRequest("Issue Deleting Game");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -108,7 +114,9 @@ namespace SudokuCollective.WebApi.Controllers {
             int id, 
             [FromBody] UpdateGameRO updateGameRO) {
 
-            if (_appsService.ValidLicense(updateGameRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                updateGameRO.License,
+                updateGameRO.RequestorId)) {
 
                 if (id != updateGameRO.GameId) {
 
@@ -124,12 +132,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Issue updating the game");
+                    return BadRequest("Issue Updating Game");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             } 
         }
 
@@ -139,7 +147,9 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Game>> PostGame(
             [FromBody] CreateGameRO createGameRO) {
 
-            if (_appsService.ValidLicense(createGameRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                createGameRO.License,
+                createGameRO.RequestorId)) {
             
                 var result = await _gamesService.CreateGame(createGameRO);
 
@@ -153,12 +163,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Error creating user");
+                    return BadRequest("Issue Creating Game");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -169,7 +179,9 @@ namespace SudokuCollective.WebApi.Controllers {
             int id,
             [FromBody] UpdateGameRO updateGameRO) {
 
-            if (_appsService.ValidLicense(updateGameRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                updateGameRO.License, 
+                updateGameRO.RequestorId)) {
 
                 var result = await _gamesService.CheckGame(id, updateGameRO);
 
@@ -179,12 +191,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return NotFound();
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
         
@@ -196,7 +208,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] GetMyGameRO getMyGameRO, 
             [FromQuery] bool fullRecord = true) {
 
-            if (_appsService.ValidLicense(getMyGameRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                getMyGameRO.License, 
+                getMyGameRO.RequestorId)) {
 
                 var result = await _gamesService.GetMyGame(getMyGameRO.UserId, id, fullRecord);
 
@@ -206,12 +220,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return NotFound();
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -222,7 +236,9 @@ namespace SudokuCollective.WebApi.Controllers {
             [FromBody] GetMyGameRO getMyGameRO,
             [FromQuery] bool fullRecord = true) {
 
-            if (_appsService.ValidLicense(getMyGameRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                getMyGameRO.License, 
+                getMyGameRO.RequestorId)) {
 
                 var result = await _gamesService.GetMyGames(getMyGameRO.UserId, fullRecord);
 
@@ -232,12 +248,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return BadRequest("Issue Getting Your Games");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
 
@@ -248,7 +264,9 @@ namespace SudokuCollective.WebApi.Controllers {
             int id,
             [FromBody] GetMyGameRO getMyGameRO) {
 
-            if (_appsService.ValidLicense(getMyGameRO.License)) {
+            if (await _appsService.IsRequestValidOnThisLicense(
+                getMyGameRO.License, 
+                getMyGameRO.RequestorId)) {
                 
                 var result = await _gamesService.DeleteMyGame(
                     getMyGameRO.UserId, 
@@ -260,12 +278,12 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest();
+                    return BadRequest("Issue Deleting Your Game");
                 }
 
             } else {
 
-                return BadRequest("Invalid License");
+                return BadRequest("Invalid Request on this License");
             }
         }
     }

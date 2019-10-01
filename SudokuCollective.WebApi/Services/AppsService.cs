@@ -459,8 +459,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 var app = await _context.Apps
                     .Include(a => a.Users)
-                    .Where(a => a.License.Equals(updateAppRO.License))
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(updateAppRO.License));
                 
                 app.Name = updateAppRO.Name;
                 app.DevUrl = updateAppRO.DevUrl;
@@ -471,6 +470,61 @@ namespace SudokuCollective.WebApi.Services {
                 
                 await _context.SaveChangesAsync();
 
+                return result = true;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
+        public async Task<bool> AddAppUser(int userId, BaseRequestRO baseRequestRO) {
+
+            var result = false;
+
+            try {
+
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(
+                        predicate: u => u.Id == userId);
+
+                var app = await _context.Apps
+                    .FirstOrDefaultAsync(
+                        predicate: a => a.License.Equals(baseRequestRO.License));
+
+                _context.UsersApps.Add(
+
+                    new UserApp {
+
+                        UserId = user.Id,
+                        User = user,
+                        AppId = app.Id,
+                        App = app
+                    }
+                );
+
+                await _context.SaveChangesAsync();
+                return result = true;
+
+            } catch (Exception) {
+
+                return result;
+            }
+        }
+
+        public async Task<bool> RemoveAppUser(int id, BaseRequestRO baseRequestRO) {
+
+            var result = false;
+
+            try {
+
+                var userApp = await _context.UsersApps
+                    .FirstOrDefaultAsync(
+                        predicate: ua => ua.UserId == id);
+
+                _context.UsersApps.Remove(userApp);
+
+                await _context.SaveChangesAsync();
                 return result = true;
 
             } catch (Exception) {
@@ -559,9 +613,41 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public bool ValidLicense(string license) {
+        public async Task<bool> IsRequestValidOnThisLicense(string license, int userId) {
 
-            var result = _context.Apps.Any(a => a.License.Equals(license));
+            var result = false;
+            var validLicense = _context.Apps.Any(a => a.License.Equals(license));
+
+            /* The superuser has access system wide to all apps.  The if statement
+               checks if the requestor is not the superuser, if they aren't it then
+               checks if the license is valid.  The else if statement checks if the 
+               superuser request is submitted with a valid license.  The final else
+               statement denies access if the license is invalid. */
+            if (userId != 1 && validLicense) {
+
+                var app = await _context.Apps
+                    .Include(a => a.Users)
+                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(license));
+
+                foreach (var userApp in app.Users) {
+
+                    userApp.User = await _context.Users
+                        .FirstOrDefaultAsync(predicate: u => u.Id == userApp.UserId);
+                }
+
+                if (app.Users.Any(user => user.User.Id == userId)) {
+
+                    result = true;
+                }
+
+            } else if (userId == 1 && validLicense) {
+
+                result = true;
+
+            } else {
+
+                result = false;
+            }
 
             return result;
         }
