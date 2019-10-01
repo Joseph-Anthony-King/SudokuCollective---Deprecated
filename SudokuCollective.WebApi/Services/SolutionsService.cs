@@ -181,37 +181,71 @@ namespace SudokuCollective.WebApi.Services {
                 intList.AddRange(solveRequestsRO.EighthRow);
                 intList.AddRange(solveRequestsRO.NinthRow);
 
-                var sudokuSolver = new SudokuSolver(intList);
-                sudokuSolver.SetTimeLimit(solveRequestsRO.Minutes);
-
-                await sudokuSolver.Solve();
-
-                var result = new SudokuSolution(sudokuSolver.ToInt32List());
-
-                var addResultToDataContext = true;
                 var solutions = await _context.SudokuSolutions.ToListAsync();
+
+                var solutionInDB = false;
 
                 foreach (var solution in solutions) {
 
-                    if (solution.ToString().Equals(result.ToString())) {
+                    if (solution.SolutionList.Count > 0) {
 
-                        addResultToDataContext = false;
-                        result = solution;
+                        var possibleSolution = true;
+
+                        for (var i = 0; i < intList.Count - 1; i++)
+                        {
+
+                            if (intList[i] != 0 && intList[i] != solution.SolutionList[i])
+                            {
+
+                                possibleSolution = false;
+                                break;
+                            }
+                        }
+
+                        if (possibleSolution)
+                        {
+
+                            solutionInDB = possibleSolution;
+                            solutionTaskResult.Result = true;
+                            solutionTaskResult.Solution = solution;
+                            break;
+                        }
                     }
                 }
 
-                if (addResultToDataContext && !result.ToString().Contains('0')) {
+                if (!solutionInDB) {
 
-                    _context.SudokuSolutions.Add(result);
-                    await _context.SaveChangesAsync();
-                }
-                
-                if (!result.ToString().Contains('0')) {
+                    var sudokuSolver = new SudokuSolver(intList);
+                    sudokuSolver.SetTimeLimit(solveRequestsRO.Minutes);
+
+                    await sudokuSolver.Solve();
+
+                    var result = new SudokuSolution(sudokuSolver.ToInt32List());
+
+                    var addResultToDataContext = true;
+
+                    foreach (var solution in solutions) {
+
+                        if (solution.ToString().Equals(result.ToString())) {
+
+                            addResultToDataContext = false;
+                            result = solution;
+                        }
+                    }
+
+                    if (addResultToDataContext && !result.ToString().Contains('0')) {
+
+                        _context.SudokuSolutions.Add(result);
+                        await _context.SaveChangesAsync();
+                    }
                     
-                    solutionTaskResult.Result = true;
-                }
+                    if (!result.ToString().Contains('0')) {
+                        
+                        solutionTaskResult.Result = true;
+                    }
 
-                solutionTaskResult.Solution = result;
+                    solutionTaskResult.Solution = result;
+                }
 
                 return solutionTaskResult;
 
