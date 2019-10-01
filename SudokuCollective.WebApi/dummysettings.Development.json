@@ -1,0 +1,16 @@
+{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Debug",
+            "System": "Information",
+            "Microsoft": "Information"
+        }
+    },
+    "TokenManagement": {
+        "Secret": "[Your value here]",
+        "Issuer": "[Your value here]",
+        "Audience": "[Your value here]",
+        "AccessExpiration": 30,
+        "RefreshExpiration": 60
+    }
+}

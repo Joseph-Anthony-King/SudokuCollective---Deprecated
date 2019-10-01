@@ -1,0 +1,48 @@
+{
+    "ConnectionStrings": {
+        "DatabaseConnection": "[Your database connection string here]"
+    },
+    "Logging": {
+        "LogLevel": {
+            "Default": "Warning"
+        }
+    },
+    "AllowedHosts": "*",
+    "DefaultUserAccounts" : {
+        "SuperUser": {
+            "FirstName": "[Your value here]",
+            "LastName": "[Your value here]",
+            "NickName": "[Your value here]",
+            "UserName": "[Your value here]",
+            "Email": "[Your value here]",
+            "Password": "[Your value here]"
+        },
+        "AdminUser": {
+            "FirstName": "[Your value here]",
+            "LastName": "[Your value here]",
+            "NickName": "[Your value here]",
+            "UserName": "[Your value here]",
+            "Email": "[Your value here]",
+            "Password": "[Your value here]"
+        }
+    },
+    "DefaultAdminApp" : {
+        "Name": "[Your value here]",
+        "License": "[Your value here]",
+        "DevUrl": "[Your value here]",
+        "LiveUrl": "[Your value here]"
+    },
+    "DefaultClientApp" : {
+        "Name": "[Your value here]",
+        "License": "[Your value here]",
+        "DevUrl": "[Your value here]",
+        "LiveUrl": "[Your value here]"
+    },
+    "TokenManagement": {
+        "Secret": "[Your value here]",
+        "Issuer": "[Your value here]",
+        "Audience": "[Your value here]",
+        "AccessExpiration": 30,
+        "RefreshExpiration":  60
+    }
+}
