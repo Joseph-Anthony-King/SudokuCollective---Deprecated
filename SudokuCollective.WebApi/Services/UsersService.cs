@@ -529,6 +529,9 @@ namespace SudokuCollective.WebApi.Services {
                     var role = await _context.Roles
                         .FirstOrDefaultAsync(predicate: r => r.Id == roleId);
 
+                    /* There is only superuser system wide.  The following filter
+                       prevents any other users from elevating their roles to
+                       superuser. */
                     if (role.RoleLevel != RoleLevel.SUPERUSER) {
 
                         roles.Add(role);
