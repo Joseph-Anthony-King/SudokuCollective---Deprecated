@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
+using SudokuCollective.WebApi.Models.TaskModels;
 using SudokuCollective.WebApi.Models.TaskModels.AppRequests;
 using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
 
@@ -14,12 +15,12 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
         Task<AppTaskResult> GetAppByLicense(string license, bool fullRecord = true);
         Task<LicenseTaskResult> GetLicense(int id);
         Task<UserListTaskResult> GetAppUsers(BaseRequestRO baseRequest, bool fullRecord = true);
-        Task<bool> UpdateApp(UpdateAppRO updateAppRO);
-        Task<bool> AddAppUser(int id, BaseRequestRO baseRequestRO);
-        Task<bool> RemoveAppUser(int id, BaseRequestRO baseRequestRO);
-        Task<bool> DeleteApp(int id);
-        Task<bool> ActivateApp(int id);
-        Task<bool> DeactivateApp(int id);
+        Task<BaseTaskResult> UpdateApp(UpdateAppRO updateAppRO);
+        Task<BaseTaskResult> AddAppUser(int id, BaseRequestRO baseRequestRO);
+        Task<BaseTaskResult> RemoveAppUser(int id, BaseRequestRO baseRequestRO);
+        Task<BaseTaskResult> DeleteApp(int id);
+        Task<BaseTaskResult> ActivateApp(int id);
+        Task<BaseTaskResult> DeactivateApp(int id);
         Task<bool> IsRequestValidOnThisLicense(string license, int userId);
     }
 }

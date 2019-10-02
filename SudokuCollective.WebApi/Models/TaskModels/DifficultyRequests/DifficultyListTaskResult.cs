@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace SudokuCollective.WebApi.Models.TaskModels.DifficultyRequests {
 
-    public class DifficultyListTaskResult {
-
-        public bool Result { get; set; }
+    public class DifficultyListTaskResult : BaseTaskResult {
+        
         public IEnumerable<Difficulty> Difficulties { get; set; }
     }
 }

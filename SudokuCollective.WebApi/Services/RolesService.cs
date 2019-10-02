@@ -8,6 +8,7 @@ using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
+using SudokuCollective.WebApi.Models.TaskModels;
 using SudokuCollective.WebApi.Models.TaskModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -27,14 +28,15 @@ namespace SudokuCollective.WebApi.Services {
 
             var roleTaskResult = new RoleTaskResult() {
 
-                Result = false,
                 Role = new Role() {
 
                     Id = 0,
                     Name = string.Empty,
                     RoleLevel = RoleLevel.NULL,
                     Users = new List<UserRole>()
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -90,9 +92,11 @@ namespace SudokuCollective.WebApi.Services {
                 }
 
                 return roleTaskResult;
-            }
-            catch (Exception) 
-            {
+
+            } catch (Exception e) {
+
+                roleTaskResult.Message = e.Message;
+
                 return roleTaskResult;
             }
         }
@@ -102,8 +106,9 @@ namespace SudokuCollective.WebApi.Services {
 
             var roleListTaskResult = new RoleListTaskResult() {
 
+                Roles = new List<Role>(),
                 Result = false,
-                Roles = new List<Role>()
+                Message = string.Empty
             };
 
             try {
@@ -151,7 +156,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return roleListTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                roleListTaskResult.Message = e.Message;
 
                 return roleListTaskResult;
             }
@@ -162,14 +169,15 @@ namespace SudokuCollective.WebApi.Services {
 
             var roleTaskResult = new RoleTaskResult() {
 
-                Result = false,
                 Role = new Role() {
 
                     Id = 0,
                     Name = string.Empty,
                     RoleLevel = RoleLevel.NULL,
                     Users = new List<UserRole>()
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -184,15 +192,21 @@ namespace SudokuCollective.WebApi.Services {
 
                 return roleTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                roleTaskResult.Message = e.Message;
 
                 return roleTaskResult;
             }
         }
 
-        public async Task<bool> UpdateRole(int id, UpdateRoleRO updateRoleRO) {
+        public async Task<BaseTaskResult> UpdateRole(int id, UpdateRoleRO updateRoleRO) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
             
             try {
 
@@ -209,20 +223,26 @@ namespace SudokuCollective.WebApi.Services {
                     
                     await _context.SaveChangesAsync();
 
-                    result = true;
+                    result.Result = true;
                 }
 
                 return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
         }
 
-        public async Task<bool> DeleteRole(int id) {
+        public async Task<BaseTaskResult> DeleteRole(int id) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -233,12 +253,14 @@ namespace SudokuCollective.WebApi.Services {
                     _context.Roles.Remove(role);
                     await _context.SaveChangesAsync();
 
-                    result = true;
+                    result.Result = true;
                 }
 
                 return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }

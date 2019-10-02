@@ -2,9 +2,8 @@
 
 namespace SudokuCollective.WebApi.Models.TaskModels.GameRequests {
 
-    public class GameTaskResult {
-
-        public bool Result { get; set; }
+    public class GameTaskResult : BaseTaskResult {
+        
         public Game Game { get; set; }
     }
 }

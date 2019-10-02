@@ -9,6 +9,7 @@ using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
+using SudokuCollective.WebApi.Models.TaskModels;
 using SudokuCollective.WebApi.Models.TaskModels.AppRequests;
 using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
@@ -30,7 +31,6 @@ namespace SudokuCollective.WebApi.Services {
 
             var appTaskResult = new AppTaskResult() {
 
-                Result = false,
                 App = new App() {
 
                     Id = 0,
@@ -41,7 +41,9 @@ namespace SudokuCollective.WebApi.Services {
                     DateUpdated = createdDate,
                     DevUrl = string.Empty,
                     LiveUrl = string.Empty
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -97,7 +99,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return appTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                appTaskResult.Message = e.Message;
 
                 return appTaskResult;
             }
@@ -107,8 +111,9 @@ namespace SudokuCollective.WebApi.Services {
 
             var appListTaskResult = new AppListTaskResult() {
 
+                Apps = new List<App>(),
                 Result = false,
-                Apps = new List<App>()
+                Message = string.Empty
             };
 
             try {
@@ -157,7 +162,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return appListTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                appListTaskResult.Message = e.Message;
 
                 return appListTaskResult;
             }
@@ -169,7 +176,6 @@ namespace SudokuCollective.WebApi.Services {
 
             var appTaskResult = new AppTaskResult() {
 
-                Result = false,
                 App = new App() {
 
                     Id = 0,
@@ -181,7 +187,9 @@ namespace SudokuCollective.WebApi.Services {
                     DevUrl = string.Empty,
                     LiveUrl = string.Empty,
                     IsActive = false
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -269,7 +277,9 @@ namespace SudokuCollective.WebApi.Services {
                 
                 return appTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                appTaskResult.Message = e.Message;
 
                 return appTaskResult;
             }
@@ -281,7 +291,6 @@ namespace SudokuCollective.WebApi.Services {
 
             var appTaskResult = new AppTaskResult() {
 
-                Result = false,
                 App = new App() {
 
                     Id = 0,
@@ -292,7 +301,9 @@ namespace SudokuCollective.WebApi.Services {
                     DateUpdated = createdDate,
                     DevUrl = string.Empty,
                     LiveUrl = string.Empty
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -348,7 +359,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return appTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                appTaskResult.Message = e.Message;
 
                 return appTaskResult;
             }
@@ -358,8 +371,9 @@ namespace SudokuCollective.WebApi.Services {
 
             var licenseTaskResult = new LicenseTaskResult() {
 
+                License = string.Empty,
                 Result = false,
-                License = string.Empty
+                Message = string.Empty
             };
 
             try {
@@ -377,7 +391,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return licenseTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                licenseTaskResult.Message = e.Message;
 
                 return licenseTaskResult;
             }
@@ -390,8 +406,9 @@ namespace SudokuCollective.WebApi.Services {
 
             var userListTaskResult = new UserListTaskResult() {
 
+                Users = users,
                 Result = false,
-                Users = users
+                Message = string.Empty
             };
 
             try {
@@ -445,15 +462,21 @@ namespace SudokuCollective.WebApi.Services {
 
                 return userListTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                userListTaskResult.Message = e.Message;
 
                 return userListTaskResult;
             }
         }
 
-        public async Task<bool> UpdateApp(UpdateAppRO updateAppRO) {
+        public async Task<BaseTaskResult> UpdateApp(UpdateAppRO updateAppRO) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
             
             try {
 
@@ -469,18 +492,25 @@ namespace SudokuCollective.WebApi.Services {
                 _context.Entry(app).State = EntityState.Modified;
                 
                 await _context.SaveChangesAsync();
+                result.Result = true;
 
-                return result = true;
+                return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
         }
 
-        public async Task<bool> AddAppUser(int userId, BaseRequestRO baseRequestRO) {
+        public async Task<BaseTaskResult> AddAppUser(int userId, BaseRequestRO baseRequestRO) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -504,17 +534,25 @@ namespace SudokuCollective.WebApi.Services {
                 );
 
                 await _context.SaveChangesAsync();
-                return result = true;
+                result.Result = true;
 
-            } catch (Exception) {
+                return result;
+
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
         }
 
-        public async Task<bool> RemoveAppUser(int id, BaseRequestRO baseRequestRO) {
+        public async Task<BaseTaskResult> RemoveAppUser(int id, BaseRequestRO baseRequestRO) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -525,17 +563,25 @@ namespace SudokuCollective.WebApi.Services {
                 _context.UsersApps.Remove(userApp);
 
                 await _context.SaveChangesAsync();
-                return result = true;
+                result.Result = true;
 
-            } catch (Exception) {
+                return result;
+
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
         }
 
-        public async Task<bool> DeleteApp(int id) {
+        public async Task<BaseTaskResult> DeleteApp(int id) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -546,20 +592,26 @@ namespace SudokuCollective.WebApi.Services {
                     _context.Apps.Remove(app);
                     await _context.SaveChangesAsync();
 
-                    result = true;
+                    result.Result = true;
                 }
 
                 return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
         }
 
-        public async Task<bool> ActivateApp(int id) {
+        public async Task<BaseTaskResult> ActivateApp(int id) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -574,20 +626,26 @@ namespace SudokuCollective.WebApi.Services {
                         await _context.SaveChangesAsync();
                     }
 
-                    result = true;
+                    result.Result = true;
                 }
 
                 return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
         }
 
-        public async Task<bool> DeactivateApp(int id) {
+        public async Task<BaseTaskResult> DeactivateApp(int id) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -602,12 +660,14 @@ namespace SudokuCollective.WebApi.Services {
                         await _context.SaveChangesAsync();
                     }
 
-                    result = true;
+                    result.Result = true;
                 }
 
                 return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }

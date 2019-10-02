@@ -7,6 +7,7 @@ using SudokuCollective.Models;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
+using SudokuCollective.WebApi.Models.TaskModels;
 using SudokuCollective.WebApi.Models.TaskModels.GameRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -32,13 +33,14 @@ namespace SudokuCollective.WebApi.Services {
 
             var gameTaskResult = new GameTaskResult() {
 
-                Result = false,
                 Game = new Game() {
 
                     Id = 0,
                     UserId = 0,
                     SudokuMatrixId = 0
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -77,7 +79,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return gameTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
             }
@@ -87,14 +91,15 @@ namespace SudokuCollective.WebApi.Services {
 
             var gameTaskResult = new GameTaskResult() {
 
-                Result = false,
                 Game = new Game()
                 {
 
                     Id = 0,
                     UserId = 0,
                     SudokuMatrixId = 0
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -124,15 +129,21 @@ namespace SudokuCollective.WebApi.Services {
 
                 return gameTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
             }
         }
 
-        public async Task<bool> DeleteGame(int id) {
+        public async Task<BaseTaskResult> DeleteGame(int id) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -156,12 +167,14 @@ namespace SudokuCollective.WebApi.Services {
                     _context.Games.Remove(game);
                     await _context.SaveChangesAsync();
 
-                    result = true;
+                    result.Result = true;
                 }
 
                 return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
@@ -171,13 +184,14 @@ namespace SudokuCollective.WebApi.Services {
 
             var gameTaskResult = new GameTaskResult() {
 
-                Result = false,
                 Game = new Game() {
 
                     Id = 0,
                     UserId = 0,
                     SudokuMatrixId = 0
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -207,7 +221,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return gameTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
             }
@@ -217,8 +233,9 @@ namespace SudokuCollective.WebApi.Services {
 
             var gameListTaskResult = new GameListTaskResult() {
 
+                Games = new List<Game>(),
                 Result = false,
-                Games = new List<Game>()
+                Message = string.Empty
             };
 
             try {
@@ -252,7 +269,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return gameListTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                gameListTaskResult.Message = e.Message;
 
                 return gameListTaskResult;
             }
@@ -262,13 +281,14 @@ namespace SudokuCollective.WebApi.Services {
 
             var gameTaskResult = new GameTaskResult() {
 
-                Result = false,
                 Game = new Game() {
 
                     Id = 0,
                     UserId = 0,
                     SudokuMatrixId = 0
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -322,7 +342,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return gameTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
             }
@@ -332,8 +354,9 @@ namespace SudokuCollective.WebApi.Services {
 
             var gameListTaskResult = new GameListTaskResult() {
 
+                Games = new List<Game>(),
                 Result = false,
-                Games = new List<Game>()
+                Message = string.Empty
             };
 
             try {
@@ -369,15 +392,21 @@ namespace SudokuCollective.WebApi.Services {
 
                 return gameListTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                gameListTaskResult.Message = e.Message;
 
                 return gameListTaskResult;
             }
         }
 
-        public async Task<bool> DeleteMyGame(int userId, int gameId) {
+        public async Task<BaseTaskResult> DeleteMyGame(int userId, int gameId) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -401,12 +430,14 @@ namespace SudokuCollective.WebApi.Services {
                     _context.Games.Remove(game);
                     await _context.SaveChangesAsync();
 
-                    result = true;
+                    result.Result = true;
                 }
 
                 return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
@@ -416,13 +447,14 @@ namespace SudokuCollective.WebApi.Services {
 
             var gameTaskResult = new GameTaskResult() {
 
-                Result = false,
                 Game = new Game() {
 
                     Id = 0,
                     UserId = 0,
                     SudokuMatrixId = 0
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -452,7 +484,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return gameTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
             }

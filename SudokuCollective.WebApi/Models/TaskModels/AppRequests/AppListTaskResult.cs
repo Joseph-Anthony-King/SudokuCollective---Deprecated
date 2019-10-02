@@ -3,9 +3,8 @@ using SudokuCollective.Models;
 
 namespace SudokuCollective.WebApi.Models.TaskModels.AppRequests {
 
-    public class AppListTaskResult {
-
-        public bool Result { get; set; }
+    public class AppListTaskResult : BaseTaskResult {
+        
         public IEnumerable<App> Apps { get; set; }
     }
 }

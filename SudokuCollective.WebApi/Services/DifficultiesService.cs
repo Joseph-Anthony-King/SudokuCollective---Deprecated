@@ -7,6 +7,7 @@ using SudokuCollective.Models;
 using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
+using SudokuCollective.WebApi.Models.TaskModels;
 using SudokuCollective.WebApi.Models.TaskModels.DifficultyRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -26,14 +27,15 @@ namespace SudokuCollective.WebApi.Services {
 
             var difficultyTaskResult = new DifficultyTaskResult() {
 
-                Result = true,
                 Difficulty = new Difficulty() {
 
                     Id = 0,
                     Name = string.Empty,
                     DifficultyLevel = DifficultyLevel.NULL,
                     Matrices = new List<SudokuMatrix>()
-                }
+                },
+                Result = true,
+                Message = string.Empty
             };
 
             try {
@@ -97,7 +99,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return difficultyTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                difficultyTaskResult.Message = e.Message;
 
                 return difficultyTaskResult;
             }
@@ -108,8 +112,9 @@ namespace SudokuCollective.WebApi.Services {
 
             var difficultyListTaskResult = new DifficultyListTaskResult() {
 
+                Difficulties = new List<Difficulty>(),
                 Result = false,
-                Difficulties = new List<Difficulty>()
+                Message = string.Empty
             };
 
             try {
@@ -133,7 +138,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return difficultyListTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                difficultyListTaskResult.Message = e.Message;
 
                 return difficultyListTaskResult;
             }            
@@ -144,14 +151,15 @@ namespace SudokuCollective.WebApi.Services {
 
             var difficultyTaskResult = new DifficultyTaskResult() {
 
-                Result = false,
                 Difficulty = new Difficulty() {
 
                     Id = 0,
                     Name = string.Empty,
                     DifficultyLevel = DifficultyLevel.NULL,
                     Matrices = new List<SudokuMatrix>()
-                }
+                },
+                Result = false,
+                Message = string.Empty
             };
 
             try {
@@ -169,16 +177,22 @@ namespace SudokuCollective.WebApi.Services {
 
                 return difficultyTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                difficultyTaskResult.Message = e.Message;
 
                 return difficultyTaskResult;
             }
         }
 
-        public async Task<bool> UpdateDifficulty(int id, 
+        public async Task<BaseTaskResult> UpdateDifficulty(int id, 
             UpdateDifficultyRO updateDifficultyRO) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -194,20 +208,26 @@ namespace SudokuCollective.WebApi.Services {
                     _context.Difficulties.Update(difficulty);
 
                     await _context.SaveChangesAsync();
-                    result = true;
+                    result.Result = true;
                 }
 
                 return result;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
         }
 
-        public async Task<bool> DeleteDifficulty(int id) {
+        public async Task<BaseTaskResult> DeleteDifficulty(int id) {
 
-            var result = false;
+            var result = new BaseTaskResult {
+
+                Result = false,
+                Message = string.Empty
+            };
 
             try {
 
@@ -216,9 +236,13 @@ namespace SudokuCollective.WebApi.Services {
                 _context.Difficulties.Remove(difficulty);
                 await _context.SaveChangesAsync();
 
-                return true;
+                result.Result = true;
 
-            } catch (Exception) {
+                return result; 
+
+            } catch (Exception e) {
+
+                result.Message = e.Message;
 
                 return result;
             }
