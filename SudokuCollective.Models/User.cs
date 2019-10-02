@@ -28,6 +28,10 @@ namespace SudokuCollective.Models {
 
                         _userName = value;
                     }
+
+                } else {
+
+                    _userName = string.Empty;
                 }
             } 
         }
@@ -59,9 +63,16 @@ namespace SudokuCollective.Models {
 
         public User() {
 
+            Id = 0;
+            UserName = string.Empty;
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            NickName = string.Empty;
             DateCreated = DateTime.UtcNow;
             DateUpdated = DateTime.UtcNow;
             Games = new List<Game>();
+            Roles = new List<UserRole>();
+            Apps = new List<UserApp>();
             
             if (string.IsNullOrEmpty(FirstName)) {
 
@@ -84,6 +95,7 @@ namespace SudokuCollective.Models {
         [JsonConstructor]
         public User(
             int id, 
+            string userName,
             string firstName, 
             string lastName, 
             string nickName,
@@ -94,6 +106,7 @@ namespace SudokuCollective.Models {
             bool isActive) : this() {
 
             Id = id;
+            UserName = userName;
             FirstName = firstName;
             LastName = lastName;
             NickName = nickName;

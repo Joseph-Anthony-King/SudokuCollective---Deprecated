@@ -58,6 +58,42 @@ namespace SudokuCollective.Tests {
 
         [Test]
         [Category("Models")]
+        public void HaveAnAssociatedMatrix() {
+            
+            // Arrange and Act
+            Game sut = new Game(
+                user.Object, 
+                new SudokuMatrix(), 
+                new Difficulty() { 
+                    Name = "Test", 
+                    DifficultyLevel = DifficultyLevel.TEST
+                }
+            );
+
+            // Assert
+            Assert.That(sut.SudokuMatrix, Is.TypeOf<SudokuMatrix>());
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAnAssociatedSolution() {
+            
+            // Arrange and Act
+            Game sut = new Game(
+                user.Object, 
+                matrix.Object, 
+                new Difficulty() { 
+                    Name = "Test", 
+                    DifficultyLevel = DifficultyLevel.TEST
+                }
+            );
+
+            // Assert
+            Assert.That(sut.SudokuSolution, Is.TypeOf<SudokuSolution>());
+        }
+
+        [Test]
+        [Category("Models")]
         public void ReturnTrueIfSolved() {
 
             // Arrange and Act

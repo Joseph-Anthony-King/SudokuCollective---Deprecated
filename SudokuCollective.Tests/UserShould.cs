@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using NUnit.Framework;
 using SudokuCollective.Models;
-using SudokuCollective.Models.Enums;
 
-namespace SudokuCollective.Tests {
+namespace SudokuCollective.Tests
+{
 
     public class UserShould {
 
@@ -74,6 +74,31 @@ namespace SudokuCollective.Tests {
 
             // Assert
             Assert.That(sut.Games.Count, Is.EqualTo(0));
+            Assert.That(sut.Games, Is.TypeOf<List<Game>>());
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveARolesList() {
+
+            // Arrange and Act
+            var sut = new User();
+
+            // Assert
+            Assert.That(sut.Roles.Count, Is.EqualTo(0));
+            Assert.That(sut.Roles, Is.TypeOf<List<UserRole>>());
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAnAppList() {
+
+            // Arrange and Act
+            var sut = new User();
+
+            // Assert
+            Assert.That(sut.Apps.Count, Is.EqualTo(0));
+            Assert.That(sut.Apps, Is.TypeOf<List<UserApp>>());
         }
 
         [Test]
@@ -85,6 +110,73 @@ namespace SudokuCollective.Tests {
 
             // Assert
             Assert.That(sut.Password, Is.TypeOf<string>());
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAnActiveStatus() {
+
+            // Arrange and Act
+            var sut = new User();
+
+            // Assert
+            Assert.That(sut.IsActive, Is.TypeOf<bool>());
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAMethodToActivate() {
+
+            // Arrange
+            var sut = new User();
+
+            // Act
+            sut.ActivateUser();
+
+            // Assert
+            Assert.That(sut.IsActive, Is.True);
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAMethodToDeactivate() {
+
+            // Arrange
+            var sut = new User();
+
+            // Act
+            sut.DeactiveUser();
+
+            // Assert
+            Assert.That(sut.IsActive, Is.False);
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAUserNameThatAcceptsAlphaNumericCharacters() {
+
+            // Arrange
+            var sut = new User();
+
+            // Act
+            sut.UserName = "Good.User-Name";
+
+            // Assert
+            Assert.That(sut.UserName, Is.EqualTo("Good.User-Name"));
+        }
+
+        [Test]
+        [Category("Models")]
+        public void HaveAUserNameThatRejectsSpecialCharacters() {
+
+            // Arrange
+            var sut = new User();
+
+            // Act
+            sut.UserName = "B@dUs3rN$m#";
+
+            // Assert
+            Assert.That(sut.UserName, Is.Empty);
         }
     }
 }

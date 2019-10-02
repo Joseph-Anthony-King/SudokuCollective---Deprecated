@@ -169,6 +169,8 @@ namespace SudokuCollective.Models {
 
         public SudokuMatrix() {
 
+            Id = 0;
+
             var rowColumnDeliminators = new List<int>() {
                 9, 18, 27, 36, 45, 54, 63, 72 };
             var firstRegionDeliminators = new List<int>() {
@@ -235,12 +237,13 @@ namespace SudokuCollective.Models {
                     regionIndexer = 9;
                 }
 
-                this.SudokuCells.Add(
+                SudokuCells.Add(
                     new SudokuCell(
                         i,
                         columnIndexer,
                         regionIndexer,
-                        rowIndexer
+                        rowIndexer,
+                        this
                     )
                 );
 

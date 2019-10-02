@@ -34,6 +34,19 @@ namespace SudokuCollective.Tests {
 
         [Test]
         [Category("Models")]
+        public void HaveAnAssociatedMatrix() {
+
+            // Arrange and Act
+            var testMatrix = new SudokuMatrix();
+            var sut = testMatrix.SudokuCells[0];
+
+            // Assert
+            Assert.That(sut.SudokuMatrix, Is.TypeOf<SudokuMatrix>());
+            Assert.That(sut.SudokuMatrixId, Is.TypeOf<int>());
+        }
+
+        [Test]
+        [Category("Models")]
         public void SetCoordinatesInConstructor() {
 
             // Arrange and Act

@@ -83,7 +83,7 @@ namespace SudokuCollective.Models {
         #endregion
 
         #region Constructors
-        public SudokuCell(int index, int column, int region, int row) {
+        public SudokuCell(int index, int column, int region, int row, SudokuMatrix matrix) {
 
             AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -91,13 +91,14 @@ namespace SudokuCollective.Models {
             Column = column;
             Region = region;
             Row = row;
+            SudokuMatrix = matrix;
             Value = 0;
 
             Obscured = true;
             _initializing = false;
         }
 
-        public SudokuCell(int index, int column, int region, int row, int value) {
+        public SudokuCell(int index, int column, int region, int row, int value, SudokuMatrix matrix) {
 
             if (Value == 0) {
 
@@ -112,6 +113,7 @@ namespace SudokuCollective.Models {
             Column = column;
             Region = region;
             Row = row;
+            SudokuMatrix = matrix;
             Value = value;
 
             Obscured = true;
