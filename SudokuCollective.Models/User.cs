@@ -1,14 +1,36 @@
 using System;
 using System.Collections.Generic;
-using SudokuCollective.Models.Interfaces;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
     public class User : IUser {
 
+        private string _userName;
+
         public int Id { get; set; }
-        public string UserName { get; set; }
+        public string UserName {
+
+            get {
+
+                return _userName;
+            }
+
+            set {
+
+                if (!string.IsNullOrEmpty(value)) {
+
+                    var regex = new Regex("^[a-zA-Z0-9-._]*$");
+
+                    if (regex.IsMatch(value)) {
+
+                        _userName = value;
+                    }
+                }
+            } 
+        }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string NickName { get; set; }

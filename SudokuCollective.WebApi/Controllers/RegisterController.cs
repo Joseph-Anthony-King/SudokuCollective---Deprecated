@@ -34,7 +34,14 @@ namespace SudokuCollective.WebApi.Controllers {
 
             } else {
 
-                return BadRequest("Error creating user");
+                if (result.User.UserName.Equals("Remove-Special-Characters")) {
+
+                    return BadRequest("Remove Special Characters from User Name");
+
+                } else {
+
+                    return BadRequest("Error creating user");
+                }
             }
         }
     }

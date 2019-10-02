@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
@@ -262,63 +263,72 @@ namespace SudokuCollective.WebApi.Services {
             };
 
             try {
+                
+                var regex = new Regex("^[a-zA-Z0-9-._]*$");
 
-                if (_context.Apps.Any(a => a.License.Equals(registerRO.License))) {
+                if (regex.IsMatch(registerRO.UserName)) {
 
-                    app = await _context.Apps
-                        .Include(a => a.Users)
-                        .FirstOrDefaultAsync(
-                            predicate: a => a.License.Equals(registerRO.License));
-                }
+                    if (_context.Apps.Any(a => a.License.Equals(registerRO.License))) {
 
-                var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                        app = await _context.Apps
+                            .Include(a => a.Users)
+                            .FirstOrDefaultAsync(
+                                predicate: a => a.License.Equals(registerRO.License));
+                    }
 
-                user = new User() {
+                    var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
-                    UserName = registerRO.UserName,
-                    FirstName = registerRO.FirstName,
-                    LastName = registerRO.LastName,
-                    NickName = registerRO.NickName,
-                    DateCreated = createdDate,
-                    DateUpdated = createdDate,
-                    Email = registerRO.Email,
-                    Password = BCrypt.Net.BCrypt
-                        .HashPassword(registerRO.Password, salt)
-                };
+                    user = new User() {
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-
-                if (user.Id != 0) {
-
-                    var defaultRole = await _context.Roles
-                        .FirstOrDefaultAsync(
-                            predicate: p => p.Id == 4);
-
-                    UserRole newUserRole = new UserRole {
-
-                        UserId = user.Id,
-                        User = user,
-                        RoleId = defaultRole.Id,
-                        Role = defaultRole
+                        UserName = registerRO.UserName,
+                        FirstName = registerRO.FirstName,
+                        LastName = registerRO.LastName,
+                        NickName = registerRO.NickName,
+                        DateCreated = createdDate,
+                        DateUpdated = createdDate,
+                        Email = registerRO.Email,
+                        Password = BCrypt.Net.BCrypt
+                            .HashPassword(registerRO.Password, salt)
                     };
 
-                    _context.UsersRoles.Add(newUserRole);
+                    _context.Users.Add(user);
                     await _context.SaveChangesAsync();
 
-                    UserApp newUserApp = new UserApp {
+                    if (user.Id != 0) {
 
-                        UserId = user.Id,
-                        User = user,
-                        AppId = app.Id,
-                        App = app
-                    };
+                        var defaultRole = await _context.Roles
+                            .FirstOrDefaultAsync(
+                                predicate: p => p.Id == 4);
 
-                    _context.UsersApps.Add(newUserApp);
-                    await _context.SaveChangesAsync();
+                        UserRole newUserRole = new UserRole {
 
-                    userTaskResult.Result = true;
-                    userTaskResult.User = user;
+                            UserId = user.Id,
+                            User = user,
+                            RoleId = defaultRole.Id,
+                            Role = defaultRole
+                        };
+
+                        _context.UsersRoles.Add(newUserRole);
+                        await _context.SaveChangesAsync();
+
+                        UserApp newUserApp = new UserApp {
+
+                            UserId = user.Id,
+                            User = user,
+                            AppId = app.Id,
+                            App = app
+                        };
+
+                        _context.UsersApps.Add(newUserApp);
+                        await _context.SaveChangesAsync();
+
+                        userTaskResult.Result = true;
+                        userTaskResult.User = user;
+                    }
+
+                } else {
+
+                    userTaskResult.User.UserName = "Remove-Special-Characters";
                 }
 
                 return userTaskResult;
