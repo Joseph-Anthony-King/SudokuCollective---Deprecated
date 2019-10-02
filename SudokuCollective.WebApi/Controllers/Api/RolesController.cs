@@ -38,13 +38,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _rolesService.GetRole(id, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Role);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -66,13 +66,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _rolesService.GetRoles(fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok (result.Roles);
 
                 } else {
 
-                    return BadRequest("Issue Getting Roles");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -99,13 +99,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
                 var result = await _rolesService.UpdateRole(id, updateRoleRO);
                 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Issue Updating Role");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -127,7 +127,7 @@ namespace SudokuCollective.WebApi.Controllers {
                 var result = await _rolesService
                     .CreateRole(createRoleRO.Name, createRoleRO.RoleLevel);
 
-                if (result.Result) {
+                if (result.Success) {
                     
                     return CreatedAtAction(
                         "GetRole", 
@@ -136,7 +136,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Issue Creating Role");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -157,13 +157,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _rolesService.DeleteRole(id);
                 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Issue Deleting Role");
+                    return NotFound(result.Message);
                 }
 
             } else {

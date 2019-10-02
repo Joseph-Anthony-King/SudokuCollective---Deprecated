@@ -35,13 +35,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
                 var result = await _appsService.GetApp(id, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.App);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -64,13 +64,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 var result = await _appsService
                     .GetAppByLicense(baseRequestRO.License, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.App);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -92,13 +92,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
                 var result = await _appsService.GetApps();
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Apps);
 
                 } else {
 
-                    return BadRequest("Error Getting Apps");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -119,13 +119,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
                 var result = await _appsService.UpdateApp(updateAppRO);
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Error Updating App");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -148,13 +148,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 var result = await _appsService
                     .GetAppUsers(baseRequest, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Users);
 
                 } else {
 
-                    return BadRequest("Error Getting App Users");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -174,13 +174,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _appsService.AddAppUser(userId, baseRequestRO);
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Error Adding User to App");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -200,13 +200,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _appsService.RemoveAppUser(userId, baseRequestRO);
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Error Removing User from App");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -222,13 +222,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             var result = await _appsService.ActivateApp(id);
 
-            if (result) {
+            if (result.Success) {
 
                 return Ok();
 
             } else {
 
-                return BadRequest("Error activating app");
+                return NotFound(result.Message);
             }         
         }
 
@@ -239,13 +239,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             var result = await _appsService.DeactivateApp(id);
 
-            if (result) {
+            if (result.Success) {
 
                 return Ok();
 
             } else {
 
-                return BadRequest("Error deactivating app");
+                return NotFound(result.Message);
             }         
         }
     }

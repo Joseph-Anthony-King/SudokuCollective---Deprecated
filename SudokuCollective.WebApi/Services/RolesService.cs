@@ -26,18 +26,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<RoleTaskResult> GetRole(
             int id, bool fullRecord = true) {
 
-            var roleTaskResult = new RoleTaskResult() {
-
-                Role = new Role() {
-
-                    Id = 0,
-                    Name = string.Empty,
-                    RoleLevel = RoleLevel.NULL,
-                    Users = new List<UserRole>()
-                },
-                Result = false,
-                Message = string.Empty
-            };
+            var roleTaskResult = new RoleTaskResult();
 
             try {
 
@@ -51,13 +40,9 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (role == null) {
 
-                        role = new Role {
+                        roleTaskResult.Message = "Role not found";
 
-                            Id = 0,
-                            Name = string.Empty,
-                            RoleLevel = RoleLevel.NULL,
-                            Users = new List<UserRole>()
-                        };
+                        return roleTaskResult;
                     }
 
                     foreach (var r in role.Users) {
@@ -79,7 +64,7 @@ namespace SudokuCollective.WebApi.Services {
                         }
                     }
 
-                    roleTaskResult.Result = true;
+                    roleTaskResult.Success = true;
                     roleTaskResult.Role = role;
 
                 } else {
@@ -87,7 +72,14 @@ namespace SudokuCollective.WebApi.Services {
                     role = await _context.Roles
                         .SingleOrDefaultAsync(d => d.Id == id);
 
-                    roleTaskResult.Result = true;
+                    if (role == null) {
+
+                        roleTaskResult.Message = "Role not found";
+
+                        return roleTaskResult;
+                    }
+
+                    roleTaskResult.Success = true;
                     roleTaskResult.Role = role;
                 }
 
@@ -104,12 +96,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<RoleListTaskResult> GetRoles(
             bool fullRecord = true) {
 
-            var roleListTaskResult = new RoleListTaskResult() {
-
-                Roles = new List<Role>(),
-                Result = false,
-                Message = string.Empty
-            };
+            var roleListTaskResult = new RoleListTaskResult();
 
             try {
 
@@ -118,6 +105,7 @@ namespace SudokuCollective.WebApi.Services {
                 if (fullRecord) {
 
                     roles = await _context.Roles
+                        .Where(r => r.Id != 1 && r.Id != 2)
                         .Include(r => r.Users)
                         .ToListAsync();
 
@@ -143,14 +131,16 @@ namespace SudokuCollective.WebApi.Services {
                         }
                     }
 
-                    roleListTaskResult.Result = true;
+                    roleListTaskResult.Success = true;
                     roleListTaskResult.Roles = roles;
 
                 } else {
 
-                    roles = await _context.Roles.ToListAsync();
+                    roles = await _context.Roles
+                        .Where(r => r.Id != 1 && r.Id != 2)
+                        .ToListAsync();
 
-                    roleListTaskResult.Result = true;
+                    roleListTaskResult.Success = true;
                     roleListTaskResult.Roles = roles;
                 }
 
@@ -167,18 +157,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<RoleTaskResult> CreateRole(string name, 
             RoleLevel roleLevel) {
 
-            var roleTaskResult = new RoleTaskResult() {
-
-                Role = new Role() {
-
-                    Id = 0,
-                    Name = string.Empty,
-                    RoleLevel = RoleLevel.NULL,
-                    Users = new List<UserRole>()
-                },
-                Result = false,
-                Message = string.Empty
-            };
+            var roleTaskResult = new RoleTaskResult();
 
             try {
 
@@ -187,7 +166,7 @@ namespace SudokuCollective.WebApi.Services {
                 _context.Roles.Add(role);
                 await _context.SaveChangesAsync();
                 
-                roleTaskResult.Result = true;
+                roleTaskResult.Success = true;
                 roleTaskResult.Role = role;
 
                 return roleTaskResult;
@@ -202,11 +181,7 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<BaseTaskResult> UpdateRole(int id, UpdateRoleRO updateRoleRO) {
 
-            var result = new BaseTaskResult {
-
-                Result = false,
-                Message = string.Empty
-            };
+            var baseTaskResult = new BaseTaskResult();
             
             try {
 
@@ -216,6 +191,13 @@ namespace SudokuCollective.WebApi.Services {
                         .Where(d => d.Id == updateRoleRO.Id)
                         .FirstOrDefaultAsync();
 
+                    if (role != null) {
+
+                        baseTaskResult.Message = "Role not found";
+
+                        return baseTaskResult;
+                    }
+
                     role.Name = updateRoleRO.Name;
                     role.RoleLevel = updateRoleRO.RoleLevel;
 
@@ -223,26 +205,22 @@ namespace SudokuCollective.WebApi.Services {
                     
                     await _context.SaveChangesAsync();
 
-                    result.Result = true;
+                    baseTaskResult.Success = true;
                 }
 
-                return result;
+                return baseTaskResult;
 
             } catch (Exception e) {
 
-                result.Message = e.Message;
+                baseTaskResult.Message = e.Message;
 
-                return result;
+                return baseTaskResult;
             }
         }
 
         public async Task<BaseTaskResult> DeleteRole(int id) {
 
-            var result = new BaseTaskResult {
-
-                Result = false,
-                Message = string.Empty
-            };
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
@@ -250,19 +228,23 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (role != null) {
 
-                    _context.Roles.Remove(role);
-                    await _context.SaveChangesAsync();
+                    baseTaskResult.Message = "Role not found";
 
-                    result.Result = true;
+                    return baseTaskResult;
                 }
 
-                return result;
+                _context.Roles.Remove(role);
+                await _context.SaveChangesAsync();
+
+                baseTaskResult.Success = true;
+
+                return baseTaskResult;
 
             } catch (Exception e) {
 
-                result.Message = e.Message;
+                baseTaskResult.Message = e.Message;
 
-                return result;
+                return baseTaskResult;
             }
         }
     }

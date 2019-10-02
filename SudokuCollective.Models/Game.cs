@@ -44,6 +44,7 @@ namespace SudokuCollective.Models {
             DateTime dateCompleted,
             int userId,
             int sudokuMatrixId,
+            int sudokuSolutionId,
             bool continueGame) : this() {
 
             Id = id;
@@ -51,6 +52,7 @@ namespace SudokuCollective.Models {
             DateCompleted = dateCompleted;
             UserId = userId;
             SudokuMatrixId = sudokuMatrixId;
+            SudokuSolutionId = sudokuSolutionId;
             ContinueGame = continueGame;
         }
 

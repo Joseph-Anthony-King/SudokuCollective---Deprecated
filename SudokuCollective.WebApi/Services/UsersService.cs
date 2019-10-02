@@ -10,6 +10,7 @@ using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
+using SudokuCollective.WebApi.Models.TaskModels;
 using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -29,24 +30,9 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<UserTaskResult> GetUser(int id, bool fullRecord = true) {
 
             var createdDate = DateTime.UtcNow;
-            var user = new User() {
+            var user = new User();
 
-                Id = 0,
-                UserName = String.Empty,
-                FirstName = String.Empty,
-                LastName = String.Empty,
-                NickName = string.Empty,
-                DateCreated = createdDate,
-                DateUpdated = createdDate,
-                Email = string.Empty,
-                Password = string.Empty
-            };
-
-            var userTaskResult = new UserTaskResult() {
-
-                Result = false,
-                User = user
-            };
+            var userTaskResult = new UserTaskResult();
 
             try {
 
@@ -61,20 +47,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (user == null) {
 
-                        user = new User() {
-
-                            Id = 0,
-                            UserName = String.Empty,
-                            FirstName = String.Empty,
-                            LastName = String.Empty,
-                            NickName = string.Empty,
-                            DateCreated = createdDate,
-                            DateUpdated = createdDate,
-                            Email = string.Empty,
-                            Password = string.Empty
-                        };
-
-                        userTaskResult.User = user;
+                        userTaskResult.Message = "User not found";
 
                         return userTaskResult;
                     }
@@ -107,7 +80,7 @@ namespace SudokuCollective.WebApi.Services {
                     user.Roles.OrderBy(r => r.RoleId);
                     user.Apps.OrderBy(a => a.AppId);
 
-                    userTaskResult.Result = true;
+                    userTaskResult.Success = true;
                     userTaskResult.User = user;
 
                 } else {
@@ -118,18 +91,26 @@ namespace SudokuCollective.WebApi.Services {
                         .FirstOrDefaultAsync(
                             predicate: u => u.Id == id);
 
+                    if (user == null) {
+
+                        userTaskResult.Message = "User not found";
+
+                        return userTaskResult;
+                    }
+
                     user.Games = null;
                     user.Roles.OrderBy(r => r.RoleId);
                     user.Apps.OrderBy(a => a.AppId);
 
-                    userTaskResult.Result = true;
+                    userTaskResult.Success = true;
                     userTaskResult.User = user;
                 }
 
                 return userTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
 
+                userTaskResult.Message = e.Message;
                 return userTaskResult;
             }
         }
@@ -138,11 +119,7 @@ namespace SudokuCollective.WebApi.Services {
 
             var users = new List<User>();
 
-            var userListTaskResult = new UserListTaskResult() {
-
-                Result = false,
-                Users = users
-            };
+            var userListTaskResult = new UserListTaskResult();
 
             try {
 
@@ -190,7 +167,7 @@ namespace SudokuCollective.WebApi.Services {
                         user.Apps.OrderBy(a => a.AppId);
                     }
 
-                    userListTaskResult.Result = true;
+                    userListTaskResult.Success = true;
                     userListTaskResult.Users = users;
 
                 } else {
@@ -217,13 +194,15 @@ namespace SudokuCollective.WebApi.Services {
                         user.Apps.OrderBy(a => a.AppId);
                     }
 
-                    userListTaskResult.Result = true;
+                    userListTaskResult.Success = true;
                     userListTaskResult.Users = users;
                 }
 
                 return userListTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                userListTaskResult.Message = e.Message;
 
                 return userListTaskResult;
             }
@@ -232,35 +211,10 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<UserTaskResult> CreateUser(RegisterRO registerRO) {
 
             var createdDate = DateTime.UtcNow;
-            var user = new User() {
+            var user = new User();
+            var app = new App();
 
-                Id = 0,
-                UserName = String.Empty,
-                FirstName = String.Empty,
-                LastName = String.Empty,
-                NickName = string.Empty,
-                DateCreated = createdDate,
-                DateUpdated = createdDate,
-                Email = string.Empty,
-                Password = string.Empty
-            };
-
-            var app = new App() {
-
-                Id = 0,
-                Name = string.Empty,
-                License = string.Empty,
-                OwnerId = 0,
-                DateCreated = createdDate,
-                DevUrl = string.Empty,
-                LiveUrl = string.Empty
-            };
-
-            var userTaskResult = new UserTaskResult() {
-
-                Result = false,
-                User = user
-            };
+            var userTaskResult = new UserTaskResult();
 
             try {
                 
@@ -322,18 +276,21 @@ namespace SudokuCollective.WebApi.Services {
                         _context.UsersApps.Add(newUserApp);
                         await _context.SaveChangesAsync();
 
-                        userTaskResult.Result = true;
+                        userTaskResult.Success = true;
                         userTaskResult.User = user;
                     }
 
                 } else {
 
-                    userTaskResult.User.UserName = "Remove-Special-Characters";
+                    userTaskResult.Message = "User name can contain alphanumeric " + 
+                        "charaters or the following (._-), user name contained invalid characters.";
                 }
 
                 return userTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                userTaskResult.Message = e.Message;
 
                 return userTaskResult;
             }
@@ -342,107 +299,105 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<UserTaskResult> UpdateUser(
             int id, UpdateUserRO updateUserRO) {
 
-            var createdDate = DateTime.UtcNow;
-            var userTaskResult = new UserTaskResult() {
-
-                Result = false,
-                User = new User() {
-
-                    Id = 0,
-                    UserName = string.Empty,
-                    FirstName = string.Empty,
-                    LastName = string.Empty,
-                    NickName = string.Empty,
-                    DateCreated = createdDate,
-                    DateUpdated = createdDate,
-                    Email = string.Empty,
-                    Password = string.Empty
-                }
-            };
+            var userTaskResult = new UserTaskResult();
 
             try {
 
-                var emailIsUnique = true;
-                var userIdExists = false;
-                var user = new User();
-                var users = await _context.Users.ToListAsync();
-                var updatedDate = DateTime.UtcNow;
+                var regex = new Regex("^[a-zA-Z0-9-._]*$");
 
-                foreach (var u in users) {
+                if (regex.IsMatch(updateUserRO.UserName)) {
 
-                    if (u.Email.Equals(updateUserRO.Email) && u.Id != id) {
+                    var emailIsUnique = true;
+                    var userIdExists = false;
+                    var user = new User();
+                    var users = await _context.Users.ToListAsync();
+                    var updatedDate = DateTime.UtcNow;
 
-                        emailIsUnique = false;
+                    foreach (var u in users)
+                    {
+
+                        if (u.Email.Equals(updateUserRO.Email) && u.Id != id)
+                        {
+
+                            emailIsUnique = false;
+                        }
+
+                        if (u.Id == id)
+                        {
+
+                            userIdExists = true;
+                        }
                     }
 
-                    if (u.Id == id) {
+                    if (emailIsUnique && userIdExists)
+                    {
 
-                        userIdExists = true;
+                        user = await _context.Users.FindAsync(id);
+
+                        user.UserName = updateUserRO.UserName;
+                        user.FirstName = updateUserRO.FirstName;
+                        user.LastName = updateUserRO.LastName;
+                        user.NickName = updateUserRO.NickName;
+                        user.Email = updateUserRO.Email;
+                        user.DateUpdated = updatedDate;
+
+                        _context.Users.Update(user);
+                        await _context.SaveChangesAsync();
+
+                        userTaskResult.Success = true;
+                        userTaskResult.User = user;
+
+                        return userTaskResult;
+
                     }
-                }
+                    else
+                    {
 
-                if (emailIsUnique && userIdExists) {
+                        if (!emailIsUnique && userIdExists)
+                        {
 
-                    user = await _context.Users.FindAsync(id);
+                            userTaskResult.Message = "User email is not unique";
+                        }
 
-                    user.UserName = updateUserRO.UserName;
-                    user.FirstName = updateUserRO.FirstName;
-                    user.LastName = updateUserRO.LastName;
-                    user.NickName = updateUserRO.NickName;
-                    user.Email = updateUserRO.Email;
-                    user.DateUpdated = updatedDate;
+                        if (!userIdExists)
+                        {
 
-                    _context.Users.Update(user);
-                    await _context.SaveChangesAsync();
-
-                    userTaskResult.Result = true;
-                    userTaskResult.User = user;
-
-                    return userTaskResult;
+                            userTaskResult.Message = "User not found";
+                        }
+                    }
 
                 } else {
 
-                    var outGoingEmail = string.Empty;
-
-                    if (!emailIsUnique) {
-
-                        outGoingEmail = updateUserRO.Email;
-                    }
-
-                    user = new User() {
-
-                        Id = 0,
-                        UserName = String.Empty,
-                        FirstName = String.Empty,
-                        LastName = String.Empty,
-                        NickName = string.Empty,
-                        DateCreated = updatedDate,
-                        DateUpdated = updatedDate,
-                        Email = outGoingEmail,
-                        Password = string.Empty
-                    };
-
-                    userTaskResult.Result = false;
-                    userTaskResult.User = user;
+                    userTaskResult.Message = "User name can contain alphanumeric " +
+                        "charaters or the following (._-), user name contained invalid characters.";
                 }
 
                 return userTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                userTaskResult.Message = e.Message;
 
                 return userTaskResult;
             }
         }
 
-        public async Task<bool> UpdatePassword(int id, UpdatePasswordRO updatePasswordRO) {
+        public async Task<BaseTaskResult> UpdatePassword(int id, UpdatePasswordRO updatePasswordRO) {
 
-            var result = false;
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
                 var user = await _context.Users
                     .SingleOrDefaultAsync(
                         predicate: u => u.Id == id);
+
+                if (user == null) {
+
+                    baseTaskResult.Message = "User not found";
+
+                    return baseTaskResult;
+                }
 
                 if (user != null &&
                     BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, user.Password)) {
@@ -459,20 +414,22 @@ namespace SudokuCollective.WebApi.Services {
                     _context.Users.Update(user);
                     await _context.SaveChangesAsync();
 
-                    result = true;
+                    baseTaskResult.Success = true;
                 }
 
-                return result;
+                return baseTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
 
-                return result;
+                baseTaskResult.Message = e.Message;
+
+                return baseTaskResult;
             }
         }
 
-        public async Task<bool> DeleteUser(int id) {
+        public async Task<BaseTaskResult> DeleteUser(int id) {
 
-            var result = false;
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
@@ -483,7 +440,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    return result;
+                    baseTaskResult.Message = "User not found";
+
+                    return baseTaskResult;
                 }
 
                 if (user.Games.Count > 0) {
@@ -507,23 +466,34 @@ namespace SudokuCollective.WebApi.Services {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
 
-                return result = true;
+                baseTaskResult.Success = true;
 
-            } catch (Exception) {
+                return baseTaskResult;
 
-                return result;
+            } catch (Exception e) {
+
+                baseTaskResult.Message = e.Message;
+
+                return baseTaskResult;
             }
         }
 
-        public async Task<bool> AddUserRoles(int id, List<int> roleIds) {
+        public async Task<BaseTaskResult> AddUserRoles(int id, List<int> roleIds) {
 
-            var result = false;
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
                 var user = await _context.Users
                     .Include(u => u.Roles)
                     .FirstOrDefaultAsync(predicate: u => u.Id == id);
+
+                if (user == null) {
+
+                    baseTaskResult.Message = "User not found";
+
+                    return baseTaskResult;
+                }
 
                 foreach (var userRole in user.Roles) {
 
@@ -571,23 +541,34 @@ namespace SudokuCollective.WebApi.Services {
                     await _context.SaveChangesAsync();
                 }
 
-                return result = true;
+                baseTaskResult.Success = true;
 
-            } catch (Exception) {
+                return baseTaskResult;
 
-                return result;
+            } catch (Exception e) {
+
+                baseTaskResult.Message = e.Message;
+
+                return baseTaskResult;
             }
         }
 
-        public async Task<bool> RemoveUserRoles(int id, List<int> roleIds) {
+        public async Task<BaseTaskResult> RemoveUserRoles(int id, List<int> roleIds) {
 
-            var result = false;
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
                 var user = await _context.Users
                     .Include(u => u.Roles)
                     .FirstOrDefaultAsync(predicate: u => u.Id == id);
+
+                if (user == null) {
+
+                    baseTaskResult.Message = "User not found";
+
+                    return baseTaskResult;
+                }
 
                 var usersRoles = await _context.UsersRoles
                     .Where(ur => ur.UserId == id && roleIds.Contains(ur.RoleId))
@@ -597,20 +578,25 @@ namespace SudokuCollective.WebApi.Services {
                 await _context.SaveChangesAsync();
 
                 user.DateUpdated = DateTime.UtcNow;
+
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
 
-                return result = true;
+                baseTaskResult.Success = true;
 
-            } catch (Exception) {
+                return baseTaskResult;
 
-                return result;
+            } catch (Exception e) {
+
+                baseTaskResult.Message = e.Message;
+
+                return baseTaskResult;
             }
         }
 
-        public async Task<bool> ActivateUser(int id) {
+        public async Task<BaseTaskResult> ActivateUser(int id) {
 
-            var result = false;
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
@@ -621,7 +607,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    return result;
+                    baseTaskResult.Message = "User not found";
+
+                    return baseTaskResult;
                 }
 
                 if (!user.IsActive) {
@@ -635,17 +623,21 @@ namespace SudokuCollective.WebApi.Services {
                     await _context.SaveChangesAsync();
                 }
 
-                return result = true;
+                baseTaskResult.Success = true;
 
-            } catch (Exception) {
+                return baseTaskResult;
 
-                return result;
+            } catch (Exception e) {
+
+                baseTaskResult.Message = e.Message;
+
+                return baseTaskResult;
             }
         }
 
-        public async Task<bool> DeactivateUser(int id) {
+        public async Task<BaseTaskResult> DeactivateUser(int id) {
 
-            var result = false;
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
@@ -656,7 +648,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    return result;
+                    baseTaskResult.Message = "User not found";
+
+                    return baseTaskResult;
                 }
 
                 if (user.IsActive) {
@@ -670,11 +664,15 @@ namespace SudokuCollective.WebApi.Services {
                     await _context.SaveChangesAsync();
                 }
 
-                return result = true;
+                baseTaskResult.Success = true;
 
-            } catch (Exception) {
+                return baseTaskResult;
 
-                return result;
+            } catch (Exception e) {
+
+                baseTaskResult.Message = e.Message;
+
+                return baseTaskResult;
             }
         }
 

@@ -26,13 +26,13 @@ namespace SudokuCollective.WebApi.Controllers {
             
             var result = await _appsService.GetLicense(id);
 
-            if (result.Result) {
+            if (result.Success) {
                 
                 return Ok(result.License);
 
             } else {
 
-                return BadRequest("Error getting license");
+                return NotFound(result.Message);
             }
         }
         
@@ -44,13 +44,13 @@ namespace SudokuCollective.WebApi.Controllers {
             
             var result = await _appsService.CreateApp(licenseRequestRO);
 
-            if (result.Result) {
+            if (result.Success) {
                 
                 return Ok(result.App);
 
             } else {
 
-                return BadRequest("Error creating app");
+                return NotFound(result.Message);
             }
         }
     }

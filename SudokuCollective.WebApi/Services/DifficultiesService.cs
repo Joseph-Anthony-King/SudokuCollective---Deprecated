@@ -25,18 +25,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<DifficultyTaskResult> GetDifficulty(
             int id, bool fullRecord = true) {
 
-            var difficultyTaskResult = new DifficultyTaskResult() {
-
-                Difficulty = new Difficulty() {
-
-                    Id = 0,
-                    Name = string.Empty,
-                    DifficultyLevel = DifficultyLevel.NULL,
-                    Matrices = new List<SudokuMatrix>()
-                },
-                Result = true,
-                Message = string.Empty
-            };
+            var difficultyTaskResult = new DifficultyTaskResult();
 
             try {
 
@@ -48,13 +37,9 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (difficulty == null) {
 
-                        difficulty = new Difficulty {
+                        difficultyTaskResult.Message = "Difficulty not found";
 
-                            Id = 0,
-                            Name = string.Empty,
-                            DifficultyLevel = DifficultyLevel.NULL,
-                            Matrices = new List<SudokuMatrix>()
-                        };
+                        return difficultyTaskResult;
                     }
 
                     difficulty.Matrices = await _context.SudokuMatrices
@@ -72,7 +57,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .ToListAsync();
                     }
 
-                    difficultyTaskResult.Result = true;
+                    difficultyTaskResult.Success = true;
                     difficultyTaskResult.Difficulty = difficulty;
 
                 } else {
@@ -82,18 +67,14 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (difficulty == null) {
 
-                        difficulty = new Difficulty {
+                        difficultyTaskResult.Message = "Difficulty not found";
 
-                            Id = 0,
-                            Name = string.Empty,
-                            DifficultyLevel = DifficultyLevel.NULL,
-                            Matrices = new List<SudokuMatrix>()
-                        };
+                        return difficultyTaskResult;
                     }
 
                     difficulty.Matrices = null;
 
-                    difficultyTaskResult.Result = true;
+                    difficultyTaskResult.Success = true;
                     difficultyTaskResult.Difficulty = difficulty;
                 }
 
@@ -110,12 +91,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<DifficultyListTaskResult> GetDifficulties(
             bool fullRecord = true) {
 
-            var difficultyListTaskResult = new DifficultyListTaskResult() {
-
-                Difficulties = new List<Difficulty>(),
-                Result = false,
-                Message = string.Empty
-            };
+            var difficultyListTaskResult = new DifficultyListTaskResult();
 
             try {
 
@@ -123,16 +99,22 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (fullRecord) {
 
-                    difficulties = await _context.Difficulties.Include(d => d.Matrices).ToListAsync();
+                    difficulties = await _context.Difficulties
+                        .OrderBy(d => d.Id)
+                        .Include(d => d.Matrices)
+                        .Where(d => d.Id != 1 && d.Id != 2)
+                        .ToListAsync();
 
-                    difficultyListTaskResult.Result = true;
+                    difficultyListTaskResult.Success = true;
                     difficultyListTaskResult.Difficulties = difficulties;
 
                 } else {
 
-                    difficulties = await _context.Difficulties.ToListAsync();
+                    difficulties = await _context.Difficulties
+                        .OrderBy(d => d.Id)
+                        .ToListAsync();
 
-                    difficultyListTaskResult.Result = true;
+                    difficultyListTaskResult.Success = true;
                     difficultyListTaskResult.Difficulties = difficulties;
                 }
 
@@ -149,18 +131,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<DifficultyTaskResult> CreateDifficulty(
             string name, DifficultyLevel difficultyLevel) {
 
-            var difficultyTaskResult = new DifficultyTaskResult() {
-
-                Difficulty = new Difficulty() {
-
-                    Id = 0,
-                    Name = string.Empty,
-                    DifficultyLevel = DifficultyLevel.NULL,
-                    Matrices = new List<SudokuMatrix>()
-                },
-                Result = false,
-                Message = string.Empty
-            };
+            var difficultyTaskResult = new DifficultyTaskResult();
 
             try {
 
@@ -172,7 +143,7 @@ namespace SudokuCollective.WebApi.Services {
                 _context.Difficulties.Add(difficulty);
                 await _context.SaveChangesAsync();
 
-                difficultyTaskResult.Result = true;
+                difficultyTaskResult.Success = true;
                 difficultyTaskResult.Difficulty = difficulty;
 
                 return difficultyTaskResult;
@@ -188,11 +159,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<BaseTaskResult> UpdateDifficulty(int id, 
             UpdateDifficultyRO updateDifficultyRO) {
 
-            var result = new BaseTaskResult {
-
-                Result = false,
-                Message = string.Empty
-            };
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
@@ -202,49 +169,59 @@ namespace SudokuCollective.WebApi.Services {
                         .Where(d => d.Id == updateDifficultyRO.Id)
                         .FirstOrDefaultAsync();
 
+                    if (difficulty == null) {
+
+                        baseTaskResult.Message = "Difficulty not found";
+
+                        return baseTaskResult;
+                    }
+
                     difficulty.Name = updateDifficultyRO.Name;
                     difficulty.DifficultyLevel = updateDifficultyRO.DifficultyLevel;
 
                     _context.Difficulties.Update(difficulty);
 
                     await _context.SaveChangesAsync();
-                    result.Result = true;
+                    baseTaskResult.Success = true;
                 }
 
-                return result;
+                return baseTaskResult;
 
             } catch (Exception e) {
 
-                result.Message = e.Message;
+                baseTaskResult.Message = e.Message;
 
-                return result;
+                return baseTaskResult;
             }
         }
 
         public async Task<BaseTaskResult> DeleteDifficulty(int id) {
 
-            var result = new BaseTaskResult {
-
-                Result = false,
-                Message = string.Empty
-            };
+            var baseTaskResult = new BaseTaskResult();
 
             try {
 
                 var difficulty = await _context.Difficulties.FindAsync(id);
 
+                if (difficulty == null) {
+
+                    baseTaskResult.Message = "Difficulty not found";
+
+                    return baseTaskResult;
+                }
+
                 _context.Difficulties.Remove(difficulty);
                 await _context.SaveChangesAsync();
 
-                result.Result = true;
+                baseTaskResult.Success = true;
 
-                return result; 
+                return baseTaskResult; 
 
             } catch (Exception e) {
 
-                result.Message = e.Message;
+                baseTaskResult.Message = e.Message;
 
-                return result;
+                return baseTaskResult;
             }
         }
     }

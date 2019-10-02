@@ -39,13 +39,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _userService.GetUser(id, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.User);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -67,13 +67,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _userService.GetUsers(fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Users);
 
                 } else {
 
-                    return BadRequest("Issue Obtaining Users");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -94,21 +94,13 @@ namespace SudokuCollective.WebApi.Controllers {
             
                 var result = await _userService.UpdateUser(id, updateUserRO);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    if (result.User.Email.Equals(updateUserRO.Email)
-                        && result.User.Id == 0) {
-
-                        return BadRequest("Email is not Unique");
-
-                    } else {
-
-                        return NotFound();
-                    }
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -129,13 +121,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _userService.UpdatePassword(id, updatePasswordRO);
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Issue Updating Password");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -156,13 +148,13 @@ namespace SudokuCollective.WebApi.Controllers {
             
                 var result = await _userService.DeleteUser(id);
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -186,13 +178,13 @@ namespace SudokuCollective.WebApi.Controllers {
                     id,
                     updateUserRolesRO.RoleIds.ToList());
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -216,13 +208,13 @@ namespace SudokuCollective.WebApi.Controllers {
                     id, 
                     updateUserRolesRO.RoleIds.ToList());
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -238,13 +230,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             var result = await _userService.ActivateUser(id);
 
-            if (result) {
+            if (result.Success) {
 
                 return Ok();
 
             } else {
 
-                return BadRequest("Error Activating User");
+                return NotFound(result.Message);
             }         
         }
 
@@ -255,13 +247,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             var result = await _userService.DeactivateUser(id);
 
-            if (result) {
+            if (result.Success) {
 
                 return Ok();
 
             } else {
 
-                return BadRequest("Error Deactivating User");
+                return NotFound(result.Message);
             }         
         }
     }

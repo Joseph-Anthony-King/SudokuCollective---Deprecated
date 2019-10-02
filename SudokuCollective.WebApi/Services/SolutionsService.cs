@@ -25,21 +25,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<SolutionTaskResult> GetSolution(
             int id, bool fullRecord = true) {
 
-            var solutionTaskResult = new SolutionTaskResult() {
-
-                Result = false,
-                Solution = new SudokuSolution()
-                {
-                    Id = 0,
-                    SolutionList = new List<int>(),
-                    Game = new Game() {
-
-                        Id = 0,
-                        UserId = 0,
-                        SudokuMatrixId = 0
-                    }
-                }
-            };
+            var solutionTaskResult = new SolutionTaskResult();
 
             try {
 
@@ -52,6 +38,13 @@ namespace SudokuCollective.WebApi.Services {
                         .Include(s => s.Game)
                         .ThenInclude(g => g.User)
                         .FirstOrDefaultAsync();
+
+                    if (solution == null) {
+
+                        solutionTaskResult.Message = "Solution not found";
+
+                        return solutionTaskResult;
+                    }
 
                     if (solution.Game != null) {
 
@@ -67,7 +60,7 @@ namespace SudokuCollective.WebApi.Services {
                             .AttachSudokuMatrix(solution.Game, _context);
                     }
 
-                    solutionTaskResult.Result = true;
+                    solutionTaskResult.Success = true;
                     solutionTaskResult.Solution = solution;
 
                 } else {
@@ -76,13 +69,15 @@ namespace SudokuCollective.WebApi.Services {
                         .Where(s => s.Id == id)
                         .FirstOrDefaultAsync();
 
-                    solutionTaskResult.Result = true;
+                    solutionTaskResult.Success = true;
                     solutionTaskResult.Solution = solution;
                 }
 
                 return solutionTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                solutionTaskResult.Message = e.Message;
 
                 return solutionTaskResult;
             }
@@ -91,11 +86,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<SolutionListTaskResult> GetSolutions(
             bool fullRecord = true) {
 
-            var solutionListTaskResult = new SolutionListTaskResult() {
-
-                Result = false,
-                Solutions = new List<SudokuSolution>()
-            };
+            var solutionListTaskResult = new SolutionListTaskResult();
 
             try {
 
@@ -125,20 +116,22 @@ namespace SudokuCollective.WebApi.Services {
                         }
                     }
 
-                    solutionListTaskResult.Result = true;
+                    solutionListTaskResult.Success = true;
                     solutionListTaskResult.Solutions = solutions;
 
                 } else {
 
                     solutions = await _context.SudokuSolutions.ToListAsync();
 
-                    solutionListTaskResult.Result = true;
+                    solutionListTaskResult.Success = true;
                     solutionListTaskResult.Solutions = solutions;
                 }
 
                 return solutionListTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                solutionListTaskResult.Message = e.Message;
 
                 return solutionListTaskResult;
             }
@@ -147,27 +140,20 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<SolutionTaskResult> Solve(
             SolveRequestsRO solveRequestsRO) {
 
-            var solutionTaskResult = new SolutionTaskResult() {
-
-                Result = false,
-                Solution = new SudokuSolution() {
-
-                    Id = 0,
-                    SolutionList = new List<int>(),
-                    Game = new Game() {
-
-                        Id = 0,
-                        UserId = 0,
-                        SudokuMatrixId = 0
-                    }
-                }
-            };
+            var solutionTaskResult = new SolutionTaskResult();
 
             try {
 
                 var user = await _context.Users
                     .Where(u => u.Id == solveRequestsRO.UserId)
                     .FirstOrDefaultAsync();
+
+                if (user == null) {
+
+                    solutionTaskResult.Message = "Requesting user not found";
+
+                    return solutionTaskResult;
+                }
 
                 var intList = new List<int>();
 
@@ -203,7 +189,7 @@ namespace SudokuCollective.WebApi.Services {
                         if (possibleSolution) {
 
                             solutionInDB = possibleSolution;
-                            solutionTaskResult.Result = true;
+                            solutionTaskResult.Success = true;
                             solutionTaskResult.Solution = solution;
                             break;
                         }
@@ -238,7 +224,7 @@ namespace SudokuCollective.WebApi.Services {
                     
                     if (!result.ToString().Contains('0')) {
                         
-                        solutionTaskResult.Result = true;
+                        solutionTaskResult.Success = true;
                     }
 
                     solutionTaskResult.Solution = result;
@@ -246,7 +232,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 return solutionTaskResult;
 
-            } catch (Exception) {
+            } catch (Exception e) {
+
+                solutionTaskResult.Message = e.Message;
 
                 return solutionTaskResult;
             }
@@ -254,21 +242,7 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<SolutionTaskResult> Generate() {
 
-            var solutionTaskResult = new SolutionTaskResult() {
-
-                Result = false,
-                Solution = new SudokuSolution() {
-
-                    Id = 0,
-                    SolutionList = new List<int>(),
-                    Game = new Game() {
-
-                        Id = 0,
-                        UserId = 0,
-                        SudokuMatrixId = 0
-                    }
-                }
-            };
+            var solutionTaskResult = new SolutionTaskResult();
             
             var continueLoop = true;
 
@@ -307,7 +281,7 @@ namespace SudokuCollective.WebApi.Services {
             _context.SudokuSolutions.Add(solutionTaskResult.Solution);
             await _context.SaveChangesAsync();
 
-            solutionTaskResult.Result = true;
+            solutionTaskResult.Success = true;
 
             return solutionTaskResult;
         }

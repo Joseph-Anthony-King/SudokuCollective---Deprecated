@@ -8,6 +8,7 @@ namespace SudokuCollective.Models {
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public string DisplayName { get; set; }
         public DifficultyLevel DifficultyLevel { get; set; }
         public ICollection<SudokuMatrix> Matrices { get; set; }
 

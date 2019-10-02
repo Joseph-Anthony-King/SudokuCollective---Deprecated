@@ -24,7 +24,7 @@ namespace SudokuCollective.WebApi.Controllers {
             
             var result = await _usersService.CreateUser(registerRO);
 
-            if (result.Result) {
+            if (result.Success) {
 
                 return CreatedAtAction(
                     "GetUser", 
@@ -34,14 +34,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
             } else {
 
-                if (result.User.UserName.Equals("Remove-Special-Characters")) {
-
-                    return BadRequest("Remove Special Characters from User Name");
-
-                } else {
-
-                    return BadRequest("Error creating user");
-                }
+                return NotFound(result.Message);
             }
         }
     }

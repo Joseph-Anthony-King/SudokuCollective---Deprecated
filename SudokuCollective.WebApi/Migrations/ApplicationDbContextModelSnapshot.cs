@@ -65,6 +65,9 @@ namespace SudokuCollective.WebApi.Migrations
                     b.Property<int>("DifficultyLevel")
                         .HasColumnType("integer");
 
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 

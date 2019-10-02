@@ -38,13 +38,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _solutionService.GetSolution(id, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Solution);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -66,13 +66,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _solutionService.GetSolutions(fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Solutions);
 
                 } else {
 
-                    return BadRequest("Issue Getting Solutions");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -93,13 +93,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _solutionService.Solve(solveRequestsRO);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Solution);
 
                 } else {
 
-                    return NotFound("Requires more values in order to solve this puzzle");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -120,13 +120,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _solutionService.Generate();
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Solution);
 
                 } else {
 
-                    return BadRequest("Issue Generating Solution");
+                    return NotFound(result.Message);
                 }
 
             } else {

@@ -23,25 +23,40 @@ namespace SudokuCollective.WebApi.Models {
 
                 if (!context.Roles.Any()) {
 
-                    context.Roles.AddRange(
+                    context.Roles.Add(
                         
                         new Role {
 
                             Name = "Null",
                             RoleLevel = RoleLevel.NULL
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Roles.Add(
                         
                         new Role {
 
                             Name = "Super User",
                             RoleLevel = RoleLevel.SUPERUSER
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Roles.Add(
                         
                         new Role {
 
                             Name = "Admin",
                             RoleLevel = RoleLevel.ADMIN
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Roles.Add(
                         
                         new Role {
 
@@ -55,41 +70,72 @@ namespace SudokuCollective.WebApi.Models {
 
                 if (!context.Difficulties.Any()) {
 
-                    context.Difficulties.AddRange(
+                    context.Difficulties.Add(
 
                         new Difficulty {
 
                             Name = "Null",
+                            DisplayName = "Null",
                             DifficultyLevel = DifficultyLevel.NULL
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Difficulties.Add(
 
                         new Difficulty {
 
                             Name = "Test",
+                            DisplayName = "Test",
                             DifficultyLevel = DifficultyLevel.TEST
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Difficulties.Add(
 
                         new Difficulty {
 
                             Name = "Easy",
+                            DisplayName = "Steady Sloth",
                             DifficultyLevel = DifficultyLevel.EASY
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Difficulties.Add(
 
                         new Difficulty {
 
                             Name = "Medium",
+                            DisplayName = "Leaping Lemur",
                             DifficultyLevel = DifficultyLevel.MEDIUM
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Difficulties.Add(
 
                         new Difficulty {
 
                             Name = "Hard",
+                            DisplayName = "Mighty Mountain lion",
                             DifficultyLevel = DifficultyLevel.HARD
-                        },
+                        }
+                    );
+
+                    context.SaveChanges();
+
+                    context.Difficulties.Add(
 
                         new Difficulty {
 
                             Name = "Evil",
+                            DisplayName = "Sneaky Shark",
                             DifficultyLevel = DifficultyLevel.EVIL
                         }
                     );

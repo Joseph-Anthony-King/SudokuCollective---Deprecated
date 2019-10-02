@@ -10,8 +10,8 @@ using SudokuCollective.WebApi.Models.DataModel;
 namespace SudokuCollective.WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190930055213_Add activate switch to users and apps")]
-    partial class Addactivateswitchtousersandapps
+    [Migration("20191002201140_Initiate database")]
+    partial class Initiatedatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -66,6 +66,9 @@ namespace SudokuCollective.WebApi.Migrations
 
                     b.Property<int>("DifficultyLevel")
                         .HasColumnType("integer");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");

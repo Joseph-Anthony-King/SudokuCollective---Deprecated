@@ -38,13 +38,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _difficultiesService.GetDifficulty(id, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Difficulty);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -65,13 +65,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _difficultiesService.GetDifficulties(fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Difficulties);
 
                 } else {
 
-                    return BadRequest("Issue Getting Difficulties");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -97,13 +97,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 
                 var result = await _difficultiesService.UpdateDifficulty(id, updateDifficultyRO);
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Issue Updating Difficulty");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -125,7 +125,7 @@ namespace SudokuCollective.WebApi.Controllers {
                 var result = await _difficultiesService
                     .CreateDifficulty(createDifficultyRO.Name, createDifficultyRO.DifficultyLevel);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return CreatedAtAction(
                         "GetDifficulty", 
@@ -134,7 +134,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Issue Creating Difficulty");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -155,13 +155,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _difficultiesService.DeleteDifficulty(id);
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Issue Deleting Difficulty");
+                    return NotFound(result.Message);
                 }
                 
             } else {

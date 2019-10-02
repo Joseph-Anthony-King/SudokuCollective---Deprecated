@@ -36,13 +36,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _gamesService.GetGame(id);
 
-                if (result.Result) {
+                if (result.Success) {
                     
                     return Ok(result.Game);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -64,13 +64,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _gamesService.GetGames(fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Games);
 
                 } else {
 
-                    return BadRequest("Issue Getting Games");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -92,13 +92,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _gamesService.DeleteGame(id);
 
-                if (result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Issue Deleting Game");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -120,19 +120,19 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 if (id != updateGameRO.GameId) {
 
-                    return BadRequest();
+                    return BadRequest("Id is incorrect");
                 }
 
                 var result = 
                     await _gamesService.UpdateGame(id, updateGameRO);
                 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Issue Updating Game");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -153,7 +153,7 @@ namespace SudokuCollective.WebApi.Controllers {
             
                 var result = await _gamesService.CreateGame(createGameRO);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return CreatedAtAction(
                         "GetUser",
@@ -163,7 +163,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 } else {
 
-                    return BadRequest("Issue Creating Game");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -185,13 +185,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _gamesService.CheckGame(id, updateGameRO);
 
-                if (result.Result) {
+                if (result.Success) {
                     
                     return Ok(result.Game);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -214,13 +214,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _gamesService.GetMyGame(getMyGameRO.UserId, id, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Game);
 
                 } else {
 
-                    return NotFound();
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -242,13 +242,13 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 var result = await _gamesService.GetMyGames(getMyGameRO.UserId, fullRecord);
 
-                if (result.Result) {
+                if (result.Success) {
 
                     return Ok(result.Games);
 
                 } else {
 
-                    return BadRequest("Issue Getting Your Games");
+                    return NotFound(result.Message);
                 }
 
             } else {
@@ -272,13 +272,13 @@ namespace SudokuCollective.WebApi.Controllers {
                     getMyGameRO.UserId, 
                     id);
 
-                if (result) {
+                if (result.Success) {
                     
                     return Ok();
 
                 } else {
 
-                    return BadRequest("Issue Deleting Your Game");
+                    return NotFound(result.Message);
                 }
 
             } else {

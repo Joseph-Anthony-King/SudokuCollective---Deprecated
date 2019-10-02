@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SudokuCollective.WebApi.Migrations
 {
-    public partial class Initiatedatabaseef3_0 : Migration
+    public partial class Initiatedatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,7 +20,8 @@ namespace SudokuCollective.WebApi.Migrations
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
                     DevUrl = table.Column<string>(nullable: true),
-                    LiveUrl = table.Column<string>(nullable: true)
+                    LiveUrl = table.Column<string>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,6 +35,7 @@ namespace SudokuCollective.WebApi.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
+                    DisplayName = table.Column<string>(nullable: true),
                     DifficultyLevel = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -81,7 +83,8 @@ namespace SudokuCollective.WebApi.Migrations
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(nullable: false),
-                    Password = table.Column<string>(nullable: false)
+                    Password = table.Column<string>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
