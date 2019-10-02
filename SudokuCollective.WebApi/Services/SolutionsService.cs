@@ -191,19 +191,16 @@ namespace SudokuCollective.WebApi.Services {
 
                         var possibleSolution = true;
 
-                        for (var i = 0; i < intList.Count - 1; i++)
-                        {
+                        for (var i = 0; i < intList.Count - 1; i++) {
 
-                            if (intList[i] != 0 && intList[i] != solution.SolutionList[i])
-                            {
+                            if (intList[i] != 0 && intList[i] != solution.SolutionList[i]) {
 
                                 possibleSolution = false;
                                 break;
                             }
                         }
 
-                        if (possibleSolution)
-                        {
+                        if (possibleSolution) {
 
                             solutionInDB = possibleSolution;
                             solutionTaskResult.Result = true;
@@ -253,6 +250,66 @@ namespace SudokuCollective.WebApi.Services {
 
                 return solutionTaskResult;
             }
+        }        
+
+        public async Task<SolutionTaskResult> Generate() {
+
+            var solutionTaskResult = new SolutionTaskResult() {
+
+                Result = false,
+                Solution = new SudokuSolution() {
+
+                    Id = 0,
+                    SolutionList = new List<int>(),
+                    Game = new Game() {
+
+                        Id = 0,
+                        UserId = 0,
+                        SudokuMatrixId = 0
+                    }
+                }
+            };
+            
+            var continueLoop = true;
+
+            do {
+
+                var matrix = new SudokuMatrix();
+
+                matrix.GenerateSolution();
+
+                var solutions = await _context.SudokuSolutions
+                    .ToListAsync();
+
+                var matrixNotInDB = true;
+
+                foreach (var solution in solutions) {
+
+                    if (solution.SolutionList.Count > 0) {
+
+                        if (solution.ToString().Equals(matrix)) {
+                            
+                            matrixNotInDB = false;
+                        }
+                    }
+                }
+
+                if (matrixNotInDB) {
+
+                    solutionTaskResult.Solution = new SudokuSolution(
+                        matrix.ToInt32List());
+
+                    continueLoop = false;
+                }
+
+            } while (continueLoop);
+
+            _context.SudokuSolutions.Add(solutionTaskResult.Solution);
+            await _context.SaveChangesAsync();
+
+            solutionTaskResult.Result = true;
+
+            return solutionTaskResult;
         }
     }
 }

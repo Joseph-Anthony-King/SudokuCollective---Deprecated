@@ -9,5 +9,6 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
         Task<SolutionTaskResult> GetSolution(int id, bool fullRecord = true);
         Task<SolutionListTaskResult> GetSolutions(bool fullRecord = true);
         Task<SolutionTaskResult> Solve(SolveRequestsRO solveRequestsRO);
+        Task<SolutionTaskResult> Generate();
     }
 }

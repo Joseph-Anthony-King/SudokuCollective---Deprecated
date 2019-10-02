@@ -107,5 +107,32 @@ namespace SudokuCollective.WebApi.Controllers {
                 return BadRequest("Invalid Request on this License");
             }
         }
+
+        // GET: api/solutions/generate
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPost, Route("Generate")]
+        public async Task<ActionResult<SudokuSolution>> Generate(
+            [FromBody] SolveRequestsRO solveRequestsRO) {
+                
+            if (await _appsService.IsRequestValidOnThisLicense(
+                solveRequestsRO.License, 
+                solveRequestsRO.RequestorId)) {
+
+                var result = await _solutionService.Generate();
+
+                if (result.Result) {
+
+                    return Ok(result.Solution);
+
+                } else {
+
+                    return BadRequest("Issue Generating Solution");
+                }
+
+            } else {
+
+                return BadRequest("Invalid Request on this License");
+            }
+        }
     }
 }
