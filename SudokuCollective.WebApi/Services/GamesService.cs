@@ -60,7 +60,7 @@ namespace SudokuCollective.WebApi.Services {
                     .ToListAsync();
 
                 var userApps = await _context.UsersApps
-                    .Where(ua => ua.AppId == app.App.Id)
+                    .Where(ua => ua.UserId == userResult.User.Id)
                     .ToListAsync();
 
                 _context.Games.Update(game);
@@ -82,7 +82,7 @@ namespace SudokuCollective.WebApi.Services {
 
             } catch (Exception e) {
 
-                gameTaskResult.Message = e.Message;
+                gameTaskResult.Message = e.Message + "\n\n" + e.StackTrace;
 
                 return gameTaskResult;
             }
