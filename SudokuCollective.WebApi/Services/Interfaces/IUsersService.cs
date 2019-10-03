@@ -12,7 +12,7 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
 
         Task<UserTaskResult> GetUser(int id, bool fullRecord = true);
         Task<UserListTaskResult> GetUsers(bool fullRecord = true);
-        Task<UserTaskResult> CreateUser(RegisterRO registerRO);
+        Task<UserTaskResult> CreateUser(RegisterRO registerRO, bool addAdmin = false);
         Task<UserTaskResult> UpdateUser(int id, UpdateUserRO updateUserRO);
         Task<BaseTaskResult> UpdatePassword(int id, UpdatePasswordRO updatePasswordRO);
         Task<BaseTaskResult> DeleteUser(int id);

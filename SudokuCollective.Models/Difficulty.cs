@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using SudokuCollective.Models.Enums;
+using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class Difficulty {
+    public class Difficulty: ISudokuOject {
 
         public int Id { get; set; }
         public string Name { get; set; }

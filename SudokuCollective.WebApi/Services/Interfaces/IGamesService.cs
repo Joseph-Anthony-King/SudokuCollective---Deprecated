@@ -7,7 +7,7 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IGamesService {
 
-        Task<GameTaskResult> CreateGame(CreateGameRO createGameRO);
+        Task<GameTaskResult> CreateGame(CreateGameRO createGameRO, bool fullRecord = true);
         Task<GameTaskResult> UpdateGame(int id, UpdateGameRO updateGameRO);
         Task<BaseTaskResult> DeleteGame(int id);
         Task<GameTaskResult> GetGame(int id);

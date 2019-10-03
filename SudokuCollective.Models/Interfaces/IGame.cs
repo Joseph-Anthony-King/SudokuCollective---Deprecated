@@ -4,7 +4,6 @@ namespace SudokuCollective.Models.Interfaces {
 
     public interface IGame {
 
-        int Id { get; set; }
         DateTime DateCreated { get; set; }
         DateTime DateCompleted { get; set; }
         User User { get; set; }

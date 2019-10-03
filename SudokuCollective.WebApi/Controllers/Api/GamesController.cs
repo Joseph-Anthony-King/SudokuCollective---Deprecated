@@ -145,13 +145,14 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(
-            [FromBody] CreateGameRO createGameRO) {
+            [FromBody] CreateGameRO createGameRO,
+            [FromQuery] bool fullRecord = true) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 createGameRO.License,
                 createGameRO.RequestorId)) {
             
-                var result = await _gamesService.CreateGame(createGameRO);
+                var result = await _gamesService.CreateGame(createGameRO, fullRecord);
 
                 if (result.Success) {
 

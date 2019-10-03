@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
+using SudokuCollective.Models.Interfaces;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
@@ -32,7 +33,8 @@ namespace SudokuCollective.WebApi.Services {
             _appsService = appsService;
         }
 
-        public async Task<GameTaskResult> CreateGame(CreateGameRO createGameRO) {
+        public async Task<GameTaskResult> CreateGame(
+            CreateGameRO createGameRO, bool fullRecord = true) {
 
             var gameTaskResult = new GameTaskResult();
 
@@ -51,7 +53,8 @@ namespace SudokuCollective.WebApi.Services {
                     difficulty = difficultyResult.Difficulty;
 
                     var userApps = user.Apps;
-                    var userRoles = user.Roles;                  
+                    var userRoles = user.Roles;
+                    var userGames = user.Games;
 
                     SudokuMatrix matrix = new SudokuMatrix();
                     matrix.GenerateSolution();
@@ -59,39 +62,72 @@ namespace SudokuCollective.WebApi.Services {
                     var game = new Game(
                         user,
                         matrix,
-                        difficulty); 
+                        difficulty);
 
                     _context.ChangeTracker.TrackGraph(user, 
                         e => {
 
                             if (e.Entry.Entity is User) {
 
-                                e.Entry.State = EntityState.Modified;
+                                e.Entry.State = EntityState.Unchanged;
                                 
                             } else if (e.Entry.Entity is Difficulty) {
 
-                                e.Entry.State = EntityState.Modified;
-                                
+                                e.Entry.State = EntityState.Unchanged;
+
                             } else {
 
-                                e.Entry.State = EntityState.Added;
+                                var dbEntry = (ISudokuOject)e.Entry.Entity;
+
+                                if (dbEntry.Id != 0) {
+
+                                    e.Entry.State = EntityState.Modified;
+
+                                } else {
+
+                                    e.Entry.State = EntityState.Added;
+                                }
                             }
                         });
 
                     foreach (var userApp in userApps) {
-                        
+
                         _context.Entry<UserApp>(userApp).State = EntityState.Unchanged;
                     }
 
                     foreach (var userRole in userRoles) {
-                        
+
                         _context.Entry<UserRole>(userRole).State = EntityState.Unchanged;
-                    } 
-                        
+                    }
+
+                    foreach (var userGame in userGames) {
+
+                        if (userGame.Id != 0) {
+
+                            _context.Entry<Game>(userGame).State = EntityState.Unchanged;
+
+                        } else {
+
+                            _context.Entry<Game>(userGame).State = EntityState.Added;
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
 
                     gameTaskResult.Success = true;
-                    gameTaskResult.Game = game;
+
+                    if (fullRecord) {
+
+                        gameTaskResult.Game = game;
+
+                    } else {
+
+                        game.User.Games = null;
+                        game.User.Roles = null;
+                        game.User.Apps = null;
+                        game.SudokuMatrix.Difficulty.Matrices = null;
+                        gameTaskResult.Game = game;
+                    }
 
                 } else {
 
@@ -136,6 +172,21 @@ namespace SudokuCollective.WebApi.Services {
 
                         _context.SudokuCells.Update(cell);
                     }
+
+                    _context.ChangeTracker.TrackGraph(game,
+                        e => {
+
+                            var dbEntry = (ISudokuOject)e.Entry.Entity;
+
+                            if (dbEntry.Id != 0) {
+
+                                e.Entry.State = EntityState.Modified;
+
+                            } else {
+
+                                e.Entry.State = EntityState.Added;
+                            }
+                        });
 
                     await _context.SaveChangesAsync();
 

@@ -4,7 +4,6 @@ namespace SudokuCollective.Models.Interfaces {
 
     public interface ISudokuSolution {
 
-        int Id { get; set; }
         List<int> SolutionList { get; }
         List<int> FirstRow { get; }
         List<int> SecondRow { get; }

@@ -208,7 +208,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<UserTaskResult> CreateUser(RegisterRO registerRO) {
+        public async Task<UserTaskResult> CreateUser(
+            RegisterRO registerRO,
+            bool addAdmin = false) {
 
             var createdDate = DateTime.UtcNow;
             var user = new User();
@@ -264,6 +266,24 @@ namespace SudokuCollective.WebApi.Services {
 
                         _context.UsersRoles.Add(newUserRole);
                         await _context.SaveChangesAsync();
+
+                        if (addAdmin) {
+
+                            var adminRole = await _context.Roles
+                                .FirstOrDefaultAsync(
+                                    predicate: p => p.Id == 3);
+
+                            UserRole newAdminRole = new UserRole {
+
+                                UserId = user.Id,
+                                User = user,
+                                RoleId = adminRole.Id,
+                                Role = adminRole
+                            };
+
+                            _context.UsersRoles.Add(newAdminRole);
+                            await _context.SaveChangesAsync();
+                        }
 
                         UserApp newUserApp = new UserApp {
 

@@ -6,7 +6,7 @@ using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class SudokuSolution : ISudokuSolution {
+    public class SudokuSolution : ISudokuSolution, ISudokuOject {
 
         public int Id { get; set; }
         public List<int> SolutionList { get; set; }

@@ -5,7 +5,7 @@ using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class App : IApp {
+    public class App : IApp, ISudokuOject {
 
         public int Id { get; set; }
         public string Name { get; set; }

@@ -5,7 +5,6 @@ namespace SudokuCollective.Models.Interfaces {
 
     public interface ISudokuCell {
         
-        int Id { get; set; }
         int Index { get; set; }
         int Column { get; set; }
         int Region { get; set; }

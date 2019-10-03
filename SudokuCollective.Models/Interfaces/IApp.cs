@@ -5,7 +5,6 @@ namespace SudokuCollective.Models.Interfaces {
 
     public interface IApp {
 
-        int Id { get; set; }
         string Name { get; set; }
         string License { get; set; }
         int OwnerId { get; set; }

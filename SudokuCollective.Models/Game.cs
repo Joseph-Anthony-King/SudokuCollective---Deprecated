@@ -4,7 +4,7 @@ using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class Game : IGame {
+    public class Game : IGame, ISudokuOject {
 
         public int Id { get; set; }
         public DateTime DateCreated { get; set; }
@@ -19,6 +19,7 @@ namespace SudokuCollective.Models {
 
         public Game() {
 
+            Id = 0;
             DateCreated = DateTime.UtcNow;
             ContinueGame = true;
             SudokuSolution = new SudokuSolution();
@@ -29,8 +30,9 @@ namespace SudokuCollective.Models {
             SudokuMatrix matrix, 
             Difficulty difficulty) : this() {
 
-            SudokuMatrix = matrix;
+            Id = 0;
             User = user;
+            SudokuMatrix = matrix;
             SudokuMatrix.Difficulty = difficulty;
             SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
 

@@ -20,9 +20,11 @@ namespace SudokuCollective.WebApi.Controllers {
         
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<User>> SignUp([FromBody] RegisterRO registerRO) {
+        public async Task<ActionResult<User>> SignUp(
+            [FromBody] RegisterRO registerRO,
+            [FromQuery] bool addAdmin = false) {
             
-            var result = await _usersService.CreateUser(registerRO);
+            var result = await _usersService.CreateUser(registerRO, addAdmin);
 
             if (result.Success) {
 

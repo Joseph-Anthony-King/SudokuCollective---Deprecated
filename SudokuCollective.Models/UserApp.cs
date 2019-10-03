@@ -1,8 +1,9 @@
 using Newtonsoft.Json;
+using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class UserApp {
+    public class UserApp : ISudokuOject {
 
         public int Id { get; set; }
 

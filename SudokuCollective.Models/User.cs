@@ -6,7 +6,7 @@ using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class User : IUser {
+    public class User : IUser, ISudokuOject {
 
         private string _userName;
 
