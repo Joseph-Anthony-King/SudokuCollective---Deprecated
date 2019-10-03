@@ -138,7 +138,7 @@ namespace SudokuCollective.WebApi.Services {
 
             } catch (Exception e) {
 
-                gameTaskResult.Message = e.Message + "\n\n" + e.StackTrace;
+                gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
             }
@@ -501,6 +501,21 @@ namespace SudokuCollective.WebApi.Services {
 
                     _context.SudokuCells.Update(cell);
                 }
+
+                _context.ChangeTracker.TrackGraph(game,
+                    e => {
+
+                        var dbEntry = (ISudokuOject)e.Entry.Entity;
+
+                        if (dbEntry.Id != 0) {
+
+                            e.Entry.State = EntityState.Modified;
+
+                        } else {
+
+                            e.Entry.State = EntityState.Added;
+                        }
+                    });
 
                 await _context.SaveChangesAsync();
 
