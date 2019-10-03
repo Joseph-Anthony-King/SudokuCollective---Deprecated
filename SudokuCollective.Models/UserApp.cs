@@ -4,6 +4,8 @@ namespace SudokuCollective.Models {
 
     public class UserApp {
 
+        public int Id { get; set; }
+
         public int UserId { get; set; }
         public User User { get; set; }
 
@@ -12,6 +14,7 @@ namespace SudokuCollective.Models {
 
         public UserApp() {
 
+            Id = 0;
             UserId = 0;
             User = null;
             AppId = 0;
@@ -19,8 +22,12 @@ namespace SudokuCollective.Models {
         }
 
         [JsonConstructor]
-        public UserApp(int userId, int appId) : this() {
+        public UserApp(
+            int id, 
+            int userId, 
+            int appId) : this() {
 
+            Id = id;
             UserId = userId;
             AppId = appId;
         }

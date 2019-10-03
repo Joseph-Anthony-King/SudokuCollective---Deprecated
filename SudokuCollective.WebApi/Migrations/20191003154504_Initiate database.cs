@@ -114,12 +114,14 @@ namespace SudokuCollective.WebApi.Migrations
                 name: "UsersApps",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(nullable: false),
                     AppId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersApps", x => new { x.UserId, x.AppId });
+                    table.PrimaryKey("PK_UsersApps", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UsersApps_Apps_AppId",
                         column: x => x.AppId,
@@ -138,12 +140,14 @@ namespace SudokuCollective.WebApi.Migrations
                 name: "UsersRoles",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_UsersRoles", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UsersRoles_Roles_RoleId",
                         column: x => x.RoleId,
@@ -265,9 +269,19 @@ namespace SudokuCollective.WebApi.Migrations
                 column: "AppId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UsersApps_UserId",
+                table: "UsersApps",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UsersRoles_RoleId",
                 table: "UsersRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersRoles_UserId",
+                table: "UsersRoles",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

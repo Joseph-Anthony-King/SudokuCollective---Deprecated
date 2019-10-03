@@ -180,7 +180,7 @@ namespace SudokuCollective.WebApi.Models.DataModel {
                 .IsRequired();
 
             modelBuilder.Entity<UserRole>()
-                .HasKey(ur => new { ur.UserId, ur.RoleId});
+                .HasKey(ur => ur.Id);
 
             modelBuilder.Entity<UserRole>()
                 .HasOne(ur => ur.User)
@@ -214,7 +214,7 @@ namespace SudokuCollective.WebApi.Models.DataModel {
                 .HasKey(app => app.Id);
 
             modelBuilder.Entity<UserApp>()
-                .HasKey(ua => new { ua.UserId, ua.AppId});
+                .HasKey(ua => ua.Id);
 
             modelBuilder.Entity<UserApp>()
                 .HasOne(ua => ua.User)

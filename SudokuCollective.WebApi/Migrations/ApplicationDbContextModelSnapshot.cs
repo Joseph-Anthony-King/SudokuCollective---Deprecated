@@ -254,30 +254,44 @@ namespace SudokuCollective.WebApi.Migrations
 
             modelBuilder.Entity("SudokuCollective.Models.UserApp", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("AppId")
                         .HasColumnType("integer");
 
-                    b.HasKey("UserId", "AppId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("AppId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UsersApps");
                 });
 
             modelBuilder.Entity("SudokuCollective.Models.UserRole", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
-                    b.HasKey("UserId", "RoleId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UsersRoles");
                 });

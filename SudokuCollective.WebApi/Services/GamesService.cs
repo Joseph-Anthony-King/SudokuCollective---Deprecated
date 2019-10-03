@@ -38,45 +38,65 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
+                User user;
+                Difficulty difficulty;
+
                 var userResult = await _userService.GetUser(createGameRO.UserId);
                 var difficultyResult =
                     await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
-                var app = await _appsService.GetAppByLicense(createGameRO.License);
 
-                SudokuMatrix matrix = new SudokuMatrix();
-                matrix.GenerateSolution();
+                if (userResult.Success && difficultyResult.Success) {
 
-                var game = new Game(
-                    userResult.User,
-                    matrix,
-                    difficultyResult.Difficulty);
+                    user = userResult.User;
+                    difficulty = difficultyResult.Difficulty;
 
-                var userRoles = await _context.UsersRoles
-                    .Where(ur => ur.UserId == userResult.User.Id)
-                    .ToListAsync();
+                    var userApps = user.Apps;
+                    var userRoles = user.Roles;                  
 
-                var userGames = await _context.Games
-                    .Where(g => g.UserId == userResult.User.Id)
-                    .ToListAsync();
+                    SudokuMatrix matrix = new SudokuMatrix();
+                    matrix.GenerateSolution();
 
-                var userApps = await _context.UsersApps
-                    .Where(ua => ua.UserId == userResult.User.Id)
-                    .ToListAsync();
+                    var game = new Game(
+                        user,
+                        matrix,
+                        difficulty); 
 
-                _context.Games.Update(game);
-                await _context.SaveChangesAsync();
+                    _context.ChangeTracker.TrackGraph(user, 
+                        e => {
 
-                _context.UsersRoles.AddRange(userRoles);
-                await _context.SaveChangesAsync();
+                            if (e.Entry.Entity is User) {
 
-                _context.Games.UpdateRange(userGames);
-                await _context.SaveChangesAsync();
+                                e.Entry.State = EntityState.Modified;
+                                
+                            } else if (e.Entry.Entity is Difficulty) {
 
-                _context.UsersApps.AddRange(userApps);
-                await _context.SaveChangesAsync();
+                                e.Entry.State = EntityState.Modified;
+                                
+                            } else {
 
-                gameTaskResult.Success = true;
-                gameTaskResult.Game = game;
+                                e.Entry.State = EntityState.Added;
+                            }
+                        });
+
+                    foreach (var userApp in userApps) {
+                        
+                        _context.Entry<UserApp>(userApp).State = EntityState.Unchanged;
+                    }
+
+                    foreach (var userRole in userRoles) {
+                        
+                        _context.Entry<UserRole>(userRole).State = EntityState.Unchanged;
+                    } 
+                        
+                    await _context.SaveChangesAsync();
+
+                    gameTaskResult.Success = true;
+                    gameTaskResult.Game = game;
+
+                } else {
+
+                    gameTaskResult.Message = "Could not find the user or difficulty in the database";
+                }
 
                 return gameTaskResult;
 

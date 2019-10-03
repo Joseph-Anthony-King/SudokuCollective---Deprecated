@@ -4,6 +4,8 @@ namespace SudokuCollective.Models {
 
     public class UserRole {
 
+        public int Id { get; set; }
+
         public int UserId { get; set; }
         public User User { get; set; }
 
@@ -19,8 +21,12 @@ namespace SudokuCollective.Models {
         }
 
         [JsonConstructor]
-        public UserRole(int userId, int roleId) : this() {
+        public UserRole(
+            int id, 
+            int userId, 
+            int roleId) : this() {
 
+            Id = id;
             UserId = userId;
             RoleId = roleId;
         }
