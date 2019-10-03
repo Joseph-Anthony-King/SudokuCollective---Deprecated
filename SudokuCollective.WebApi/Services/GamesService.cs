@@ -72,11 +72,11 @@ namespace SudokuCollective.WebApi.Services {
                 _context.Games.UpdateRange(userGames);
                 await _context.SaveChangesAsync();
 
-                gameTaskResult.Success = true;
-                gameTaskResult.Game = game;
-
                 _context.UsersApps.AddRange(userApps);
                 await _context.SaveChangesAsync();
+
+                gameTaskResult.Success = true;
+                gameTaskResult.Game = game;
 
                 return gameTaskResult;
 
