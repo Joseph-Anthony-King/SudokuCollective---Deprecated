@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SudokuCollective.Models;
+using SudokuCollective.WebApi.Models;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
 using SudokuCollective.WebApi.Models.TaskModels;
@@ -11,7 +12,7 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
     public interface IUsersService {
 
         Task<UserTaskResult> GetUser(int id, bool fullRecord = true);
-        Task<UserListTaskResult> GetUsers(bool fullRecord = true);
+        Task<UserListTaskResult> GetUsers(PageListModel pageListModel, bool fullRecord = true);
         Task<UserTaskResult> CreateUser(RegisterRO registerRO, bool addAdmin = false);
         Task<UserTaskResult> UpdateUser(int id, UpdateUserRO updateUserRO);
         Task<BaseTaskResult> UpdatePassword(int id, UpdatePasswordRO updatePasswordRO);

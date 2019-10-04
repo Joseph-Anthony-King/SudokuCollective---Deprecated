@@ -65,7 +65,7 @@ namespace SudokuCollective.WebApi.Controllers {
                 baseRequestRO.License, 
                 baseRequestRO.RequestorId)) {
 
-                var result = await _userService.GetUsers(fullRecord);
+                var result = await _userService.GetUsers(baseRequestRO.PageListModel, fullRecord);
 
                 if (result.Success) {
 

@@ -4,7 +4,7 @@ using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class Game : IGame, ISudokuOject {
+    public class Game : IGame, IDBEntry {
 
         public int Id { get; set; }
         public DateTime DateCreated { get; set; }

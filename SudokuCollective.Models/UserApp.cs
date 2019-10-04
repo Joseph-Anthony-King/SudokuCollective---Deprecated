@@ -3,7 +3,7 @@ using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class UserApp : ISudokuOject {
+    public class UserApp : IDBEntry {
 
         public int Id { get; set; }
 

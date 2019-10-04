@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
 using SudokuCollective.Models.Enums;
 using SudokuCollective.WebApi.Helpers;
+using SudokuCollective.WebApi.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
@@ -115,7 +116,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<UserListTaskResult> GetUsers(bool fullRecord = true) {
+        public async Task<UserListTaskResult> GetUsers(
+            PageListModel pageListModel, 
+            bool fullRecord = true) {
 
             var users = new List<User>();
 
@@ -123,14 +126,9 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                if (fullRecord) {
+                users = await RetrieveUsers(pageListModel);
 
-                    users = await _context.Users
-                        .OrderBy(u => u.Id)
-                        .Include(u => u.Games)
-                        .Include(u => u.Roles)
-                        .Include(u => u.Apps)
-                        .ToListAsync();
+                if (fullRecord) {
 
                     foreach (var user in users) {
 
@@ -172,11 +170,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 } else {
 
-                    users = await _context.Users
-                        .OrderBy(u => u.Id)
-                        .Include(u => u.Roles)
-                        .Include(u => u.Apps)
-                        .ToListAsync();
+                    users = await RetrieveUsers(pageListModel);
 
                     foreach (var user in users) {
 
@@ -709,6 +703,173 @@ namespace SudokuCollective.WebApi.Services {
                 user.Id == 0) {
 
                 result = false;
+            }
+
+            return result;
+        }
+
+        private async Task<List<User>> RetrieveUsers(PageListModel pageListModel) {
+
+            var result = new List<User>();
+
+            if (pageListModel == null) {
+
+                result = await _context.Users
+                    .OrderBy(u => u.Id)
+                    .Include(u => u.Games)
+                    .Include(u => u.Roles)
+                    .Include(u => u.Apps)
+                    .ToListAsync();
+
+            } else if (pageListModel.SortBy == SortValue.ID) {
+
+                if (pageListModel.OrderByDescending) {
+
+                    result = await _context.Users
+                        .OrderByDescending(u => u.Id)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+
+                } else {
+
+                    result = await _context.Users
+                        .OrderBy(u => u.Id)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+                }
+
+            } else if (pageListModel.SortBy == SortValue.FIRSTNAME) {
+
+                if (pageListModel.OrderByDescending) {
+
+                    result = await _context.Users
+                        .OrderByDescending(u => u.FirstName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+
+                } else {
+
+                    result = await _context.Users
+                        .OrderBy(u => u.FirstName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+                }
+
+            } else if (pageListModel.SortBy == SortValue.LASTNAME) {
+
+                if (pageListModel.OrderByDescending) {
+
+                    result = await _context.Users
+                        .OrderByDescending(u => u.LastName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+
+                } else {
+
+                    result = await _context.Users
+                        .OrderBy(u => u.LastName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+                }
+
+            } else if (pageListModel.SortBy == SortValue.FULLNAME) {
+
+                if (pageListModel.OrderByDescending) {
+
+                    result = await _context.Users
+                        .OrderByDescending(u => u.FullName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+
+                } else {
+
+                    result = await _context.Users
+                        .OrderBy(u => u.FullName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+                }
+
+            } else if (pageListModel.SortBy == SortValue.NICKNAME) {
+
+                if (pageListModel.OrderByDescending) {
+
+                    result = await _context.Users
+                        .OrderByDescending(u => u.NickName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+
+                } else {
+
+                    result = await _context.Users
+                        .OrderBy(u => u.NickName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+                }
+
+            } else {
+
+                if (pageListModel.OrderByDescending) {
+
+                    result = await _context.Users
+                        .OrderByDescending(u => u.DateCreated)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+
+                } else {
+
+                    result = await _context.Users
+                        .OrderBy(u => u.DateCreated)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+                }
             }
 
             return result;

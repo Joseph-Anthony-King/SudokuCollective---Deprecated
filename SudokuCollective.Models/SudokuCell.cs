@@ -6,7 +6,7 @@ using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class SudokuCell : ISudokuCell, ISudokuOject {
+    public class SudokuCell : ISudokuCell, IDBEntry {
 
         private int _value;
         private int _displayValue;

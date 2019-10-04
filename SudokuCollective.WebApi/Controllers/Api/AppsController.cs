@@ -90,7 +90,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 baseRequestRO.License, 
                 baseRequestRO.RequestorId)) {
                 
-                var result = await _appsService.GetApps();
+                var result = await _appsService
+                    .GetApps(baseRequestRO.PageListModel, fullRecord);
 
                 if (result.Success) {
 

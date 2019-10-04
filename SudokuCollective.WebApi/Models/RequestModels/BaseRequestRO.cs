@@ -4,5 +4,6 @@ namespace SudokuCollective.WebApi.Models.RequestModels {
 
         public string License { get; set; }
         public int RequestorId { get; set; }
+        public PageListModel PageListModel { get; set; }
     }
 }

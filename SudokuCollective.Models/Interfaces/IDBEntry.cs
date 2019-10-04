@@ -1,6 +1,6 @@
 ﻿namespace SudokuCollective.Models.Interfaces {
 
-    public interface ISudokuOject {
+    public interface IDBEntry {
 
         int Id { get; set; }
     }

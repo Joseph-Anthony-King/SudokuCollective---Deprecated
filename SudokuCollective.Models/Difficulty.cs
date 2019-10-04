@@ -5,7 +5,7 @@ using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Models {
 
-    public class Difficulty: ISudokuOject {
+    public class Difficulty: IDBEntry {
 
         public int Id { get; set; }
         public string Name { get; set; }
