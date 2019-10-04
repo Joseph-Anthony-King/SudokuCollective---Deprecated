@@ -10,7 +10,7 @@ namespace SudokuCollective.WebApi.Models.DataModel {
 
     public class ApplicationDbContext : DbContext {
         
-        private IConfiguration configuration;
+        private readonly IConfiguration configuration;
 
         public ApplicationDbContext(
                 DbContextOptions<ApplicationDbContext> options,
