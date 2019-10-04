@@ -8,13 +8,13 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IGamesService {
 
-        Task<GameTaskResult> CreateGame(CreateGameRO createGameRO, bool fullRecord = true);
+        Task<GameTaskResult> CreateGame(CreateGameRO createGameRO, bool fullRecord = false);
         Task<GameTaskResult> UpdateGame(int id, UpdateGameRO updateGameRO);
         Task<BaseTaskResult> DeleteGame(int id);
         Task<GameTaskResult> GetGame(int id);
-        Task<GameListTaskResult> GetGames(BaseRequestRO baseRequestRO, bool fullRecord = true);
-        Task<GameTaskResult> GetMyGame(int userId, int gameId, bool fullRecord = true);
-        Task<GameListTaskResult> GetMyGames(int userId, GetMyGameRO getMyGameRO, bool fullRecord = true);
+        Task<GameListTaskResult> GetGames(BaseRequestRO baseRequestRO, bool fullRecord = false);
+        Task<GameTaskResult> GetMyGame(int userId, int gameId, bool fullRecord = false);
+        Task<GameListTaskResult> GetMyGames(int userId, GetMyGameRO getMyGameRO, bool fullRecord = false);
         Task<BaseTaskResult> DeleteMyGame(int userId, int gameId);
         Task<GameTaskResult> CheckGame(int id, UpdateGameRO checkGameRO);
     }

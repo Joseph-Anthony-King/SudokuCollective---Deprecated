@@ -23,7 +23,7 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<DifficultyTaskResult> GetDifficulty(
-            int id, bool fullRecord = true) {
+            int id, bool fullRecord = false) {
 
             var difficultyTaskResult = new DifficultyTaskResult();
 
@@ -89,7 +89,7 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<DifficultyListTaskResult> GetDifficulties(
-            bool fullRecord = true) {
+            bool fullRecord = false) {
 
             var difficultyListTaskResult = new DifficultyListTaskResult();
 

@@ -26,7 +26,7 @@ namespace SudokuCollective.WebApi.Services {
             _context = context;
         }
 
-        public async Task<AppTaskResult> GetApp(int id, bool fullRecord = true) {
+        public async Task<AppTaskResult> GetApp(int id, bool fullRecord = false) {
 
             var createdDate = DateTime.UtcNow;
 
@@ -105,7 +105,7 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<AppListTaskResult> GetApps(
             PageListModel pageListModel, 
-            bool fullRecord = true) {
+            bool fullRecord = false) {
 
             var appListTaskResult = new AppListTaskResult();
 
@@ -257,7 +257,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
         
-        public async Task<AppTaskResult> GetAppByLicense(string license, bool fullRecord = true) {
+        public async Task<AppTaskResult> GetAppByLicense(string license, bool fullRecord = false) {
 
             var appTaskResult = new AppTaskResult();
 
@@ -361,7 +361,7 @@ namespace SudokuCollective.WebApi.Services {
         
         public async Task<UserListTaskResult> GetAppUsers(
             BaseRequestRO baseRequestRO, 
-            bool fullRecord = true) {
+            bool fullRecord = false) {
 
             return await AppsServiceUtilities
                 .RetrieveUsers(baseRequestRO, fullRecord, _context);

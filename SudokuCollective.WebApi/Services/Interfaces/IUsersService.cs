@@ -11,8 +11,8 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IUsersService {
 
-        Task<UserTaskResult> GetUser(int id, bool fullRecord = true);
-        Task<UserListTaskResult> GetUsers(PageListModel pageListModel, bool fullRecord = true);
+        Task<UserTaskResult> GetUser(int id, bool fullRecord = false);
+        Task<UserListTaskResult> GetUsers(PageListModel pageListModel, bool fullRecord = false);
         Task<UserTaskResult> CreateUser(RegisterRO registerRO, bool addAdmin = false);
         Task<UserTaskResult> UpdateUser(int id, UpdateUserRO updateUserRO);
         Task<BaseTaskResult> UpdatePassword(int id, UpdatePasswordRO updatePasswordRO);

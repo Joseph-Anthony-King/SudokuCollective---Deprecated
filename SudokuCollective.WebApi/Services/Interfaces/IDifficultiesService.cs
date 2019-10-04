@@ -8,8 +8,8 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IDifficultiesService {
 
-        Task<DifficultyTaskResult> GetDifficulty(int id, bool fullRecord = true);
-        Task<DifficultyListTaskResult> GetDifficulties(bool fullRecord = true);
+        Task<DifficultyTaskResult> GetDifficulty(int id, bool fullRecord = false);
+        Task<DifficultyListTaskResult> GetDifficulties(bool fullRecord = false);
         Task<DifficultyTaskResult> CreateDifficulty(string name, DifficultyLevel difficultyLevel);
         Task<BaseTaskResult> UpdateDifficulty(int id, UpdateDifficultyRO updateDifficultyRO);
         Task<BaseTaskResult> DeleteDifficulty(int id);

@@ -8,8 +8,8 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IRolesService {
 
-        Task<RoleTaskResult> GetRole(int id, bool fullRecord = true);
-        Task<RoleListTaskResult> GetRoles(bool fullRecord = true);
+        Task<RoleTaskResult> GetRole(int id, bool fullRecord = false);
+        Task<RoleListTaskResult> GetRoles(bool fullRecord = false);
         Task<RoleTaskResult> CreateRole(string name, RoleLevel roleLevel);
         Task<BaseTaskResult> UpdateRole(int id, UpdateRoleRO updateRoleRO);
         Task<BaseTaskResult> DeleteRole(int id);

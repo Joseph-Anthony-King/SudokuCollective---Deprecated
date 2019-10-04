@@ -56,7 +56,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
             [FromBody] BaseRequestRO baseRequestRO, 
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequestRO.License, 
@@ -146,7 +146,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(
             [FromBody] CreateGameRO createGameRO,
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 createGameRO.License,
@@ -207,7 +207,7 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<Game>> GetMyGame(
             int id,
             [FromBody] GetMyGameRO getMyGameRO, 
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 getMyGameRO.License, 
@@ -235,7 +235,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
             [FromBody] GetMyGameRO getMyGameRO,
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 getMyGameRO.License, 

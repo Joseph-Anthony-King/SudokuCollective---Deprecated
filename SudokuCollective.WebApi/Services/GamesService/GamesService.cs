@@ -33,7 +33,7 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<GameTaskResult> CreateGame(
-            CreateGameRO createGameRO, bool fullRecord = true) {
+            CreateGameRO createGameRO, bool fullRecord = false) {
 
             var gameTaskResult = new GameTaskResult();
 
@@ -287,7 +287,7 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<GameListTaskResult> GetGames(
-            BaseRequestRO baseRequestRO, bool fullRecord = true) {
+            BaseRequestRO baseRequestRO, bool fullRecord = false) {
 
             var gameListTaskResult = new GameListTaskResult();
 
@@ -325,7 +325,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameTaskResult> GetMyGame(int userId, int gameId, bool fullRecord = true) {
+        public async Task<GameTaskResult> GetMyGame(int userId, int gameId, bool fullRecord = false) {
 
             var gameTaskResult = new GameTaskResult();
 
@@ -385,7 +385,7 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<GameListTaskResult> GetMyGames(
             int userId,
             GetMyGameRO getMyGameRO, 
-            bool fullRecord = true) {
+            bool fullRecord = false) {
 
             var gameListTaskResult = new GameListTaskResult();
 

@@ -27,7 +27,7 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<App>> GetApp(
             int id,
             [FromBody] BaseRequestRO baseRequestRO,
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequestRO.License, 
@@ -55,7 +55,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet, Route("GetByLicense")]
         public async Task<ActionResult<App>> GetAppByLicense(
             [FromBody] BaseRequestRO baseRequestRO,
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequestRO.License, 
@@ -84,7 +84,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet]
         public async Task<ActionResult<IEnumerable<App>>> GetApps(
             [FromBody] BaseRequestRO baseRequestRO,
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequestRO.License, 
@@ -140,7 +140,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet, Route("GetUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
             [FromBody] BaseRequestRO baseRequest,
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 

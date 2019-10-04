@@ -24,7 +24,7 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<RoleTaskResult> GetRole(
-            int id, bool fullRecord = true) {
+            int id, bool fullRecord = false) {
 
             var roleTaskResult = new RoleTaskResult();
 
@@ -94,7 +94,7 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<RoleListTaskResult> GetRoles(
-            bool fullRecord = true) {
+            bool fullRecord = false) {
 
             var roleListTaskResult = new RoleListTaskResult();
 

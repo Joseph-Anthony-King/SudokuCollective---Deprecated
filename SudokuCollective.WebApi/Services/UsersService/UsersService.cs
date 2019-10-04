@@ -28,7 +28,7 @@ namespace SudokuCollective.WebApi.Services {
             _appsService = appsService;
         }
 
-        public async Task<UserTaskResult> GetUser(int id, bool fullRecord = true) {
+        public async Task<UserTaskResult> GetUser(int id, bool fullRecord = false) {
 
             var createdDate = DateTime.UtcNow;
             var user = new User();
@@ -118,7 +118,7 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<UserListTaskResult> GetUsers(
             PageListModel pageListModel, 
-            bool fullRecord = true) {
+            bool fullRecord = false) {
 
             var users = new List<User>();
 

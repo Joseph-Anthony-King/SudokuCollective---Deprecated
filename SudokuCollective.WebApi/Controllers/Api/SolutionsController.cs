@@ -30,7 +30,7 @@ namespace SudokuCollective.WebApi.Controllers {
         public async Task<ActionResult<SudokuSolution>> GetSolution(
             int id,
             [FromBody] BaseRequestRO baseRequestRO,
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequestRO.License, 
@@ -58,7 +58,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SudokuSolution>>>  GetSolutions(
             [FromBody] BaseRequestRO baseRequestRO,
-            [FromQuery] bool fullRecord = true) {
+            [FromQuery] bool fullRecord = false) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequestRO.License, 
