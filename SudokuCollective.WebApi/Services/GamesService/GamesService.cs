@@ -393,9 +393,8 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (fullRecord) {
 
-                    var allGames = await GamesServiceUtilities.RetrieveGames(getMyGameRO.PageListModel, _context);
-
-                    var games = allGames.Where(g => g.User.Id == userId);
+                    var games = await GamesServiceUtilities
+                        .RetrieveGames(getMyGameRO.PageListModel, _context, userId);
 
                     foreach (var game in games){
 
@@ -407,9 +406,8 @@ namespace SudokuCollective.WebApi.Services {
 
                 } else {
 
-                    var allGames = await GamesServiceUtilities.RetrieveGames(getMyGameRO.PageListModel, _context);
-
-                    var games = allGames.Where(g => g.User.Id == userId);
+                    var games = await GamesServiceUtilities
+                        .RetrieveGames(getMyGameRO.PageListModel, _context, userId);
 
                     gameListTaskResult.Success = true;
                     gameListTaskResult.Games = games;

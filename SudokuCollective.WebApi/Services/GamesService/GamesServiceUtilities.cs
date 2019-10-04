@@ -12,7 +12,9 @@ namespace SudokuCollective.WebApi.Services {
     internal static class GamesServiceUtilities {
 
         internal static async Task<List<Game>> RetrieveGames(
-            PageListModel pageListModel, ApplicationDbContext context) {
+            PageListModel pageListModel, 
+            ApplicationDbContext context,
+            int userId = 0) {
 
             var result = new List<Game>();
 
@@ -20,12 +22,25 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (pageListModel.IncludeCompletedGames) {
 
-                    result = await context.Games
-                        .OrderBy(g => g.Id)
-                        .Include(g => g.User).ThenInclude(u => u.Roles)
-                        .Include(g => g.SudokuMatrix)
-                        .Include(g => g.SudokuSolution)
-                        .ToListAsync();
+                    if (userId == 0) {
+
+                        result = await context.Games
+                            .OrderBy(g => g.Id)
+                            .Include(g => g.User).ThenInclude(u => u.Roles)
+                            .Include(g => g.SudokuMatrix)
+                            .Include(g => g.SudokuSolution)
+                            .ToListAsync();
+
+                    } else {
+
+                        result = await context.Games
+                            .OrderBy(g => g.Id)
+                            .Include(g => g.User).ThenInclude(u => u.Roles)
+                            .Include(g => g.SudokuMatrix)
+                            .Include(g => g.SudokuSolution)
+                            .Where(g => g.User.Id == userId)
+                            .ToListAsync();
+                    }
                 }
 
             } else if (pageListModel.SortBy == SortValue.ID) {
@@ -34,52 +49,112 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.Id)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.Id)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.Id)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.Id)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.Id)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.Id)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
 
                 } else {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderBy(g => g.Id)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.Id)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.Id)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderBy(g => g.Id)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.Id)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.Id)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
                 }
 
@@ -89,52 +164,112 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.UserName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.UserName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.UserName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.UserName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.UserName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.UserName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
 
                 } else {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.UserName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.UserName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.UserName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.UserName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.UserName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.UserName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
                 }
 
@@ -144,52 +279,112 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.FirstName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.FirstName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.FirstName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.FirstName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.FirstName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.FirstName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
 
                 } else {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.FirstName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.FirstName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.FirstName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.FirstName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g =>g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.FirstName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.FirstName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
                 }
 
@@ -199,52 +394,112 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.LastName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.LastName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.LastName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.LastName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.LastName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.LastName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
 
                 } else {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.LastName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.LastName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.LastName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.LastName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.LastName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.LastName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
                 }
 
@@ -254,52 +509,112 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.FullName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.FullName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.FullName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.FullName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.FullName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.FullName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
 
                 } else {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.FullName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.FullName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.FullName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.FullName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.FullName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.FullName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
                 }
 
@@ -309,52 +624,112 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.NickName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.NickName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.NickName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.User.NickName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.NickName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.User.NickName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
 
                 } else {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.NickName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.NickName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.NickName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderBy(g => g.User.NickName)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.NickName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.User.NickName)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
                 }
 
@@ -364,52 +739,112 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.DateCreated)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.DateCreated)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.DateCreated)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderByDescending(g => g.DateCreated)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.DateCreated)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderByDescending(g => g.DateCreated)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
 
                 } else {
 
                     if (pageListModel.IncludeCompletedGames) {
 
-                        result = await context.Games
-                            .OrderBy(g => g.DateCreated)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.DateCreated)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.DateCreated)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
 
                     } else {
 
-                        result = await context.Games
-                            .OrderBy(g => g.DateCreated)
-                            .Include(g => g.User).ThenInclude(u => u.Roles)
-                            .Include(g => g.SudokuMatrix)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
-                            .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                            .Take(pageListModel.ItemsPerPage)
-                            .ToListAsync();
+                        if (userId == 0) {
+
+                            result = await context.Games
+                                .OrderBy(g => g.DateCreated)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+
+                        } else {
+
+                            result = await context.Games
+                                .OrderBy(g => g.DateCreated)
+                                .Include(g => g.User).ThenInclude(u => u.Roles)
+                                .Include(g => g.SudokuMatrix)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToListAsync();
+                        }
                     }
                 }
             }
