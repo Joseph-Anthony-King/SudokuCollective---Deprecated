@@ -99,7 +99,6 @@ namespace SudokuCollective.WebApi.Services {
                         return userTaskResult;
                     }
 
-                    user.Games = null;
                     user.Roles.OrderBy(r => r.RoleId);
                     user.Apps.OrderBy(a => a.AppId);
 
