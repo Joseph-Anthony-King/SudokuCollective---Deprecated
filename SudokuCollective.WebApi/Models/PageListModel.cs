@@ -37,11 +37,13 @@ namespace SudokuCollective.WebApi.Models {
 
         NULL,
         ID,
+        USERNAME,
         FIRSTNAME,
         LASTNAME,
         FULLNAME,
         NICKNAME,
         NAME,
-        DATECREATED
+        DATECREATED,
+        DIFFICULTY
     }
 }

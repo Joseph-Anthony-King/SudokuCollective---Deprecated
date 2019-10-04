@@ -746,6 +746,31 @@ namespace SudokuCollective.WebApi.Services {
                         .ToListAsync();
                 }
 
+            } else if (pageListModel.SortBy == SortValue.USERNAME) {
+
+                if (pageListModel.OrderByDescending) {
+
+                    result = await _context.Users
+                        .OrderByDescending(u => u.UserName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+
+                } else {
+
+                    result = await _context.Users
+                        .OrderBy(u => u.UserName)
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                        .Take(pageListModel.ItemsPerPage)
+                        .ToListAsync();
+                }
+
             } else if (pageListModel.SortBy == SortValue.FIRSTNAME) {
 
                 if (pageListModel.OrderByDescending) {
