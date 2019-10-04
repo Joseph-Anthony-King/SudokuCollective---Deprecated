@@ -59,7 +59,7 @@ namespace SudokuCollective.WebApi {
                 };
             });
 
-            services.AddScoped<IAuthenticateService, TokenAuthenticationService>();
+            services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IAppsService, AppsService>();
             services.AddScoped<IUsersService, UsersService>();

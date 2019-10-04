@@ -7,6 +7,7 @@ using SudokuCollective.Models;
 using SudokuCollective.Models.Interfaces;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
 using SudokuCollective.WebApi.Models.TaskModels;
 using SudokuCollective.WebApi.Models.TaskModels.GameRequests;
@@ -19,7 +20,6 @@ namespace SudokuCollective.WebApi.Services {
         private readonly ApplicationDbContext _context;
         private readonly IUsersService _userService;
         private readonly IDifficultiesService _difficultiesService;
-        private readonly IAppsService _appsService;
 
         public GamesService(
             ApplicationDbContext context,
@@ -30,7 +30,6 @@ namespace SudokuCollective.WebApi.Services {
             _context = context;
             _userService = usersService;
             _difficultiesService = difficultiesService;
-            _appsService = appsService;
         }
 
         public async Task<GameTaskResult> CreateGame(
@@ -287,7 +286,8 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameListTaskResult> GetGames(bool fullRecord = true) {
+        public async Task<GameListTaskResult> GetGames(
+            BaseRequestRO baseRequestRO, bool fullRecord = true) {
 
             var gameListTaskResult = new GameListTaskResult();
 
@@ -297,24 +297,19 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (fullRecord) {
 
-                    games = await _context.Games
-                        .OrderBy(g => g.Id)
-                        .Include(g => g.User).ThenInclude(u => u.Roles)
-                        .Include(g => g.SudokuMatrix)
-                        .Include(g => g.SudokuSolution)
-                        .ToListAsync();
+                    games = await GamesServiceUtilities
+                        .RetrieveGames(baseRequestRO.PageListModel, _context);
 
                     foreach (var game in games) {
 
-                        game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                        game.SudokuMatrix = await StaticApiHelpers
+                            .AttachSudokuMatrix(game, _context);
                     }
 
                 } else {
 
-                    games = await _context.Games
-                        .OrderBy(g => g.Id)
-                        .Include(g => g.User)
-                        .ToListAsync();
+                    games = await GamesServiceUtilities
+                        .RetrieveGames(baseRequestRO.PageListModel, _context);
                 }
 
                 gameListTaskResult.Success = true;
@@ -387,7 +382,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameListTaskResult> GetMyGames(int userId, bool fullRecord = true) {
+        public async Task<GameListTaskResult> GetMyGames(
+            int userId,
+            GetMyGameRO getMyGameRO, 
+            bool fullRecord = true) {
 
             var gameListTaskResult = new GameListTaskResult();
 
@@ -395,13 +393,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (fullRecord) {
 
-                    var games = await _context.Games
-                        .OrderBy(g => g.Id)
-                        .Include(g => g.User).ThenInclude(u => u.Roles)
-                        .Include(g => g.SudokuMatrix)
-                        .Include(g => g.SudokuSolution)
-                        .Where(g => g.User.Id == userId)
-                        .ToListAsync();
+                    var allGames = await GamesServiceUtilities.RetrieveGames(getMyGameRO.PageListModel, _context);
+
+                    var games = allGames.Where(g => g.User.Id == userId);
 
                     foreach (var game in games){
 
@@ -413,10 +407,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 } else {
 
-                    var games = await _context.Games
-                        .OrderBy(g => g.Id)
-                        .Where(g => g.User.Id == userId)
-                        .ToListAsync();
+                    var allGames = await GamesServiceUtilities.RetrieveGames(getMyGameRO.PageListModel, _context);
+
+                    var games = allGames.Where(g => g.User.Id == userId);
 
                     gameListTaskResult.Success = true;
                     gameListTaskResult.Games = games;

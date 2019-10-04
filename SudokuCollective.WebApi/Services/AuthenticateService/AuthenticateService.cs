@@ -13,13 +13,13 @@ using System.Collections.Generic;
 
 namespace SudokuCollective.WebApi.Services {
 
-    public class TokenAuthenticationService : IAuthenticateService {
+    public class AuthenticateService : IAuthenticateService {
 
         private readonly ApplicationDbContext _context;
         private readonly IUserManagementService _userManagementService;
         private readonly TokenManagement _tokenManagement;
 
-        public TokenAuthenticationService(
+        public AuthenticateService(
             ApplicationDbContext context,
             IUserManagementService service,
             IOptions<TokenManagement> tokenManagment) {

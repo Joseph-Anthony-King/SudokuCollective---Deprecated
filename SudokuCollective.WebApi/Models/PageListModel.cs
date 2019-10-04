@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using SudokuCollective.WebApi.Models.Enums;
 
 namespace SudokuCollective.WebApi.Models {
 
@@ -11,6 +8,7 @@ namespace SudokuCollective.WebApi.Models {
         public int ItemsPerPage { get; set; }
         public SortValue SortBy { get; set; }
         public bool OrderByDescending { get; set; }
+        public bool IncludeCompletedGames { get; set; }
 
         public PageListModel () {
 
@@ -18,32 +16,21 @@ namespace SudokuCollective.WebApi.Models {
             ItemsPerPage = 0;
             SortBy = SortValue.NULL;
             OrderByDescending = false;
+            IncludeCompletedGames = false;
         }
 
         public PageListModel (
             int page, 
             int itemsPerPage, 
             int sortValue, 
-            bool orderByDescending) {
+            bool orderByDescending,
+            bool includeCompletedGames) {
 
             Page = page;
             ItemsPerPage = itemsPerPage;
             SortBy = (SortValue)sortValue;
             OrderByDescending = orderByDescending;
+            IncludeCompletedGames = includeCompletedGames;
         }
-    }
-
-    public enum SortValue {
-
-        NULL,
-        ID,
-        USERNAME,
-        FIRSTNAME,
-        LASTNAME,
-        FULLNAME,
-        NICKNAME,
-        NAME,
-        DATECREATED,
-        DIFFICULTY
     }
 }

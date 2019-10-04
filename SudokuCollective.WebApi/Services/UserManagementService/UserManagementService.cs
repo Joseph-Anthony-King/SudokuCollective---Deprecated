@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Services.Interfaces;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SudokuCollective.WebApi.Services {
