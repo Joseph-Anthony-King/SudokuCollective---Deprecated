@@ -27,7 +27,7 @@ namespace SudokuCollective.WebApi.Services {
                     result = await context.SudokuSolutions
                         .Include(s => s.Game)
                         .ThenInclude(g => g.User)
-                        .Where(s => s.SolutionList.Count > 0 && s.DateSolved > DateTime.MinValue)
+                        .Where(s => s.DateSolved > DateTime.MinValue)
                         .ToListAsync();
 
                 } else {
@@ -35,8 +35,7 @@ namespace SudokuCollective.WebApi.Services {
                     result = await context.SudokuSolutions
                         .Include(s => s.Game)
                         .ThenInclude(g => g.User)
-                        .Where(s => s.SolutionList.Count > 0 
-                            && s.DateSolved > DateTime.MinValue 
+                        .Where(s => s.DateSolved > DateTime.MinValue 
                             && s.Game.User.Id == userId)
                         .ToListAsync();
                 }
@@ -51,7 +50,7 @@ namespace SudokuCollective.WebApi.Services {
                             .OrderByDescending(s => s.Id)
                             .Include(s => s.Game)
                             .ThenInclude(g => g.User)
-                            .Where(s => s.SolutionList.Count > 0 && s.DateSolved > DateTime.MinValue)
+                            .Where(s => s.DateSolved > DateTime.MinValue)
                             .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                             .Take(pageListModel.ItemsPerPage)
                             .ToListAsync();
@@ -62,8 +61,7 @@ namespace SudokuCollective.WebApi.Services {
                             .OrderByDescending(s => s.Id)
                             .Include(s => s.Game)
                             .ThenInclude(g => g.User)
-                            .Where(s => s.SolutionList.Count > 0 
-                                && s.DateSolved > DateTime.MinValue 
+                            .Where(s => s.DateSolved > DateTime.MinValue 
                                 && s.Game.User.Id == userId)
                             .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                             .Take(pageListModel.ItemsPerPage)
@@ -78,7 +76,7 @@ namespace SudokuCollective.WebApi.Services {
                             .OrderBy(s => s.Id)
                             .Include(s => s.Game)
                             .ThenInclude(g => g.User)
-                            .Where(s => s.SolutionList.Count > 0 && s.DateSolved > DateTime.MinValue)
+                            .Where(s => s.DateSolved > DateTime.MinValue)
                             .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                             .Take(pageListModel.ItemsPerPage)
                             .ToListAsync();
@@ -89,8 +87,7 @@ namespace SudokuCollective.WebApi.Services {
                             .OrderBy(s => s.Id)
                             .Include(s => s.Game)
                             .ThenInclude(g => g.User)
-                            .Where(s => s.SolutionList.Count > 0 
-                                && s.DateSolved > DateTime.MinValue 
+                            .Where(s => s.DateSolved > DateTime.MinValue 
                                 && s.Game.User.Id == userId)
                             .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                             .Take(pageListModel.ItemsPerPage)
@@ -108,7 +105,7 @@ namespace SudokuCollective.WebApi.Services {
                             .OrderByDescending(s => s.DateSolved)
                             .Include(s => s.Game)
                             .ThenInclude(g => g.User)
-                            .Where(s => s.SolutionList.Count > 0 && s.DateSolved > DateTime.MinValue)
+                            .Where(s => s.DateSolved > DateTime.MinValue)
                             .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                             .Take(pageListModel.ItemsPerPage)
                             .ToListAsync();
@@ -119,8 +116,7 @@ namespace SudokuCollective.WebApi.Services {
                             .OrderByDescending(s => s.DateSolved)
                             .Include(s => s.Game)
                             .ThenInclude(g => g.User)
-                            .Where(s => s.SolutionList.Count > 0 
-                                && s.DateSolved > DateTime.MinValue 
+                            .Where(s => s.DateSolved > DateTime.MinValue 
                                 && s.Game.User.Id == userId)
                             .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                             .Take(pageListModel.ItemsPerPage)
@@ -135,7 +131,7 @@ namespace SudokuCollective.WebApi.Services {
                             .OrderBy(s => s.DateSolved)
                             .Include(s => s.Game)
                             .ThenInclude(g => g.User)
-                            .Where(s => s.SolutionList.Count > 0 && s.DateSolved > DateTime.MinValue)
+                            .Where(s => s.DateSolved > DateTime.MinValue)
                             .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                             .Take(pageListModel.ItemsPerPage)
                             .ToListAsync();
@@ -146,8 +142,7 @@ namespace SudokuCollective.WebApi.Services {
                             .OrderBy(s => s.DateSolved)
                             .Include(s => s.Game)
                             .ThenInclude(g => g.User)
-                            .Where(s => s.SolutionList.Count > 0 
-                                && s.DateSolved > DateTime.MinValue 
+                            .Where(s => s.DateSolved > DateTime.MinValue 
                                 && s.Game.User.Id == userId)
                             .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                             .Take(pageListModel.ItemsPerPage)
