@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Models;
@@ -158,7 +157,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (game == null) {
 
-                        gameTaskResult.Message = "Game not found";
+                        gameTaskResult.Message = "Game Not Found";
 
                         return gameTaskResult;
                     }
@@ -216,7 +215,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    baseTaskResult.Message = "Game not found";
+                    baseTaskResult.Message = "Game Not Found";
 
                     return baseTaskResult;
                 }
@@ -261,13 +260,9 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    game = new Game()
-                    {
+                    gameTaskResult.Message = "Game Not Found";
 
-                        Id = 0,
-                        UserId = 0,
-                        SudokuMatrixId = 0
-                    };
+                    return gameTaskResult;
 
                 } else {
 
@@ -343,7 +338,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (game == null) {
 
-                        gameTaskResult.Message = "Game not found";
+                        gameTaskResult.Message = "Game Not Found";
 
                         return gameTaskResult;
 
@@ -361,7 +356,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (game == null) {
 
-                        gameTaskResult.Message = "Game not found";
+                        gameTaskResult.Message = "Game Not Found";
 
                         return gameTaskResult;
 
@@ -435,7 +430,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    baseTaskResult.Message = "Game not found";
+                    baseTaskResult.Message = "Game Not Found";
 
                     return baseTaskResult;
                 }
@@ -479,7 +474,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    gameTaskResult.Message = "Game not found";
+                    gameTaskResult.Message = "Game Not Found";
 
                     return gameTaskResult;
                 }
