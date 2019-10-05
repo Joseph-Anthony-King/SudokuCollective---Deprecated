@@ -41,15 +41,15 @@ namespace SudokuCollective.Models {
         public string FullName { 
             get => string.Format("{0} {1}", FirstName, LastName); 
         }
-        public DateTime DateCreated { get; set; }
-        public DateTime DateUpdated { get; set; }
         public string Email { get; set; }
         [JsonIgnore]
         public string Password { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
         public ICollection<Game> Games { get; set; }
         public ICollection<UserRole> Roles { get; set; }
         public ICollection<UserApp> Apps { get; set; }
-        public bool IsActive { get; set; }
 
         public User(
             string firstName, 

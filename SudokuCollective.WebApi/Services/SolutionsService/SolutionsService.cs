@@ -7,6 +7,7 @@ using SudokuCollective.Models;
 using SudokuCollective.Utilities;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
 using SudokuCollective.WebApi.Models.TaskModels.SolutionRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
@@ -84,7 +85,9 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<SolutionListTaskResult> GetSolutions(
-            bool fullRecord = false) {
+            BaseRequestRO baseRequestRO,
+            bool fullRecord = false,
+            int userId = 0) {
 
             var solutionListTaskResult = new SolutionListTaskResult();
 
@@ -94,10 +97,8 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (fullRecord) {
 
-                    solutions = await _context.SudokuSolutions
-                        .Include(s => s.Game)
-                        .ThenInclude(g => g.User)
-                        .ToListAsync();
+                    solutions = await SolutionsServiceUtilities
+                        .RetrieveGames(baseRequestRO, _context, userId);
 
                     foreach (var solution in solutions) {
 
@@ -121,7 +122,8 @@ namespace SudokuCollective.WebApi.Services {
 
                 } else {
 
-                    solutions = await _context.SudokuSolutions.ToListAsync();
+                    solutions =await SolutionsServiceUtilities
+                        .RetrieveGames(baseRequestRO, _context, userId);
 
                     solutionListTaskResult.Success = true;
                     solutionListTaskResult.Solutions = solutions;

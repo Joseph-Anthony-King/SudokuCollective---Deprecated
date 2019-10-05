@@ -12,12 +12,12 @@ namespace SudokuCollective.Models {
         [JsonIgnore]
         public string License { get; set; }
         public int OwnerId { get; set; }
-        public DateTime DateCreated { get; set; }
-        public DateTime DateUpdated { get; set; }
         public string DevUrl { get; set; }
         public string LiveUrl { get; set; }
-        public ICollection<UserApp> Users { get; set; }
         public bool IsActive { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
+        public ICollection<UserApp> Users { get; set; }
 
         public App() {
 

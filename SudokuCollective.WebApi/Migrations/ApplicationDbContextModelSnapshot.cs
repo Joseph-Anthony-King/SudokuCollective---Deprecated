@@ -194,6 +194,12 @@ namespace SudokuCollective.WebApi.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateSolved")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("SolutionList")
                         .HasColumnType("text");
 

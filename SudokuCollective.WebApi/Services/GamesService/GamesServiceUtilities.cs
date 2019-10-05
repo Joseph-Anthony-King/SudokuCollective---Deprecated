@@ -41,6 +41,29 @@ namespace SudokuCollective.WebApi.Services {
                             .Where(g => g.User.Id == userId)
                             .ToListAsync();
                     }
+
+                } else {
+
+                    if (userId == 0) {
+
+                        result = await context.Games
+                            .OrderBy(g => g.Id)
+                            .Include(g => g.User).ThenInclude(u => u.Roles)
+                            .Include(g => g.SudokuMatrix)
+                            .Include(g => g.SudokuSolution)
+                            .Where(g => g.ContinueGame == true)
+                            .ToListAsync();
+
+                    } else {
+
+                        result = await context.Games
+                            .OrderBy(g => g.Id)
+                            .Include(g => g.User).ThenInclude(u => u.Roles)
+                            .Include(g => g.SudokuMatrix)
+                            .Include(g => g.SudokuSolution)
+                            .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                            .ToListAsync();
+                    }
                 }
 
             } else if (pageListModel.SortBy == SortValue.ID) {

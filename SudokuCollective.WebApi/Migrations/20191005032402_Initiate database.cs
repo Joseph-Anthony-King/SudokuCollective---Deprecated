@@ -17,11 +17,11 @@ namespace SudokuCollective.WebApi.Migrations
                     Name = table.Column<string>(nullable: true),
                     License = table.Column<string>(nullable: true),
                     OwnerId = table.Column<int>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateUpdated = table.Column<DateTime>(nullable: false),
                     DevUrl = table.Column<string>(nullable: true),
                     LiveUrl = table.Column<string>(nullable: true),
-                    IsActive = table.Column<bool>(nullable: false)
+                    IsActive = table.Column<bool>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateUpdated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,7 +63,9 @@ namespace SudokuCollective.WebApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SolutionList = table.Column<string>(nullable: true)
+                    SolutionList = table.Column<string>(nullable: true),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateSolved = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -80,11 +82,11 @@ namespace SudokuCollective.WebApi.Migrations
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
                     NickName = table.Column<string>(nullable: true),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateUpdated = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: false),
-                    IsActive = table.Column<bool>(nullable: false)
+                    IsActive = table.Column<bool>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateUpdated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,12 +170,12 @@ namespace SudokuCollective.WebApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateCompleted = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     SudokuMatrixId = table.Column<int>(nullable: false),
                     SudokuSolutionId = table.Column<int>(nullable: false),
-                    ContinueGame = table.Column<bool>(nullable: false)
+                    ContinueGame = table.Column<bool>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateCompleted = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -204,14 +206,14 @@ namespace SudokuCollective.WebApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SudokuMatrixId = table.Column<int>(nullable: false),
                     Index = table.Column<int>(nullable: false),
                     Column = table.Column<int>(nullable: false),
                     Region = table.Column<int>(nullable: false),
                     Row = table.Column<int>(nullable: false),
                     Value = table.Column<int>(nullable: false),
                     DisplayValue = table.Column<int>(nullable: false),
-                    Obscured = table.Column<bool>(nullable: false)
+                    Obscured = table.Column<bool>(nullable: false),
+                    SudokuMatrixId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

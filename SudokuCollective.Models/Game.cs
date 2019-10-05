@@ -7,15 +7,15 @@ namespace SudokuCollective.Models {
     public class Game : IGame, IDBEntry {
 
         public int Id { get; set; }
-        public DateTime DateCreated { get; set; }
-        public DateTime DateCompleted { get; set; }
-        public User User { get; set; }
         public int UserId { get; set; }
+        public User User { get; set; }
         public int SudokuMatrixId { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
         public int SudokuSolutionId { get; set; }
         public SudokuSolution SudokuSolution { get; set; }
         public bool ContinueGame { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateCompleted { get; set; }
 
         public Game() {
 
@@ -60,10 +60,16 @@ namespace SudokuCollective.Models {
 
         public bool IsSolved() {
 
-            if (SudokuMatrix.IsSolved()) {
+            if (ContinueGame) {
 
-                ContinueGame = false;
-                SudokuSolution.SolutionList = SudokuMatrix.ToInt32List();
+                if (SudokuMatrix.IsSolved()) {
+
+                    var solvedDate = DateTime.UtcNow;
+
+                    ContinueGame = false;
+                    SudokuSolution.SolutionList = SudokuMatrix.ToInt32List();
+                    SudokuSolution.DateSolved = solvedDate;
+                }
             }
 
             return !ContinueGame;

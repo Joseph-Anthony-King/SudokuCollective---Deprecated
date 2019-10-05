@@ -14,8 +14,6 @@ namespace SudokuCollective.Models {
 
         #region Properties
         public int Id { get; set; }
-        public SudokuMatrix SudokuMatrix { get; set; }
-        public int SudokuMatrixId { get; set; }
         public int Index { get; set; }
         public int Column { get; set; }
         public int Region { get; set; }
@@ -78,6 +76,8 @@ namespace SudokuCollective.Models {
             }
         }
         public bool Obscured { get; set; }
+        public int SudokuMatrixId { get; set; }
+        public SudokuMatrix SudokuMatrix { get; set; }
         [JsonIgnore]
         public List<int> AvailableValues { get; set; }
         #endregion

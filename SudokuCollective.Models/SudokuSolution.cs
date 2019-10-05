@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,16 +21,28 @@ namespace SudokuCollective.Models {
         public List<int> EighthRow { get => GetValues(63, 9); }
         public List<int> NinthRow { get => GetValues(72, 9); }
         public virtual Game Game { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateSolved { get; set; }
 
         public SudokuSolution() {
 
+            var createdDate = DateTime.UtcNow;
+
             SolutionList = new List<int>();
+            DateCreated = createdDate;
+            DateSolved = DateTime.MinValue;
         }
 
         [JsonConstructor]
         public SudokuSolution(List<int> intList) : this() {
 
             SolutionList = intList;
+
+            if (SolutionList.Count == 81 && !SolutionList.Contains(0)) {
+
+                var solvedDate = DateTime.UtcNow;
+                DateSolved = solvedDate;
+            }
         }
 
         public override string ToString() {

@@ -12,7 +12,7 @@
         GAMECOUNT,
         APPCOUNT,
         NAME,
-        DATECREATED,
+        DATE,
         DIFFICULTY,
         USERCOUNT
     }
