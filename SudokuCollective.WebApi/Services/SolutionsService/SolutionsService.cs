@@ -152,7 +152,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    solutionTaskResult.Message = "Requesting user not found";
+                    solutionTaskResult.Message = "Requesting User Not Found";
 
                     return solutionTaskResult;
                 }

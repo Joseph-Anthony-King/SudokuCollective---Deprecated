@@ -48,7 +48,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (user == null) {
 
-                        userTaskResult.Message = "User not found";
+                        userTaskResult.Message = "User Not Found";
 
                         return userTaskResult;
                     }
@@ -94,7 +94,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (user == null) {
 
-                        userTaskResult.Message = "User not found";
+                        userTaskResult.Message = "User Not Found";
 
                         return userTaskResult;
                     }
@@ -375,7 +375,7 @@ namespace SudokuCollective.WebApi.Services {
                         if (!userIdExists)
                         {
 
-                            userTaskResult.Message = "User not found";
+                            userTaskResult.Message = "User Not Found";
                         }
                     }
 
@@ -407,7 +407,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    baseTaskResult.Message = "User not found";
+                    baseTaskResult.Message = "User Not Found";
 
                     return baseTaskResult;
                 }
@@ -453,7 +453,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    baseTaskResult.Message = "User not found";
+                    baseTaskResult.Message = "User Not Found";
 
                     return baseTaskResult;
                 }
@@ -503,7 +503,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    baseTaskResult.Message = "User not found";
+                    baseTaskResult.Message = "User Not Found";
 
                     return baseTaskResult;
                 }
@@ -578,7 +578,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    baseTaskResult.Message = "User not found";
+                    baseTaskResult.Message = "User Not Found";
 
                     return baseTaskResult;
                 }
@@ -620,7 +620,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    baseTaskResult.Message = "User not found";
+                    baseTaskResult.Message = "User Not Found";
 
                     return baseTaskResult;
                 }
@@ -661,7 +661,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user == null) {
 
-                    baseTaskResult.Message = "User not found";
+                    baseTaskResult.Message = "User Not Found";
 
                     return baseTaskResult;
                 }
