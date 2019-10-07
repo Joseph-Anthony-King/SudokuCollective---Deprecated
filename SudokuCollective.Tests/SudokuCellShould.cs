@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using SudokuCollective.Models;
+using SudokuCollective.Models.Interfaces;
 using SudokuCollective.Utilities;
 
 namespace SudokuCollective.Tests {
@@ -18,6 +19,17 @@ namespace SudokuCollective.Tests {
             firstInt = intList[0];
 
             populatedTestMatrix = new SudokuMatrix(intList);
+        }
+
+        [Test]
+        [Category("Models")]
+        public void ImplementIDBEntry() {
+
+            // Arrange and Act
+            var sut = populatedTestMatrix.SudokuCells[0];
+
+            // Assert
+            Assert.That(sut, Is.InstanceOf<IDBEntry>());
         }
         
         [Test]

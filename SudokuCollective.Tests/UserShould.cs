@@ -2,11 +2,23 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using SudokuCollective.Models;
+using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Tests
 {
 
     public class UserShould {
+
+        [Test]
+        [Category("Models")]
+        public void ImplementIDBEntry() {
+
+            // Arrange and Act
+            var sut = new User();
+
+            // Assert
+            Assert.That(sut, Is.InstanceOf<IDBEntry>());
+        }
 
         [Test]
         [Category("Models")]

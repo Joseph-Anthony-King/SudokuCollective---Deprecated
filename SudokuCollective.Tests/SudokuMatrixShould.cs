@@ -4,6 +4,7 @@ using NUnit.Framework;
 using SudokuCollective.Utilities;
 using SudokuCollective.Models;
 using SudokuCollective.Models.Enums;
+using SudokuCollective.Models.Interfaces;
 
 namespace SudokuCollective.Tests {
 
@@ -28,6 +29,17 @@ namespace SudokuCollective.Tests {
             stringList = sb.ToString();
 
             populatedTestMatrix = new SudokuMatrix(intList);
+        }
+
+        [Test]
+        [Category("Models")]
+        public void ImplementIDBEntry() {
+
+            // Arrange and Act
+            var sut = new SudokuMatrix(stringList);
+
+            // Assert
+            Assert.That(sut, Is.InstanceOf<IDBEntry>());
         }
         
         [Test]
