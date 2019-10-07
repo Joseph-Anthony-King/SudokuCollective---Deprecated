@@ -37,99 +37,60 @@ namespace SudokuCollective.WebApi.Services {
             var gameTaskResult = new GameTaskResult();
 
             try {
+                    
+                var difficulty = await _context.Difficulties
+                    .FirstOrDefaultAsync(d => d.Id == createGameRO.DifficultyId);
 
-                User user;
-                Difficulty difficulty;
+                var user = await _context.Users
+                    .Include(u => u.Apps)
+                    .Include(u => u.Games)
+                    .Include(u => u.Roles)
+                    .FirstOrDefaultAsync(predicate: u => u.Id == createGameRO.UserId);
+                    
+                foreach (var userRole in user.Roles) {
 
-                var userResult = await _userService.GetUser(createGameRO.UserId);
-                var difficultyResult =
-                    await _difficultiesService.GetDifficulty(createGameRO.DifficultyId);
+                    userRole.Role = await _context.Roles
+                        .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
+                }
 
-                if (userResult.Success && difficultyResult.Success) {
+                SudokuMatrix matrix = new SudokuMatrix();
+                matrix.GenerateSolution();
 
-                    user = userResult.User;
-                    difficulty = difficultyResult.Difficulty;
+                var game = new Game(
+                    user,
+                    matrix,
+                    difficulty);
 
-                    var userApps = user.Apps;
-                    var userRoles = user.Roles;
-                    var userGames = user.Games;
+                _context.ChangeTracker.TrackGraph(user, 
+                    e => {
 
-                    SudokuMatrix matrix = new SudokuMatrix();
-                    matrix.GenerateSolution();
+                        var dbEntry = (IDBEntry)e.Entry.Entity;
 
-                    var game = new Game(
-                        user,
-                        matrix,
-                        difficulty);
+                        if (dbEntry.Id != 0) {
 
-                    _context.ChangeTracker.TrackGraph(user, 
-                        e => {
-
-                            if (e.Entry.Entity is User) {
-
-                                e.Entry.State = EntityState.Unchanged;
-                                
-                            } else if (e.Entry.Entity is Difficulty) {
-
-                                e.Entry.State = EntityState.Unchanged;
-
-                            } else {
-
-                                var dbEntry = (IDBEntry)e.Entry.Entity;
-
-                                if (dbEntry.Id != 0) {
-
-                                    e.Entry.State = EntityState.Modified;
-
-                                } else {
-
-                                    e.Entry.State = EntityState.Added;
-                                }
-                            }
-                        });
-
-                    foreach (var userApp in userApps) {
-
-                        _context.Entry<UserApp>(userApp).State = EntityState.Unchanged;
-                    }
-
-                    foreach (var userRole in userRoles) {
-
-                        _context.Entry<UserRole>(userRole).State = EntityState.Unchanged;
-                    }
-
-                    foreach (var userGame in userGames) {
-
-                        if (userGame.Id != 0) {
-
-                            _context.Entry<Game>(userGame).State = EntityState.Unchanged;
+                            e.Entry.State = EntityState.Modified;
 
                         } else {
 
-                            _context.Entry<Game>(userGame).State = EntityState.Added;
+                            e.Entry.State = EntityState.Added;
                         }
-                    }
+                    });
 
-                    await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                    gameTaskResult.Success = true;
+                gameTaskResult.Success = true;
 
-                    if (fullRecord) {
+                if (fullRecord) {
 
-                        gameTaskResult.Game = game;
-
-                    } else {
-
-                        game.User.Games = null;
-                        game.User.Roles = null;
-                        game.User.Apps = null;
-                        game.SudokuMatrix.Difficulty.Matrices = null;
-                        gameTaskResult.Game = game;
-                    }
+                    gameTaskResult.Game = game;
 
                 } else {
 
-                    gameTaskResult.Message = "Could not find the user or difficulty in the database";
+                    game.User.Games = null;
+                    game.User.Roles = null;
+                    game.User.Apps = null;
+                    game.SudokuMatrix.Difficulty.Matrices = null;
+                    gameTaskResult.Game = game;
                 }
 
                 return gameTaskResult;
