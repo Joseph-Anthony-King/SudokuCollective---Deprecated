@@ -29,10 +29,11 @@ namespace SudokuCollective.Models {
             DevUrl = string.Empty;
             LiveUrl = string.Empty;
             IsActive = true;
+            Users = new List<UserApp>();
         }
 
         public App(string name, string license, 
-            int ownerId, string devUrl, string liveUrl) {
+            int ownerId, string devUrl, string liveUrl) : this() {
 
             Name = name;
             License = license;
