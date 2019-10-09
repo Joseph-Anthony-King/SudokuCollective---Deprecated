@@ -1,6 +1,6 @@
 ﻿namespace SudokuCollective.Domain.Interfaces {
 
-    public interface IDBEntry {
+    public interface IEntityBase {
 
         int Id { get; set; }
     }

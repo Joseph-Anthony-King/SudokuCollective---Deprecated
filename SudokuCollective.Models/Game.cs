@@ -4,7 +4,7 @@ using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Domain {
 
-    public class Game : IGame, IDBEntry {
+    public class Game : IGame, IEntityBase {
 
         public int Id { get; set; }
         public int UserId { get; set; }

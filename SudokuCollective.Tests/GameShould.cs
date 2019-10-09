@@ -35,7 +35,7 @@ namespace SudokuCollective.Tests {
             );
 
             // Assert
-            Assert.That(sut, Is.InstanceOf<IDBEntry>());
+            Assert.That(sut, Is.InstanceOf<IEntityBase>());
         }
 
         [Test]

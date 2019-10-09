@@ -7,7 +7,7 @@ using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Domain {
 
-    public class SudokuSolution : ISudokuSolution, IDBEntry {
+    public class SudokuSolution : ISudokuSolution, IEntityBase {
 
         public int Id { get; set; }
         public List<int> SolutionList { get; set; }

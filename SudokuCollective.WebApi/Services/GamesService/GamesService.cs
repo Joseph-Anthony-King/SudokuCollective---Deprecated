@@ -64,7 +64,7 @@ namespace SudokuCollective.WebApi.Services {
                 _context.ChangeTracker.TrackGraph(user, 
                     e => {
 
-                        var dbEntry = (IDBEntry)e.Entry.Entity;
+                        var dbEntry = (IEntityBase)e.Entry.Entity;
 
                         if (dbEntry.Id != 0) {
 
@@ -135,7 +135,7 @@ namespace SudokuCollective.WebApi.Services {
                     _context.ChangeTracker.TrackGraph(game,
                         e => {
 
-                            var dbEntry = (IDBEntry)e.Entry.Entity;
+                            var dbEntry = (IEntityBase)e.Entry.Entity;
 
                             if (dbEntry.Id != 0) {
 
@@ -452,7 +452,7 @@ namespace SudokuCollective.WebApi.Services {
                 _context.ChangeTracker.TrackGraph(game,
                     e => {
 
-                        var dbEntry = (IDBEntry)e.Entry.Entity;
+                        var dbEntry = (IEntityBase)e.Entry.Entity;
 
                         if (dbEntry.Id != 0) {
 

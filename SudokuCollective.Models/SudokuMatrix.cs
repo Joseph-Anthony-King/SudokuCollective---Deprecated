@@ -8,7 +8,7 @@ using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Domain {
 
-    public class SudokuMatrix : ISudokuMatrix, IDBEntry {
+    public class SudokuMatrix : ISudokuMatrix, IEntityBase {
 
         public int Id { get; set; }
         public Game Game { get; set; }

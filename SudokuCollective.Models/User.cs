@@ -6,7 +6,7 @@ using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Domain {
 
-    public class User : IUser, IDBEntry {
+    public class User : IUser, IEntityBase {
 
         private string _userName;
 

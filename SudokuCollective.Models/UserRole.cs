@@ -3,7 +3,7 @@ using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Domain {
 
-    public class UserRole : IDBEntry {
+    public class UserRole : IEntityBase {
 
         public int Id { get; set; }
 

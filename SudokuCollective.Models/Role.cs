@@ -5,7 +5,7 @@ using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Domain {
 
-    public class Role : IDBEntry {
+    public class Role : IEntityBase {
 
         public int Id { get; set; }
         public string Name { get; set; }

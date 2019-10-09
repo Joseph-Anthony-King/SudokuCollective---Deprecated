@@ -39,7 +39,7 @@ namespace SudokuCollective.Tests {
             var sut = new SudokuMatrix(stringList);
 
             // Assert
-            Assert.That(sut, Is.InstanceOf<IDBEntry>());
+            Assert.That(sut, Is.InstanceOf<IEntityBase>());
         }
         
         [Test]

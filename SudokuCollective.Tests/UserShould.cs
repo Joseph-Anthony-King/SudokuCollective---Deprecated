@@ -17,7 +17,7 @@ namespace SudokuCollective.Tests
             var sut = new User();
 
             // Assert
-            Assert.That(sut, Is.InstanceOf<IDBEntry>());
+            Assert.That(sut, Is.InstanceOf<IEntityBase>());
         }
 
         [Test]

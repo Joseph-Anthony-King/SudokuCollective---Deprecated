@@ -29,7 +29,7 @@ namespace SudokuCollective.Tests {
             var sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
-            Assert.That(sut, Is.InstanceOf<IDBEntry>());
+            Assert.That(sut, Is.InstanceOf<IEntityBase>());
         }
         
         [Test]
