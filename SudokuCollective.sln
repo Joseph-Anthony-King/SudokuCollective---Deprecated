@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.ConsoleDev", "SudokuCollective.ConsoleDev\SudokuCollective.ConsoleDev.csproj", "{4E834C55-FBA1-474A-A641-9253412EBBE0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Models", "SudokuCollective.Models\SudokuCollective.Models.csproj", "{AB6A25A8-A267-4233-99EC-1E7C4A69940E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Domain", "SudokuCollective.Models\SudokuCollective.Domain.csproj", "{AB6A25A8-A267-4233-99EC-1E7C4A69940E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.AppExtensions", "SudokuCollective.AppExtensions\SudokuCollective.AppExtensions.csproj", "{2C9DD584-03E6-481C-A739-60FD298505F8}"
 EndProject

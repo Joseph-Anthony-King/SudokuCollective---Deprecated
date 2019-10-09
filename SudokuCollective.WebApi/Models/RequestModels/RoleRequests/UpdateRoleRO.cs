@@ -1,4 +1,4 @@
-using SudokuCollective.Models.Enums;
+using SudokuCollective.Domain.Enums;
 
 namespace SudokuCollective.WebApi.Models.RequestModels.RoleRequests {
 

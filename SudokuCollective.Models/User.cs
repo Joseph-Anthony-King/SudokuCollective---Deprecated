@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
-using SudokuCollective.Models.Interfaces;
+using SudokuCollective.Domain.Interfaces;
 
-namespace SudokuCollective.Models {
+namespace SudokuCollective.Domain {
 
     public class User : IUser, IDBEntry {
 

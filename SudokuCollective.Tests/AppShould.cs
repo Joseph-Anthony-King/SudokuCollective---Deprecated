@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuCollective.Models;
-using SudokuCollective.Models.Interfaces;
+using SudokuCollective.Domain;
+using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Tests{
 

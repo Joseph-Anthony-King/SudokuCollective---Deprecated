@@ -1,4 +1,4 @@
-﻿using SudokuCollective.Models;
+﻿using SudokuCollective.Domain;
 using System.Collections.Generic;
 
 namespace SudokuCollective.WebApi.Models.RequestModels.GameRequests {

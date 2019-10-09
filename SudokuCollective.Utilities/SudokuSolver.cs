@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using SudokuCollective.Models;
+using SudokuCollective.Domain;
 
 namespace SudokuCollective.Utilities {
 

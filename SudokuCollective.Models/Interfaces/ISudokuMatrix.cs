@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using SudokuCollective.Models.Enums;
+using SudokuCollective.Domain.Enums;
 
-namespace SudokuCollective.Models.Interfaces {
+namespace SudokuCollective.Domain.Interfaces {
 
     public interface ISudokuMatrix {
         

@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using SudokuCollective.ConsoleDev.Classes;
-using SudokuCollective.Models;
-using SudokuCollective.Models.Enums;
+using SudokuCollective.Domain;
+using SudokuCollective.Domain.Enums;
 
 namespace SudokuCollective.ConsoleDev.Routines {
 

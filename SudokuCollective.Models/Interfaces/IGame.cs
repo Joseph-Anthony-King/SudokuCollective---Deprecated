@@ -1,6 +1,6 @@
 using System;
 
-namespace SudokuCollective.Models.Interfaces { 
+namespace SudokuCollective.Domain.Interfaces { 
 
     public interface IGame {
 

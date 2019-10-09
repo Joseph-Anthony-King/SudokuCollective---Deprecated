@@ -1,5 +1,5 @@
 ﻿using System;
-using SudokuCollective.Models;
+using SudokuCollective.Domain;
 
 namespace SudokuCollective.WebApi.Models.TaskModels.UserRequests {
 

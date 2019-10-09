@@ -1,4 +1,4 @@
-﻿namespace SudokuCollective.Models.Interfaces {
+﻿namespace SudokuCollective.Domain.Interfaces {
 
     public interface IDBEntry {
 

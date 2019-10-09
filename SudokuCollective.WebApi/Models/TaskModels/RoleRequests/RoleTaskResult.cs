@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using SudokuCollective.Models;
-using SudokuCollective.Models.Enums;
+using SudokuCollective.Domain;
+using SudokuCollective.Domain.Enums;
 
 namespace SudokuCollective.WebApi.Models.TaskModels.RoleRequests {
 

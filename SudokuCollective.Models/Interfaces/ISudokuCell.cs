@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SudokuCollective.Models.Interfaces { 
+namespace SudokuCollective.Domain.Interfaces { 
 
     public interface ISudokuCell {
         

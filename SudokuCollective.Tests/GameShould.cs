@@ -1,8 +1,8 @@
 using NUnit.Framework;
 using Moq;
-using SudokuCollective.Models;
-using SudokuCollective.Models.Enums;
-using SudokuCollective.Models.Interfaces;
+using SudokuCollective.Domain;
+using SudokuCollective.Domain.Enums;
+using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Tests {
 

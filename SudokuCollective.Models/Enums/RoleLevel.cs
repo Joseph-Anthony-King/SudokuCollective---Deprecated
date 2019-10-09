@@ -1,4 +1,4 @@
-namespace SudokuCollective.Models.Enums {
+namespace SudokuCollective.Domain.Enums {
 
     public enum RoleLevel {
 

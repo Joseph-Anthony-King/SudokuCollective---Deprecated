@@ -1,5 +1,5 @@
-﻿using SudokuCollective.Models;
-using SudokuCollective.Models.Enums;
+﻿using SudokuCollective.Domain;
+using SudokuCollective.Domain.Enums;
 using System.Collections.Generic;
 
 namespace SudokuCollective.WebApi.Models.TaskModels.DifficultyRequests {

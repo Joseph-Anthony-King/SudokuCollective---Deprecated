@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using SudokuCollective.Models.Enums;
+using SudokuCollective.Domain.Enums;
 using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
 using SudokuCollective.WebApi.Models.TaskModels;
 using SudokuCollective.WebApi.Models.TaskModels.RoleRequests;

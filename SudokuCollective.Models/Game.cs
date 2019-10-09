@@ -1,8 +1,8 @@
 using System;
 using Newtonsoft.Json;
-using SudokuCollective.Models.Interfaces;
+using SudokuCollective.Domain.Interfaces;
 
-namespace SudokuCollective.Models {
+namespace SudokuCollective.Domain {
 
     public class Game : IGame, IDBEntry {
 

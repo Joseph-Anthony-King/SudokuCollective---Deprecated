@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SudokuCollective.Models;
+using SudokuCollective.Domain;
 
 namespace SudokuCollective.WebApi.Models.TaskModels.AppRequests {
 

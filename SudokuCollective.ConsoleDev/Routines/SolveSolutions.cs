@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using SudokuCollective.Models;
-using SudokuCollective.Models.Enums;
+using SudokuCollective.Domain;
+using SudokuCollective.Domain.Enums;
 using SudokuCollective.Utilities;
 using SudokuCollective.ConsoleDev.Classes;
 

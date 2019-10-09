@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using SudokuCollective.Models.Enums;
-using SudokuCollective.Models.Interfaces;
+using SudokuCollective.Domain.Enums;
+using SudokuCollective.Domain.Interfaces;
 
-namespace SudokuCollective.Models {
+namespace SudokuCollective.Domain {
 
     public class SudokuMatrix : ISudokuMatrix, IDBEntry {
 
