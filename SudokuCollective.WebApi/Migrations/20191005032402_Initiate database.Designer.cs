@@ -21,7 +21,7 @@ namespace SudokuCollective.WebApi.Migrations
                 .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("SudokuCollective.Models.App", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.App", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Apps");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.Difficulty", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Difficulty", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Difficulties");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.Game", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,7 +116,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.Role", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,7 +134,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.SudokuCell", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.SudokuCell", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,7 +172,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuCells");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.SudokuMatrix", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.SudokuMatrix", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -189,7 +189,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuMatrices");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.SudokuSolution", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.SudokuSolution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -210,7 +210,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuSolutions");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.User", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -260,7 +260,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.UserApp", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.UserApp", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -282,7 +282,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("UsersApps");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.UserRole", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.UserRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -304,69 +304,69 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("UsersRoles");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.Game", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Game", b =>
                 {
-                    b.HasOne("SudokuCollective.Models.SudokuMatrix", "SudokuMatrix")
+                    b.HasOne("SudokuCollective.Domain.SudokuMatrix", "SudokuMatrix")
                         .WithOne("Game")
-                        .HasForeignKey("SudokuCollective.Models.Game", "SudokuMatrixId")
+                        .HasForeignKey("SudokuCollective.Domain.Game", "SudokuMatrixId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SudokuCollective.Models.SudokuSolution", "SudokuSolution")
+                    b.HasOne("SudokuCollective.Domain.SudokuSolution", "SudokuSolution")
                         .WithOne("Game")
-                        .HasForeignKey("SudokuCollective.Models.Game", "SudokuSolutionId")
+                        .HasForeignKey("SudokuCollective.Domain.Game", "SudokuSolutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SudokuCollective.Models.User", "User")
+                    b.HasOne("SudokuCollective.Domain.User", "User")
                         .WithMany("Games")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.SudokuCell", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.SudokuCell", b =>
                 {
-                    b.HasOne("SudokuCollective.Models.SudokuMatrix", "SudokuMatrix")
+                    b.HasOne("SudokuCollective.Domain.SudokuMatrix", "SudokuMatrix")
                         .WithMany("SudokuCells")
                         .HasForeignKey("SudokuMatrixId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.SudokuMatrix", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.SudokuMatrix", b =>
                 {
-                    b.HasOne("SudokuCollective.Models.Difficulty", "Difficulty")
+                    b.HasOne("SudokuCollective.Domain.Difficulty", "Difficulty")
                         .WithMany("Matrices")
                         .HasForeignKey("DifficultyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.UserApp", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.UserApp", b =>
                 {
-                    b.HasOne("SudokuCollective.Models.App", "App")
+                    b.HasOne("SudokuCollective.Domain.App", "App")
                         .WithMany("Users")
                         .HasForeignKey("AppId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SudokuCollective.Models.User", "User")
+                    b.HasOne("SudokuCollective.Domain.User", "User")
                         .WithMany("Apps")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SudokuCollective.Models.UserRole", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.UserRole", b =>
                 {
-                    b.HasOne("SudokuCollective.Models.Role", "Role")
+                    b.HasOne("SudokuCollective.Domain.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SudokuCollective.Models.User", "User")
+                    b.HasOne("SudokuCollective.Domain.User", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

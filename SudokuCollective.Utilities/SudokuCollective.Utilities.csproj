@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SudokuCollective.Models\SudokuCollective.Domain.csproj" />
+    <ProjectReference Include="..\SudokuCollective.Domain\SudokuCollective.Domain.csproj" />
   </ItemGroup>
 
 </Project>
