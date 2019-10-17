@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Domain;
 using SudokuCollective.Domain.Interfaces;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
-using SudokuCollective.WebApi.Models.TaskModels;
-using SudokuCollective.WebApi.Models.TaskModels.GameRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
+using SudokuCollective.WebApi.Models.ResultModels.GameRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -31,10 +32,10 @@ namespace SudokuCollective.WebApi.Services {
             _difficultiesService = difficultiesService;
         }
 
-        public async Task<GameTaskResult> CreateGame(
-            CreateGameRO createGameRO, bool fullRecord = false) {
+        public async Task<GameResult> CreateGame(
+            CreateGameRequest createGameRO, bool fullRecord = false) {
 
-            var gameTaskResult = new GameTaskResult();
+            var gameTaskResult = new GameResult();
 
             try {
                     
@@ -103,9 +104,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameTaskResult> UpdateGame(int id, UpdateGameRO updateGameRO) {
+        public async Task<GameResult> UpdateGame(int id, UpdateGameRequest updateGameRO) {
 
-            var gameTaskResult = new GameTaskResult();
+            var gameTaskResult = new GameResult();
 
             try {
 
@@ -164,9 +165,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> DeleteGame(int id) {
+        public async Task<BaseResult> DeleteGame(int id) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 
@@ -207,9 +208,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameTaskResult> GetGame(int id) {
+        public async Task<GameResult> GetGame(int id) {
 
-            var gameTaskResult = new GameTaskResult();
+            var gameTaskResult = new GameResult();
 
             try {
 
@@ -242,10 +243,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameListTaskResult> GetGames(
-            BaseRequestRO baseRequestRO, bool fullRecord = false) {
+        public async Task<GamesResult> GetGames(
+            BaseRequest baseRequestRO, bool fullRecord = false) {
 
-            var gameListTaskResult = new GameListTaskResult();
+            var gameListTaskResult = new GamesResult();
 
             try {
 
@@ -281,9 +282,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameTaskResult> GetMyGame(int userId, int gameId, bool fullRecord = false) {
+        public async Task<GameResult> GetMyGame(int userId, int gameId, bool fullRecord = false) {
 
-            var gameTaskResult = new GameTaskResult();
+            var gameTaskResult = new GameResult();
 
             try {
 
@@ -338,12 +339,12 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameListTaskResult> GetMyGames(
+        public async Task<GamesResult> GetMyGames(
             int userId,
-            GetMyGameRO getMyGameRO, 
+            GetMyGameRequest getMyGameRO, 
             bool fullRecord = false) {
 
-            var gameListTaskResult = new GameListTaskResult();
+            var gameListTaskResult = new GamesResult();
 
             try {
 
@@ -379,9 +380,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> DeleteMyGame(int userId, int gameId) {
+        public async Task<BaseResult> DeleteMyGame(int userId, int gameId) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 
@@ -422,9 +423,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameTaskResult> CheckGame(int id, UpdateGameRO updateGameRO) {
+        public async Task<GameResult> CheckGame(int id, UpdateGameRequest updateGameRO) {
 
-            var gameTaskResult = new GameTaskResult();
+            var gameTaskResult = new GameResult();
 
             try {
 

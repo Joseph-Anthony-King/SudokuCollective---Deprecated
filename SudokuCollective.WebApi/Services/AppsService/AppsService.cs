@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
-using SudokuCollective.WebApi.Models;
 using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.Pagination;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
-using SudokuCollective.WebApi.Models.TaskModels;
-using SudokuCollective.WebApi.Models.TaskModels.AppRequests;
-using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
+using SudokuCollective.WebApi.Models.ResultModels.AppRequests;
+using SudokuCollective.WebApi.Models.ResultModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -26,11 +26,11 @@ namespace SudokuCollective.WebApi.Services {
             _context = context;
         }
 
-        public async Task<AppTaskResult> GetApp(int id, bool fullRecord = false) {
+        public async Task<AppResult> GetApp(int id, bool fullRecord = false) {
 
             var createdDate = DateTime.UtcNow;
 
-            var appTaskResult = new AppTaskResult();
+            var appTaskResult = new AppResult();
 
             try {
 
@@ -103,11 +103,11 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<AppListTaskResult> GetApps(
+        public async Task<AppsResult> GetApps(
             PageListModel pageListModel, 
             bool fullRecord = false) {
 
-            var appListTaskResult = new AppListTaskResult();
+            var appListTaskResult = new AppsResult();
 
             try {
 
@@ -163,9 +163,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<AppTaskResult> CreateApp(LicenseRequestRO licenseRequestRO) {
+        public async Task<AppResult> CreateApp(LicenseRequest licenseRequestRO) {
 
-            var appTaskResult = new AppTaskResult();
+            var appTaskResult = new AppResult();
 
             try {
 
@@ -257,9 +257,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
         
-        public async Task<AppTaskResult> GetAppByLicense(string license, bool fullRecord = false) {
+        public async Task<AppResult> GetAppByLicense(string license, bool fullRecord = false) {
 
-            var appTaskResult = new AppTaskResult();
+            var appTaskResult = new AppResult();
 
             try {
 
@@ -332,9 +332,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<LicenseTaskResult> GetLicense(int id) {
+        public async Task<LicenseResut> GetLicense(int id) {
 
-            var licenseTaskResult = new LicenseTaskResult();
+            var licenseTaskResult = new LicenseResut();
 
             try {
 
@@ -359,17 +359,17 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
         
-        public async Task<UserListTaskResult> GetAppUsers(
-            BaseRequestRO baseRequestRO, 
+        public async Task<UsersResult> GetAppUsers(
+            BaseRequest baseRequestRO, 
             bool fullRecord = false) {
 
             return await AppsServiceUtilities
                 .RetrieveUsers(baseRequestRO, fullRecord, _context);
         }
 
-        public async Task<BaseTaskResult> UpdateApp(UpdateAppRO updateAppRO) {
+        public async Task<BaseResult> UpdateApp(AppRequest updateAppRO) {
 
-            var result = new BaseTaskResult();
+            var result = new BaseResult();
             
             try {
 
@@ -397,9 +397,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> AddAppUser(int userId, BaseRequestRO baseRequestRO) {
+        public async Task<BaseResult> AddAppUser(int userId, BaseRequest baseRequestRO) {
 
-            var result = new BaseTaskResult();
+            var result = new BaseResult();
 
             try {
 
@@ -433,9 +433,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> RemoveAppUser(int id, BaseRequestRO baseRequestRO) {
+        public async Task<BaseResult> RemoveAppUser(int id, BaseRequest baseRequestRO) {
 
-            var result = new BaseTaskResult();
+            var result = new BaseResult();
 
             try {
 
@@ -457,9 +457,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> DeleteApp(int id) {
+        public async Task<BaseResult> DeleteApp(int id) {
 
-            var result = new BaseTaskResult();
+            var result = new BaseResult();
 
             try {
 
@@ -483,9 +483,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> ActivateApp(int id) {
+        public async Task<BaseResult> ActivateApp(int id) {
 
-            var result = new BaseTaskResult();
+            var result = new BaseResult();
 
             try {
 
@@ -513,9 +513,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> DeactivateApp(int id) {
+        public async Task<BaseResult> DeactivateApp(int id) {
 
-            var result = new BaseTaskResult();
+            var result = new BaseResult();
 
             try {
 

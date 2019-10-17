@@ -28,11 +28,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id, 
-            [FromBody] BaseRequestRO baseRequestRO) {
+            [FromBody] BaseRequest baseRequest) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
 
                 var result = await _gamesService.GetGame(id);
 
@@ -55,14 +55,14 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
-            [FromBody] BaseRequestRO baseRequestRO, 
+            [FromBody] BaseRequest baseRequest, 
             [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
 
-                var result = await _gamesService.GetGames(baseRequestRO, fullRecord);
+                var result = await _gamesService.GetGames(baseRequest, fullRecord);
 
                 if (result.Success) {
 
@@ -84,11 +84,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpDelete("{id}")]
         public async Task<ActionResult<Game>> DeleteGame(
             int id,
-            [FromBody] BaseRequestRO baseRequestRO) {
+            [FromBody] BaseRequest baseRequest) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
 
                 var result = await _gamesService.DeleteGame(id);
 
@@ -112,19 +112,19 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(
             int id, 
-            [FromBody] UpdateGameRO updateGameRO) {
+            [FromBody] UpdateGameRequest updateGameRequest) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                updateGameRO.License,
-                updateGameRO.RequestorId)) {
+                updateGameRequest.License,
+                updateGameRequest.RequestorId)) {
 
-                if (id != updateGameRO.GameId) {
+                if (id != updateGameRequest.GameId) {
 
                     return BadRequest("Id is incorrect");
                 }
 
                 var result = 
-                    await _gamesService.UpdateGame(id, updateGameRO);
+                    await _gamesService.UpdateGame(id, updateGameRequest);
                 
                 if (result.Success) {
 
@@ -145,14 +145,14 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(
-            [FromBody] CreateGameRO createGameRO,
+            [FromBody] CreateGameRequest createGameRequest,
             [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                createGameRO.License,
-                createGameRO.RequestorId)) {
+                createGameRequest.License,
+                createGameRequest.RequestorId)) {
             
-                var result = await _gamesService.CreateGame(createGameRO, fullRecord);
+                var result = await _gamesService.CreateGame(createGameRequest, fullRecord);
 
                 if (result.Success) {
 
@@ -178,13 +178,13 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPut, Route("{id}/CheckGame")]
         public async Task<ActionResult<Game>> CheckGame(
             int id,
-            [FromBody] UpdateGameRO updateGameRO) {
+            [FromBody] UpdateGameRequest updateGameRequest) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                updateGameRO.License, 
-                updateGameRO.RequestorId)) {
+                updateGameRequest.License,
+                updateGameRequest.RequestorId)) {
 
-                var result = await _gamesService.CheckGame(id, updateGameRO);
+                var result = await _gamesService.CheckGame(id, updateGameRequest);
 
                 if (result.Success) {
                     
@@ -206,14 +206,14 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet, Route("{id}/GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame(
             int id,
-            [FromBody] GetMyGameRO getMyGameRO, 
+            [FromBody] GetMyGameRequest getMyGameRequest, 
             [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                getMyGameRO.License, 
-                getMyGameRO.RequestorId)) {
+                getMyGameRequest.License,
+                getMyGameRequest.RequestorId)) {
 
-                var result = await _gamesService.GetMyGame(getMyGameRO.UserId, id, fullRecord);
+                var result = await _gamesService.GetMyGame(getMyGameRequest.UserId, id, fullRecord);
 
                 if (result.Success) {
 
@@ -234,15 +234,15 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "USER")]
         [HttpGet, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            [FromBody] GetMyGameRO getMyGameRO,
+            [FromBody] GetMyGameRequest getMyGameRequest,
             [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                getMyGameRO.License, 
-                getMyGameRO.RequestorId)) {
+                getMyGameRequest.License,
+                getMyGameRequest.RequestorId)) {
 
                 var result = await _gamesService
-                    .GetMyGames(getMyGameRO.UserId, getMyGameRO, fullRecord);
+                    .GetMyGames(getMyGameRequest.UserId, getMyGameRequest, fullRecord);
 
                 if (result.Success) {
 
@@ -264,14 +264,14 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpDelete("{id}/DeleteMyGame")]
         public async Task<ActionResult<Game>> DeleteMyGame(
             int id,
-            [FromBody] GetMyGameRO getMyGameRO) {
+            [FromBody] GetMyGameRequest getMyGameRequest) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                getMyGameRO.License, 
-                getMyGameRO.RequestorId)) {
+                getMyGameRequest.License,
+                getMyGameRequest.RequestorId)) {
                 
                 var result = await _gamesService.DeleteMyGame(
-                    getMyGameRO.UserId, 
+                    getMyGameRequest.UserId, 
                     id);
 
                 if (result.Success) {

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -40,9 +40,9 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<App>> PostApp(
-            [FromBody] LicenseRequestRO licenseRequestRO) {
+            [FromBody] LicenseRequest licenseRequest) {
             
-            var result = await _appsService.CreateApp(licenseRequestRO);
+            var result = await _appsService.CreateApp(licenseRequest);
 
             if (result.Success) {
                 

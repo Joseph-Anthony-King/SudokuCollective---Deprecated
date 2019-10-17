@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
-using SudokuCollective.WebApi.Models.TaskModels;
-using SudokuCollective.WebApi.Models.TaskModels.RoleRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
+using SudokuCollective.WebApi.Models.ResultModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -23,10 +24,10 @@ namespace SudokuCollective.WebApi.Services {
             _context = context;
         }
 
-        public async Task<RoleTaskResult> GetRole(
+        public async Task<RoleResult> GetRole(
             int id, bool fullRecord = false) {
 
-            var roleTaskResult = new RoleTaskResult();
+            var roleTaskResult = new RoleResult();
 
             try {
 
@@ -93,10 +94,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<RoleListTaskResult> GetRoles(
+        public async Task<RolesResult> GetRoles(
             bool fullRecord = false) {
 
-            var roleListTaskResult = new RoleListTaskResult();
+            var roleListTaskResult = new RolesResult();
 
             try {
 
@@ -154,10 +155,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<RoleTaskResult> CreateRole(string name, 
+        public async Task<RoleResult> CreateRole(string name, 
             RoleLevel roleLevel) {
 
-            var roleTaskResult = new RoleTaskResult();
+            var roleTaskResult = new RoleResult();
 
             try {
 
@@ -179,9 +180,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> UpdateRole(int id, UpdateRoleRO updateRoleRO) {
+        public async Task<BaseResult> UpdateRole(int id, UpdateRoleRequest updateRoleRO) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
             
             try {
 
@@ -218,9 +219,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> DeleteRole(int id) {
+        public async Task<BaseResult> DeleteRole(int id) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 

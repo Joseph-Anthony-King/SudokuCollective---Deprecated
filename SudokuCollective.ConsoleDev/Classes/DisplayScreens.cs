@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 
 namespace SudokuCollective.ConsoleDev.Classes {
 

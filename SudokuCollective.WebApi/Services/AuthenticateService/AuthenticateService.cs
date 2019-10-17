@@ -5,11 +5,11 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SudokuCollective.WebApi.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using SudokuCollective.WebApi.Models.TokenModels;
 
 namespace SudokuCollective.WebApi.Services {
 

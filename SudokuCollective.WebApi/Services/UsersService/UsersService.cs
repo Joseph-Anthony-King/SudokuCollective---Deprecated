@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
-using SudokuCollective.WebApi.Models;
 using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.Pagination;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
-using SudokuCollective.WebApi.Models.TaskModels;
-using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
+using SudokuCollective.WebApi.Models.ResultModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -28,12 +28,12 @@ namespace SudokuCollective.WebApi.Services {
             _appsService = appsService;
         }
 
-        public async Task<UserTaskResult> GetUser(int id, bool fullRecord = false) {
+        public async Task<UserResult> GetUser(int id, bool fullRecord = false) {
 
             var createdDate = DateTime.UtcNow;
             var user = new User();
 
-            var userTaskResult = new UserTaskResult();
+            var userTaskResult = new UserResult();
 
             try {
 
@@ -115,13 +115,13 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<UserListTaskResult> GetUsers(
+        public async Task<UsersResult> GetUsers(
             PageListModel pageListModel, 
             bool fullRecord = false) {
 
             var users = new List<User>();
 
-            var userListTaskResult = new UserListTaskResult();
+            var userListTaskResult = new UsersResult();
 
             try {
 
@@ -201,15 +201,15 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<UserTaskResult> CreateUser(
-            RegisterRO registerRO,
+        public async Task<UserResult> CreateUser(
+            RegisterRequest registerRO,
             bool addAdmin = false) {
 
             var createdDate = DateTime.UtcNow;
             var user = new User();
             var app = new App();
 
-            var userTaskResult = new UserTaskResult();
+            var userTaskResult = new UserResult();
 
             try {
                 
@@ -309,10 +309,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<UserTaskResult> UpdateUser(
-            int id, UpdateUserRO updateUserRO) {
+        public async Task<UserResult> UpdateUser(
+            int id, UpdateUserRequest updateUserRO) {
 
-            var userTaskResult = new UserTaskResult();
+            var userTaskResult = new UserResult();
 
             try {
 
@@ -395,9 +395,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> UpdatePassword(int id, UpdatePasswordRO updatePasswordRO) {
+        public async Task<BaseResult> UpdatePassword(int id, UpdatePasswordRequest updatePasswordRO) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 
@@ -440,9 +440,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> DeleteUser(int id) {
+        public async Task<BaseResult> DeleteUser(int id) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 
@@ -491,9 +491,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> AddUserRoles(int id, List<int> roleIds) {
+        public async Task<BaseResult> AddUserRoles(int id, List<int> roleIds) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 
@@ -566,9 +566,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> RemoveUserRoles(int id, List<int> roleIds) {
+        public async Task<BaseResult> RemoveUserRoles(int id, List<int> roleIds) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 
@@ -607,9 +607,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> ActivateUser(int id) {
+        public async Task<BaseResult> ActivateUser(int id) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 
@@ -648,9 +648,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> DeactivateUser(int id) {
+        public async Task<BaseResult> DeactivateUser(int id) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 

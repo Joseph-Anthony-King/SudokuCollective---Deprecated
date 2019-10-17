@@ -1,4 +1,4 @@
-﻿using SudokuCollective.WebApi.Models;
+﻿using SudokuCollective.WebApi.Models.TokenModels;
 
 namespace SudokuCollective.WebApi.Services.Interfaces {
 

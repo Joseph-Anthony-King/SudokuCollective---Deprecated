@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
-using SudokuCollective.WebApi.Models;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.Enums;
+using SudokuCollective.WebApi.Models.Pagination;
 
 namespace SudokuCollective.WebApi.Services {
 

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
-using SudokuCollective.WebApi.Models.TaskModels;
-using SudokuCollective.WebApi.Models.TaskModels.DifficultyRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
+using SudokuCollective.WebApi.Models.ResultModels.DifficultyRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -22,10 +22,10 @@ namespace SudokuCollective.WebApi.Services {
             _context = context;
         }
 
-        public async Task<DifficultyTaskResult> GetDifficulty(
+        public async Task<DifficultyResult> GetDifficulty(
             int id, bool fullRecord = false) {
 
-            var difficultyTaskResult = new DifficultyTaskResult();
+            var difficultyTaskResult = new DifficultyResult();
 
             try {
 
@@ -88,10 +88,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<DifficultyListTaskResult> GetDifficulties(
+        public async Task<DifficultiesResult> GetDifficulties(
             bool fullRecord = false) {
 
-            var difficultyListTaskResult = new DifficultyListTaskResult();
+            var difficultyListTaskResult = new DifficultiesResult();
 
             try {
 
@@ -100,9 +100,9 @@ namespace SudokuCollective.WebApi.Services {
                 if (fullRecord) {
 
                     difficulties = await _context.Difficulties
+                        .Where(d => d.Id != 1 && d.Id != 2)
                         .OrderBy(d => d.Id)
                         .Include(d => d.Matrices)
-                        .Where(d => d.Id != 1 && d.Id != 2)
                         .ToListAsync();
 
                     difficultyListTaskResult.Success = true;
@@ -111,6 +111,7 @@ namespace SudokuCollective.WebApi.Services {
                 } else {
 
                     difficulties = await _context.Difficulties
+                        .Where(d => d.Id != 1 && d.Id != 2)
                         .OrderBy(d => d.Id)
                         .ToListAsync();
 
@@ -128,10 +129,10 @@ namespace SudokuCollective.WebApi.Services {
             }            
         }
 
-        public async Task<DifficultyTaskResult> CreateDifficulty(
+        public async Task<DifficultyResult> CreateDifficulty(
             string name, DifficultyLevel difficultyLevel) {
 
-            var difficultyTaskResult = new DifficultyTaskResult();
+            var difficultyTaskResult = new DifficultyResult();
 
             try {
 
@@ -156,10 +157,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> UpdateDifficulty(int id, 
-            UpdateDifficultyRO updateDifficultyRO) {
+        public async Task<BaseResult> UpdateDifficulty(int id, 
+            UpdateDifficultyRequest updateDifficultyRO) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 
@@ -195,9 +196,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseTaskResult> DeleteDifficulty(int id) {
+        public async Task<BaseResult> DeleteDifficulty(int id) {
 
-            var baseTaskResult = new BaseTaskResult();
+            var baseTaskResult = new BaseResult();
 
             try {
 

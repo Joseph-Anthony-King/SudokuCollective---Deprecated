@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
-using SudokuCollective.WebApi.Models;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.Enums;
+using SudokuCollective.WebApi.Models.Pagination;
 using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
+using SudokuCollective.WebApi.Models.ResultModels.UserRequests;
 
 namespace SudokuCollective.WebApi.Services {
 
@@ -114,12 +114,12 @@ namespace SudokuCollective.WebApi.Services {
             return result;
         }
 
-        internal static async Task<UserListTaskResult> RetrieveUsers(
-            BaseRequestRO baseRequestRO, 
+        internal static async Task<UsersResult> RetrieveUsers(
+            BaseRequest baseRequestRO, 
             bool fullRecord, 
             ApplicationDbContext context) {
 
-            var userListTaskResult = new UserListTaskResult();
+            var userListTaskResult = new UsersResult();
 
             try {
 

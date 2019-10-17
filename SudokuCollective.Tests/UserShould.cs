@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using SudokuCollective.Domain;
 using SudokuCollective.Domain.Interfaces;
+using SudokuCollective.Domain.Models;
 
 namespace SudokuCollective.Tests
 {

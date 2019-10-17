@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.Enums;
 using SudokuCollective.WebApi.Models.RequestModels;
@@ -13,7 +13,7 @@ namespace SudokuCollective.WebApi.Services {
     internal static class SolutionsServiceUtilities {
 
         internal static async Task<List<SudokuSolution>> RetrieveGames(
-            BaseRequestRO baseRequestRO, 
+            BaseRequest baseRequestRO, 
             ApplicationDbContext context,
             int userId = 0) {
 

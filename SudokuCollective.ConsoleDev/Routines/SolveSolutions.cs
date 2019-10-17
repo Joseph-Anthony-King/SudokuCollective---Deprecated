@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
-using SudokuCollective.Utilities;
 using SudokuCollective.ConsoleDev.Classes;
+using SudokuCollective.Domain.Models;
 
 namespace SudokuCollective.ConsoleDev.Routines {
 

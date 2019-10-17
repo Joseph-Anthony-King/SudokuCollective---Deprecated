@@ -1,27 +1,27 @@
 using System.Threading.Tasks;
-using SudokuCollective.WebApi.Models;
+using SudokuCollective.WebApi.Models.Pagination;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
-using SudokuCollective.WebApi.Models.TaskModels;
-using SudokuCollective.WebApi.Models.TaskModels.AppRequests;
-using SudokuCollective.WebApi.Models.TaskModels.UserRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
+using SudokuCollective.WebApi.Models.ResultModels.AppRequests;
+using SudokuCollective.WebApi.Models.ResultModels.UserRequests;
 
 namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IAppsService {
 
-        Task<AppTaskResult> GetApp(int id, bool fullRecord = false);
-        Task<AppListTaskResult> GetApps(PageListModel pageListModel, bool fullRecord = false);
-        Task<AppTaskResult> CreateApp(LicenseRequestRO licenseRequestRO);
-        Task<AppTaskResult> GetAppByLicense(string license, bool fullRecord = false);
-        Task<LicenseTaskResult> GetLicense(int id);
-        Task<UserListTaskResult> GetAppUsers(BaseRequestRO baseRequest, bool fullRecord = false);
-        Task<BaseTaskResult> UpdateApp(UpdateAppRO updateAppRO);
-        Task<BaseTaskResult> AddAppUser(int id, BaseRequestRO baseRequestRO);
-        Task<BaseTaskResult> RemoveAppUser(int id, BaseRequestRO baseRequestRO);
-        Task<BaseTaskResult> DeleteApp(int id);
-        Task<BaseTaskResult> ActivateApp(int id);
-        Task<BaseTaskResult> DeactivateApp(int id);
+        Task<AppResult> GetApp(int id, bool fullRecord = false);
+        Task<AppsResult> GetApps(PageListModel pageListModel, bool fullRecord = false);
+        Task<AppResult> CreateApp(LicenseRequest licenseRequestRO);
+        Task<AppResult> GetAppByLicense(string license, bool fullRecord = false);
+        Task<LicenseResut> GetLicense(int id);
+        Task<UsersResult> GetAppUsers(BaseRequest baseRequest, bool fullRecord = false);
+        Task<BaseResult> UpdateApp(AppRequest updateAppRO);
+        Task<BaseResult> AddAppUser(int id, BaseRequest baseRequestRO);
+        Task<BaseResult> RemoveAppUser(int id, BaseRequest baseRequestRO);
+        Task<BaseResult> DeleteApp(int id);
+        Task<BaseResult> ActivateApp(int id);
+        Task<BaseResult> DeactivateApp(int id);
         Task<bool> IsRequestValidOnThisLicense(string license, int userId);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 
 namespace SudokuCollective.Utilities {
 

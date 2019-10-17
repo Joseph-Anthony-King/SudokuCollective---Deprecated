@@ -14,6 +14,7 @@ using SudokuCollective.WebApi.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Services.Interfaces;
 using SudokuCollective.WebApi.Services;
+using SudokuCollective.WebApi.Models.TokenModels;
 
 namespace SudokuCollective.WebApi {
 

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 
 namespace SudokuCollective.WebApi.Models.DataModel {
 

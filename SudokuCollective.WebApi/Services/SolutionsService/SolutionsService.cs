@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
-using SudokuCollective.Utilities;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
-using SudokuCollective.WebApi.Models.TaskModels.SolutionRequests;
+using SudokuCollective.WebApi.Models.ResultModels.SolutionRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -23,10 +22,10 @@ namespace SudokuCollective.WebApi.Services {
             _context = context;
         }
 
-        public async Task<SolutionTaskResult> GetSolution(
+        public async Task<SolutionResult> GetSolution(
             int id, bool fullRecord = false) {
 
-            var solutionTaskResult = new SolutionTaskResult();
+            var solutionTaskResult = new SolutionResult();
 
             try {
 
@@ -84,12 +83,12 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<SolutionListTaskResult> GetSolutions(
-            BaseRequestRO baseRequestRO,
+        public async Task<SolutionsResult> GetSolutions(
+            BaseRequest baseRequestRO,
             bool fullRecord = false,
             int userId = 0) {
 
-            var solutionListTaskResult = new SolutionListTaskResult();
+            var solutionListTaskResult = new SolutionsResult();
 
             try {
 
@@ -139,10 +138,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<SolutionTaskResult> Solve(
-            SolveRequestsRO solveRequestsRO) {
+        public async Task<SolutionResult> Solve(
+            SolveRequest solveRequestsRO) {
 
-            var solutionTaskResult = new SolutionTaskResult();
+            var solutionTaskResult = new SolutionResult();
 
             try {
 
@@ -242,9 +241,9 @@ namespace SudokuCollective.WebApi.Services {
             }
         }        
 
-        public async Task<SolutionTaskResult> Generate() {
+        public async Task<SolutionResult> Generate() {
 
-            var solutionTaskResult = new SolutionTaskResult();
+            var solutionTaskResult = new SolutionResult();
             
             var continueLoop = true;
 

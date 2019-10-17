@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
@@ -29,12 +29,12 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>> GetRole(
             int id, 
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License,
+                baseRequest.RequestorId)) {
 
                 var result = await _rolesService.GetRole(id, fullRecord);
 
@@ -57,12 +57,12 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoles(
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License,
+                baseRequest.RequestorId)) {
 
                 var result = await _rolesService.GetRoles(fullRecord);
 
@@ -86,18 +86,18 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRole(
             int id,
-            [FromBody] UpdateRoleRO updateRoleRO) {
+            [FromBody] UpdateRoleRequest updateRoleRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                updateRoleRO.License, 
-                updateRoleRO.RequestorId)) {
+                updateRoleRequest.License,
+                updateRoleRequest.RequestorId)) {
 
-                if (id != updateRoleRO.Id) {
+                if (id != updateRoleRequest.Id) {
 
                     return BadRequest("Invalid Request: Role Id Incorrect");
                 }
                 
-                var result = await _rolesService.UpdateRole(id, updateRoleRO);
+                var result = await _rolesService.UpdateRole(id, updateRoleRequest);
                 
                 if (result.Success) {
 
@@ -118,14 +118,14 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER")]
         [HttpPost]
         public async Task<ActionResult<Role>> PostRole(
-            [FromBody] CreateRoleRO createRoleRO) {
+            [FromBody] CreateRoleRequest createRoleRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                createRoleRO.License, 
-                createRoleRO.RequestorId)) {
+                createRoleRequest.License,
+                createRoleRequest.RequestorId)) {
             
                 var result = await _rolesService
-                    .CreateRole(createRoleRO.Name, createRoleRO.RoleLevel);
+                    .CreateRole(createRoleRequest.Name, createRoleRequest.RoleLevel);
 
                 if (result.Success) {
                     
@@ -149,11 +149,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Role>> DeleteRole(
-            int id, [FromBody] BaseRequestRO baseRequestRO) {
+            int id, [FromBody] BaseRequest baseRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License,
+                baseRequest.RequestorId)) {
 
                 var result = await _rolesService.DeleteRole(id);
                 

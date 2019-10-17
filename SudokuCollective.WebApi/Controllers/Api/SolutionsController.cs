@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
@@ -29,12 +29,12 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet("{id}")]
         public async Task<ActionResult<SudokuSolution>> GetSolution(
             int id,
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License,
+                baseRequest.RequestorId)) {
 
                 var result = await _solutionService.GetSolution(id, fullRecord);
 
@@ -57,16 +57,16 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SudokuSolution>>>  GetSolutions(
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false,
             [FromQuery] int userId = 0) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License,
+                baseRequest.RequestorId)) {
 
                 var result = await _solutionService
-                    .GetSolutions(baseRequestRO, fullRecord, userId);
+                    .GetSolutions(baseRequest, fullRecord, userId);
 
                 if (result.Success) {
 
@@ -87,13 +87,13 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<SudokuSolution>> Solve(
-            [FromBody] SolveRequestsRO solveRequestsRO) {
+            [FromBody] SolveRequest solveRequest) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                solveRequestsRO.License, 
-                solveRequestsRO.RequestorId)) {
+                solveRequest.License,
+                solveRequest.RequestorId)) {
 
-                var result = await _solutionService.Solve(solveRequestsRO);
+                var result = await _solutionService.Solve(solveRequest);
 
                 if (result.Success) {
 
@@ -114,11 +114,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("Generate")]
         public async Task<ActionResult<SudokuSolution>> Generate(
-            [FromBody] SolveRequestsRO solveRequestsRO) {
+            [FromBody] SolveRequest solveRequest) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                solveRequestsRO.License, 
-                solveRequestsRO.RequestorId)) {
+                solveRequest.License,
+                solveRequest.RequestorId)) {
 
                 var result = await _solutionService.Generate();
 

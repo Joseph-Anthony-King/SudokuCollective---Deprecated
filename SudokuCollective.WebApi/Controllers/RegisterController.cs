@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -21,7 +21,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<User>> SignUp(
-            [FromBody] RegisterRO registerRO,
+            [FromBody] RegisterRequest registerRO,
             [FromQuery] bool addAdmin = false) {
             
             var result = await _usersService.CreateUser(registerRO, addAdmin);

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
@@ -30,12 +30,12 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(
             int id, 
-            [FromBody] BaseRequestRO baseRequestRO, 
+            [FromBody] BaseRequest baseRequest, 
             [FromQuery] bool fullRecord = false) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License,
+                baseRequest.RequestorId)) {
 
                 var result = await _userService.GetUser(id, fullRecord);
 
@@ -58,14 +58,14 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License,
+                baseRequest.RequestorId)) {
 
-                var result = await _userService.GetUsers(baseRequestRO.PageListModel, fullRecord);
+                var result = await _userService.GetUsers(baseRequest.PageListModel, fullRecord);
 
                 if (result.Success) {
 
@@ -86,13 +86,13 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(
-            int id, [FromBody] UpdateUserRO updateUserRO) {
+            int id, [FromBody] UpdateUserRequest updateUserRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                updateUserRO.License, 
-                updateUserRO.RequestorId)) {
+                updateUserRequest.License,
+                updateUserRequest.RequestorId)) {
             
-                var result = await _userService.UpdateUser(id, updateUserRO);
+                var result = await _userService.UpdateUser(id, updateUserRequest);
 
                 if (result.Success) {
 
@@ -113,13 +113,13 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "USER")]
         [HttpPut("{id}/UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(
-            int id, [FromBody] UpdatePasswordRO updatePasswordRO) {
+            int id, [FromBody] UpdatePasswordRequest updatePasswordRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                updatePasswordRO.License, 
-                updatePasswordRO.RequestorId)) {
+                updatePasswordRequest.License,
+                updatePasswordRequest.RequestorId)) {
 
-                var result = await _userService.UpdatePassword(id, updatePasswordRO);
+                var result = await _userService.UpdatePassword(id, updatePasswordRequest);
 
                 if (result.Success) {
 
@@ -140,11 +140,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(
-            int id, [FromBody] BaseRequestRO baseRequestRO) {
+            int id, [FromBody] BaseRequest baseRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License,
+                baseRequest.RequestorId)) {
             
                 var result = await _userService.DeleteUser(id);
 
@@ -168,15 +168,15 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpPost, Route("{id}/AddRoles")]
         public async Task<IActionResult> AddRoles(
             int id,
-            [FromBody] UpdateUserRolesRO updateUserRolesRO) {
+            [FromBody] UpdateUserRoleRequest updateUserRoleRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                updateUserRolesRO.License, 
-                updateUserRolesRO.RequestorId)) {
+                updateUserRoleRequest.License,
+                updateUserRoleRequest.RequestorId)) {
             
                 var result = await _userService.AddUserRoles(
                     id,
-                    updateUserRolesRO.RoleIds.ToList());
+                    updateUserRoleRequest.RoleIds.ToList());
 
                 if (result.Success) {
 
@@ -198,15 +198,15 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpDelete, Route("{id}/RemoveRoles")]
         public async Task<IActionResult> RemoveRoles(
             int id,
-            [FromBody] UpdateUserRolesRO updateUserRolesRO) {
+            [FromBody] UpdateUserRoleRequest updateUserRoleRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                updateUserRolesRO.License, 
-                updateUserRolesRO.RequestorId)) {
+                updateUserRoleRequest.License,
+                updateUserRoleRequest.RequestorId)) {
             
                 var result = await _userService.RemoveUserRoles(
-                    id, 
-                    updateUserRolesRO.RoleIds.ToList());
+                    id,
+                    updateUserRoleRequest.RoleIds.ToList());
 
                 if (result.Success) {
 

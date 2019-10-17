@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
@@ -29,12 +29,12 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet("{id}")]
         public async Task<ActionResult<Difficulty>> GetDifficulty(
             int id, 
-            [FromBody] BaseRequestRO baseRequestRO, 
+            [FromBody] BaseRequest baseRequest, 
             [FromQuery] bool fullRecord = false) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
 
                 var result = await _difficultiesService.GetDifficulty(id, fullRecord);
 
@@ -57,11 +57,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
-            [FromBody] BaseRequestRO baseRequestRO, [FromQuery] bool fullRecord = false) {
+            [FromBody] BaseRequest baseRequest, [FromQuery] bool fullRecord = false) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
 
                 var result = await _difficultiesService.GetDifficulties(fullRecord);
 
@@ -84,18 +84,18 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDifficulty(int id, 
-            [FromBody] UpdateDifficultyRO updateDifficultyRO) {
+            [FromBody] UpdateDifficultyRequest updateDifficultyRequest) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                updateDifficultyRO.License, 
-                updateDifficultyRO.RequestorId)) {
+                updateDifficultyRequest.License,
+                updateDifficultyRequest.RequestorId)) {
 
-                if (id != updateDifficultyRO.Id) {
+                if (id != updateDifficultyRequest.Id) {
 
                     return BadRequest("Invalid Request: Difficulty Id Incorrect");
                 }
                 
-                var result = await _difficultiesService.UpdateDifficulty(id, updateDifficultyRO);
+                var result = await _difficultiesService.UpdateDifficulty(id, updateDifficultyRequest);
 
                 if (result.Success) {
 
@@ -116,14 +116,14 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER")]
         [HttpPost]
         public async Task<ActionResult<Difficulty>> PostDifficulty(
-            [FromBody] CreateDifficultyRO createDifficultyRO) {
+            [FromBody] CreateDifficultyRequest createDifficultyRequest) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                createDifficultyRO.License, 
-                createDifficultyRO.RequestorId)) {  
+                createDifficultyRequest.License,
+                createDifficultyRequest.RequestorId)) {  
             
                 var result = await _difficultiesService
-                    .CreateDifficulty(createDifficultyRO.Name, createDifficultyRO.DifficultyLevel);
+                    .CreateDifficulty(createDifficultyRequest.Name, createDifficultyRequest.DifficultyLevel);
 
                 if (result.Success) {
 
@@ -147,11 +147,11 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteDifficulty(int id, 
-            [FromBody] BaseRequestRO baseRequestRO) {
+            [FromBody] BaseRequest baseRequest) {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
 
                 var result = await _difficultiesService.DeleteDifficulty(id);
 

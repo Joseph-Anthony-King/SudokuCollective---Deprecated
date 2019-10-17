@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
-    
+
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/[controller]")]
     [ApiController]
@@ -26,12 +26,12 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpGet, Route("{id}")]
         public async Task<ActionResult<App>> GetApp(
             int id,
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
                 
                 var result = await _appsService.GetApp(id, fullRecord);
 
@@ -54,15 +54,15 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet, Route("GetByLicense")]
         public async Task<ActionResult<App>> GetAppByLicense(
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
                 
                 var result = await _appsService
-                    .GetAppByLicense(baseRequestRO.License, fullRecord);
+                    .GetAppByLicense(baseRequest.License, fullRecord);
 
                 if (result.Success) {
 
@@ -83,15 +83,15 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<App>>> GetApps(
-            [FromBody] BaseRequestRO baseRequestRO,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
                 
                 var result = await _appsService
-                    .GetApps(baseRequestRO.PageListModel, fullRecord);
+                    .GetApps(baseRequest.PageListModel, fullRecord);
 
                 if (result.Success) {
 
@@ -112,13 +112,13 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut]
         public async Task<IActionResult> UpdateApp(
-            [FromBody] UpdateAppRO updateAppRO) {
+            [FromBody] AppRequest appRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
-                updateAppRO.License, 
-                updateAppRO.RequestorId)) {
+                appRequest.License,
+                appRequest.RequestorId)) {
                 
-                var result = await _appsService.UpdateApp(updateAppRO);
+                var result = await _appsService.UpdateApp(appRequest);
 
                 if (result.Success) {
 
@@ -139,7 +139,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet, Route("GetUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
-            [FromBody] BaseRequestRO baseRequest,
+            [FromBody] BaseRequest baseRequest,
             [FromQuery] bool fullRecord = false) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
@@ -167,13 +167,13 @@ namespace SudokuCollective.WebApi.Controllers {
         // PUT: api/Apps/AddUser/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut, Route("AddUser/{userId}")]
-        public async Task<IActionResult> AddUser(int userId, BaseRequestRO baseRequestRO) {
+        public async Task<IActionResult> AddUser(int userId, BaseRequest baseRequest) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
 
-                var result = await _appsService.AddAppUser(userId, baseRequestRO);
+                var result = await _appsService.AddAppUser(userId, baseRequest);
 
                 if (result.Success) {
 
@@ -193,13 +193,13 @@ namespace SudokuCollective.WebApi.Controllers {
         // DELETE: api/Apps/RemoveUser/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete, Route("RemoveUser/{userId}")]
-        public async Task<IActionResult> RemoveUser(int userId, BaseRequestRO baseRequestRO) {
+        public async Task<IActionResult> RemoveUser(int userId, BaseRequest baseRequest) {
 
             if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequestRO.License, 
-                baseRequestRO.RequestorId)) {
+                baseRequest.License, 
+                baseRequest.RequestorId)) {
 
-                var result = await _appsService.RemoveAppUser(userId, baseRequestRO);
+                var result = await _appsService.RemoveAppUser(userId, baseRequest);
 
                 if (result.Success) {
 

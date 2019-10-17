@@ -1,7 +1,7 @@
 ﻿using System;
 using SudokuCollective.ConsoleDev.Classes;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
+using SudokuCollective.Domain.Models;
 
 namespace SudokuCollective.ConsoleDev.Routines {
 

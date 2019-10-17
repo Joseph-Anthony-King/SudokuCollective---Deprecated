@@ -1,10 +1,10 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuCollective.Utilities;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Interfaces;
+using SudokuCollective.Domain.Models;
+using SudokuCollective.Domain.Utilities;
 
 namespace SudokuCollective.Tests {
 
