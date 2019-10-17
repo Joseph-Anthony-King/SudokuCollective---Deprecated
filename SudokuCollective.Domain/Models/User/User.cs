@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Interfaces;
 
 namespace SudokuCollective.Domain.Models {
@@ -115,6 +116,21 @@ namespace SudokuCollective.Domain.Models {
             Email = email;
             Password = password;
             IsActive = isActive;
+        }
+
+        public bool IsSuperUser() {
+
+            var result = false;
+            
+            foreach (var role in Roles) {
+
+                if (role.Role.RoleLevel == RoleLevel.SUPERUSER) {
+
+                    result = true;
+                }
+            }
+
+            return result;
         }
 
         public void ActivateUser() {

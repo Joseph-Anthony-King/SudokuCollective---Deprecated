@@ -190,5 +190,18 @@ namespace SudokuCollective.Tests.TestCases.Models {
             // Assert
             Assert.That(sut.UserName, Is.Empty);
         }
+
+        [Test]
+        [Category("Models")]
+        public void ProvideSuperUserStatus() {
+
+            // Arrange
+            var sut = new User();
+
+            // Act
+
+            // Assert
+            Assert.That(sut.IsSuperUser(), Is.False);
+        }
     }
 }

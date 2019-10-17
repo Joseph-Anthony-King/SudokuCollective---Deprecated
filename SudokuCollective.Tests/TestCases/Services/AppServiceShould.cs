@@ -368,14 +368,17 @@ namespace SudokuCollective.Tests.TestCases.Services {
                 .Select(a => a.License)
                 .FirstOrDefault();
 
+            var superUser = _context.Users.Where(user => user.Id == 1).FirstOrDefault();
+
             // Act
             var superUserIsInApp = newAppResult.App.Users
-                .Any(ua => ua.UserId == 1);
+                .Any(ua => ua.UserId == superUser.Id);
 
-            var result = await sut.IsRequestValidOnThisLicense(license, 1);
+            var result = await sut.IsRequestValidOnThisLicense(license, superUser.Id);
 
             // Assert
             Assert.That(superUserIsInApp, Is.False);
+            Assert.That(superUser.IsSuperUser(), Is.True);
             Assert.That(result, Is.True);
         }
     }
