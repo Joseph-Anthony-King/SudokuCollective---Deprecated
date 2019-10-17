@@ -375,8 +375,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
             var result = await sut.IsRequestValidOnThisLicense(license, 1);
 
             // Assert
-            Assert.That(result, Is.True);
             Assert.That(superUserIsInApp, Is.False);
+            Assert.That(result, Is.True);
         }
     }
 }
