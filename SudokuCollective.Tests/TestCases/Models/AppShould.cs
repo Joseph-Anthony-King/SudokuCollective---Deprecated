@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Interfaces;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests{
+namespace SudokuCollective.Tests.TestCases.Models {
 
     public class AppShould {
 

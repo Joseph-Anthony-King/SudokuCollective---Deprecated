@@ -7,9 +7,9 @@ namespace SudokuCollective.WebApi.Services {
 
     public class UserManagementService : IUserManagementService {
 
-        private readonly ApplicationDbContext _context;
+        private readonly DatabaseContext _context;
 
-        public UserManagementService(ApplicationDbContext context) {
+        public UserManagementService(DatabaseContext context) {
 
             _context = context;
         }

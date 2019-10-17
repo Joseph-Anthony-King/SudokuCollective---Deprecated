@@ -32,5 +32,21 @@ namespace SudokuCollective.WebApi.Models.PageModels {
             OrderByDescending = orderByDescending;
             IncludeCompletedGames = includeCompletedGames;
         }
+
+        public bool IsNull() {
+
+            var result = false;
+
+            if (Page == 0 
+                && ItemsPerPage == 0 
+                && SortBy == SortValue.NULL 
+                && OrderByDescending == false 
+                && IncludeCompletedGames == false) {
+
+                result = true;
+            }
+
+            return result;
+        }
     }
 }

@@ -9,12 +9,12 @@ using SudokuCollective.Domain.Models;
 
 namespace SudokuCollective.WebApi.Models.DataModel {
 
-    public class ApplicationDbContext : DbContext {
+    public class DatabaseContext : DbContext {
         
         private readonly IConfiguration configuration;
 
-        public ApplicationDbContext(
-                DbContextOptions<ApplicationDbContext> options,
+        public DatabaseContext(
+                DbContextOptions<DatabaseContext> options,
                 IConfiguration iConfigService
             ) : base(options) {
 
@@ -31,9 +31,6 @@ namespace SudokuCollective.WebApi.Models.DataModel {
         public DbSet<SudokuSolution> SudokuSolutions { get; set; }
         public DbSet<App> Apps { get; set; }
         public DbSet<UserApp> UsersApps { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
-            => optionsBuilder.UseNpgsql(configuration.GetValue<string>("ConnectionStrings:DatabaseConnection"));
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 

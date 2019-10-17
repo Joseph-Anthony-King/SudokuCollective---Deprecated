@@ -17,12 +17,12 @@ namespace SudokuCollective.WebApi.Services {
 
     public class GamesService : IGamesService {
 
-        private readonly ApplicationDbContext _context;
+        private readonly DatabaseContext _context;
         private readonly IUsersService _userService;
         private readonly IDifficultiesService _difficultiesService;
 
         public GamesService(
-            ApplicationDbContext context,
+            DatabaseContext context,
             IUsersService usersService,
             IDifficultiesService difficultiesService,
             IAppsService appsService) {

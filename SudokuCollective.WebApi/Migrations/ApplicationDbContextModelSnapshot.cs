@@ -8,7 +8,7 @@ using SudokuCollective.WebApi.Models.DataModel;
 
 namespace SudokuCollective.WebApi.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(DatabaseContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

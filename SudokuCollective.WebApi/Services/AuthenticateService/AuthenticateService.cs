@@ -15,12 +15,12 @@ namespace SudokuCollective.WebApi.Services {
 
     public class AuthenticateService : IAuthenticateService {
 
-        private readonly ApplicationDbContext _context;
+        private readonly DatabaseContext _context;
         private readonly IUserManagementService _userManagementService;
         private readonly TokenManagement _tokenManagement;
 
         public AuthenticateService(
-            ApplicationDbContext context,
+            DatabaseContext context,
             IUserManagementService service,
             IOptions<TokenManagement> tokenManagment) {
 

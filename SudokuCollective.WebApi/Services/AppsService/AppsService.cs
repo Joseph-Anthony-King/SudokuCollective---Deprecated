@@ -19,9 +19,9 @@ namespace SudokuCollective.WebApi.Services {
 
     public class AppsService : IAppsService {
 
-        private readonly ApplicationDbContext _context;
+        private readonly DatabaseContext _context;
 
-        public AppsService(ApplicationDbContext context) {
+        public AppsService(DatabaseContext context) {
 
             _context = context;
         }

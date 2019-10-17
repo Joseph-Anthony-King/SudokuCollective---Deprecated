@@ -3,7 +3,7 @@ using NUnit.Framework;
 using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests {
+namespace SudokuCollective.Tests.TestCases.Models {
 
     public class SudokuSolverShould {
 

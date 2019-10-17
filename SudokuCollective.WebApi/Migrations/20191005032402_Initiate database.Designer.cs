@@ -9,7 +9,7 @@ using SudokuCollective.WebApi.Models.DataModel;
 
 namespace SudokuCollective.WebApi.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(DatabaseContext))]
     [Migration("20191005032402_Initiate database")]
     partial class Initiatedatabase
     {

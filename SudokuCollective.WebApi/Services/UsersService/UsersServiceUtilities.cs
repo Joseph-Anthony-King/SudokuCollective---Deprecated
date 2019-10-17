@@ -12,7 +12,7 @@ namespace SudokuCollective.WebApi.Services {
     internal static class UsersServiceUtilities {
 
         internal static async Task<List<User>> RetrieveUsers(
-            PageListModel pageListModel, ApplicationDbContext context) {
+            PageListModel pageListModel, DatabaseContext context) {
 
             var result = new List<User>();
 

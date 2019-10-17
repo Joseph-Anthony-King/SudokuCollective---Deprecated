@@ -15,9 +15,9 @@ namespace SudokuCollective.WebApi.Services {
 
     public class DifficultiesService : IDifficultiesService {
 
-        private readonly ApplicationDbContext _context;
+        private readonly DatabaseContext _context;
 
-        public DifficultiesService(ApplicationDbContext context) {
+        public DifficultiesService(DatabaseContext context) {
 
             _context = context;
         }

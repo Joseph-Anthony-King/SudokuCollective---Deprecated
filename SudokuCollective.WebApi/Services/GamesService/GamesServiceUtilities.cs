@@ -13,7 +13,7 @@ namespace SudokuCollective.WebApi.Services {
 
         internal static async Task<List<Game>> RetrieveGames(
             PageListModel pageListModel, 
-            ApplicationDbContext context,
+            DatabaseContext context,
             int userId = 0) {
 
             var result = new List<Game>();

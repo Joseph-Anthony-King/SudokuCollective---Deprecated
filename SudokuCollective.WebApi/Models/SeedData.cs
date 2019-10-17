@@ -18,7 +18,7 @@ namespace SudokuCollective.WebApi.Models {
                 
                 var createdDate = DateTime.UtcNow;
 
-                ApplicationDbContext context = servicesScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                DatabaseContext context = servicesScope.ServiceProvider.GetRequiredService<DatabaseContext>();
                 context.Database.Migrate();
 
                 if (!context.Roles.Any()) {

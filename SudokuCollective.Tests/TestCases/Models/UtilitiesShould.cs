@@ -3,7 +3,7 @@ using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Utilities;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests {
+namespace SudokuCollective.Tests.TestCases.Models {
 
     public class UtilitiesShould {
 

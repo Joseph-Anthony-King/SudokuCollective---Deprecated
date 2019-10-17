@@ -5,7 +5,7 @@ namespace SudokuCollective.WebApi.Models.ResultModels.AppRequests {
 
     public class AppsResult : BaseResult {
         
-        public IEnumerable<App> Apps { get; set; }
+        public List<App> Apps { get; set; }
 
         public AppsResult() : base() {
 

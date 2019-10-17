@@ -5,7 +5,7 @@ using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Interfaces;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests {
+namespace SudokuCollective.Tests.TestCases.Models {
 
     public class GameShould {
 

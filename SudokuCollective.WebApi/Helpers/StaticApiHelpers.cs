@@ -11,7 +11,7 @@ namespace SudokuCollective.WebApi.Helpers {
 
         public async static Task<SudokuMatrix> AttachSudokuMatrix(
             Game game, 
-            ApplicationDbContext context) {
+            DatabaseContext context) {
                     
                 var sudokuMatrix = await context.SudokuMatrices
                     .Where(m => m.Id == game.SudokuMatrixId)

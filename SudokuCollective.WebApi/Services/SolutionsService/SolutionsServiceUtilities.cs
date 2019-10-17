@@ -14,7 +14,7 @@ namespace SudokuCollective.WebApi.Services {
 
         internal static async Task<List<SudokuSolution>> RetrieveGames(
             BaseRequest baseRequestRO, 
-            ApplicationDbContext context,
+            DatabaseContext context,
             int userId = 0) {
 
             var result = new List<SudokuSolution>();

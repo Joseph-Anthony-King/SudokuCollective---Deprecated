@@ -15,11 +15,11 @@ namespace SudokuCollective.WebApi.Services {
     internal static class AppsServiceUtilities {
 
         internal static async Task<List<App>> RetrieveApps(
-            PageListModel pageListModel, ApplicationDbContext context) {
+            PageListModel pageListModel, DatabaseContext context) {
 
             var result = new List<App>();
 
-            if (pageListModel == null) {
+            if (pageListModel.IsNull()) {
 
                 result = await context.Apps
                     .OrderBy(a => a.Id)
@@ -117,7 +117,7 @@ namespace SudokuCollective.WebApi.Services {
         internal static async Task<UsersResult> RetrieveUsers(
             BaseRequest baseRequestRO, 
             bool fullRecord, 
-            ApplicationDbContext context) {
+            DatabaseContext context) {
 
             var userListTaskResult = new UsersResult();
 

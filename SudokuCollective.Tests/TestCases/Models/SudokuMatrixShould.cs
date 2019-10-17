@@ -6,7 +6,7 @@ using SudokuCollective.Domain.Interfaces;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.Domain.Utilities;
 
-namespace SudokuCollective.Tests {
+namespace SudokuCollective.Tests.TestCases.Models {
 
     public class SudokuMatrixShould {
 

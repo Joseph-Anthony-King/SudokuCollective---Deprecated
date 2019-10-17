@@ -17,9 +17,9 @@ namespace SudokuCollective.WebApi.Services {
 
     public class RolesService : IRolesService {
 
-        private readonly ApplicationDbContext _context;
+        private readonly DatabaseContext _context;
 
-        public RolesService(ApplicationDbContext context) {
+        public RolesService(DatabaseContext context) {
 
             _context = context;
         }
