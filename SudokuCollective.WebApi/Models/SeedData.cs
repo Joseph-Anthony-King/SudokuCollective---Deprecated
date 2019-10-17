@@ -123,7 +123,7 @@ namespace SudokuCollective.WebApi.Models {
                         new Difficulty {
 
                             Name = "Hard",
-                            DisplayName = "Mighty Mountain lion",
+                            DisplayName = "Mighty Mountain Lion",
                             DifficultyLevel = DifficultyLevel.HARD
                         }
                     );

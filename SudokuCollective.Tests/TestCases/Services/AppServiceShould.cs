@@ -29,7 +29,24 @@ namespace SudokuCollective.Tests.TestCases.Services {
             var result = await sut.GetApp(1);
 
             // Assert
+            Assert.That(result.Success, Is.True);
             Assert.That(result.App, Is.TypeOf<App>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task GetAppByIDReturnsFalseIfNotFound()
+        {
+
+            // Arrange
+            var sut = new AppsService(_context);
+
+            // Act
+            var result = await sut.GetApp(3);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.App.IsActive, Is.False);
         }
 
         [Test]
@@ -43,6 +60,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             var result = await sut.GetApps(new PageListModel());
 
             // Assert
+            Assert.That(result.Success, Is.True);
             Assert.That(result.Apps.Count, Is.EqualTo(2));
         }
     }
