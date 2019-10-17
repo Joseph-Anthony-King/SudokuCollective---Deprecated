@@ -14,7 +14,7 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
         Task<AppsResult> GetApps(PageListModel pageListModel, bool fullRecord = false);
         Task<AppResult> CreateApp(LicenseRequest licenseRequestRO);
         Task<AppResult> GetAppByLicense(string license, bool fullRecord = false);
-        Task<LicenseResut> GetLicense(int id);
+        Task<LicenseResult> GetLicense(int id);
         Task<UsersResult> GetAppUsers(BaseRequest baseRequest, bool fullRecord = false);
         Task<BaseResult> UpdateApp(AppRequest updateAppRO);
         Task<BaseResult> AddAppUser(int id, BaseRequest baseRequestRO);

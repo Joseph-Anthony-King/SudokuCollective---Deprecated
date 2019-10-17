@@ -30,7 +30,7 @@ namespace SudokuCollective.WebApi.Services {
 
             var createdDate = DateTime.UtcNow;
 
-            var appTaskResult = new AppResult();
+            var appResult = new AppResult();
 
             try {
 
@@ -46,9 +46,9 @@ namespace SudokuCollective.WebApi.Services {
 
                         if (app == null) {
 
-                            appTaskResult.Message = "App not found";
+                            appResult.Message = "App not found";
 
-                            return appTaskResult;
+                            return appResult;
                         }
 
                         foreach (var user in app.Users) {
@@ -77,9 +77,9 @@ namespace SudokuCollective.WebApi.Services {
 
                         if (app == null) {
 
-                            appTaskResult.Message = "App not found";
+                            appResult.Message = "App not found";
 
-                            return appTaskResult;
+                            return appResult;
                         }
 
                         foreach (var user in app.Users) {
@@ -89,17 +89,21 @@ namespace SudokuCollective.WebApi.Services {
                         }
                     }
 
-                    appTaskResult.Success = true;
-                    appTaskResult.App = app;
+                    appResult.Success = true;
+                    appResult.App = app;
+
+                } else {
+
+                    appResult.Message = "App not found";
                 }
 
-                return appTaskResult;
+                return appResult;
 
             } catch (Exception e) {
 
-                appTaskResult.Message = e.Message;
+                appResult.Message = e.Message;
 
-                return appTaskResult;
+                return appResult;
             }
         }
 
@@ -163,13 +167,13 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<AppResult> CreateApp(LicenseRequest licenseRequestRO) {
+        public async Task<AppResult> CreateApp(LicenseRequest licenseRequest) {
 
-            var appTaskResult = new AppResult();
+            var appResult = new AppResult();
 
             try {
 
-                if (_context.Users.Any(u => u.Id == licenseRequestRO.OwnerId)) {
+                if (_context.Users.Any(u => u.Id == licenseRequest.OwnerId)) {
 
                     var generatingGuid = true;
                     var license = new Guid();
@@ -189,7 +193,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     var owner = await _context.Users
                         .Include(u => u.Roles)
-                        .FirstOrDefaultAsync(predicate: u => u.Id == licenseRequestRO.OwnerId);
+                        .FirstOrDefaultAsync(predicate: u => u.Id == licenseRequest.OwnerId);
 
                     foreach (var userRole in owner.Roles) {
 
@@ -198,11 +202,11 @@ namespace SudokuCollective.WebApi.Services {
                     }
 
                     var app = new App(
-                        licenseRequestRO.Name, 
+                        licenseRequest.Name, 
                         license.ToString(), 
-                        licenseRequestRO.OwnerId, 
-                        licenseRequestRO.DevUrl, 
-                        licenseRequestRO.LiveUrl);
+                        licenseRequest.OwnerId, 
+                        licenseRequest.DevUrl, 
+                        licenseRequest.LiveUrl);
 
                     _context.Apps.Add(app);
                     await _context.SaveChangesAsync();
@@ -243,23 +247,27 @@ namespace SudokuCollective.WebApi.Services {
                         await _context.SaveChangesAsync();
                     }
                     
-                    appTaskResult.Success = true;                        
-                    appTaskResult.App = app;
+                    appResult.Success = true;                        
+                    appResult.App = app;
+
+                } else {
+
+                    appResult.Message = "Intended owner id does not exist";
                 }
-                
-                return appTaskResult;
+
+                return appResult;
 
             } catch (Exception e) {
 
-                appTaskResult.Message = e.Message;
+                appResult.Message = e.Message;
 
-                return appTaskResult;
+                return appResult;
             }
         }
         
         public async Task<AppResult> GetAppByLicense(string license, bool fullRecord = false) {
 
-            var appTaskResult = new AppResult();
+            var appResult = new AppResult();
 
             try {
 
@@ -275,9 +283,9 @@ namespace SudokuCollective.WebApi.Services {
 
                         if (app == null) {
 
-                            appTaskResult.Message = "App not found";
+                            appResult.Message = "App not found";
 
-                            return appTaskResult;
+                            return appResult;
                         }
 
                         foreach (var user in app.Users) {
@@ -306,9 +314,9 @@ namespace SudokuCollective.WebApi.Services {
 
                         if (app == null) {
 
-                            appTaskResult.Message = "App not found";
+                            appResult.Message = "App not found";
 
-                            return appTaskResult;
+                            return appResult;
                         }
 
                         foreach (var user in app.Users) {
@@ -318,23 +326,27 @@ namespace SudokuCollective.WebApi.Services {
                         }
                     }
 
-                    appTaskResult.Success = true;
-                    appTaskResult.App = app;
+                    appResult.Success = true;
+                    appResult.App = app;
+
+                } else {
+
+                    appResult.Message = "App not found";
                 }
 
-                return appTaskResult;
+                return appResult;
 
             } catch (Exception e) {
 
-                appTaskResult.Message = e.Message;
+                appResult.Message = e.Message;
 
-                return appTaskResult;
+                return appResult;
             }
         }
 
-        public async Task<LicenseResut> GetLicense(int id) {
+        public async Task<LicenseResult> GetLicense(int id) {
 
-            var licenseTaskResult = new LicenseResut();
+            var licenseTaskResult = new LicenseResult();
 
             try {
 
@@ -347,6 +359,10 @@ namespace SudokuCollective.WebApi.Services {
                     
                     licenseTaskResult.Success = true;
                     licenseTaskResult.License = license;
+
+                } else {
+
+                    licenseTaskResult.Message = "App not found";
                 }
 
                 return licenseTaskResult;
@@ -360,14 +376,14 @@ namespace SudokuCollective.WebApi.Services {
         }
         
         public async Task<UsersResult> GetAppUsers(
-            BaseRequest baseRequestRO, 
+            BaseRequest baseRequest, 
             bool fullRecord = false) {
 
             return await AppsServiceUtilities
-                .RetrieveUsers(baseRequestRO, fullRecord, _context);
+                .RetrieveUsers(baseRequest, fullRecord, _context);
         }
 
-        public async Task<BaseResult> UpdateApp(AppRequest updateAppRO) {
+        public async Task<BaseResult> UpdateApp(AppRequest appRequest) {
 
             var result = new BaseResult();
             
@@ -375,11 +391,11 @@ namespace SudokuCollective.WebApi.Services {
 
                 var app = await _context.Apps
                     .Include(a => a.Users)
-                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(updateAppRO.License));
+                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(appRequest.License));
                 
-                app.Name = updateAppRO.Name;
-                app.DevUrl = updateAppRO.DevUrl;
-                app.LiveUrl = updateAppRO.LiveUrl;
+                app.Name = appRequest.Name;
+                app.DevUrl = appRequest.DevUrl;
+                app.LiveUrl = appRequest.LiveUrl;
                 app.DateUpdated = DateTime.UtcNow;
 
                 _context.Entry(app).State = EntityState.Modified;
@@ -397,7 +413,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseResult> AddAppUser(int userId, BaseRequest baseRequestRO) {
+        public async Task<BaseResult> AddAppUser(int userId, BaseRequest baseRequest) {
 
             var result = new BaseResult();
 
@@ -407,7 +423,7 @@ namespace SudokuCollective.WebApi.Services {
                     .FirstOrDefaultAsync(predicate: u => u.Id == userId);
 
                 var app = await _context.Apps
-                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(baseRequestRO.License));
+                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(baseRequest.License));
 
                 _context.UsersApps.Add(
 
@@ -433,14 +449,17 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseResult> RemoveAppUser(int id, BaseRequest baseRequestRO) {
+        public async Task<BaseResult> RemoveAppUser(int id, BaseRequest baseRequest) {
 
             var result = new BaseResult();
 
             try {
 
+                var app = await _context.Apps
+                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(baseRequest.License));
+
                 var userApp = await _context.UsersApps
-                    .FirstOrDefaultAsync(predicate: ua => ua.UserId == id);
+                    .FirstOrDefaultAsync(predicate: ua => ua.UserId == id && ua.AppId == app.Id);
 
                 _context.UsersApps.Remove(userApp);
 

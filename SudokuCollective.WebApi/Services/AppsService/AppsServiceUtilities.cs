@@ -115,7 +115,7 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         internal static async Task<UsersResult> RetrieveUsers(
-            BaseRequest baseRequestRO, 
+            BaseRequest baseRequest, 
             bool fullRecord, 
             DatabaseContext context) {
 
@@ -123,11 +123,11 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                var pageListModel = baseRequestRO.PageListModel;
+                var pageListModel = baseRequest.PageListModel;
 
                 var app = await context.Apps
                     .Include(a => a.Users)
-                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(baseRequestRO.License));
+                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(baseRequest.License));
 
                 app.Users.OrderBy(u => u.UserId);
 
@@ -163,7 +163,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 var users = new List<User>();
 
-                if (pageListModel == null) {
+                if (pageListModel.IsNull()) {
 
                     users = app.Users
                         .Select(ua => ua.User)
