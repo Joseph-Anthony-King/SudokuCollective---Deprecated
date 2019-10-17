@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using SudokuCollective.WebApi.Models.Pagination;
+using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
 using SudokuCollective.WebApi.Models.ResultModels;

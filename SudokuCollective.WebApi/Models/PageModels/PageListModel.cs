@@ -1,6 +1,6 @@
 ﻿using SudokuCollective.WebApi.Models.Enums;
 
-namespace SudokuCollective.WebApi.Models.Pagination {
+namespace SudokuCollective.WebApi.Models.PageModels {
 
     public class PageListModel {
 

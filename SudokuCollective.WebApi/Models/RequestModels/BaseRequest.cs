@@ -1,4 +1,4 @@
-using SudokuCollective.WebApi.Models.Pagination;
+using SudokuCollective.WebApi.Models.PageModels;
 
 namespace SudokuCollective.WebApi.Models.RequestModels {
 

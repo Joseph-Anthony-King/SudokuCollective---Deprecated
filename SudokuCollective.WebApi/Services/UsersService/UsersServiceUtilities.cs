@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.Enums;
-using SudokuCollective.WebApi.Models.Pagination;
+using SudokuCollective.WebApi.Models.PageModels;
 
 namespace SudokuCollective.WebApi.Services {
 

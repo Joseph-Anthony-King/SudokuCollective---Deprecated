@@ -7,7 +7,7 @@ using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
-using SudokuCollective.WebApi.Models.Pagination;
+using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
 using SudokuCollective.WebApi.Models.ResultModels;
