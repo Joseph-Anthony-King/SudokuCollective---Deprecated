@@ -243,7 +243,7 @@ namespace SudokuCollective.Domain.Models {
                         columnIndexer,
                         regionIndexer,
                         rowIndexer,
-                        this
+                        Id
                     )
                 );
 

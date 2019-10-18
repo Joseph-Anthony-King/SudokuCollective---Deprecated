@@ -53,7 +53,6 @@ namespace SudokuCollective.Tests.TestCases.Models {
             var sut = testMatrix.SudokuCells[0];
 
             // Assert
-            Assert.That(sut.SudokuMatrix, Is.TypeOf<SudokuMatrix>());
             Assert.That(sut.SudokuMatrixId, Is.TypeOf<int>());
         }
 
