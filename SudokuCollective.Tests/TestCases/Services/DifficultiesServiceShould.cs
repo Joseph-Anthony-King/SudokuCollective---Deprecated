@@ -23,7 +23,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             _context = await TestDatabase.GetDatabaseContext();
             sut = new DifficultiesService(_context);
-            license = "D17F0ED3-BE9A-450A-A146-F6733DB2BBDB";
+            license = TestObjects.GetLicense();
         }
 
         [Test]

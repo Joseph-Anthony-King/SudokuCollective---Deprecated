@@ -26,7 +26,7 @@ namespace SudokuCollective.Domain.Models {
         public UserApp(
             int id, 
             int userId, 
-            int appId) : this() {
+            int appId) {
 
             Id = id;
             UserId = userId;

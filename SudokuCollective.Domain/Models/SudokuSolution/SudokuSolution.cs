@@ -26,25 +26,27 @@ namespace SudokuCollective.Domain.Models {
 
         public SudokuSolution() {
 
-            Id = 0;
-
             var createdDate = DateTime.UtcNow;
 
+            Id = 0;
             SolutionList = new List<int>();
             DateCreated = createdDate;
             DateSolved = DateTime.MinValue;
         }
 
-        [JsonConstructor]
         public SudokuSolution(List<int> intList) : this() {
 
             SolutionList = intList;
+        }
 
-            if (SolutionList.Count == 81 && !SolutionList.Contains(0)) {
+        [JsonConstructor]
+        public SudokuSolution(int id, List<int> intList, 
+            DateTime dateCreated, DateTime dateSolved) {
 
-                var solvedDate = DateTime.UtcNow;
-                DateSolved = solvedDate;
-            }
+            Id = id;
+            SolutionList = intList;
+            DateCreated = dateCreated;
+            DateSolved = dateSolved;
         }
 
         public override string ToString() {

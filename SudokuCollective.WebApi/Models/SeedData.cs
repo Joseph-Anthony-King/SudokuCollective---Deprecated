@@ -24,45 +24,29 @@ namespace SudokuCollective.WebApi.Models {
                 if (!context.Roles.Any()) {
 
                     context.Roles.Add(
-                        
-                        new Role {
 
-                            Name = "Null",
-                            RoleLevel = RoleLevel.NULL
-                        }
+                        new Role(0, "Null", RoleLevel.NULL)
                     );
 
                     context.SaveChanges();
 
                     context.Roles.Add(
-                        
-                        new Role {
 
-                            Name = "Super User",
-                            RoleLevel = RoleLevel.SUPERUSER
-                        }
+                        new Role(0, "Super User", RoleLevel.SUPERUSER)
                     );
 
                     context.SaveChanges();
 
                     context.Roles.Add(
-                        
-                        new Role {
 
-                            Name = "Admin",
-                            RoleLevel = RoleLevel.ADMIN
-                        }
+                        new Role(0, "Admin", RoleLevel.ADMIN)
                     );
 
                     context.SaveChanges();
 
                     context.Roles.Add(
-                        
-                        new Role {
 
-                            Name = "User",
-                            RoleLevel = RoleLevel.USER
-                        }
+                        new Role(0, "User", RoleLevel.USER)
                     );
 
                     context.SaveChanges();
@@ -72,72 +56,42 @@ namespace SudokuCollective.WebApi.Models {
 
                     context.Difficulties.Add(
 
-                        new Difficulty {
-
-                            Name = "Null",
-                            DisplayName = "Null",
-                            DifficultyLevel = DifficultyLevel.NULL
-                        }
+                        new Difficulty(0, "Null", "Null", DifficultyLevel.NULL)
                     );
 
                     context.SaveChanges();
 
                     context.Difficulties.Add(
 
-                        new Difficulty {
-
-                            Name = "Test",
-                            DisplayName = "Test",
-                            DifficultyLevel = DifficultyLevel.TEST
-                        }
+                        new Difficulty(0, "Test", "Test", DifficultyLevel.TEST)
                     );
 
                     context.SaveChanges();
 
                     context.Difficulties.Add(
 
-                        new Difficulty {
-
-                            Name = "Easy",
-                            DisplayName = "Steady Sloth",
-                            DifficultyLevel = DifficultyLevel.EASY
-                        }
+                        new Difficulty(0, "Easy", "Steady Sloth", DifficultyLevel.EASY)
                     );
 
                     context.SaveChanges();
 
                     context.Difficulties.Add(
 
-                        new Difficulty {
-
-                            Name = "Medium",
-                            DisplayName = "Leaping Lemur",
-                            DifficultyLevel = DifficultyLevel.MEDIUM
-                        }
+                        new Difficulty(0, "Medium", "Leaping Lemur", DifficultyLevel.MEDIUM)
                     );
 
                     context.SaveChanges();
 
                     context.Difficulties.Add(
 
-                        new Difficulty {
-
-                            Name = "Hard",
-                            DisplayName = "Mighty Mountain Lion",
-                            DifficultyLevel = DifficultyLevel.HARD
-                        }
+                        new Difficulty(0, "Hard", "Mighty Mountain Lion", DifficultyLevel.HARD)
                     );
 
                     context.SaveChanges();
 
                     context.Difficulties.Add(
 
-                        new Difficulty {
-
-                            Name = "Evil",
-                            DisplayName = "Sneaky Shark",
-                            DifficultyLevel = DifficultyLevel.EVIL
-                        }
+                        new Difficulty(0, "Evil", "Sneaky Shark", DifficultyLevel.EVIL)
                     );
 
                     context.SaveChanges();
@@ -149,73 +103,70 @@ namespace SudokuCollective.WebApi.Models {
 
                     context.Users.Add(
 
-                        new User {
-
-                            FirstName = config.GetValue<string>("DefaultUserAccounts:SuperUser:FirstName"),
-                            LastName = config.GetValue<string>("DefaultUserAccounts:SuperUser:LastName"),
-                            NickName = config.GetValue<string>("DefaultUserAccounts:SuperUser:NickName"),
-                            UserName = config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName"),
-                            DateCreated = createdDate,
-                            DateUpdated = createdDate,
-                            Email = config.GetValue<string>("DefaultUserAccounts:SuperUser:Email"),
-                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt)),
-                            IsActive = true
-                        }
+                        new User(
+                            0,
+                            config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName"),
+                            config.GetValue<string>("DefaultUserAccounts:SuperUser:FirstName"),
+                            config.GetValue<string>("DefaultUserAccounts:SuperUser:LastName"),
+                            config.GetValue<string>("DefaultUserAccounts:SuperUser:NickName"),
+                            config.GetValue<string>("DefaultUserAccounts:SuperUser:Email"),
+                            BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt)),
+                            true, 
+                            createdDate, 
+                            DateTime.MinValue)
                     );
 
                     context.SaveChanges();
 
-                    context.Users.Add(
+                    context.Users.AddRange(
 
-                        new User {
-
-                            FirstName = config.GetValue<string>("DefaultUserAccounts:AdminUser:FirstName"),
-                            LastName = config.GetValue<string>("DefaultUserAccounts:AdminUser:LastName"),
-                            NickName = config.GetValue<string>("DefaultUserAccounts:AdminUser:NickName"),
-                            UserName = config.GetValue<string>("DefaultUserAccounts:AdminUser:UserName"),
-                            DateCreated = createdDate,
-                            DateUpdated = createdDate,
-                            Email = config.GetValue<string>("DefaultUserAccounts:AdminUser:Email"),
-                            Password = BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt)),
-                            IsActive = true
-                        }
+                        new User(
+                            0,
+                            config.GetValue<string>("DefaultUserAccounts:AdminUser:UserName"),
+                            config.GetValue<string>("DefaultUserAccounts:AdminUser:FirstName"),
+                            config.GetValue<string>("DefaultUserAccounts:AdminUser:LastName"),
+                            config.GetValue<string>("DefaultUserAccounts:AdminUser:NickName"),
+                            config.GetValue<string>("DefaultUserAccounts:AdminUser:Email"),
+                            BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt)),
+                            true,
+                            createdDate,
+                            DateTime.MinValue)
                     );
 
                     context.SaveChanges();
+
                 }
 
                 if (!context.Apps.Any()) {
 
                     context.Apps.Add(
 
-                        new App {
-                            
-                            Name = config.GetValue<string>("DefaultAdminApp:Name"),
-                            License = config.GetValue<string>("DefaultAdminApp:License"),
-                            OwnerId = 1,
-                            DateCreated = createdDate,
-                            DateUpdated = createdDate,
-                            DevUrl = config.GetValue<string>("DefaultAdminApp:DevUrl"),
-                            LiveUrl = config.GetValue<string>("DefaultAdminApp:LiveUrl"),
-                            IsActive = true
-                        }
+                        new App(
+                            0,
+                            config.GetValue<string>("DefaultAdminApp:Name"),
+                            config.GetValue<string>("DefaultAdminApp:License"),
+                            1,
+                            config.GetValue<string>("DefaultAdminApp:DevUrl"),
+                            config.GetValue<string>("DefaultAdminApp:LiveUrl"),
+                            true,
+                            createdDate,
+                            DateTime.MinValue)
                     );
 
                     context.SaveChanges();
 
                     context.Apps.Add(
 
-                        new App {
-                            
-                            Name = config.GetValue<string>("DefaultClientApp:Name"),
-                            License = config.GetValue<string>("DefaultClientApp:License"),
-                            OwnerId = 1,
-                            DateCreated = createdDate,
-                            DateUpdated = createdDate,
-                            DevUrl = config.GetValue<string>("DefaultClientApp:DevUrl"),
-                            LiveUrl = config.GetValue<string>("DefaultClientApp:LiveUrl"),
-                            IsActive = true
-                        }
+                        new App(
+                            0,
+                            config.GetValue<string>("DefaultClientApp:Name"),
+                            config.GetValue<string>("DefaultClientApp:License"),
+                            1,
+                            config.GetValue<string>("DefaultClientApp:DevUrl"),
+                            config.GetValue<string>("DefaultClientApp:LiveUrl"),
+                            true,
+                            createdDate,
+                            DateTime.MinValue)
                     );
 
                     context.SaveChanges();
@@ -223,67 +174,68 @@ namespace SudokuCollective.WebApi.Models {
 
                 if (!context.UsersApps.Any()) {
                     
-                    context.UsersApps.AddRange(
+                    context.UsersApps.Add(
 
-                        new UserApp {
-
-                            UserId = 1,
-                            AppId = 1
-                        },
-
-                        new UserApp {
-
-                            UserId = 2,
-                            AppId = 1
-                        },
-
-                        new UserApp {
-
-                            UserId = 1,
-                            AppId = 2
-                        },
-
-                        new UserApp {
-
-                            UserId = 2,
-                            AppId = 2
-                        }
+                        new UserApp(0, 1, 1)
                     );
+
+                    context.SaveChanges();
+
+                    context.UsersApps.Add(
+
+                        new UserApp(0, 2, 1)
+                    );
+
+                    context.SaveChanges();
+
+                    context.UsersApps.Add(
+
+                        new UserApp(0, 1, 2)
+                    );
+
+                    context.SaveChanges();
+
+                    context.UsersApps.Add(
+
+                        new UserApp(0, 2, 2)
+                    );
+
+                    context.SaveChanges();
                 }
 
                 if (!context.UsersRoles.Any()) {
 
-                    context.UsersRoles.AddRange(
+                    context.UsersRoles.Add(
 
-                        new UserRole {
+                        new UserRole(0, 1, 2)
+                    );
 
-                            UserId = 1,
-                            RoleId = 2
-                        },
+                    context.SaveChanges();
 
-                        new UserRole {
+                    context.UsersRoles.Add(
 
-                            UserId = 1,
-                            RoleId = 3
-                        },
+                        new UserRole(0, 1, 3)
+                    );
 
-                        new UserRole {
+                    context.SaveChanges();
 
-                            UserId = 1,
-                            RoleId = 4
-                        },
+                    context.UsersRoles.Add(
 
-                        new UserRole {
+                        new UserRole(0, 1, 4)
+                    );
 
-                            UserId = 2,
-                            RoleId = 3
-                        },
+                    context.SaveChanges();
 
-                        new UserRole {
+                    context.UsersRoles.Add(
 
-                            UserId = 2,
-                            RoleId = 4
-                        }
+                        new UserRole(0, 2, 3)
+                    );
+
+                    context.SaveChanges();
+
+                    context.UsersRoles.Add(
+
+                        new UserRole(0, 2, 4)
                     );
 
                     context.SaveChanges();

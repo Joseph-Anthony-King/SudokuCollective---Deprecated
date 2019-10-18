@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Domain;
@@ -18,35 +19,27 @@ namespace SudokuCollective.WebApi.Services {
     public class GamesService : IGamesService {
 
         private readonly DatabaseContext _context;
-        private readonly IUsersService _userService;
-        private readonly IDifficultiesService _difficultiesService;
 
-        public GamesService(
-            DatabaseContext context,
-            IUsersService usersService,
-            IDifficultiesService difficultiesService,
-            IAppsService appsService) {
+        public GamesService(DatabaseContext context) {
 
             _context = context;
-            _userService = usersService;
-            _difficultiesService = difficultiesService;
         }
 
         public async Task<GameResult> CreateGame(
-            CreateGameRequest createGameRO, bool fullRecord = false) {
+            CreateGameRequest createGameRequest, bool fullRecord = false) {
 
             var gameTaskResult = new GameResult();
 
             try {
                     
                 var difficulty = await _context.Difficulties
-                    .FirstOrDefaultAsync(d => d.Id == createGameRO.DifficultyId);
+                    .FirstOrDefaultAsync(d => d.Id == createGameRequest.DifficultyId);
 
                 var user = await _context.Users
                     .Include(u => u.Apps)
                     .Include(u => u.Games)
                     .Include(u => u.Roles)
-                    .FirstOrDefaultAsync(predicate: u => u.Id == createGameRO.UserId);
+                    .FirstOrDefaultAsync(predicate: u => u.Id == createGameRequest.UserId);
                     
                 foreach (var userRole in user.Roles) {
 
@@ -104,34 +97,57 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameResult> UpdateGame(int id, UpdateGameRequest updateGameRO) {
+        public async Task<GameResult> UpdateGame(int id, UpdateGameRequest updateGameRequest) {
 
             var gameTaskResult = new GameResult();
 
             try {
 
-                if (id == updateGameRO.GameId) {
+                if (id == updateGameRequest.GameId && GamesServiceUtilities
+                        .EnsureSudokuCellsAreAttachedToThisGame(
+                            id, 
+                            updateGameRequest.SudokuCells, 
+                            _context)) {
 
                     var game = await _context.Games
                             .Include(g => g.User).ThenInclude(u => u.Roles)
                             .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
-                            .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRO.GameId);
+                            .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRequest.GameId);
+
+                    game.SudokuMatrix.SudokuCells = _context.SudokuCells
+                        .Where(cell => cell.SudokuMatrixId == game.SudokuMatrixId)
+                        .OrderBy(cell => cell.Index)
+                        .ToList();
 
                     if (game == null) {
 
-                        gameTaskResult.Message = "Game Not Found";
+                        gameTaskResult.Message = "Game not found";
 
                         return gameTaskResult;
                     }
 
-                    game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
-
-                    game.IsSolved();
+                    int index = 1;
 
                     foreach (var cell in game.SudokuMatrix.SudokuCells) {
 
+                        if (cell.DisplayValue 
+                            != updateGameRequest.SudokuCells
+                                .Where(c => c.Index == index)
+                                .Select(c => c.DisplayValue)
+                                .FirstOrDefault()) {
+
+                            cell.DisplayValue = updateGameRequest.SudokuCells
+                                .Where(c => c.Index == index)
+                                .Select(c => c.DisplayValue)
+                                .FirstOrDefault();
+                        }
+
                         _context.SudokuCells.Update(cell);
+
+                        index++;
                     }
+
+                    game.IsSolved();
 
                     _context.ChangeTracker.TrackGraph(game,
                         e => {
@@ -153,6 +169,9 @@ namespace SudokuCollective.WebApi.Services {
                     gameTaskResult.Success = true;
                     gameTaskResult.Game = game;
 
+                } else {
+
+                    gameTaskResult.Message = "The game id or cells were incorrect";
                 }
 
                 return gameTaskResult;
@@ -177,13 +196,15 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    baseTaskResult.Message = "Game Not Found";
+                    baseTaskResult.Message = "Game not found";
 
                     return baseTaskResult;
                 }
 
-                game.SudokuMatrix = await StaticApiHelpers
-                    .AttachSudokuMatrix(game, _context);
+                game.SudokuMatrix.SudokuCells = _context.SudokuCells
+                    .Where(cell => cell.SudokuMatrixId == game.SudokuMatrixId)
+                    .OrderBy(cell => cell.Index)
+                    .ToList();
 
                 if (game.ContinueGame) {
 
@@ -222,7 +243,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    gameTaskResult.Message = "Game Not Found";
+                    gameTaskResult.Message = "Game not found";
 
                     return gameTaskResult;
 
@@ -244,7 +265,7 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<GamesResult> GetGames(
-            BaseRequest baseRequestRO, bool fullRecord = false) {
+            BaseRequest baseRequest, bool fullRecord = false) {
 
             var gameListTaskResult = new GamesResult();
 
@@ -255,7 +276,7 @@ namespace SudokuCollective.WebApi.Services {
                 if (fullRecord) {
 
                     games = await GamesServiceUtilities
-                        .RetrieveGames(baseRequestRO.PageListModel, _context);
+                        .RetrieveGames(baseRequest.PageListModel, _context);
 
                     foreach (var game in games) {
 
@@ -266,7 +287,7 @@ namespace SudokuCollective.WebApi.Services {
                 } else {
 
                     games = await GamesServiceUtilities
-                        .RetrieveGames(baseRequestRO.PageListModel, _context);
+                        .RetrieveGames(baseRequest.PageListModel, _context);
                 }
 
                 gameListTaskResult.Success = true;
@@ -300,7 +321,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (game == null) {
 
-                        gameTaskResult.Message = "Game Not Found";
+                        gameTaskResult.Message = "Game not found";
 
                         return gameTaskResult;
 
@@ -318,7 +339,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     if (game == null) {
 
-                        gameTaskResult.Message = "Game Not Found";
+                        gameTaskResult.Message = "Game not found";
 
                         return gameTaskResult;
 
@@ -341,7 +362,7 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<GamesResult> GetMyGames(
             int userId,
-            GetMyGameRequest getMyGameRO, 
+            GetMyGameRequest getMyGameRequest, 
             bool fullRecord = false) {
 
             var gameListTaskResult = new GamesResult();
@@ -351,7 +372,7 @@ namespace SudokuCollective.WebApi.Services {
                 if (fullRecord) {
 
                     var games = await GamesServiceUtilities
-                        .RetrieveGames(getMyGameRO.PageListModel, _context, userId);
+                        .RetrieveGames(getMyGameRequest.PageListModel, _context, userId);
 
                     foreach (var game in games){
 
@@ -364,7 +385,7 @@ namespace SudokuCollective.WebApi.Services {
                 } else {
 
                     var games = await GamesServiceUtilities
-                        .RetrieveGames(getMyGameRO.PageListModel, _context, userId);
+                        .RetrieveGames(getMyGameRequest.PageListModel, _context, userId);
 
                     gameListTaskResult.Success = true;
                     gameListTaskResult.Games = games;
@@ -392,7 +413,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    baseTaskResult.Message = "Game Not Found";
+                    baseTaskResult.Message = "Game not found";
 
                     return baseTaskResult;
                 }
@@ -423,7 +444,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<GameResult> CheckGame(int id, UpdateGameRequest updateGameRO) {
+        public async Task<GameResult> CheckGame(int id, UpdateGameRequest updateGameRequest) {
 
             var gameTaskResult = new GameResult();
 
@@ -436,19 +457,40 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (game == null) {
 
-                    gameTaskResult.Message = "Game Not Found";
+                    gameTaskResult.Message = "Game not found";
 
                     return gameTaskResult;
                 }
 
-                game.SudokuMatrix.SudokuCells = updateGameRO.SudokuCells;
+                game.SudokuMatrix.SudokuCells = _context.SudokuCells
+                    .Where(cell => cell.SudokuMatrixId == game.SudokuMatrixId)
+                    .OrderBy(cell => cell.Index)
+                    .ToList();
 
-                game.IsSolved();
+                int index = 1;
 
-                foreach (var cell in game.SudokuMatrix.SudokuCells) {
+                foreach (var cell in game.SudokuMatrix.SudokuCells)
+                {
+
+                    if (cell.DisplayValue
+                        != updateGameRequest.SudokuCells
+                            .Where(c => c.Index == index)
+                            .Select(c => c.DisplayValue)
+                            .FirstOrDefault())
+                    {
+
+                        cell.DisplayValue = updateGameRequest.SudokuCells
+                            .Where(c => c.Index == index)
+                            .Select(c => c.DisplayValue)
+                            .FirstOrDefault();
+                    }
 
                     _context.SudokuCells.Update(cell);
+
+                    index++;
                 }
+
+                game.IsSolved();
 
                 _context.ChangeTracker.TrackGraph(game,
                     e => {

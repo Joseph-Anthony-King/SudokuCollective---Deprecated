@@ -23,12 +23,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             _context = await TestDatabase.GetDatabaseContext();
             sut = new SolutionsService(_context);
-            license = "D17F0ED3-BE9A-450A-A146-F6733DB2BBDB";
-            baseRequest = new BaseRequest() {
-
-                License = license,
-                RequestorId = 1
-            };
+            license = TestObjects.GetLicense();
+            baseRequest = TestObjects.GetBaseRequest();
         }
 
         [Test]

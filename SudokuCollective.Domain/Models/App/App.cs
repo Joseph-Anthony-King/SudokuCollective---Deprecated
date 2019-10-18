@@ -49,20 +49,22 @@ namespace SudokuCollective.Domain.Models {
             int id, 
             string name, 
             string license, 
-            int ownerId, 
-            DateTime dateCreated, 
+            int ownerId,
             string devUrl, 
             string liveUrl,
-            bool isActive) : this() {
+            bool isActive,
+            DateTime dateCreated, 
+            DateTime dateUpdated) {
 
             Id = id;
             Name = name;
             License = license;
             OwnerId = ownerId;
-            DateCreated = dateCreated;
             DevUrl = devUrl;
             LiveUrl = liveUrl;
             IsActive = isActive;
+            DateCreated = dateCreated;
+            DateUpdated = dateUpdated;
         }
         
         public string GetLicense(int id, int ownerId) {

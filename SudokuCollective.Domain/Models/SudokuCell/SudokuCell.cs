@@ -132,25 +132,25 @@ namespace SudokuCollective.Domain.Models {
         [JsonConstructor]
         public SudokuCell(
             int id, 
-            int sudokuMatrixId, 
             int index, 
             int column, 
             int region, 
             int row, 
             int value, 
-            int displayValue, 
-            bool obscured) : this() {
+            int displayValue,
+            bool obscured,
+            int sudokuMatrixId) {
 
             AvailableValues = new List<int>();
 
             Id = id;
-            SudokuMatrixId = sudokuMatrixId;
             Index = index;
             Column = column;
             Region = region;
             Row = row;
             _value = value;
             DisplayValue = displayValue;
+            SudokuMatrixId = sudokuMatrixId;
 
             Obscured = obscured;
         }

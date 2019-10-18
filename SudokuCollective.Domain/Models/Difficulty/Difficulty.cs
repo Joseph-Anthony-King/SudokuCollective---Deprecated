@@ -21,10 +21,12 @@ namespace SudokuCollective.Domain.Models {
         }
 
         [JsonConstructor]
-        public Difficulty(int id, string name, DifficultyLevel difficultyLevel) : this() {
+        public Difficulty(int id, string name, 
+            string displayName, DifficultyLevel difficultyLevel) {
             
             Id = id;
             Name = name;
+            DisplayName = displayName;
             DifficultyLevel = difficultyLevel;
         }
     }

@@ -100,22 +100,22 @@ namespace SudokuCollective.Domain.Models {
             string firstName, 
             string lastName, 
             string nickName,
-            DateTime dateCreated, 
-            DateTime dateUpdated, 
             string email, 
             string password,
-            bool isActive) : this() {
+            bool isActive,
+            DateTime dateCreated,
+            DateTime dateUpdated) {
 
             Id = id;
             UserName = userName;
             FirstName = firstName;
             LastName = lastName;
             NickName = nickName;
-            DateCreated = dateCreated;
-            DateUpdated = dateUpdated;
             Email = email;
             Password = password;
             IsActive = isActive;
+            DateCreated = dateCreated;
+            DateUpdated = dateUpdated;
         }
 
         public bool IsSuperUser() {

@@ -261,7 +261,7 @@ namespace SudokuCollective.Domain.Models {
         }
 
         [JsonConstructor]
-        public SudokuMatrix(int id, int difficultyId) : this() {
+        public SudokuMatrix(int id, int difficultyId) {
             
             Id = id;
             DifficultyId = difficultyId;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Domain;
+using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.Enums;
 using SudokuCollective.WebApi.Models.PageModels;
@@ -18,7 +19,7 @@ namespace SudokuCollective.WebApi.Services {
 
             var result = new List<Game>();
 
-            if (pageListModel == null) {
+            if (pageListModel.IsNull()) {
 
                 if (pageListModel.IncludeCompletedGames) {
 
@@ -870,6 +871,22 @@ namespace SudokuCollective.WebApi.Services {
                         }
                     }
                 }
+            }
+
+            return result;
+        }
+
+        internal static bool EnsureSudokuCellsAreAttachedToThisGame(
+            int id, 
+            List<SudokuCell> cells, 
+            DatabaseContext context) {
+
+            var result = true;
+            var sudokuMatrixId = context.Games.Where(game => game.Id == id).Select(game => game.SudokuMatrixId).FirstOrDefault();
+
+            if (cells.Any(cell => cell.SudokuMatrixId != sudokuMatrixId)) {
+
+                result = false;
             }
 
             return result;

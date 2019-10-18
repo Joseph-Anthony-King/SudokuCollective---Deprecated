@@ -26,7 +26,7 @@ namespace SudokuCollective.Domain.Models {
         public UserRole(
             int id, 
             int userId, 
-            int roleId) : this() {
+            int roleId) {
 
             Id = id;
             UserId = userId;

@@ -42,20 +42,20 @@ namespace SudokuCollective.Domain {
         [JsonConstructor]
         public Game(
             int id,
-            DateTime dateCreated,
-            DateTime dateCompleted,
             int userId,
             int sudokuMatrixId,
             int sudokuSolutionId,
-            bool continueGame) : this() {
+            bool continueGame,
+            DateTime dateCreated,
+            DateTime dateCompleted) {
 
             Id = id;
-            DateCreated = dateCreated;
-            DateCompleted = dateCompleted;
             UserId = userId;
             SudokuMatrixId = sudokuMatrixId;
             SudokuSolutionId = sudokuSolutionId;
             ContinueGame = continueGame;
+            DateCreated = dateCreated;
+            DateCompleted = dateCompleted;
         }
 
         public bool IsSolved() {

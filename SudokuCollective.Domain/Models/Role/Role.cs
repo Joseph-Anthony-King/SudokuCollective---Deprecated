@@ -20,7 +20,7 @@ namespace SudokuCollective.Domain.Models {
         }
 
         [JsonConstructor]
-        public Role(int id, string name, RoleLevel roleLevel) : this() {
+        public Role(int id, string name, RoleLevel roleLevel) {
             
             Id = id;
             Name = name;
