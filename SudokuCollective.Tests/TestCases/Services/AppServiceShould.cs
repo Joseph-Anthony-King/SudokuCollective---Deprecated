@@ -338,7 +338,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DenyInvalidRequests() {
+        public async Task DenyInvalidLicenseRequests() {
 
             // Arrange
             var invalidLicense = "5CDBFC8F-F304-4703-831B-750A7B7F8531";
@@ -347,6 +347,56 @@ namespace SudokuCollective.Tests.TestCases.Services {
             var result = await sut.IsRequestValidOnThisLicense(invalidLicense, 1);
 
             // Assert
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task DenyRequestWhereUserIsNotRegisteredToApp() {
+
+            // Arrange
+            var user = new User() {
+
+                Id = 3,
+                UserName = "TestUser3",
+                FirstName = "John",
+                LastName = "Doe",
+                NickName = "Johnny Boy",
+                Email = "testuser3@example.com",
+                Password = "password1",
+                IsActive = true,
+                DateCreated = dateCreated,
+                DateUpdated = dateCreated
+            };
+
+            var userRole = new UserRole() {
+
+                UserId = 3,
+                RoleId = 4
+            };
+
+            var userApp = new UserApp() {
+
+                UserId = 3,
+                AppId = 2
+            };
+
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            await _context.UsersRoles.AddAsync(userRole);
+            await _context.SaveChangesAsync();
+            await _context.UsersApps.AddAsync(userApp);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var userIsInApp = _context.Apps
+                .Where(a => a.Id == 1)
+                .Any(a => a.Users.Any(ua => ua.UserId == user.Id));
+
+            var result = await sut.IsRequestValidOnThisLicense(license, user.Id);
+
+            // Assert
+            Assert.That(userIsInApp, Is.False);
             Assert.That(result, Is.False);
         }
 
