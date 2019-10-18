@@ -4,6 +4,6 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
 
     public interface IUserManagementService {
 
-        Task<bool> IsValidUser(string email, string password);
+        Task<bool> IsValidUser(string userName, string password);
     }
 }
