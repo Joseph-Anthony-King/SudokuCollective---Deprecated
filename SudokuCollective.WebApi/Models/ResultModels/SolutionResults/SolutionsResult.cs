@@ -5,7 +5,7 @@ namespace SudokuCollective.WebApi.Models.ResultModels.SolutionRequests {
 
     public class SolutionsResult : BaseResult {
         
-        public IEnumerable<SudokuSolution> Solutions { get; set; }
+        public List<SudokuSolution> Solutions { get; set; }
 
         public SolutionsResult() : base() {
 

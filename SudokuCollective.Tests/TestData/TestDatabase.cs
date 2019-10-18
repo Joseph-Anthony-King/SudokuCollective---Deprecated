@@ -2230,32 +2230,6 @@ namespace SudokuCollective.Tests.TestData {
 
                 await databaseContext.SaveChangesAsync();
             }
-            
-            if (await databaseContext.SudokuSolutions.CountAsync() <= 0)
-            {
-
-                databaseContext.SudokuSolutions.AddRange(
-
-                    new SudokuSolution()
-                    {
-
-                        Id = 1,
-                        SolutionList = new List<int>(),
-                        DateCreated = dateCreated,
-                        DateSolved = dateCreated
-                    },
-                    new SudokuSolution()
-                    {
-
-                        Id = 2,
-                        SolutionList = new List<int>(),
-                        DateCreated = dateCreated,
-                        DateSolved = dateCreated
-                    }
-                ); ; ;
-
-                await databaseContext.SaveChangesAsync();
-            }
 
             if (await databaseContext.Games.CountAsync() <= 0) {
 

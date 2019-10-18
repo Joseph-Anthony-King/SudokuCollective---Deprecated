@@ -5,7 +5,7 @@ namespace SudokuCollective.WebApi.Models.ResultModels.GameRequests {
 
     public class GamesResult : BaseResult {
         
-        public IEnumerable<Game> Games { get; set; }
+        public List<Game> Games { get; set; }
 
         public GamesResult() : base() {
 

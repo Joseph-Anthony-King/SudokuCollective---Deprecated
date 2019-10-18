@@ -18,22 +18,14 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         private DatabaseContext _context;
         private IRolesService sut;
-        private DateTime dateCreated;
         private string license;
-        private BaseRequest baseRequest;
 
         [SetUp]
         public async Task Setup() {
 
             _context = await TestDatabase.GetDatabaseContext();
             sut = new RolesService(_context);
-            dateCreated = DateTime.UtcNow;
             license = "D17F0ED3-BE9A-450A-A146-F6733DB2BBDB";
-            baseRequest = new BaseRequest() {
-
-                License = license,
-                RequestorId = 1
-            };
         }
 
         [Test]

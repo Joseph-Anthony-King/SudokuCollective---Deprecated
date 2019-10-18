@@ -139,14 +139,14 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<SolutionResult> Solve(
-            SolveRequest solveRequestsRO) {
+            SolveRequest solveRequest) {
 
             var solutionTaskResult = new SolutionResult();
 
             try {
 
                 var user = await _context.Users
-                    .Where(u => u.Id == solveRequestsRO.UserId)
+                    .Where(u => u.Id == solveRequest.UserId)
                     .FirstOrDefaultAsync();
 
                 if (user == null) {
@@ -158,15 +158,15 @@ namespace SudokuCollective.WebApi.Services {
 
                 var intList = new List<int>();
 
-                intList.AddRange(solveRequestsRO.FirstRow);
-                intList.AddRange(solveRequestsRO.SecondRow);
-                intList.AddRange(solveRequestsRO.ThirdRow);
-                intList.AddRange(solveRequestsRO.FourthRow);
-                intList.AddRange(solveRequestsRO.FifthRow);
-                intList.AddRange(solveRequestsRO.SixthRow);
-                intList.AddRange(solveRequestsRO.SeventhRow);
-                intList.AddRange(solveRequestsRO.EighthRow);
-                intList.AddRange(solveRequestsRO.NinthRow);
+                intList.AddRange(solveRequest.FirstRow);
+                intList.AddRange(solveRequest.SecondRow);
+                intList.AddRange(solveRequest.ThirdRow);
+                intList.AddRange(solveRequest.FourthRow);
+                intList.AddRange(solveRequest.FifthRow);
+                intList.AddRange(solveRequest.SixthRow);
+                intList.AddRange(solveRequest.SeventhRow);
+                intList.AddRange(solveRequest.EighthRow);
+                intList.AddRange(solveRequest.NinthRow);
 
                 var solutions = await _context.SudokuSolutions.ToListAsync();
 
@@ -200,7 +200,7 @@ namespace SudokuCollective.WebApi.Services {
                 if (!solutionInDB) {
 
                     var sudokuSolver = new SudokuSolver(intList);
-                    sudokuSolver.SetTimeLimit(solveRequestsRO.Minutes);
+                    sudokuSolver.SetTimeLimit(solveRequest.Minutes);
 
                     await sudokuSolver.Solve();
 
