@@ -158,16 +158,16 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<BaseResult> UpdateDifficulty(int id, 
-            UpdateDifficultyRequest updateDifficultyRO) {
+            UpdateDifficultyRequest updateDifficultyRequest) {
 
             var baseTaskResult = new BaseResult();
 
             try {
 
-                if (id == updateDifficultyRO.Id) {
+                if (id == updateDifficultyRequest.Id) {
 
                     var difficulty = await _context.Difficulties
-                        .Where(d => d.Id == updateDifficultyRO.Id)
+                        .Where(d => d.Id == updateDifficultyRequest.Id)
                         .FirstOrDefaultAsync();
 
                     if (difficulty == null) {
@@ -177,8 +177,8 @@ namespace SudokuCollective.WebApi.Services {
                         return baseTaskResult;
                     }
 
-                    difficulty.Name = updateDifficultyRO.Name;
-                    difficulty.DifficultyLevel = updateDifficultyRO.DifficultyLevel;
+                    difficulty.Name = updateDifficultyRequest.Name;
+                    difficulty.DifficultyLevel = updateDifficultyRequest.DifficultyLevel;
 
                     _context.Difficulties.Update(difficulty);
 

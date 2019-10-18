@@ -5,7 +5,7 @@ namespace SudokuCollective.WebApi.Models.ResultModels.DifficultyRequests {
 
     public class DifficultiesResult : BaseResult {
         
-        public IEnumerable<Difficulty> Difficulties { get; set; }
+        public List<Difficulty> Difficulties { get; set; }
 
         public DifficultiesResult() : base() {
 
