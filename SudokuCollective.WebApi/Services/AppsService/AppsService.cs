@@ -565,32 +565,15 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<bool> IsRequestValidOnThisLicense(string license, int userId) {
 
             var result = false;
+            var requestor = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
             var validLicense = _context.Apps.Any(a => a.License.Equals(license));
+            var requestorRegisteredToApp = _context.Apps.Where(a => a.License.Equals(license)).Any(a => a.Users.Any(ua => ua.UserId == userId));
 
-            /* The superuser has access system wide to all apps.  The if statement
-               checks if the requestor is not the superuser, if they aren't it then
-               checks if the requestor is a registered user for this app.  The else 
-               if statement checks if the requestor is the superuser and if the 
-               request is submitted with a valid license.  The final else statement 
-               denies access if the license is invalid. */
-            if (userId != 1 && validLicense) {
+            if (requestorRegisteredToApp && validLicense) {
+                
+                result = true;
 
-                var app = await _context.Apps
-                    .Include(a => a.Users)
-                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(license));
-
-                foreach (var userApp in app.Users) {
-
-                    userApp.User = await _context.Users
-                        .FirstOrDefaultAsync(predicate: u => u.Id == userApp.UserId);
-                }
-
-                if (app.Users.Any(user => user.User.Id == userId)) {
-
-                    result = true;
-                }
-
-            } else if (userId == 1 && validLicense) {
+            } else if (requestor.IsSuperUser() && validLicense) {
 
                 result = true;
 
