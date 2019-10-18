@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
@@ -192,7 +191,7 @@ namespace SudokuCollective.WebApi.Services {
                         .Where(d => d.Id == updateRoleRO.Id)
                         .FirstOrDefaultAsync();
 
-                    if (role != null) {
+                    if (role == null) {
 
                         baseTaskResult.Message = "Role not found";
 
@@ -227,7 +226,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 var role = await _context.Roles.FindAsync(id);
 
-                if (role != null) {
+                if (role == null) {
 
                     baseTaskResult.Message = "Role not found";
 

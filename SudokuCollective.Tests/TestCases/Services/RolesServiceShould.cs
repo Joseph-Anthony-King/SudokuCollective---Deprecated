@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SudokuCollective.Domain.Enums;
@@ -6,86 +7,95 @@ using SudokuCollective.Domain.Models;
 using SudokuCollective.Tests.TestData;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
+using SudokuCollective.WebApi.Models.RequestModels;
+using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
 using SudokuCollective.WebApi.Services;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.Tests.TestCases.Services {
 
-    public class DifficultiesServiceShould {
+    public class RolesServiceShould {
 
         private DatabaseContext _context;
-        private IDifficultiesService sut;
+        private IRolesService sut;
+        private DateTime dateCreated;
         private string license;
+        private BaseRequest baseRequest;
 
         [SetUp]
         public async Task Setup() {
 
             _context = await TestDatabase.GetDatabaseContext();
-            sut = new DifficultiesService(_context);
+            sut = new RolesService(_context);
+            dateCreated = DateTime.UtcNow;
             license = "D17F0ED3-BE9A-450A-A146-F6733DB2BBDB";
+            baseRequest = new BaseRequest() {
+
+                License = license,
+                RequestorId = 1
+            };
         }
 
         [Test]
         [Category("Services")]
-        public async Task GetADifficulty() {
+        public async Task GetARole() {
 
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulty(1);
+            var result = await sut.GetRole(1);
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Difficulty, Is.TypeOf<Difficulty>());
+            Assert.That(result.Role, Is.TypeOf<Role>());
         }
 
         [Test]
         [Category("Services")]
-        public async Task GetDifficulties() {
+        public async Task GetRoles() {
 
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulties();
+            var result = await sut.GetRoles();
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Difficulties.Count, Is.EqualTo(4));
+            Assert.That(result.Roles.Count, Is.EqualTo(2));
         }
 
         [Test]
         [Category("Services")]
-        public async Task GetDifficultiesWithoutNullOrTestDifficultyLevel() {
+        public async Task GetRolesWithoutNullOrSuperUserRoleLevel() {
 
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulties();
-            var nullAndTestDifficultyLevelsBlocked = result.Difficulties
-                .Any(difficulty => 
-                    difficulty.DifficultyLevel.Equals(DifficultyLevel.NULL) 
-                    || difficulty.DifficultyLevel.Equals(DifficultyLevel.TEST));
+            var result = await sut.GetRoles();
+            var nullAndSuperUserRoleLevelsBlocked = result.Roles
+                .Any(role =>
+                    role.RoleLevel.Equals(RoleLevel.NULL)
+                    || role.RoleLevel.Equals(RoleLevel.SUPERUSER));
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Difficulties.Count, Is.EqualTo(4));
-            Assert.That(nullAndTestDifficultyLevelsBlocked, Is.False);
+            Assert.That(result.Roles.Count, Is.EqualTo(2));
+            Assert.That(nullAndSuperUserRoleLevelsBlocked, Is.False);
         }
 
         [Test]
         [Category("Services")]
-        public async Task CreateADifficulty() {
+        public async Task CreateARole() {
 
             // Arrange
 
             // Act
-            var result = await sut.CreateDifficulty(
-                "testDifficulty", DifficultyLevel.NULL);
+            var result = await sut.CreateRole(
+                "testRole", RoleLevel.NULL);
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Difficulty, Is.TypeOf<Difficulty>());
+            Assert.That(result.Role, Is.TypeOf<Role>());
         }
 
         [Test]
@@ -93,20 +103,20 @@ namespace SudokuCollective.Tests.TestCases.Services {
         public async Task UpdateADifficulty() {
 
             // Arrange
-            var updateDifficultyRequest = new UpdateDifficultyRequest() {
+            var updateRoleRequest = new UpdateRoleRequest() {
 
                 Id = 1,
                 Name = "Null UPDATED!",
-                DifficultyLevel = DifficultyLevel.NULL,
+                RoleLevel = RoleLevel.NULL,                
                 License = license,
                 RequestorId = 1,
                 PageListModel = new PageListModel()
             };
 
             // Act
-            var result = await sut.UpdateDifficulty(1, updateDifficultyRequest);
-            var updatedDifficulty = _context.Difficulties
-                .FirstOrDefault(predicate: difficulty => difficulty.Id == 1);
+            var result = await sut.UpdateRole(1, updateRoleRequest);
+            var updatedDifficulty = _context.Roles
+                .FirstOrDefault(predicate: role => role.Id == 1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -120,12 +130,12 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Arrange
 
             // Act
-            var result = await sut.DeleteDifficulty(1);
-            var difficulties = _context.Difficulties.ToList();
+            var result = await sut.DeleteRole(1);
+            var roles = _context.Roles.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(difficulties.Count, Is.EqualTo(5));
+            Assert.That(roles.Count, Is.EqualTo(3));
         }
     }
 }

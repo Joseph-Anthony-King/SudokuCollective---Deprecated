@@ -13,7 +13,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.Tests.TestCases.Services {
 
-    public class AppServiceShould {
+    public class AppsServiceShould {
 
         private DatabaseContext _context;
         private IAppsService sut;
