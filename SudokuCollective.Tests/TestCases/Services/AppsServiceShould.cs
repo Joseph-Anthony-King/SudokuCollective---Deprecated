@@ -424,7 +424,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             // Assert
             Assert.That(superUserIsInApp, Is.False);
-            Assert.That(superUser.IsSuperUser(), Is.True);
+            Assert.That(superUser.IsSuperUser, Is.True);
             Assert.That(result, Is.True);
         }
     }

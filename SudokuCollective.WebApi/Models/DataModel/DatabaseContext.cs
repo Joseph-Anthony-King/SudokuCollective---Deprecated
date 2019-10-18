@@ -174,6 +174,10 @@ namespace SudokuCollective.WebApi.Models.DataModel {
                 .IsUnique();
 
             modelBuilder.Entity<User>()
+                .Ignore(user => user.IsAdmin)
+                .Ignore(user => user.IsSuperUser);
+
+            modelBuilder.Entity<User>()
                 .Property(user => user.Password)
                 .IsRequired();
 

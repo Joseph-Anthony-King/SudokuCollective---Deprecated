@@ -573,7 +573,7 @@ namespace SudokuCollective.WebApi.Services {
                 
                 result = true;
 
-            } else if (requestor.IsSuperUser() && validLicense) {
+            } else if (requestor.IsSuperUser && validLicense) {
 
                 result = true;
 

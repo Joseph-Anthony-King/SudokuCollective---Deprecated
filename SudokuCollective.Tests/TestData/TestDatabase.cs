@@ -110,7 +110,7 @@ namespace SudokuCollective.Tests.TestData {
                     new App(
                         1, 
                         "Test App 1", 
-                        "D17F0ED3-BE9A-450A-A146-F6733DB2BBDB", 
+                        TestObjects.GetLicense(), 
                         1, 
                         "https://localhost:4200", 
                         "https://testapp.com", 

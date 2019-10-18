@@ -16,7 +16,7 @@ namespace SudokuCollective.WebApi.Services {
 
             var result = new List<User>();
 
-            if (pageListModel == null) {
+            if (pageListModel.IsNull()) {
 
                 result = await context.Users
                     .OrderBy(u => u.Id)

@@ -46,6 +46,44 @@ namespace SudokuCollective.Domain.Models {
         [JsonIgnore]
         public string Password { get; set; }
         public bool IsActive { get; set; }
+        public bool IsSuperUser {
+
+            get {
+
+                var result = false;
+
+                foreach (var role in Roles)
+                {
+
+                    if (role.Role.RoleLevel == RoleLevel.SUPERUSER)
+                    {
+
+                        result = true;
+                    }
+                }
+
+                return result;
+            }
+        }
+        public bool IsAdmin {
+
+            get {
+
+                var result = false;
+
+                foreach (var role in Roles)
+                {
+
+                    if (role.Role.RoleLevel == RoleLevel.ADMIN)
+                    {
+
+                        result = true;
+                    }
+                }
+
+                return result;
+            }
+        }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public ICollection<Game> Games { get; set; }
@@ -116,21 +154,6 @@ namespace SudokuCollective.Domain.Models {
             IsActive = isActive;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
-        }
-
-        public bool IsSuperUser() {
-
-            var result = false;
-            
-            foreach (var role in Roles) {
-
-                if (role.Role.RoleLevel == RoleLevel.SUPERUSER) {
-
-                    result = true;
-                }
-            }
-
-            return result;
         }
 
         public void ActivateUser() {
