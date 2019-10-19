@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using SudokuCollective.Domain.Enums;
@@ -12,6 +13,7 @@ namespace SudokuCollective.Domain.Models {
         private string _userName;
 
         public int Id { get; set; }
+        [Required]
         public string UserName {
 
             get {
@@ -36,14 +38,18 @@ namespace SudokuCollective.Domain.Models {
                 }
             } 
         }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
         public string NickName { get; set; }
         public string FullName { 
             get => string.Format("{0} {1}", FirstName, LastName); 
         }
+        [Required]
         public string Email { get; set; }
         [JsonIgnore]
+        [Required]
         public string Password { get; set; }
         public bool IsActive { get; set; }
         public bool IsSuperUser {

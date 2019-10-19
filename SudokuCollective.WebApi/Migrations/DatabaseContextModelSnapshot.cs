@@ -9,7 +9,7 @@ using SudokuCollective.WebApi.Models.DataModel;
 namespace SudokuCollective.WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -18,63 +18,6 @@ namespace SudokuCollective.WebApi.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            modelBuilder.Entity("SudokuCollective.Domain.App", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("DevUrl")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("License")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LiveUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Apps");
-                });
-
-            modelBuilder.Entity("SudokuCollective.Domain.Difficulty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("DifficultyLevel")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("DisplayName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Difficulties");
-                });
 
             modelBuilder.Entity("SudokuCollective.Domain.Game", b =>
                 {
@@ -114,7 +57,68 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.Role", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.App", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("DevUrl")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("License")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LiveUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Apps");
+                });
+
+            modelBuilder.Entity("SudokuCollective.Domain.Models.Difficulty", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("DifficultyLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Difficulties");
+                });
+
+            modelBuilder.Entity("SudokuCollective.Domain.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,6 +126,7 @@ namespace SudokuCollective.WebApi.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("RoleLevel")
@@ -132,7 +137,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.SudokuCell", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.SudokuCell", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -170,7 +175,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuCells");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.SudokuMatrix", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.SudokuMatrix", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -187,7 +192,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuMatrices");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.SudokuSolution", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.SudokuSolution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -208,7 +213,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("SudokuSolutions");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.User", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,7 +263,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.UserApp", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.UserApp", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -280,7 +285,7 @@ namespace SudokuCollective.WebApi.Migrations
                     b.ToTable("UsersApps");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.UserRole", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.UserRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -304,67 +309,67 @@ namespace SudokuCollective.WebApi.Migrations
 
             modelBuilder.Entity("SudokuCollective.Domain.Game", b =>
                 {
-                    b.HasOne("SudokuCollective.Domain.SudokuMatrix", "SudokuMatrix")
+                    b.HasOne("SudokuCollective.Domain.Models.SudokuMatrix", "SudokuMatrix")
                         .WithOne("Game")
                         .HasForeignKey("SudokuCollective.Domain.Game", "SudokuMatrixId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SudokuCollective.Domain.SudokuSolution", "SudokuSolution")
+                    b.HasOne("SudokuCollective.Domain.Models.SudokuSolution", "SudokuSolution")
                         .WithOne("Game")
                         .HasForeignKey("SudokuCollective.Domain.Game", "SudokuSolutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SudokuCollective.Domain.User", "User")
+                    b.HasOne("SudokuCollective.Domain.Models.User", "User")
                         .WithMany("Games")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.SudokuCell", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.SudokuCell", b =>
                 {
-                    b.HasOne("SudokuCollective.Domain.SudokuMatrix", "SudokuMatrix")
+                    b.HasOne("SudokuCollective.Domain.Models.SudokuMatrix", "SudokuMatrix")
                         .WithMany("SudokuCells")
                         .HasForeignKey("SudokuMatrixId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.SudokuMatrix", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.SudokuMatrix", b =>
                 {
-                    b.HasOne("SudokuCollective.Domain.Difficulty", "Difficulty")
+                    b.HasOne("SudokuCollective.Domain.Models.Difficulty", "Difficulty")
                         .WithMany("Matrices")
                         .HasForeignKey("DifficultyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.UserApp", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.UserApp", b =>
                 {
-                    b.HasOne("SudokuCollective.Domain.App", "App")
+                    b.HasOne("SudokuCollective.Domain.Models.App", "App")
                         .WithMany("Users")
                         .HasForeignKey("AppId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SudokuCollective.Domain.User", "User")
+                    b.HasOne("SudokuCollective.Domain.Models.User", "User")
                         .WithMany("Apps")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.UserRole", b =>
+            modelBuilder.Entity("SudokuCollective.Domain.Models.UserRole", b =>
                 {
-                    b.HasOne("SudokuCollective.Domain.Role", "Role")
+                    b.HasOne("SudokuCollective.Domain.Models.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SudokuCollective.Domain.User", "User")
+                    b.HasOne("SudokuCollective.Domain.Models.User", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

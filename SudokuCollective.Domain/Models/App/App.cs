@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using SudokuCollective.Domain.Interfaces;
 
@@ -8,9 +9,12 @@ namespace SudokuCollective.Domain.Models {
     public class App : IApp {
 
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
         [JsonIgnore]
+        [Required]
         public string License { get; set; }
+        [Required]
         public int OwnerId { get; set; }
         public string DevUrl { get; set; }
         public string LiveUrl { get; set; }

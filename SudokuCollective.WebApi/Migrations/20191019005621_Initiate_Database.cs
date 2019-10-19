@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SudokuCollective.WebApi.Migrations
 {
-    public partial class Initiatedatabase : Migration
+    public partial class Initiate_Database : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,8 +14,8 @@ namespace SudokuCollective.WebApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
-                    License = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
+                    License = table.Column<string>(nullable: false),
                     OwnerId = table.Column<int>(nullable: false),
                     DevUrl = table.Column<string>(nullable: true),
                     LiveUrl = table.Column<string>(nullable: true),
@@ -34,8 +34,8 @@ namespace SudokuCollective.WebApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
-                    DisplayName = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
+                    DisplayName = table.Column<string>(nullable: false),
                     DifficultyLevel = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -49,7 +49,7 @@ namespace SudokuCollective.WebApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                     RoleLevel = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
