@@ -334,88 +334,107 @@ namespace SudokuCollective.WebApi.Services {
         }
 
         public async Task<UserResult> UpdateUser(
-            int id, UpdateUserRequest updateUserRO) {
+            int id, UpdateUserRequest updateUserRequest) {
 
             var userResult = new UserResult();
 
-            try {
+            if (await _context.Users.AnyAsync(u => u.UserName == updateUserRequest.UserName && u.Id != id) ||
+                await _context.Users.AnyAsync(u => u.Email == updateUserRequest.Email && u.Id != id) ||
+                string.IsNullOrEmpty(updateUserRequest.UserName) ||
+                string.IsNullOrEmpty(updateUserRequest.Email)) {
 
-                var regex = new Regex("^[a-zA-Z0-9-._]*$");
+                if (await _context.Users.AnyAsync(u => u.UserName == updateUserRequest.UserName && u.Id != id)) {
 
-                if (regex.IsMatch(updateUserRO.UserName)) {
+                    userResult.Message = "Username is not unique";
 
-                    var emailIsUnique = true;
-                    var userIdExists = false;
-                    var user = new User();
-                    var users = await _context.Users.ToListAsync();
-                    var updatedDate = DateTime.UtcNow;
+                } else if (await _context.Users.AnyAsync(u => u.Email == updateUserRequest.Email && u.Id != id)) {
 
-                    foreach (var u in users)
-                    {
+                    userResult.Message = "Email is not unique";
 
-                        if (u.Email.Equals(updateUserRO.Email) && u.Id != id)
-                        {
+                } else if (string.IsNullOrEmpty(updateUserRequest.UserName)) {
 
-                            emailIsUnique = false;
-                        }
-
-                        if (u.Id == id)
-                        {
-
-                            userIdExists = true;
-                        }
-                    }
-
-                    if (emailIsUnique && userIdExists)
-                    {
-
-                        user = await _context.Users.FindAsync(id);
-
-                        user.UserName = updateUserRO.UserName;
-                        user.FirstName = updateUserRO.FirstName;
-                        user.LastName = updateUserRO.LastName;
-                        user.NickName = updateUserRO.NickName;
-                        user.Email = updateUserRO.Email;
-                        user.DateUpdated = updatedDate;
-
-                        _context.Users.Update(user);
-                        await _context.SaveChangesAsync();
-
-                        userResult.Success = true;
-                        userResult.User = user;
-
-                        return userResult;
-
-                    }
-                    else
-                    {
-
-                        if (!emailIsUnique && userIdExists)
-                        {
-
-                            userResult.Message = "User email is not unique";
-                        }
-
-                        if (!userIdExists)
-                        {
-
-                            userResult.Message = "User not found";
-                        }
-                    }
+                    userResult.Message = "Username is required";
 
                 } else {
 
-                    userResult.Message = "User name can contain alphanumeric " +
-                        "charaters or the following (._-), user name contained invalid characters.";
+                    userResult.Message = "Email is required";
                 }
 
                 return userResult;
 
-            } catch (Exception e) {
+            } else {
 
-                userResult.Message = e.Message;
+                try {
 
-                return userResult;
+                    var regex = new Regex("^[a-zA-Z0-9-._]*$");
+
+                    if (regex.IsMatch(updateUserRequest.UserName)) {
+
+                        var emailIsUnique = true;
+                        var userIdExists = false;
+                        var user = new User();
+                        var users = await _context.Users.ToListAsync();
+                        var updatedDate = DateTime.UtcNow;
+
+                        foreach (var u in users) {
+
+                            if (u.Email.Equals(updateUserRequest.Email) && u.Id != id) {
+
+                                emailIsUnique = false;
+                            }
+
+                            if (u.Id == id) {
+
+                                userIdExists = true;
+                            }
+                        }
+
+                        if (emailIsUnique && userIdExists) {
+
+                            user = await _context.Users.FindAsync(id);
+
+                            user.UserName = updateUserRequest.UserName;
+                            user.FirstName = updateUserRequest.FirstName;
+                            user.LastName = updateUserRequest.LastName;
+                            user.NickName = updateUserRequest.NickName;
+                            user.Email = updateUserRequest.Email;
+                            user.DateUpdated = updatedDate;
+
+                            _context.Users.Update(user);
+                            await _context.SaveChangesAsync();
+
+                            userResult.Success = true;
+                            userResult.User = user;
+
+                            return userResult;
+
+                        } else {
+
+                            if (!emailIsUnique && userIdExists) {
+
+                                userResult.Message = "User email is not unique";
+                            }
+
+                            if (!userIdExists) {
+
+                                userResult.Message = "User not found";
+                            }
+                        }
+
+                    } else {
+
+                        userResult.Message = "User name can contain alphanumeric " +
+                            "charaters or the following (._-), user name contained invalid characters.";
+                    }
+
+                    return userResult;
+
+                } catch (Exception e) {
+
+                    userResult.Message = e.Message;
+
+                    return userResult;
+                }
             }
         }
 

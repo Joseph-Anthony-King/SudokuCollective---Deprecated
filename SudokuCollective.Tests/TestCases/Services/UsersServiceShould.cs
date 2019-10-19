@@ -7,6 +7,7 @@ using SudokuCollective.Tests.TestData;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
+using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
 using SudokuCollective.WebApi.Services;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -186,6 +187,31 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
+        public async Task RejectUserNamesWithSpecialCharacters() {
+
+            // Arrange
+            var registerRequest = new RegisterRequest() {
+
+                UserName = "@#$%^&*",
+                FirstName = "New",
+                LastName = "User",
+                NickName = "New Guy",
+                Email = "newuser@example.com",
+                Password = "password1",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.CreateUser(registerRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User name can contain alphanumeric charaters or the following (._-), user name contained invalid characters."));
+        }
+
+        [Test]
+        [Category("Services")]
         public async Task CreateUserWithUniqueEmail() {
 
             // Arrange
@@ -229,6 +255,162 @@ namespace SudokuCollective.Tests.TestCases.Services
 
             // Act
             var result = await sut.CreateUser(registerRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Email is required"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task UpdateAUser() {
+
+            // Arrange
+            var userId = 1;
+
+            var updateUserRequest = new UpdateUserRequest() {
+
+                UserName = "TestSuperUserUPDATED",
+                FirstName = "Test Super",
+                LastName = "User",
+                NickName = "Test Super User",
+                Email = "TestSuperUser@example.com",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdateUser(userId, updateUserRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.User.UserName, Is.EqualTo("TestSuperUserUPDATED"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task UpdateUserWithUniqueUserName() {
+
+            // Arrange
+            var userId = 1;
+
+            var updateUserRequest = new UpdateUserRequest() {
+
+                UserName = "TestUser",
+                FirstName = "Test Super",
+                LastName = "User",
+                NickName = "Test Super User",
+                Email = "TestSuperUser@example.com",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdateUser(userId, updateUserRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Username is not unique"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task UpdateUserWithUserNameRequired() {
+
+            // Arrange
+            var userId = 1;
+
+            var updateUserRequest = new UpdateUserRequest() {
+
+                UserName = null,
+                FirstName = "Test Super",
+                LastName = "User",
+                NickName = "Test Super User",
+                Email = "TestSuperUser@example.com",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdateUser(userId, updateUserRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Username is required"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task RejectUserNamesUpdatesWithSpecialCharacters() {
+
+            // Arrange
+            var userId = 1;
+
+            var updateUserRequest = new UpdateUserRequest() {
+
+                UserName = "@#$%^&*",
+                FirstName = "Test Super",
+                LastName = "User",
+                NickName = "Test Super User",
+                Email = "TestSuperUser@example.com",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdateUser(userId, updateUserRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User name can contain alphanumeric charaters or the following (._-), user name contained invalid characters."));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task UpdateUserWithUniqueEmail() {
+
+            // Arrange
+            var userId = 1;
+
+            var updateUserRequest = new UpdateUserRequest() {
+
+                UserName = "TestSuperUserUPDATED",
+                FirstName = "Test Super",
+                LastName = "User",
+                NickName = "Test Super User",
+                Email = "TestUser@example.com",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdateUser(userId, updateUserRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Email is not unique"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task UpdateUserWithEmailRequired() {
+
+            // Arrange
+            var userId = 1;
+
+            var updateUserRequest = new UpdateUserRequest() {
+
+                UserName = "TestSuperUserUPDATED",
+                FirstName = "Test Super",
+                LastName = "User",
+                NickName = "Test Super User",
+                Email = null,
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdateUser(userId, updateUserRequest);
 
             // Assert
             Assert.That(result.Success, Is.False);
