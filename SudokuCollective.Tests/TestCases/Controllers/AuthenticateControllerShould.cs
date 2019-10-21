@@ -13,9 +13,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private AuthenticateController sut;
         private AuthenticateController sutInvalid;
         private Mock<IAuthenticateService> mockValidAuthenticateService;
-        private Mock<IUserManagementService> mockValidUserManagementService;
         private Mock<IAuthenticateService> mockInvalidAuthenticateService;
-        private Mock<IUserManagementService> mockInvalidUserManagementService;
         private TokenRequest tokenRequest;
         private string userName;
         private string password;
@@ -39,12 +37,6 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             mockValidAuthenticateService.Setup(authService => authService.IsAuthenticated(tokenRequest, out token)).Returns(true);
             mockInvalidAuthenticateService.Setup(authService => authService.IsAuthenticated(tokenRequest, out token)).Returns(false);
-
-            mockValidUserManagementService = new Mock<IUserManagementService>();
-            mockValidUserManagementService.Setup(service => service.IsValidUser(userName, password)).Returns(Task.FromResult(true));
-
-            mockInvalidUserManagementService = new Mock<IUserManagementService>();
-            mockInvalidUserManagementService.Setup(service => service.IsValidUser(userName, password)).Returns(Task.FromResult(false));
 
             sut = new AuthenticateController(mockValidAuthenticateService.Object);
             sutInvalid = new AuthenticateController(mockInvalidAuthenticateService.Object);
