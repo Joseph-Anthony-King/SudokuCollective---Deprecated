@@ -53,8 +53,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     foreach (var game in user.Games) {
 
-                        game.SudokuMatrix = await StaticApiHelpers
-                            .AttachSudokuMatrix(game, _context);
+                        await game.SudokuMatrix.AttachSudokuCells(_context);
                     }
 
                     foreach (var userRole in user.Roles) {
@@ -516,8 +515,7 @@ namespace SudokuCollective.WebApi.Services {
                 
                     foreach (var game in user.Games) {
 
-                        game.SudokuMatrix = await StaticApiHelpers
-                            .AttachSudokuMatrix(game, _context);
+                        await game.SudokuMatrix.AttachSudokuCells(_context);
 
                         if (game.ContinueGame) {
 

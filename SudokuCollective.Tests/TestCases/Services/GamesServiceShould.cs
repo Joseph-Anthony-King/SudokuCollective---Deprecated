@@ -35,7 +35,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task CreateAGame() {
+        public async Task CreateGames() {
 
             // Arrange
             var createGameRequest = new CreateGameRequest() {
@@ -79,7 +79,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task UpdateAGame() {
+        public async Task UpdateGames() {
 
             var gameId = 1;
             var updatedValue = 6;
@@ -95,12 +95,10 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             // Act
             var result = await sut.UpdateGame(gameId, updateGameRequest);
-
-            var updatedGame = await _context.Games
-                .FirstOrDefaultAsync(predicate: game => game.Id == gameId);
-
-            var checkValue = updatedGame.SudokuMatrix.SudokuCells
-                .Where(cell => cell.Id == 58)
+            
+            var checkValue = result.Game.SudokuMatrix.SudokuCells
+                .OrderBy(cell => cell.Index)
+                .Where(cell => cell.Index == 2)
                 .Select(cell => cell.DisplayValue)
                 .FirstOrDefault();
 
@@ -145,7 +143,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DeleteAGame() {
+        public async Task DeleteGames() {
 
             // Arrange
             var gameId = 1;
@@ -225,7 +223,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetAUsersGame() {
+        public async Task GetUsersGame() {
 
             // Arrange
             var userId = 1;
@@ -241,7 +239,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetAUsersGames() {
+        public async Task GetUsersGames() {
 
             // Arrange
             var userId = 1;
@@ -279,7 +277,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task CheckAGame() {
+        public async Task CheckGames() {
 
             var gameId = 1;
             var updatedValue = 6;

@@ -56,8 +56,7 @@ namespace SudokuCollective.WebApi.Services {
                             .Where(matrix => matrix.Id == solution.Game.SudokuMatrixId)
                             .FirstOrDefaultAsync();
 
-                        solution.Game.SudokuMatrix = await StaticApiHelpers
-                            .AttachSudokuMatrix(solution.Game, _context);
+                        await solution.Game.SudokuMatrix.AttachSudokuCells(_context);
                     }
 
                     solutionTaskResult.Success = true;
@@ -111,8 +110,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Where(matrix => matrix.Id == solution.Game.SudokuMatrixId)
                                 .FirstOrDefaultAsync();
 
-                            solution.Game.SudokuMatrix = await StaticApiHelpers
-                                .AttachSudokuMatrix(solution.Game, _context);
+                            await solution.Game.SudokuMatrix.AttachSudokuCells(_context);
                         }
                     }
 

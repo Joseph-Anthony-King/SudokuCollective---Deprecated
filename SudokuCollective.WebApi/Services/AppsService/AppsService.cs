@@ -139,8 +139,7 @@ namespace SudokuCollective.WebApi.Services {
                             
                             foreach (var game in ua.User.Games) {
 
-                                game.SudokuMatrix = 
-                                    await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                                await game.SudokuMatrix.AttachSudokuCells(_context);
                             }
                         }
                     }

@@ -114,17 +114,19 @@ namespace SudokuCollective.WebApi.Services {
                             .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
                             .FirstOrDefaultAsync(predicate: g => g.Id == updateGameRequest.GameId);
 
-                    game.SudokuMatrix.SudokuCells = _context.SudokuCells
-                        .Where(cell => cell.SudokuMatrixId == game.SudokuMatrixId)
-                        .OrderBy(cell => cell.Index)
-                        .ToList();
-
                     if (game == null) {
 
                         gameTaskResult.Message = "Game not found";
 
                         return gameTaskResult;
                     }
+
+                    await game.SudokuMatrix.AttachSudokuCells(_context);
+
+                    game.SudokuMatrix.SudokuCells = game.SudokuMatrix
+                        .SudokuCells
+                        .OrderBy(cell => cell.Index)
+                        .ToList();
 
                     int index = 1;
 
@@ -201,10 +203,7 @@ namespace SudokuCollective.WebApi.Services {
                     return baseTaskResult;
                 }
 
-                game.SudokuMatrix.SudokuCells = _context.SudokuCells
-                    .Where(cell => cell.SudokuMatrixId == game.SudokuMatrixId)
-                    .OrderBy(cell => cell.Index)
-                    .ToList();
+                await game.SudokuMatrix.AttachSudokuCells(_context);
 
                 if (game.ContinueGame) {
 
@@ -249,7 +248,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 } else {
 
-                    game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                    await game.SudokuMatrix.AttachSudokuCells(_context);
                     gameTaskResult.Success = true;
                     gameTaskResult.Game = game;
                 }
@@ -280,8 +279,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     foreach (var game in games) {
 
-                        game.SudokuMatrix = await StaticApiHelpers
-                            .AttachSudokuMatrix(game, _context);
+                        await game.SudokuMatrix.AttachSudokuCells(_context);
                     }
 
                 } else {
@@ -327,7 +325,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     } else {
 
-                        game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                        await game.SudokuMatrix.AttachSudokuCells(_context);
                         gameTaskResult.Success = true;
                         gameTaskResult.Game = game;
                     }
@@ -376,7 +374,7 @@ namespace SudokuCollective.WebApi.Services {
 
                     foreach (var game in games){
 
-                        game.SudokuMatrix = await StaticApiHelpers.AttachSudokuMatrix(game, _context);
+                        await game.SudokuMatrix.AttachSudokuCells(_context);
                     }
 
                     gameListTaskResult.Success = true;
@@ -418,8 +416,7 @@ namespace SudokuCollective.WebApi.Services {
                     return baseTaskResult;
                 }
 
-                game.SudokuMatrix = await StaticApiHelpers
-                    .AttachSudokuMatrix(game, _context);
+                await game.SudokuMatrix.AttachSudokuCells(_context);
 
                 if (game.ContinueGame) {
 
