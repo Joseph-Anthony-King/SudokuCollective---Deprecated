@@ -441,6 +441,8 @@ namespace SudokuCollective.WebApi.Services {
         public async Task<BaseResult> UpdatePassword(int id, UpdatePasswordRequest updatePasswordRO) {
 
             var baseTaskResult = new BaseResult();
+            var salt = BCrypt.Net.BCrypt.GenerateSalt();
+            var oldPassword = BCrypt.Net.BCrypt.HashPassword(updatePasswordRO.OldPassword, salt);
 
             try {
 
@@ -448,7 +450,18 @@ namespace SudokuCollective.WebApi.Services {
                     .SingleOrDefaultAsync(
                         predicate: u => u.Id == id);
 
-                if (user == null) {
+                if (user != null) {
+
+                    if (!BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, user.Password)) {
+
+                        user = null;
+
+                        baseTaskResult.Message = "Old password was incorrect";
+
+                        return baseTaskResult;
+                    }
+
+                } else {
 
                     baseTaskResult.Message = "User not found";
 
@@ -457,8 +470,6 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (user != null &&
                     BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, user.Password)) {
-
-                    var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
                     user.Password = BCrypt.Net.BCrypt
                         .HashPassword(updatePasswordRO.NewPassword, salt);

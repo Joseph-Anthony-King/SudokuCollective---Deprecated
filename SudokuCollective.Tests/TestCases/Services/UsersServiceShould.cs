@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.Tests.TestData;
@@ -34,7 +35,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task GetAUser() {
+        public async Task GetUser() {
 
             // Arrange
             var userId = 1;
@@ -49,7 +50,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task ReturnAMessageIfUserNotFound() {
+        public async Task ReturnMessageIfUserNotFound() {
 
             // Arrange
             var userId = 5;
@@ -80,7 +81,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateAUser() {
+        public async Task CreateUser() {
 
             // Arrange
             var registerRequest = new RegisterRequest() {
@@ -107,7 +108,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateAnAdminUser() {
+        public async Task CreateAdminUser() {
 
             // Arrange
             var registerRequest = new RegisterRequest() {
@@ -137,7 +138,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateUserWithUniqueUserName() {
+        public async Task RequireUserNameUnique() {
 
             // Arrange
             var registerRequest = new RegisterRequest() {
@@ -162,7 +163,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateUserWithUserNameRequired() {
+        public async Task RequireUserName() {
 
             // Arrange
             var registerRequest = new RegisterRequest() {
@@ -187,7 +188,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RejectUserNamesWithSpecialCharacters() {
+        public async Task RejectUserNameWithSpecialCharacters() {
 
             // Arrange
             var registerRequest = new RegisterRequest() {
@@ -212,7 +213,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateUserWithUniqueEmail() {
+        public async Task RequireUniqueEmail() {
 
             // Arrange
             var registerRequest = new RegisterRequest()
@@ -238,7 +239,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateUserWithEmailRequired() {
+        public async Task RequireEmail() {
 
             // Arrange
             var registerRequest = new RegisterRequest() {
@@ -263,7 +264,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task UpdateAUser() {
+        public async Task UpdateUser() {
 
             // Arrange
             var userId = 1;
@@ -289,7 +290,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task UpdateUserWithUniqueUserName() {
+        public async Task RequireUniqueUserNameForUpdates() {
 
             // Arrange
             var userId = 1;
@@ -315,7 +316,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task UpdateUserWithUserNameRequired() {
+        public async Task RequireUserNameForUpdates() {
 
             // Arrange
             var userId = 1;
@@ -341,7 +342,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RejectUserNamesUpdatesWithSpecialCharacters() {
+        public async Task RejectUserNamewithSpecialCharacters() {
 
             // Arrange
             var userId = 1;
@@ -367,7 +368,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task UpdateUserWithUniqueEmail() {
+        public async Task RequireUniqueEmailWithUpdates() {
 
             // Arrange
             var userId = 1;
@@ -393,7 +394,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task UpdateUserWithEmailRequired() {
+        public async Task RequireEmailWithUpdates() {
 
             // Arrange
             var userId = 1;
@@ -415,6 +416,196 @@ namespace SudokuCollective.Tests.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("Email is required"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task UpdateUserPassword() {
+
+            // Arrange
+            var userId = 1;
+
+            var updatePasswordRequest = new UpdatePasswordRequest() {
+
+                OldPassword = "password1",
+                NewPassword = "password2",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdatePassword(userId, updatePasswordRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task RequireOldPaswordForUpdateRequests() {
+
+            // Arrange
+            var userId = 1;
+
+            var updatePasswordRequest = new UpdatePasswordRequest() {
+
+                OldPassword = "password!",
+                NewPassword = "password2",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdatePassword(userId, updatePasswordRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Old password was incorrect"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task RejectPasswordUpdatesIfUserNotFound() {
+
+            // Arrange
+            var userId = 3;
+
+            var updatePasswordRequest = new UpdatePasswordRequest() {
+
+                OldPassword = "password1",
+                NewPassword = "password2",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1
+            };
+
+            // Act
+            var result = await sut.UpdatePassword(userId, updatePasswordRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User not found"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task DeleteUsers() {
+
+            // Arrange
+            var userId = 1;
+
+            // Act
+            var result = await sut.DeleteUser(userId);
+            var users = _context.Users.ToList();
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(users.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnErrorMessageIfUserNotFoundForDeletion() {
+
+            // Arrange
+            var userId = 3;
+
+            // Act
+            var result = await sut.DeleteUser(userId);
+            var users = _context.Users.ToList();
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User not found"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task AddRolesToUsers() {
+
+            // Arrange
+            var userId = 2;
+
+            var user = _context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefault(predicate: u => u.Id == userId);
+
+            var preEditNumberOfRoles = user.Roles.Count;
+
+            var updateUserRoleRequest = new UpdateUserRoleRequest();
+            updateUserRoleRequest.RoleIds.Add(3);
+
+            // Act
+            var result = await sut.AddUserRoles(userId, updateUserRoleRequest.RoleIds);
+
+            var postEditNumberOfRoles = user.Roles.Count;
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(preEditNumberOfRoles, Is.EqualTo(1));
+            Assert.That(postEditNumberOfRoles, Is.EqualTo(2));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task RemoveRolesFromUsers() {
+
+            // Arrange
+            var userId = 1;
+
+            var user = _context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefault(predicate: u => u.Id == userId);
+
+            var preEditNumberOfRoles = user.Roles.Count;
+
+            var updateUserRoleRequest = new UpdateUserRoleRequest();
+            updateUserRoleRequest.RoleIds.Add(3);
+
+            // Act
+            var result = await sut.RemoveUserRoles(userId, updateUserRoleRequest.RoleIds);
+
+            var postEditNumberOfRoles = user.Roles.Count;
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(preEditNumberOfRoles, Is.EqualTo(3));
+            Assert.That(postEditNumberOfRoles, Is.EqualTo(2));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ActivateUsers() {
+
+            // Arrange
+            var userId = 1;
+
+            // Act
+            var result = await sut.ActivateUser(userId);
+
+            var user = _context.Users
+                .FirstOrDefault(predicate: u => u.Id == userId);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(user.IsActive, Is.True);
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task DeactivateUsers() {
+
+            // Arrange
+            var userId = 1;
+
+            // Act
+            var result = await sut.DeactivateUser(userId);
+
+            var user = _context.Users
+                .FirstOrDefault(predicate: u => u.Id == userId);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(user.IsActive, Is.False);
         }
     }
 }
