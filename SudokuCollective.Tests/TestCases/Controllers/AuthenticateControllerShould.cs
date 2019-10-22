@@ -43,7 +43,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         }
 
         [Test]
-        [Category("Services")]
+        [Category("Controllers")]
         public void AuthenticateUsers() {
 
             // Arrange
@@ -58,7 +58,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         }
 
         [Test]
-        [Category("Services")]
+        [Category("Controllers")]
         public void ReturnMessageWhenUsersArentAuthenticated() {
 
             // Arrange

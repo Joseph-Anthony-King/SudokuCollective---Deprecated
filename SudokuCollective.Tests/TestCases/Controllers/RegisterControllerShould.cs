@@ -59,16 +59,19 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         }
 
         [Test]
-        [Category("Services")]
+        [Category("Controllers")]
         public void RegisterUsers() {
 
             // Arrange
 
             // Act
             var result = sut.SignUp(registerRequest, true);
+            var taskResult = result.Result;
+            var user = ((CreatedAtActionResult)taskResult.Result).Value;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
+            Assert.That(user, Is.InstanceOf<User>());
         }
     }
 }
