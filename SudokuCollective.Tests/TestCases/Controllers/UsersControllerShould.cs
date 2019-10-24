@@ -161,9 +161,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.GetUser(userId, baseRequest, true);
-            var processResult = result.Result;
-            var user = ((OkObjectResult)processResult.Result).Value;
-            var statusCode = ((OkObjectResult)processResult.Result).StatusCode;
+            var user = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
@@ -179,9 +178,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.GetUsers(baseRequest);
-            var processResult = result.Result;
-            var users = ((OkObjectResult)processResult.Result).Value;
-            var statusCode = ((OkObjectResult)processResult.Result).StatusCode;
+            var users = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
@@ -198,8 +196,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.PutUser(userId, updateUserRequest);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult).StatusCode;
+            var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkResult>());
@@ -215,8 +212,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.UpdatePassword(userId, updatePasswordRequest);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult).StatusCode;
+            var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkResult>());
@@ -232,8 +228,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.DeleteUser(userId, baseRequest);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult.Result).StatusCode;
+            var statusCode = ((OkResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
@@ -249,8 +244,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.AddRoles(userId, updateUserRoleRequest);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult).StatusCode;
+            var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkResult>());
@@ -266,8 +260,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.RemoveRoles(userId, updateUserRoleRequest);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult).StatusCode;
+            var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkResult>());
@@ -283,8 +276,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.ActivateUser(userId);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult).StatusCode;
+            var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkResult>());
@@ -300,8 +292,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
             // Act
             var result = sut.DeactivateUser(userId);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult).StatusCode;
+            var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkResult>());

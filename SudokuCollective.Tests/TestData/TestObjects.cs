@@ -3,7 +3,6 @@ using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
-using SudokuCollective.WebApi.Models.ResultModels.GameRequests;
 
 namespace SudokuCollective.Tests.TestData {
 
