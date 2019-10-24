@@ -67,14 +67,13 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAccurateDateCreated() {
+        public void HaveMinimumDateTimeValueWhenCreated() {
 
             // Arrange and Act
             var sut = new User();
-            var currentDateTime = DateTime.UtcNow;
 
             // Assert
-            Assert.That(sut.DateCreated, Is.EqualTo(currentDateTime).Within(1).Seconds);
+            Assert.That(sut.DateCreated, Is.EqualTo(DateTime.MinValue));
         }
 
         [Test]

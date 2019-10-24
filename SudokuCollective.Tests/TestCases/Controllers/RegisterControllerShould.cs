@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SudokuCollective.Domain.Models;
+using SudokuCollective.Tests.MockServices;
 using SudokuCollective.Tests.TestData;
 using SudokuCollective.WebApi.Controllers;
+using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Models.ResultModels.UserRequests;
@@ -15,58 +17,21 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
     public class RegisterControllerShould {
 
-        private RegisterController sutValid;
-        private RegisterController sutInvalid;
-        private Mock<IUsersService> mockUserServiceValid;
-        private Mock<IUsersService> mockUserServiceInvalid;
+        private DatabaseContext _context;
+        private RegisterController sutSuccess;
+        private RegisterController sutFailure;
+        private MockUsersService mockUsersService;
         private RegisterRequest registerRequest;
 
         [SetUp]
-        public void Setup() {
+        public async Task Setup() {
 
-            mockUserServiceValid = new Mock<IUsersService>();
-            mockUserServiceInvalid = new Mock<IUsersService>();
+            _context = await TestDatabase.GetDatabaseContext();
 
-            mockUserServiceValid
-                .Setup(userService => userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(new UserResult() {
+            mockUsersService = new MockUsersService(_context);
 
-                    Success = true,
-                    Message = string.Empty,
-                    User = new User(
-                        3, 
-                        "Test User 3", 
-                        "Test", 
-                        "User 3", 
-                        "My Nickname", 
-                        "testuser3@example.com", 
-                        "password1", 
-                        true, 
-                        DateTime.UtcNow, 
-                        DateTime.UtcNow)
-                }));
-
-            mockUserServiceInvalid
-                .Setup(userService => userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(new UserResult() {
-
-                    Success = false,
-                    Message = "Error creating user",
-                    User = new User(
-                        0, 
-                        string.Empty,
-                        string.Empty, 
-                        string.Empty, 
-                        string.Empty, 
-                        string.Empty, 
-                        string.Empty, 
-                        false, 
-                        DateTime.MinValue, 
-                        DateTime.MinValue)
-                }));
-
-            sutValid = new RegisterController(mockUserServiceValid.Object);
-            sutInvalid = new RegisterController(mockUserServiceInvalid.Object);
+            sutSuccess = new RegisterController(mockUsersService.UsersServiceSuccessfulRequest.Object);
+            sutFailure = new RegisterController(mockUsersService.UsersServiceFailedRequest.Object);
 
             registerRequest = new RegisterRequest() {                
 
@@ -84,14 +49,13 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void RegisterUsers() {
+        public void SuccessfullyRegisterUsers() {
 
             // Arrange
 
             // Act
-            var result = sutValid.SignUp(registerRequest, true);
-            var taskResult = result.Result;
-            var user = ((CreatedAtActionResult)taskResult.Result).Value;
+            var result = sutSuccess.SignUp(registerRequest, true);
+            var user = ((CreatedAtActionResult)result.Result.Result).Value;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
@@ -100,14 +64,13 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void ProduceMessageWhenCreateUserGeneratesError() {
+        public void IssueErrorAndMessageShouldSuccessfullyRegisterUsersFail() {
 
             // Arrange
 
             // Act
-            var result = sutInvalid.SignUp(registerRequest, true);
-            var taskResult = result.Result;
-            var errorMessage = ((NotFoundObjectResult)taskResult.Result).Value;
+            var result = sutFailure.SignUp(registerRequest, true);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());

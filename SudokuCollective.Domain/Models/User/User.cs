@@ -101,9 +101,13 @@ namespace SudokuCollective.Domain.Models {
             string lastName, 
             string password) : this() {
 
+            var dateUserCreated = DateTime.UtcNow;
+
             FirstName = firstName;
             LastName = lastName;
             Password = password;
+            DateCreated = dateUserCreated;
+            IsActive = true;
         }
 
         public User() {
@@ -113,28 +117,14 @@ namespace SudokuCollective.Domain.Models {
             FirstName = string.Empty;
             LastName = string.Empty;
             NickName = string.Empty;
-            DateCreated = DateTime.UtcNow;
-            DateUpdated = DateTime.UtcNow;
+            Email = string.Empty;
+            Password = string.Empty;
+            DateCreated = DateTime.MinValue;
+            DateUpdated = DateTime.MinValue;
+            IsActive = false;
             Games = new List<Game>();
             Roles = new List<UserRole>();
             Apps = new List<UserApp>();
-            
-            if (string.IsNullOrEmpty(FirstName)) {
-
-                FirstName = string.Empty;
-            }
-            
-            if (string.IsNullOrEmpty(LastName)) {
-
-                LastName = string.Empty;
-            }
-            
-            if (string.IsNullOrEmpty(Password)) {
-
-                Password = string.Empty;
-            }
-
-            IsActive = true;
         }
 
         [JsonConstructor]
