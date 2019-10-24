@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SudokuCollective.Domain.Models;
+using SudokuCollective.Tests.MockServices;
 using SudokuCollective.Tests.TestData;
 using SudokuCollective.WebApi.Controllers;
 using SudokuCollective.WebApi.Models.DataModel;
@@ -22,8 +23,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         private DatabaseContext context;
         private UsersController sut;
-        private Mock<IUsersService> mockUsersService;
-        private Mock<IAppsService> mockAppsService;
+        private MockUsersService mockUsersService;
+        private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
         private UpdateUserRequest updateUserRequest;
         private UpdatePasswordRequest updatePasswordRequest;
@@ -33,6 +34,9 @@ namespace SudokuCollective.Tests.TestCases.Controllers
         public async Task Setup() {
 
             context = await TestDatabase.GetDatabaseContext();
+            mockUsersService = new MockUsersService(context);
+            mockAppsService = new MockAppsService(context);
+            
             baseRequest = new BaseRequest();
 
             updateUserRequest = new UpdateUserRequest() {
@@ -64,92 +68,9 @@ namespace SudokuCollective.Tests.TestCases.Controllers
                 PageListModel = new PageListModel()
             };
 
-            mockUsersService = new Mock<IUsersService>();
-
-            mockUsersService.Setup(userService =>
-                userService.GetUser(It.IsAny<int>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(new UserResult() {
-
-                    Success = true,
-                    Message = string.Empty,
-                    User = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
-                }));
-
-            mockUsersService.Setup(userService =>
-                userService.GetUsers(It.IsAny<PageListModel>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(new UsersResult()
-                {
-
-                    Success = true,
-                    Message = string.Empty,
-                    Users = context.Users.ToList()
-                }));
-
-            mockUsersService.Setup(userService =>
-                userService.UpdateUser(It.IsAny<int>(), It.IsAny<UpdateUserRequest>()))
-                .Returns(Task.FromResult(new UserResult()
-                {
-
-                    Success = true,
-                    Message = string.Empty,
-                    User = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
-                }));
-
-            mockUsersService.Setup(userService =>
-                userService.UpdatePassword(It.IsAny<int>(), It.IsAny<UpdatePasswordRequest>()))
-                .Returns(Task.FromResult(new BaseResult() {
-
-                    Success = true,
-                    Message = string.Empty
-                }));
-
-            mockUsersService.Setup(userService =>
-                userService.DeleteUser(It.IsAny<int>()))
-                .Returns(Task.FromResult(new BaseResult() {
-
-                    Success = true,
-                    Message = string.Empty
-                }));
-
-            mockUsersService.Setup(userService =>
-                userService.AddUserRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
-                .Returns(Task.FromResult(new BaseResult() {
-
-                    Success = true,
-                    Message = string.Empty
-                }));
-
-            mockUsersService.Setup(userService =>
-                userService.RemoveUserRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
-                .Returns(Task.FromResult(new BaseResult() {
-
-                    Success = true,
-                    Message = string.Empty
-                }));
-
-            mockUsersService.Setup(userService =>
-                userService.ActivateUser(It.IsAny<int>()))
-                .Returns(Task.FromResult(new BaseResult() {
-
-                    Success = true,
-                    Message = string.Empty
-                }));
-
-            mockUsersService.Setup(userService =>
-                userService.DeactivateUser(It.IsAny<int>()))
-                .Returns(Task.FromResult(new BaseResult() {
-
-                    Success = true,
-                    Message = string.Empty
-                }));
-
-            mockAppsService = new Mock<IAppsService>();
-
-            mockAppsService.Setup(appService =>
-                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(true));
-
-            sut = new UsersController(mockUsersService.Object, mockAppsService.Object);
+            sut = new UsersController(
+                mockUsersService.UsersServiceSuccessfulRequest.Object, 
+                mockAppsService.AppsServiceSuccessfulRequest.Object);
         }
 
         [Test]
