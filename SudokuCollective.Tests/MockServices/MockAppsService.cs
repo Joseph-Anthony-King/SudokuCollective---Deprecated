@@ -116,7 +116,7 @@ namespace SudokuCollective.Tests.MockServices {
                 .Returns(Task.FromResult(new AppResult() {
             
                         Success = false,
-                        Message = "Error getting app",
+                        Message = "Error retrieving app",
                         App = new App()
                     }));
 
@@ -125,7 +125,7 @@ namespace SudokuCollective.Tests.MockServices {
                 .Returns(Task.FromResult(new AppResult() {
 
                     Success = false,
-                    Message = "Error getting app",
+                    Message = "Error retrieving app",
                     App = new App()
                 }));
 
@@ -134,7 +134,7 @@ namespace SudokuCollective.Tests.MockServices {
                 .Returns(Task.FromResult(new AppsResult() {
 
                     Success = false,
-                    Message = "Error getting apps",
+                    Message = "Error retrieving apps",
                     Apps = new List<App>()
                 }));
 

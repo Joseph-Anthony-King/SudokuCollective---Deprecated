@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NUnit.Framework;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.Tests.MockServices;
@@ -12,17 +10,14 @@ using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
-using SudokuCollective.WebApi.Models.ResultModels;
-using SudokuCollective.WebApi.Models.ResultModels.UserRequests;
-using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.Tests.TestCases.Controllers
-{
+namespace SudokuCollective.Tests.TestCases.Controllers {
 
     public class UsersControllerShould {
 
         private DatabaseContext context;
-        private UsersController sut;
+        private UsersController sutSuccess;
+        private UsersController sutFailure;
         private MockUsersService mockUsersService;
         private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
@@ -68,20 +63,24 @@ namespace SudokuCollective.Tests.TestCases.Controllers
                 PageListModel = new PageListModel()
             };
 
-            sut = new UsersController(
+            sutSuccess = new UsersController(
                 mockUsersService.UsersServiceSuccessfulRequest.Object, 
+                mockAppsService.AppsServiceSuccessfulRequest.Object);
+
+            sutFailure = new UsersController(
+                mockUsersService.UsersServiceFailedRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
         }
 
         [Test]
         [Category("Controllers")]
-        public void GetAUser() {
+        public void SuccessfullyGetUser() {
 
             // Arrange
             var userId = 1;
 
             // Act
-            var result = sut.GetUser(userId, baseRequest, true);
+            var result = sutSuccess.GetUser(userId, baseRequest, true);
             var user = ((OkObjectResult)result.Result.Result).Value;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -93,12 +92,31 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void GetUsers() {
+        public void IssueErrorAndMessageShouldGetUserFail() {
+
+            // Arrange
+            var userId = 1;
+
+            // Act
+            var result = sutFailure.GetUser(userId, baseRequest, true);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving user"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyGetUsers() {
 
             // Arrange
 
             // Act
-            var result = sut.GetUsers(baseRequest);
+            var result = sutSuccess.GetUsers(baseRequest);
             var users = ((OkObjectResult)result.Result.Result).Value;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -110,13 +128,31 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void UpdateUsers() {
+        public void IssueErrorAndMessageShouldGetUsersFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.GetUsers(baseRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving users"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyUpdateUsers() {
 
             // Arrange
             int userId = 1;
 
             // Act
-            var result = sut.PutUser(userId, updateUserRequest);
+            var result = sutSuccess.PutUser(userId, updateUserRequest);
             var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
@@ -126,13 +162,32 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void UpdateUsersPasswords() {
+        public void IssueErrorAndMessageShouldUpdateUsersFail() {
 
             // Arrange
             int userId = 1;
 
             // Act
-            var result = sut.UpdatePassword(userId, updatePasswordRequest);
+            var result = sutFailure.PutUser(userId, updateUserRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error updating user"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyUpdateUsersPasswords() {
+
+            // Arrange
+            int userId = 1;
+
+            // Act
+            var result = sutSuccess.UpdatePassword(userId, updatePasswordRequest);
             var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
@@ -142,13 +197,32 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void DeleteUsers() {
+        public void IssueErrorAndMessageShouldUpdateUsersPasswordsFail() {
 
             // Arrange
             int userId = 1;
 
             // Act
-            var result = sut.DeleteUser(userId, baseRequest);
+            var result = sutFailure.UpdatePassword(userId, updatePasswordRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error updating user password"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyDeleteUsers() {
+
+            // Arrange
+            int userId = 1;
+
+            // Act
+            var result = sutSuccess.DeleteUser(userId, baseRequest);
             var statusCode = ((OkResult)result.Result.Result).StatusCode;
 
             // Assert
@@ -158,13 +232,32 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void AddRolesToUsers() {
+        public void IssueErrorAndMessageShouldDeleteUsersFail() {
 
             // Arrange
             int userId = 1;
 
             // Act
-            var result = sut.AddRoles(userId, updateUserRoleRequest);
+            var result = sutFailure.DeleteUser(userId, baseRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error deleting user"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyAddUsersRole() {
+
+            // Arrange
+            int userId = 1;
+
+            // Act
+            var result = sutSuccess.AddRoles(userId, updateUserRoleRequest);
             var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
@@ -174,13 +267,32 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void RemoveRolesFromUsers() {
+        public void IssueErrorAndMessageShouldAddUsersRoleFail() {
 
             // Arrange
             int userId = 1;
 
             // Act
-            var result = sut.RemoveRoles(userId, updateUserRoleRequest);
+            var result = sutFailure.AddRoles(userId, updateUserRoleRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error adding role to user"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyRemoveUsersRoles() {
+
+            // Arrange
+            int userId = 1;
+
+            // Act
+            var result = sutSuccess.RemoveRoles(userId, updateUserRoleRequest);
             var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
@@ -190,13 +302,32 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void ActivateUsers() {
+        public void IssueErrorAndMessageShouldRemoveUsersRolesFail() {
 
             // Arrange
             int userId = 1;
 
             // Act
-            var result = sut.ActivateUser(userId);
+            var result = sutFailure.RemoveRoles(userId, updateUserRoleRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error removing role from user"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyActivateUsers() {
+
+            // Arrange
+            int userId = 1;
+
+            // Act
+            var result = sutSuccess.ActivateUser(userId);
             var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
@@ -206,18 +337,56 @@ namespace SudokuCollective.Tests.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void DeactivateUsers() {
+        public void IssueErrorAndMessageShouldActivateUsersFail() {
 
             // Arrange
             int userId = 1;
 
             // Act
-            var result = sut.DeactivateUser(userId);
+            var result = sutFailure.ActivateUser(userId);
+            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error activating user"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyDeactivateUsers() {
+
+            // Arrange
+            int userId = 1;
+
+            // Act
+            var result = sutSuccess.DeactivateUser(userId);
             var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkResult>());
             Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldDeactivateUsersFail() {
+
+            // Arrange
+            int userId = 1;
+
+            // Act
+            var result = sutFailure.DeactivateUser(userId);
+            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error deactivating user"));
+            Assert.That(statusCode, Is.EqualTo(404));
         }
     }
 }

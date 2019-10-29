@@ -27,8 +27,9 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         public async Task Setup() {
 
             context = await TestDatabase.GetDatabaseContext();
-            baseRequest = new BaseRequest();
             mockAppsService = new MockAppsService(context);
+
+            baseRequest = new BaseRequest();
 
             appRequest = new AppRequest() {
 
@@ -79,7 +80,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
             Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error getting app"));
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving app"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -114,7 +115,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
             Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error getting app"));
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving app"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -149,7 +150,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
             Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error getting apps"));
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving apps"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 

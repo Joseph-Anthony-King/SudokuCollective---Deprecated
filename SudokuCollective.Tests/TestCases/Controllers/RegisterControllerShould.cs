@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NUnit.Framework;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.Tests.MockServices;
@@ -10,8 +8,6 @@ using SudokuCollective.WebApi.Controllers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
-using SudokuCollective.WebApi.Models.ResultModels.UserRequests;
-using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.Tests.TestCases.Controllers {
 
