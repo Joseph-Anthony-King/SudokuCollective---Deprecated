@@ -10,8 +10,7 @@ using SudokuCollective.WebApi.Models.ResultModels;
 using SudokuCollective.WebApi.Models.ResultModels.RoleRequests;
 using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.Tests.MockServices
-{
+namespace SudokuCollective.Tests.MockServices {
 
     public class MockRolesService {
 
