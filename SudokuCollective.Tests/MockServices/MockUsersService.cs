@@ -19,14 +19,12 @@ namespace SudokuCollective.Tests.MockServices {
         private DatabaseContext _context;
         internal Mock<IUsersService> UsersServiceSuccessfulRequest { get; set; }
         internal Mock<IUsersService> UsersServiceFailedRequest { get; set; }
-        internal Mock<IUsersService> UsersServiceInvalidRequest { get; set; }
 
         public MockUsersService(DatabaseContext context) {
             
             _context = context;
             UsersServiceSuccessfulRequest = new Mock<IUsersService>();
-            UsersServiceFailedRequest = new Mock<IUsersService>();
-            UsersServiceInvalidRequest = new Mock<IUsersService>();            
+            UsersServiceFailedRequest = new Mock<IUsersService>();        
 
             UsersServiceSuccessfulRequest.Setup(userService => 
                 userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<bool>()))
