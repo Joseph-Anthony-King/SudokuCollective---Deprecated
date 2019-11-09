@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SudokuCollective.Domain;
+using SudokuCollective.Tests.MockServices;
 using SudokuCollective.Tests.TestData;
 using SudokuCollective.WebApi.Controllers;
 using SudokuCollective.WebApi.Models.DataModel;
@@ -20,9 +21,10 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
     public class GamesControllerShould {
 
         private DatabaseContext context;
-        private GamesController sut;
-        private Mock<IGamesService> mockGamesService;
-        private Mock<IAppsService> mockAppsService;
+        private GamesController sutSuccess;
+        private GamesController sutFailure;
+        private MockGamesService mockGamesService;
+        private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
         private CreateGameRequest createGameRequest;
         private UpdateGameRequest updateGameRequest;
@@ -32,8 +34,13 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         public async Task Setup() {
 
             context = await TestDatabase.GetDatabaseContext();
+            mockGamesService = new MockGamesService(context);
+            mockAppsService = new MockAppsService(context);
+
             baseRequest = new BaseRequest();
+
             createGameRequest = new CreateGameRequest();
+
             getMyGameRequest = new GetMyGameRequest() {
 
                 UserId = 1,
@@ -41,113 +48,29 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
                 RequestorId = 1,
                 PageListModel = new PageListModel()
             };
+
             updateGameRequest = TestObjects.GetUpdateGameRequest();
 
-            mockGamesService = new Mock<IGamesService>();
+            sutSuccess = new GamesController(
+                mockGamesService.GamesServiceSuccessfulRequest.Object, 
+                mockAppsService.AppsServiceSuccessfulRequest.Object);
 
-            mockGamesService.Setup(gameService =>
-                gameService.GetGame(It.IsAny<int>()))
-                .Returns(Task.FromResult(new GameResult() {
-
-                    Success = true,
-                    Message = string.Empty,
-                    Game = new Game()
-                }));
-
-            mockGamesService.Setup(gameService =>
-                gameService.GetGames(It.IsAny<BaseRequest>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(new GamesResult()
-                {
-
-                    Success = true,
-                    Message = string.Empty,
-                    Games = context.Games.ToList()
-                }));
-
-            mockGamesService.Setup(gameService =>
-                gameService.DeleteGame(It.IsAny<int>()))
-                .Returns(Task.FromResult(new BaseResult() {
-
-                    Success = true,
-                    Message = string.Empty
-                }));
-
-            mockGamesService.Setup(gameService =>
-                gameService.UpdateGame(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
-                .Returns(Task.FromResult(new GameResult() {
-
-                    Success = true,
-                    Message = string.Empty,
-                    Game = new Game()
-                }));
-
-            mockGamesService.Setup(gameService =>
-                gameService.CreateGame(It.IsAny<CreateGameRequest>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(new GameResult() {
-
-                    Success = true,
-                    Message = string.Empty,
-                    Game = new Game()
-                }));
-
-            mockGamesService.Setup(gameService =>
-                gameService.CheckGame(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
-                .Returns(Task.FromResult(new GameResult()
-                {
-
-                    Success = true,
-                    Message = string.Empty,
-                    Game = new Game()
-                }));
-
-            mockGamesService.Setup(gameService =>
-                gameService.GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(new GameResult()
-                {
-
-                    Success = true,
-                    Message = string.Empty,
-                    Game = new Game()
-                }));
-
-            mockGamesService.Setup(gameService =>
-                gameService.GetMyGames(It.IsAny<int>(), It.IsAny<GetMyGameRequest>(), It.IsAny<bool>()))
-                .Returns(Task.FromResult(new GamesResult() {
-
-                    Success = true,
-                    Message = string.Empty,
-                    Games = context.Games.Where(g => g.UserId == 1).ToList()
-                }));
-
-            mockGamesService.Setup(gameService =>
-                gameService.DeleteMyGame(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(new BaseResult() {
-
-                    Success = true,
-                    Message = string.Empty
-                }));
-
-            mockAppsService = new Mock<IAppsService>();
-
-            mockAppsService.Setup(appService =>
-                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(true));
-
-            sut = new GamesController(mockGamesService.Object, mockAppsService.Object);
+            sutFailure = new GamesController(
+                mockGamesService.GamesServiceFailedRequest.Object, 
+                mockAppsService.AppsServiceSuccessfulRequest.Object);
         }
 
         [Test]
         [Category("Controllers")]
-        public void GetAGame() {
+        public void SuccessfullyGetGame() {
 
             // Arrange
             var gameId = 1;
 
             // Act
-            var result = sut.GetGame(gameId, baseRequest);
-            var processResult = result.Result;
-            var game = ((OkObjectResult)processResult.Result).Value;
-            var statusCode = ((OkObjectResult)processResult.Result).StatusCode;
+            var result = sutSuccess.GetGame(gameId, baseRequest);
+            var game = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
@@ -157,15 +80,33 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void GetGames() {
+        public void IssueErrorAndMessageShouldGetGameFail() {
+
+            // Arrange
+            var gameId = 1;
+
+            // Act
+            var result = sutSuccess.GetGame(gameId, baseRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving game"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyGetGames() {
 
             // Arrange
 
             // Act
-            var result = sut.GetGames(baseRequest, true);
-            var processResult = result.Result;
-            var games = ((OkObjectResult)processResult.Result).Value;
-            var statusCode = ((OkObjectResult)processResult.Result).StatusCode;
+            var result = sutSuccess.GetGames(baseRequest, true);
+            var games = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Game>>>());
@@ -175,14 +116,31 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void DeleteGames () {
+        public void IssueErrorAndMessageShouldGetGamesFail() {
 
             // Arrange
 
             // Act
-            var result = sut.DeleteGame(1, baseRequest);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult.Result).StatusCode;
+            var result = sutFailure.GetGames(baseRequest, true);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Game>>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving games"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyDeleteGames () {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.DeleteGame(1, baseRequest);
+            var statusCode = ((OkResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
@@ -191,14 +149,31 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void UpdateGames() {
+        public void IssueErrorAndMessageShouldDeleteGamesFail () {
 
             // Arrange
 
             // Act
-            var result = sut.PutGame(1, updateGameRequest);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult).StatusCode;
+            var result = sutFailure.DeleteGame(1, baseRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error deleting game"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyUpdateGames() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.PutGame(1, updateGameRequest);
+            var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
@@ -207,12 +182,30 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void CreateGames() {
+        public void IssueErrorAndMessageShouldUpdateGamesFail() {
 
             // Arrange
 
             // Act
-            var result = sut.PostGame(createGameRequest, true);
+            var result = sutFailure.PutGame(1, updateGameRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error updating game"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyCreateGames() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.PostGame(createGameRequest, true);
             var game = ((CreatedAtActionResult)result.Result.Result).Value;
 
             // Assert
@@ -222,12 +215,12 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void CheckGames() {
+        public void SuccessfullyCheckGames() {
 
             // Arrange
 
             // Act
-            var result = sut.CheckGame(1, updateGameRequest);
+            var result = sutSuccess.CheckGame(1, updateGameRequest);
             var game = ((OkObjectResult)result.Result.Result).Value;
 
             // Assert
@@ -237,13 +230,13 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void GetGameByUserId() {
+        public void SuccessfullyGetGameByUserId() {
 
             // Arrange
             var userId = 1;
 
             // Act
-            var result = sut.GetMyGame(userId, getMyGameRequest, true);
+            var result = sutSuccess.GetMyGame(userId, getMyGameRequest, true);
             var game = ((OkObjectResult)result.Result.Result).Value;
 
             // Assert
@@ -253,12 +246,12 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void GetGamesByUserId() {
+        public void SuccessfullyGetGamesByUserId() {
 
             // Arrange
 
             // Act
-            var result = sut.GetMyGames(getMyGameRequest, true);
+            var result = sutSuccess.GetMyGames(getMyGameRequest, true);
             var processResult = result.Result;
             var games = ((OkObjectResult)processResult.Result).Value;
             var statusCode = ((OkObjectResult)processResult.Result).StatusCode;
@@ -271,13 +264,13 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void DeleteGameByUserId() {
+        public void SuccessfullyDeleteGameByUserId() {
 
             // Arrange
             var userId = 1;
 
             // Act
-            var result = sut.DeleteMyGame(userId, getMyGameRequest);
+            var result = sutSuccess.DeleteMyGame(userId, getMyGameRequest);
             var processResult = result.Result;
             var statusCode = ((OkResult)processResult.Result).StatusCode;
 
