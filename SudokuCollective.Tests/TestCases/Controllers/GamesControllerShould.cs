@@ -86,7 +86,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             var gameId = 1;
 
             // Act
-            var result = sutSuccess.GetGame(gameId, baseRequest);
+            var result = sutFailure.GetGame(gameId, baseRequest);
             var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -215,6 +215,21 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
+        public void IssueErrorAndMessageShouldCreateGamesFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.PostGame(createGameRequest, true);
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
         public void SuccessfullyCheckGames() {
 
             // Arrange
@@ -226,6 +241,21 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
             Assert.That(game, Is.InstanceOf<Game>());
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldCheckGamesFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.CheckGame(1, updateGameRequest);
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
+            Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
@@ -242,6 +272,25 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
             Assert.That(game, Is.InstanceOf<Game>());
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldGetGameByUserIdFail() {
+
+            // Arrange
+            var userId = 1;
+
+            // Act
+            var result = sutFailure.GetMyGame(userId, getMyGameRequest, true);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving game"));
+            Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
@@ -264,6 +313,24 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
+        public void IssueErrorAndMessageShouldGetGamesByUserIdFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.GetMyGames(getMyGameRequest, true);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Game>>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving games"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
         public void SuccessfullyDeleteGameByUserId() {
 
             // Arrange
@@ -277,6 +344,25 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
             Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldDeleteGameByUserIdFail() {
+
+            // Arrange
+            var userId = 1;
+
+            // Act
+            var result = sutFailure.DeleteMyGame(userId, getMyGameRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error deleting game"));
+            Assert.That(statusCode, Is.EqualTo(404));
         }
     }
 }

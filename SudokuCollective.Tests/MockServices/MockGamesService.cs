@@ -22,6 +22,8 @@ namespace SudokuCollective.Tests.MockServices {
         public MockGamesService(DatabaseContext context) {
 
             _context = context;
+            GamesServiceSuccessfulRequest = new Mock<IGamesService>();
+            GamesServiceFailedRequest = new Mock<IGamesService>();
 
             GamesServiceSuccessfulRequest.Setup(gamesService => 
                 gamesService.CreateGame(It.IsAny<CreateGameRequest>(), It.IsAny<bool>()))
