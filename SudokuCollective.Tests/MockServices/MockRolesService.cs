@@ -21,6 +21,8 @@ namespace SudokuCollective.Tests.MockServices {
         public MockRolesService(DatabaseContext context) {
 
             _context = context;
+            RolesServiceSuccessfulRequest = new Mock<IRolesService>();
+            RolesServiceFailedRequest = new Mock<IRolesService>();
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.GetRole(It.IsAny<int>(), It.IsAny<bool>()))

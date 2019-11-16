@@ -10,138 +10,138 @@ using SudokuCollective.WebApi.Controllers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
+using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
 
 namespace SudokuCollective.Tests.TestCases.Controllers {
     
-    public class DifficultiesControllerShould {
+    public class RolesControllerShould {
 
         private DatabaseContext context;
-        private DifficultiesController sutSuccess;
-        private DifficultiesController sutFailure;
-        private MockDifficultiesService mockDifficultiesService;
+        private RolesController sutSuccess;
+        private RolesController sutFailure;
+        private MockRolesService mockRolesService;
         private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
-        private UpdateDifficultyRequest updateDifficultyRequest;
-        private CreateDifficultyRequest createDifficultyRequest;
+        private UpdateRoleRequest updateRoleRequest;
+        private CreateRoleRequest createRoleRequest;
 
         [SetUp]
         public async Task Setup() {
 
             context = await TestDatabase.GetDatabaseContext();
-            mockDifficultiesService = new MockDifficultiesService(context);
+            mockRolesService = new MockRolesService(context);
             mockAppsService = new MockAppsService(context);
 
             baseRequest = new BaseRequest();
 
-            updateDifficultyRequest = new UpdateDifficultyRequest() {
+            updateRoleRequest = new UpdateRoleRequest() {
 
                 Id = 1,
-                Name = "Test Difficulty",
-                DifficultyLevel = DifficultyLevel.TEST,
+                Name = "Test Role",
+                RoleLevel = RoleLevel.NULL,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
                 PageListModel = new PageListModel()
             };
 
-            createDifficultyRequest = new CreateDifficultyRequest() {
+            createRoleRequest = new CreateRoleRequest() {
                 
                 Name = "Test Difficulty",
-                DifficultyLevel = DifficultyLevel.TEST,
+                RoleLevel = RoleLevel.NULL,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
                 PageListModel = new PageListModel()
             };
 
-            sutSuccess = new DifficultiesController(
-                mockDifficultiesService.DifficultiesServiceSuccessfulRequest.Object, 
+            sutSuccess = new RolesController(
+                mockRolesService.RolesServiceSuccessfulRequest.Object, 
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
 
-            sutFailure = new DifficultiesController(
-                mockDifficultiesService.DifficultiesServiceFailedRequest.Object, 
+            sutFailure = new RolesController(
+                mockRolesService.RolesServiceFailedRequest.Object, 
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
         }
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetDifficulty() {
+        public void SuccessfullyGetRole() {
 
             // Arrange
-            var difficultyId = 2;
+            var roleId = 1;
 
             // Act
-            var result = sutSuccess.GetDifficulty(difficultyId, baseRequest);
-            var difficulty = ((OkObjectResult)result.Result.Result).Value;
+            var result = sutSuccess.GetRole(roleId, baseRequest);
+            var role = ((OkObjectResult)result.Result.Result).Value;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult<Difficulty>>());
-            Assert.That(difficulty, Is.InstanceOf<Difficulty>());
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Role>>());
+            Assert.That(role, Is.InstanceOf<Role>());
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetDifficultyFail() {
+        public void IssueErrorAndMessageShouldGetRoleFail() {
 
             // Arrange
-            var difficultyId = 2;
+            var roleId = 2;
 
             // Act
-            var result = sutFailure.GetDifficulty(difficultyId, baseRequest);
+            var result = sutFailure.GetRole(roleId, baseRequest);
             var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult<Difficulty>>());
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Role>>());
             Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving difficulty"));
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving role"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetDifficulties() {
+        public void SuccessfullyGetRoles() {
 
             // Arrange
 
             // Act
-            var result = sutSuccess.GetDifficulties(baseRequest, true);
-            var difficulties = ((OkObjectResult)result.Result.Result).Value;
+            var result = sutSuccess.GetRoles(baseRequest, true);
+            var roles = ((OkObjectResult)result.Result.Result).Value;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Difficulty>>>());
-            Assert.That(((List<Difficulty>)difficulties).Count, Is.EqualTo(6));
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Role>>>());
+            Assert.That(((List<Role>)roles).Count, Is.EqualTo(4));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetDifficultiesFail() {
+        public void IssueErrorAndMessageShouldGetRolesFail() {
 
             // Arrange
 
             // Act
-            var result = sutFailure.GetDifficulties(baseRequest, true);
+            var result = sutFailure.GetRoles(baseRequest, true);
             var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Difficulty>>>());
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Role>>>());
             Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving difficulties"));
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving roles"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyUpdateDifficulties() {
+        public void SuccessfullyUpdateRoles() {
 
             // Arrange
 
             // Act
-            var result = sutSuccess.PutDifficulty(1, updateDifficultyRequest);
+            var result = sutSuccess.PutRole(1, updateRoleRequest);
             var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
@@ -151,61 +151,61 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldUpdateGamesFail() {
+        public void IssueErrorAndMessageShouldUpdateRolesFail() {
 
             // Arrange
 
             // Act
-            var result = sutFailure.PutDifficulty(1, updateDifficultyRequest);
+            var result = sutFailure.PutRole(1, updateRoleRequest);
             var errorMessage = ((NotFoundObjectResult)result.Result).Value;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
             Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error updating difficulty"));
+            Assert.That(errorMessage, Is.EqualTo("Error updating role"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyCreateDifficulties() {
+        public void SuccessfullyCreateRoles() {
 
             // Arrange
 
             // Act
-            var result = sutSuccess.PostDifficulty(createDifficultyRequest);
+            var result = sutSuccess.PostRole(createRoleRequest);
             var difficulty = ((CreatedAtActionResult)result.Result.Result).Value;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult<Difficulty>>());
-            Assert.That(difficulty, Is.InstanceOf<Difficulty>());
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Role>>());
+            Assert.That(difficulty, Is.InstanceOf<Role>());
         }
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldCreateDifficultiesFail() {
+        public void IssueErrorAndMessageShouldCreateRolesFail() {
 
             // Arrange
 
             // Act
-            var result = sutFailure.PostDifficulty(createDifficultyRequest);
+            var result = sutFailure.PostRole(createRoleRequest);
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult<Difficulty>>());
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<Role>>());
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyDeleteDifficulties() {
+        public void SuccessfullyDeleteRoles() {
 
             // Arrange
-            var difficultyId = 2;
+            var roleId = 1;
 
             // Act
-            var result = sutSuccess.DeleteDifficulty(difficultyId, baseRequest);
+            var result = sutSuccess.DeleteRole(roleId, baseRequest);
             var statusCode = ((OkResult)result.Result).StatusCode;
 
             // Assert
@@ -215,20 +215,20 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldDeleteDifficultiesFail() {
+        public void IssueErrorAndMessageShouldDeleteRolesFail() {
 
             // Arrange
-            var difficultyId = 2;
+            var roleId = 1;
 
             // Act
-            var result = sutFailure.DeleteDifficulty(difficultyId, baseRequest);
+            var result = sutFailure.DeleteRole(roleId, baseRequest);
             var errorMessage = ((NotFoundObjectResult)result.Result).Value;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
             Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error deleting difficulty"));
+            Assert.That(errorMessage, Is.EqualTo("Error deleting role"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

@@ -148,7 +148,7 @@ namespace SudokuCollective.WebApi.Controllers {
         // DELETE: api/Roles/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Role>> DeleteRole(
+        public async Task<ActionResult> DeleteRole(
             int id, [FromBody] BaseRequest baseRequest) {
             
             if (await _appsService.IsRequestValidOnThisLicense(
