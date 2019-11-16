@@ -1,0 +1,204 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
+using SudokuCollective.Domain.Models;
+using SudokuCollective.Tests.MockServices;
+using SudokuCollective.Tests.TestData;
+using SudokuCollective.WebApi.Controllers;
+using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.PageModels;
+using SudokuCollective.WebApi.Models.RequestModels;
+using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
+
+namespace SudokuCollective.Tests.TestCases.Controllers {
+    
+    public class SolutionsControllerShould {
+
+        private DatabaseContext context;
+        private SolutionsController sutSuccess;
+        private SolutionsController sutFailure;
+        private MockSolutionsService mockSolutionsService;
+        private MockAppsService mockAppsService;
+        private BaseRequest baseRequest;
+        private SolveRequest solveRequest;
+
+        [SetUp]
+        public async Task Setup() {
+
+            context = await TestDatabase.GetDatabaseContext();
+            mockSolutionsService = new MockSolutionsService(context);
+            mockAppsService = new MockAppsService(context);
+
+            baseRequest = new BaseRequest();
+
+            solveRequest = new SolveRequest() {
+
+                UserId = 1,
+                Minutes = 15,
+                FirstRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                SecondRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                ThirdRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                FourthRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                FifthRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                SixthRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                SeventhRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                EighthRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                NinthRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                License = TestObjects.GetLicense(),
+                RequestorId = 1,
+                PageListModel = new PageListModel()
+            };
+
+            sutSuccess = new SolutionsController(
+                mockSolutionsService.SolutionsServiceSuccessfulRequest.Object, 
+                mockAppsService.AppsServiceSuccessfulRequest.Object);
+
+            sutFailure = new SolutionsController(
+                mockSolutionsService.SolutionsServiceFailedRequest.Object, 
+                mockAppsService.AppsServiceSuccessfulRequest.Object);
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyGetSolution() {
+
+            // Arrange
+            var solutionId = 1;
+
+            // Act
+            var result = sutSuccess.GetSolution(solutionId, baseRequest);
+            var solution = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
+            Assert.That(solution, Is.InstanceOf<SudokuSolution>());
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldGetSolutionFail() {
+
+            // Arrange
+            var solutionId = 2;
+
+            // Act
+            var result = sutFailure.GetSolution(solutionId, baseRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving solution"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyGetSolutions() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.GetSolutions(baseRequest, true);
+            var difficulties = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<SudokuSolution>>>());
+            Assert.That(((List<SudokuSolution>)difficulties).Count, Is.EqualTo(2));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldGetSolutionsFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.GetSolutions(baseRequest, true);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<SudokuSolution>>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error retrieving solutions"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullySolveSolution() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.Solve(solveRequest);
+            var solution = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
+            Assert.That(solution, Is.InstanceOf<SudokuSolution>());
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSolveSolutionFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.Solve(solveRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error solving sudoku matrix"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyGenerateSolution() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.Generate(solveRequest);
+            var solution = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
+            Assert.That(solution, Is.InstanceOf<SudokuSolution>());
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldGenerateSolutionFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.Solve(solveRequest);
+            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
+            Assert.That(errorMessage, Is.InstanceOf<string>());
+            Assert.That(errorMessage, Is.EqualTo("Error solving sudoku matrix"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+    }
+}

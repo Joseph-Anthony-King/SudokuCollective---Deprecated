@@ -22,6 +22,8 @@ namespace SudokuCollective.Tests.MockServices {
         public MockSolutionsService(DatabaseContext context) {
 
             _context = context;
+            SolutionsServiceSuccessfulRequest = new Mock<ISolutionsService>();
+            SolutionsServiceFailedRequest = new Mock<ISolutionsService>();
 
             SolutionsServiceSuccessfulRequest.Setup(solutionsService =>
                 solutionsService.GetSolution(It.IsAny<int>(), It.IsAny<bool>()))
