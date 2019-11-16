@@ -79,6 +79,15 @@ namespace SudokuCollective.Tests.MockServices {
                         .ToList()
                 }));
 
+            AppsServiceSuccessfulRequest.Setup(appService =>
+                appService.GetLicense(It.IsAny<int>()))
+                .Returns(Task.FromResult(new LicenseResult() {
+
+                    License = TestObjects.GetLicense(),
+                    Success = true,
+                    Message = string.Empty
+                }));
+
             AppsServiceSuccessfulRequest.Setup(appService => 
                 appService.AddAppUser(It.IsAny<int>(), It.IsAny<BaseRequest>()))
                 .Returns(Task.FromResult(new BaseResult() {
@@ -157,6 +166,15 @@ namespace SudokuCollective.Tests.MockServices {
                     Success = false,
                     Message = "Error retrieving app users",
                     Users = new List<User>()
+                }));
+
+            AppsServiceFailedRequest.Setup(appService =>
+                appService.GetLicense(It.IsAny<int>()))
+                .Returns(Task.FromResult(new LicenseResult() {
+
+                    License = string.Empty,
+                    Success = false,
+                    Message = "App not found"
                 }));
 
             AppsServiceFailedRequest.Setup(appService => 
