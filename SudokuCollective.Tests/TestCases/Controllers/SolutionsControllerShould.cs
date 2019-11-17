@@ -190,14 +190,14 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             // Arrange
 
             // Act
-            var result = sutFailure.Solve(solveRequest);
+            var result = sutFailure.Generate(solveRequest);
             var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
             Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error solving sudoku matrix"));
+            Assert.That(errorMessage, Is.EqualTo("Error generating solution"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

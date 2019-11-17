@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 

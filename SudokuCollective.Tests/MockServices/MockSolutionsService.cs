@@ -93,7 +93,7 @@ namespace SudokuCollective.Tests.MockServices {
                     Task.FromResult(new SolutionResult() {
 
                         Success = false,
-                        Message = "Error generating sulution",
+                        Message = "Error generating solution",
                         Solution = new SudokuSolution()
                     }));
         }
