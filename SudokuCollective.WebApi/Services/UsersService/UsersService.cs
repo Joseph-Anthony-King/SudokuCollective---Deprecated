@@ -96,6 +96,15 @@ namespace SudokuCollective.WebApi.Services {
                         return userResult;
                     }
 
+                    foreach (var userRole in user.Roles) {
+
+                        userRole.Role = await _context.Roles
+                            .FirstOrDefaultAsync(
+                                predicate: r => r.Id == userRole.RoleId);
+
+                        userRole.Role.Users = null;
+                    }
+
                     user.Roles.OrderBy(r => r.RoleId);
                     user.Apps.OrderBy(a => a.AppId);
 

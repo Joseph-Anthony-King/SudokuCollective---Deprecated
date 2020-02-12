@@ -10,7 +10,7 @@ using SudokuCollective.WebApi.Services.Interfaces;
 namespace SudokuCollective.WebApi.Controllers {
 
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class DifficultiesController : ControllerBase {
 

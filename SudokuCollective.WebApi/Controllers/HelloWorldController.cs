@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace SudokuCollective.WebApi.Controllers {
 
     [Authorize]
-    [Route("api/helloworld")]
+    [Route("api/v1/helloworld")]
     [ApiController]
     public class HelloWorldController : ControllerBase {
         
