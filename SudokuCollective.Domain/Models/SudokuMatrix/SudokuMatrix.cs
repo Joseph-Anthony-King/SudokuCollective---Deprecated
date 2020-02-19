@@ -310,7 +310,7 @@ namespace SudokuCollective.Domain.Models {
 
             return result;
         }
-        
+
         public void GenerateSolution() {
 
             do {
@@ -319,7 +319,7 @@ namespace SudokuCollective.Domain.Models {
 
                 foreach (var sudokuCell in SudokuCells) {
 
-                    if (sudokuCell.Value == 0) {
+                    if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Count > 1) {
 
                         Random random = new Random();
 
@@ -327,10 +327,14 @@ namespace SudokuCollective.Domain.Models {
 
                         sudokuCell.Value = sudokuCell.AvailableValues[0];
 
-                        if (sudokuCell.Value == 0) {
+                    } else if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Count == 1) {
 
-                            break;
-                        }
+                        sudokuCell.Value = sudokuCell.AvailableValues[0];
+                    }
+
+                    if (sudokuCell.Value == 0) {
+
+                        break;
                     }
                 }
 
