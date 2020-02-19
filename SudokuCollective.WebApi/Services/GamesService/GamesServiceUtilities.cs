@@ -873,6 +873,16 @@ namespace SudokuCollective.WebApi.Services {
                 }
             }
 
+            foreach (var game in result) {
+
+                foreach (var userRole in game.User.Roles) {
+
+                    userRole.Role = await context.Roles
+                        .Where(r => r.Id == userRole.RoleId)
+                        .FirstOrDefaultAsync();
+                }
+            }
+
             return result;
         }
 

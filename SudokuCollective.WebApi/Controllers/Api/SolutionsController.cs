@@ -97,7 +97,14 @@ namespace SudokuCollective.WebApi.Controllers {
 
                 if (result.Success) {
 
-                    return Ok(result.Solution);
+                    if (result.Solution != null) {
+
+                        return Ok(result.Solution);
+
+                    } else {
+
+                        return Ok("Need more values in order to deduce a solution.");
+                    }
 
                 } else {
 

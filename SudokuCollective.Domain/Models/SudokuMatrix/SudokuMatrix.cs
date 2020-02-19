@@ -319,7 +319,7 @@ namespace SudokuCollective.Domain.Models {
 
                 foreach (var sudokuCell in SudokuCells) {
 
-                    if (sudokuCell.AvailableValues.Count > 1 && sudokuCell.Value == 0) {
+                    if (sudokuCell.Value == 0) {
 
                         Random random = new Random();
 

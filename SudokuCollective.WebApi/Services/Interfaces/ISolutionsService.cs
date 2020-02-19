@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
-using SudokuCollective.WebApi.Models.ResultModels.SolutionRequests;
+using SudokuCollective.WebApi.Models.ResultModels.SolutionResults;
 
 namespace SudokuCollective.WebApi.Services.Interfaces {
 

@@ -8,7 +8,7 @@ using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
-using SudokuCollective.WebApi.Models.ResultModels.SolutionRequests;
+using SudokuCollective.WebApi.Models.ResultModels.SolutionResults;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Services {
@@ -202,31 +202,39 @@ namespace SudokuCollective.WebApi.Services {
 
                     await sudokuSolver.Solve();
 
-                    var result = new SudokuSolution(sudokuSolver.ToInt32List());
+                    if (sudokuSolver.IsValid()) {
 
-                    var addResultToDataContext = true;
+                        var result = new SudokuSolution(sudokuSolver.ToInt32List());
 
-                    foreach (var solution in solutions) {
+                        var addResultToDataContext = true;
 
-                        if (solution.ToString().Equals(result.ToString())) {
+                        foreach (var solution in solutions) {
 
-                            addResultToDataContext = false;
-                            result = solution;
+                            if (solution.ToString().Equals(result.ToString())) {
+
+                                addResultToDataContext = false;
+                                result = solution;
+                            }
                         }
-                    }
 
-                    if (addResultToDataContext && !result.ToString().Contains('0')) {
+                        if (addResultToDataContext && !result.ToString().Contains('0')) {
 
-                        _context.SudokuSolutions.Add(result);
-                        await _context.SaveChangesAsync();
-                    }
-                    
-                    if (!result.ToString().Contains('0')) {
-                        
+                            _context.SudokuSolutions.Add(result);
+                            await _context.SaveChangesAsync();
+                        }
+
+                        if (!result.ToString().Contains('0')) {
+
+                            solutionTaskResult.Success = true;
+                        }
+
+                        solutionTaskResult.Solution = result;
+
+                    } else {
+
+                        solutionTaskResult.Solution = null;
                         solutionTaskResult.Success = true;
                     }
-
-                    solutionTaskResult.Solution = result;
                 }
 
                 return solutionTaskResult;

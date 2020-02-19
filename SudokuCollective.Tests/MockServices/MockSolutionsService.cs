@@ -8,7 +8,7 @@ using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
-using SudokuCollective.WebApi.Models.ResultModels.SolutionRequests;
+using SudokuCollective.WebApi.Models.ResultModels.SolutionResults;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.Tests.MockServices {

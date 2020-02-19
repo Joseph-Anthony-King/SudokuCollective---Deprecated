@@ -47,6 +47,8 @@ namespace SudokuCollective.WebApi.Services {
                         .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
                 }
 
+                user.updateRoles();
+
                 SudokuMatrix matrix = new SudokuMatrix();
                 matrix.GenerateSolution();
 

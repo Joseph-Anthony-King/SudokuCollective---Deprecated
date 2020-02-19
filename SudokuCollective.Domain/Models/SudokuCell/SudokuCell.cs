@@ -168,14 +168,18 @@ namespace SudokuCollective.Domain.Models {
 
             } else {
 
-                if (AvailableValues.Contains(i) && AvailableValues.Count > 0) {
+                if (AvailableValues.Contains(i) && AvailableValues.Count > 1 && Value == 0) {
 
                     AvailableValues.Remove(i);
-                }
 
-                if (AvailableValues.Count == 1) {
+                } else if (AvailableValues.Count == 1 && Value == 0) {
 
                     Value = AvailableValues[0];
+                    AvailableValues = new List<int>();
+
+                } else {
+
+                    // do nothing...
                 }
             }
         }

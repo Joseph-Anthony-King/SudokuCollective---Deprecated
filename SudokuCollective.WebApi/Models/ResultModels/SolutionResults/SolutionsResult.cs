@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.WebApi.Models.ResultModels.SolutionRequests {
+namespace SudokuCollective.WebApi.Models.ResultModels.SolutionResults {
 
     public class SolutionsResult : BaseResult {
         

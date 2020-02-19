@@ -11,6 +11,8 @@ namespace SudokuCollective.Domain.Models {
     public class User : IUser {
 
         private string _userName;
+        private bool _isSuperUser;
+        private bool _isAdmin;
 
         public int Id { get; set; }
         [Required]
@@ -56,38 +58,50 @@ namespace SudokuCollective.Domain.Models {
 
             get {
 
-                var result = false;
+                _isSuperUser = false;
 
-                foreach (var role in Roles)
-                {
+                if (Roles != null) {
 
-                    if (role.Role.RoleLevel == RoleLevel.SUPERUSER)
-                    {
+                    foreach (var role in Roles) {
 
-                        result = true;
+                        if (role.Role.RoleLevel == RoleLevel.SUPERUSER) {
+
+                            _isSuperUser = true;
+                        }
                     }
                 }
 
-                return result;
+                return _isSuperUser;
+            }
+
+            set {
+
+                _isSuperUser = value;
             }
         }
         public bool IsAdmin {
 
             get {
 
-                var result = false;
+                _isAdmin = false;
 
-                foreach (var role in Roles)
-                {
+                if (Roles != null) {
 
-                    if (role.Role.RoleLevel == RoleLevel.ADMIN)
-                    {
+                    foreach (var role in Roles) {
 
-                        result = true;
+                        if (role.Role.RoleLevel == RoleLevel.ADMIN) {
+
+                            _isAdmin = true;
+                        }
                     }
                 }
 
-                return result;
+                return _isAdmin;
+            }
+
+            set {
+
+                _isAdmin = value;
             }
         }
         public DateTime DateCreated { get; set; }
@@ -108,6 +122,8 @@ namespace SudokuCollective.Domain.Models {
             Password = password;
             DateCreated = dateUserCreated;
             IsActive = true;
+            IsSuperUser = false;
+            IsAdmin = false;
         }
 
         public User() {
@@ -160,6 +176,28 @@ namespace SudokuCollective.Domain.Models {
         public void DeactiveUser() {
 
             IsActive = false;
+        }
+
+        public void updateRoles() {
+
+            if (Roles != null) {
+
+                foreach (var role in Roles) {
+
+                    if (role.Role.RoleLevel == RoleLevel.SUPERUSER) {
+
+                        IsSuperUser = true;
+                    
+                    } else if (role.Role.RoleLevel == RoleLevel.ADMIN) {
+                        
+                        _isAdmin = true;
+
+                    } else {
+
+                        // do nothing...
+                    }
+                }
+            }
         }
     }
 }
