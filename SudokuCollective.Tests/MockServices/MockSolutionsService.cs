@@ -18,12 +18,14 @@ namespace SudokuCollective.Tests.MockServices {
         private DatabaseContext _context;
         internal Mock<ISolutionsService> SolutionsServiceSuccessfulRequest { get; set; }
         internal Mock<ISolutionsService> SolutionsServiceFailedRequest { get; set; }
+        internal Mock<ISolutionsService> SolutionsServiceSolveFailedRequest { get; set; }
 
         public MockSolutionsService(DatabaseContext context) {
 
             _context = context;
             SolutionsServiceSuccessfulRequest = new Mock<ISolutionsService>();
             SolutionsServiceFailedRequest = new Mock<ISolutionsService>();
+            SolutionsServiceSolveFailedRequest = new Mock<ISolutionsService>();
 
             SolutionsServiceSuccessfulRequest.Setup(solutionsService =>
                 solutionsService.GetSolution(It.IsAny<int>(), It.IsAny<bool>()))
@@ -96,6 +98,15 @@ namespace SudokuCollective.Tests.MockServices {
                         Message = "Error generating solution",
                         Solution = new SudokuSolution()
                     }));
+
+            SolutionsServiceSolveFailedRequest.Setup(solutionsService =>
+                solutionsService.Solve(It.IsAny<SolveRequest>()))
+                .Returns(Task.FromResult(new SolutionResult() {
+
+                    Success = true,
+                    Message = string.Empty,
+                    Solution = null
+                }));
         }
     }
 }

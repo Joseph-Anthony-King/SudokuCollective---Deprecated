@@ -18,6 +18,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private DatabaseContext context;
         private SolutionsController sutSuccess;
         private SolutionsController sutFailure;
+        private SolutionsController sutSolvedFailure;
         private MockSolutionsService mockSolutionsService;
         private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
@@ -56,6 +57,10 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             sutFailure = new SolutionsController(
                 mockSolutionsService.SolutionsServiceFailedRequest.Object, 
+                mockAppsService.AppsServiceSuccessfulRequest.Object);
+
+            sutSolvedFailure = new SolutionsController(
+                mockSolutionsService.SolutionsServiceSolveFailedRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
         }
 
@@ -199,6 +204,23 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             Assert.That(errorMessage, Is.InstanceOf<string>());
             Assert.That(errorMessage, Is.EqualTo("Error generating solution"));
             Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueMessageIfSudokuSolutionSolveFailed() {
+
+            // Arrange
+
+            // Act
+            var result = sutSolvedFailure.Solve(solveRequest);
+            var solution = ((OkObjectResult)result.Result.Result).Value;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
+            Assert.That(solution, Is.EqualTo("Need more values in order to deduce a solution."));
+            Assert.That(statusCode, Is.EqualTo(200));
         }
     }
 }
