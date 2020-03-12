@@ -114,7 +114,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<SudokuSolution>>>());
-            Assert.That(((List<SudokuSolution>)difficulties).Count, Is.EqualTo(2));
+            Assert.That(((List<SudokuSolution>)difficulties).Count, Is.EqualTo(3));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
