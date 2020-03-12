@@ -169,7 +169,7 @@ namespace SudokuCollective.WebApi.Services {
                 var firstNonZeroValue = 0;
                 var firstNonZeroValueIndex = 0;
 
-                for (var i = 0; i < intList.Count; i++) {
+                for (var i = 0; i < intList.Count - 1; i++) {
 
                     if (intList[i] != 0) {
 
