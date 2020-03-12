@@ -175,7 +175,7 @@ namespace SudokuCollective.WebApi.Services {
 
                         firstNonZeroValue = intList[i];
                         firstNonZeroValueIndex = i;
-                        i = intList.Count - 1;
+                        i = intList.Count - 2;
                     }
                 }
 
