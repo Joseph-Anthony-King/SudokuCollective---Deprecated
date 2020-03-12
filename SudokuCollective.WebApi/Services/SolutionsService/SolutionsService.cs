@@ -166,31 +166,49 @@ namespace SudokuCollective.WebApi.Services {
                 intList.AddRange(solveRequest.EighthRow);
                 intList.AddRange(solveRequest.NinthRow);
 
-                var solutions = await _context.SudokuSolutions.ToListAsync();
+                var firstNonZeroValue = 0;
+                var firstNonZeroValueIndex = 0;
+
+                for (var i = 0; i < intList.Count; i++) {
+
+                    if (intList[i] != 0) {
+
+                        firstNonZeroValue = intList[i];
+                        firstNonZeroValueIndex = i;
+                        i = intList.Count - 1;
+                    }
+                }
+
+                var solutions = await _context.SudokuSolutions
+                    .Where(s => s.SolutionList[firstNonZeroValueIndex].Equals((char)firstNonZeroValue))
+                    .ToListAsync();
 
                 var solutionInDB = false;
 
-                foreach (var solution in solutions) {
+                if (solutions.Count > 0) {
 
-                    if (solution.SolutionList.Count > 0) {
+                    foreach (var solution in solutions) {
 
-                        var possibleSolution = true;
+                        if (solution.SolutionList.Count > 0) {
 
-                        for (var i = 0; i < intList.Count - 1; i++) {
+                            var possibleSolution = true;
 
-                            if (intList[i] != 0 && intList[i] != solution.SolutionList[i]) {
+                            for (var i = 0; i < intList.Count - 1; i++) {
 
-                                possibleSolution = false;
+                                if (intList[i] != 0 && intList[i] != solution.SolutionList[i]) {
+
+                                    possibleSolution = false;
+                                    break;
+                                }
+                            }
+
+                            if (possibleSolution) {
+
+                                solutionInDB = possibleSolution;
+                                solutionTaskResult.Success = true;
+                                solutionTaskResult.Solution = solution;
                                 break;
                             }
-                        }
-
-                        if (possibleSolution) {
-
-                            solutionInDB = possibleSolution;
-                            solutionTaskResult.Success = true;
-                            solutionTaskResult.Solution = solution;
-                            break;
                         }
                     }
                 }
