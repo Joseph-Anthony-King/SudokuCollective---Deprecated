@@ -84,7 +84,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Assert
             Assert.That(result.Success, Is.True);
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
-            Assert.That(solutionsResult.Count, Is.EqualTo(3));
+            Assert.That(solutionsResult.Count, Is.EqualTo(4));
         }
 
         [Test]

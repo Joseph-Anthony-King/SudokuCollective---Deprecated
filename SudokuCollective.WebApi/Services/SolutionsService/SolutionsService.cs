@@ -180,7 +180,8 @@ namespace SudokuCollective.WebApi.Services {
                 }
 
                 var solutions = await _context.SudokuSolutions
-                    .Where(s => s.SolutionList[firstNonZeroValueIndex].Equals((char)firstNonZeroValue))
+                    .Where(s => s.SolutionList.Count > 0 && s.SolutionList[firstNonZeroValueIndex]
+                        .Equals((char)firstNonZeroValue))
                     .ToListAsync();
 
                 var solutionInDB = false;
