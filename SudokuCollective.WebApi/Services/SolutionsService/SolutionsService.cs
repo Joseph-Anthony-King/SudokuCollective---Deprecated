@@ -8,6 +8,7 @@ using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
 using SudokuCollective.WebApi.Models.ResultModels.SolutionResults;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -264,7 +265,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 return solutionTaskResult;
             }
-        }        
+        }
 
         public async Task<SolutionResult> Generate() {
 
@@ -310,6 +311,55 @@ namespace SudokuCollective.WebApi.Services {
             solutionTaskResult.Success = true;
 
             return solutionTaskResult;
+        }
+
+        public async Task<BaseResult> AddSolutions(int limit) {
+
+            var baseTaskResult = new BaseResult();
+
+            try {
+
+                List<SudokuSolution> solutions = new List<SudokuSolution>();
+
+                for (var i = 0; i < limit; i++) {
+
+                    var continueLoop = true;
+                    
+                    var matrix = new SudokuMatrix();
+
+                    do {
+
+                        matrix.GenerateSolution();
+
+                        if (solutions.Count > 0 && !solutions.Contains(new SudokuSolution(matrix.ToInt32List()))) {
+
+                            solutions.Add(new SudokuSolution(matrix.ToInt32List()));
+                            continueLoop = false;
+
+                        } else if (solutions.Count == 1) {
+
+                            solutions.Add(new SudokuSolution(matrix.ToInt32List()));
+                            continueLoop = false;
+
+                        } else {
+
+                        }
+
+                    } while (continueLoop);
+                }
+
+                _context.SudokuSolutions.AddRange(solutions);
+                await _context.SaveChangesAsync();
+
+                baseTaskResult.Success = true;
+                
+            } catch (Exception e) {
+                
+                baseTaskResult.Message = e.Message;
+                baseTaskResult.Success = false;
+            }
+
+            return baseTaskResult;
         }
     }
 }

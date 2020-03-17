@@ -23,6 +23,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
         private SolveRequest solveRequest;
+        private AddSolutionRequest addSolutionRequest;
 
         [SetUp]
         public async Task Setup() {
@@ -49,6 +50,11 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
                 PageListModel = new PageListModel()
+            };
+
+            addSolutionRequest = new AddSolutionRequest() {
+
+                Limit = 1000
             };
 
             sutSuccess = new SolutionsController(
@@ -221,6 +227,36 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
             Assert.That(solution, Is.EqualTo("Need more values in order to deduce a solution."));
             Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyAddSolutions() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.AddSolutions(addSolutionRequest);
+            var statusCode = ((OkResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldAddSolutionsFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.AddSolutions(addSolutionRequest);
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCode, Is.EqualTo(404));
         }
     }
 }

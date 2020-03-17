@@ -102,5 +102,21 @@ namespace SudokuCollective.Tests.TestCases.Services {
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
             Assert.That(solutionsResult.Count, Is.EqualTo(4));
         }
+
+        [Test]
+        [Category("Services")]
+        public async Task AddSolutions() {
+
+            // Arrange
+            var AThousandSolutions = 100;
+
+            // Act
+            var result = await sut.AddSolutions(AThousandSolutions);
+            var solutionsResult = _context.SudokuSolutions.ToList();
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(solutionsResult.Count, Is.EqualTo(AThousandSolutions + 3));
+        }
     }
 }
