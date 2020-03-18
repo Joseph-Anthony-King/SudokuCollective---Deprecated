@@ -319,7 +319,8 @@ namespace SudokuCollective.WebApi.Services {
 
             try {
 
-                List<SudokuSolution> solutions = new List<SudokuSolution>();
+                List<List<int>> solutionsList = new List<List<int>>();
+                List<SudokuSolution> result = new List<SudokuSolution>();
 
                 for (var i = 0; i < limit; i++) {
 
@@ -331,14 +332,14 @@ namespace SudokuCollective.WebApi.Services {
 
                         matrix.GenerateSolution();
 
-                        if (solutions.Count > 0 && !solutions.Contains(new SudokuSolution(matrix.ToInt32List()))) {
+                        if (solutionsList.Count > 0 && !solutionsList.Contains(matrix.ToInt32List())) {
 
-                            solutions.Add(new SudokuSolution(matrix.ToInt32List()));
+                            solutionsList.Add(matrix.ToInt32List());
                             continueLoop = false;
 
-                        } else if (solutions.Count == 1) {
+                        } else if (solutionsList.Count == 0) {
 
-                            solutions.Add(new SudokuSolution(matrix.ToInt32List()));
+                            solutionsList.Add(matrix.ToInt32List());
                             continueLoop = false;
 
                         } else {
@@ -348,7 +349,12 @@ namespace SudokuCollective.WebApi.Services {
                     } while (continueLoop);
                 }
 
-                _context.SudokuSolutions.AddRange(solutions);
+                foreach(var solutionList in solutionsList) {
+
+                    result.Add(new SudokuSolution(solutionList));
+                }
+
+                _context.SudokuSolutions.AddRange(result);
                 await _context.SaveChangesAsync();
 
                 baseTaskResult.Success = true;
