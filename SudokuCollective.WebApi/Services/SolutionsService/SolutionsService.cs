@@ -321,13 +321,15 @@ namespace SudokuCollective.WebApi.Services {
             }
 
             var reduceLimitBy = 0;
-            var baseTaskResult = new BaseResult();
 
             var solutions = await _context.SudokuSolutions
                 .Where(s => s.SolutionList.Count > 0)
                 .ToListAsync();
 
             List<List<int>> solutionsInDB = new List<List<int>>();
+
+            var matrix = new SudokuMatrix();
+            var baseTaskResult = new BaseResult();
 
             foreach (var solution in solutions) {
 
@@ -344,8 +346,6 @@ namespace SudokuCollective.WebApi.Services {
                 do {
 
                     for (var i = 0; i < limit - reduceLimitBy; i++) {
-                        
-                        var matrix = new SudokuMatrix();
 
                         matrix.GenerateSolution();
 
