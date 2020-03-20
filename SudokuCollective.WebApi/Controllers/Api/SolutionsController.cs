@@ -171,7 +171,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
                     return BadRequest(
                         string.Format(
-                            "The amount of solutions requested, {0}, exceeds the services 1000 solution limit", 
+                            "The amount of solutions requested, {0}, exceeds the service's 1,000 solution limit", 
                         addSolutionRequest.Limit.ToString())
                         );
                 }
