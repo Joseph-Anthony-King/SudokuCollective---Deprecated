@@ -260,7 +260,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             var result = sutSuccess.AddSolutions(invalidAddSolutionRequest);
             var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
             var statusMessage = ((BadRequestObjectResult)result.Result).Value;
-            var errorMessage = "The amount of solutions requested, 1001, exceeds the services 1000 solution limit";
+            var errorMessage = "The amount of solutions requested, 1001, exceeds the service's 1,000 solution limit";
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
