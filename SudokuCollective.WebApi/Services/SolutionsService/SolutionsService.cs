@@ -315,6 +315,7 @@ namespace SudokuCollective.WebApi.Services {
 
         public async Task<BaseResult> AddSolutions(int limit) {
 
+            var reduceLimitBy = 0;
             var baseTaskResult = new BaseResult();
 
             try {
@@ -322,32 +323,31 @@ namespace SudokuCollective.WebApi.Services {
                 List<List<int>> solutionsList = new List<List<int>>();
                 List<SudokuSolution> result = new List<SudokuSolution>();
 
-                for (var i = 0; i < limit; i++) {
+                var continueLoop = true;
 
-                    var continueLoop = true;
-                    
-                    var matrix = new SudokuMatrix();
+                do {
 
-                    do {
+                    for (var i = 0; i < limit - reduceLimitBy; i++) {
+                        
+                        var matrix = new SudokuMatrix();
 
                         matrix.GenerateSolution();
+                            
+                        solutionsList.Add(matrix.ToInt32List());
+                    }
 
-                        if (solutionsList.Count > 0 && !solutionsList.Contains(matrix.ToInt32List())) {
+                    solutionsList = solutionsList.Distinct().ToList();
 
-                            solutionsList.Add(matrix.ToInt32List());
-                            continueLoop = false;
+                    if (limit == solutionsList.Count) {
 
-                        } else if (solutionsList.Count == 0) {
+                        continueLoop = false;
 
-                            solutionsList.Add(matrix.ToInt32List());
-                            continueLoop = false;
+                    } else {
 
-                        } else {
+                        reduceLimitBy = limit - solutionsList.Count;
+                    }
 
-                        }
-
-                    } while (continueLoop);
-                }
+                } while (continueLoop);
 
                 foreach(var solutionList in solutionsList) {
 

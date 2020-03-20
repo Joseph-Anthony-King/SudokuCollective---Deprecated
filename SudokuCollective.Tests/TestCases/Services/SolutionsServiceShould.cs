@@ -108,7 +108,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
         public async Task AddSolutions() {
 
             // Arrange
-            var limit = 1000000;
+            var limit = 100;
 
             // Act
             var result = await sut.AddSolutions(limit);
