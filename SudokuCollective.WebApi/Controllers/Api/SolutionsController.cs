@@ -154,15 +154,26 @@ namespace SudokuCollective.WebApi.Controllers {
                 addSolutionRequest.License,
                 addSolutionRequest.RequestorId)) {
 
-                var result = await _solutionService.AddSolutions(addSolutionRequest.Limit);
+                if (addSolutionRequest.Limit <= 1000) {
 
-                if (result.Success) {
+                    var result = await _solutionService.AddSolutions(addSolutionRequest.Limit);
 
-                    return Ok();
+                    if (result.Success) {
+
+                        return Ok();
+
+                    } else {
+
+                        return NotFound(result.Message);
+                    }
 
                 } else {
 
-                    return NotFound(result.Message);
+                    return BadRequest(
+                        string.Format(
+                            "The amount of solutions requested, {0}, exceeds the services 1000 solution limit", 
+                        addSolutionRequest.Limit.ToString())
+                        );
                 }
 
             } else {

@@ -280,18 +280,16 @@ namespace SudokuCollective.WebApi.Services {
                 matrix.GenerateSolution();
 
                 var solutions = await _context.SudokuSolutions
+                    .Where(s => s.SolutionList.Count > 0)
                     .ToListAsync();
 
                 var matrixNotInDB = true;
 
                 foreach (var solution in solutions) {
 
-                    if (solution.SolutionList.Count > 0) {
-
-                        if (solution.ToString().Equals(matrix)) {
+                    if (solution.ToString().Equals(matrix)) {
                             
-                            matrixNotInDB = false;
-                        }
+                        matrixNotInDB = false;
                     }
                 }
 
@@ -313,10 +311,28 @@ namespace SudokuCollective.WebApi.Services {
             return solutionTaskResult;
         }
 
-        public async Task<BaseResult> AddSolutions(int limit) {
+        public async Task<BaseResult> AddSolutions(int limitArg) {
+
+            var limit = 1000;
+
+            if (limitArg <= limit) {
+
+                limit = limitArg;
+            }
 
             var reduceLimitBy = 0;
             var baseTaskResult = new BaseResult();
+
+            var solutions = await _context.SudokuSolutions
+                .Where(s => s.SolutionList.Count > 0)
+                .ToListAsync();
+
+            List<List<int>> solutionsInDB = new List<List<int>>();
+
+            foreach (var solution in solutions) {
+
+                solutionsInDB.Add(solution.SolutionList);
+            }
 
             try {
 
@@ -332,11 +348,16 @@ namespace SudokuCollective.WebApi.Services {
                         var matrix = new SudokuMatrix();
 
                         matrix.GenerateSolution();
-                            
-                        solutionsList.Add(matrix.ToInt32List());
+
+                        if (!solutionsInDB.Contains(matrix.ToInt32List())) {
+
+                            solutionsList.Add(matrix.ToInt32List());
+                        }
                     }
 
-                    solutionsList = solutionsList.Distinct().ToList();
+                    solutionsList = solutionsList
+                        .Distinct()
+                        .ToList();
 
                     if (limit == solutionsList.Count) {
 

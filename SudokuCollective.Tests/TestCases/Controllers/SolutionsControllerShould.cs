@@ -24,6 +24,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private BaseRequest baseRequest;
         private SolveRequest solveRequest;
         private AddSolutionRequest addSolutionRequest;
+        private AddSolutionRequest invalidAddSolutionRequest;
 
         [SetUp]
         public async Task Setup() {
@@ -55,6 +56,11 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             addSolutionRequest = new AddSolutionRequest() {
 
                 Limit = 1000
+            };
+
+            invalidAddSolutionRequest = new AddSolutionRequest() {
+
+                Limit = 1001
             };
 
             sutSuccess = new SolutionsController(
@@ -242,6 +248,24 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
             Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void RejectAddSolutionRequestsOfMoreThanAThousand() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.AddSolutions(invalidAddSolutionRequest);
+            var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
+            var statusMessage = ((BadRequestObjectResult)result.Result).Value;
+            var errorMessage = "The amount of solutions requested, 1001, exceeds the services 1000 solution limit";
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCode, Is.EqualTo(400));
+            Assert.That(statusMessage, Is.EqualTo(errorMessage));
         }
 
         [Test]
