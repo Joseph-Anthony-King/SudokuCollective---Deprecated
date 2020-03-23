@@ -30,10 +30,14 @@ namespace SudokuCollective.Tests.TestCases.Services {
             _context = await TestDatabase.GetDatabaseContext();
 
             mockUserManagementServiceValid = new Mock<IUserManagementService>();
-            mockUserManagementServiceValid.Setup(service => service.IsValidUser(userName, password)).Returns(Task.FromResult(true));
+            mockUserManagementServiceValid
+                .Setup(service => service.IsValidUser(userName, password))
+                .Returns(Task.FromResult(true));
 
             mockUserManagementServiceInvalid = new Mock<IUserManagementService>();
-            mockUserManagementServiceInvalid.Setup(service => service.IsValidUser(userName, password)).Returns(Task.FromResult(false));
+            mockUserManagementServiceInvalid
+                .Setup(service => service.IsValidUser(userName, password))
+                .Returns(Task.FromResult(false));
 
             tokenManagement = new TokenManagement() {
 

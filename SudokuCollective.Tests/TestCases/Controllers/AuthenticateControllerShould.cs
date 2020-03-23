@@ -34,8 +34,12 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             var token = string.Empty;
 
-            mockValidAuthenticateService.Setup(authService => authService.IsAuthenticated(tokenRequest, out token)).Returns(true);
-            mockInvalidAuthenticateService.Setup(authService => authService.IsAuthenticated(tokenRequest, out token)).Returns(false);
+            mockValidAuthenticateService
+                .Setup(authService => authService.IsAuthenticated(tokenRequest, out token))
+                .Returns(true);
+            mockInvalidAuthenticateService
+                .Setup(authService => authService.IsAuthenticated(tokenRequest, out token))
+                .Returns(false);
 
             sut = new AuthenticateController(mockValidAuthenticateService.Object);
             sutInvalid = new AuthenticateController(mockInvalidAuthenticateService.Object);

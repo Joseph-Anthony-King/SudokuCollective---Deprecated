@@ -391,6 +391,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             Assert.That(statusCodeFour, Is.EqualTo(400));
             Assert.That(resultFive.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
             Assert.That(statusCodeFive, Is.EqualTo(400));
+            Assert.That(resultSix.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCodeSix, Is.EqualTo(400));
             Assert.That(resultSeven.Result, Is.InstanceOf<ActionResult>());
             Assert.That(statusCodeSeven, Is.EqualTo(400));
 
