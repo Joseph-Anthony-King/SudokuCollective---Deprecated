@@ -485,13 +485,71 @@ namespace SudokuCollective.WebApi.Services {
 
                 if (app != null) {
 
-                    _context.Apps.Remove(app);
+                    var users2 = await _context.Users
+                        .ToListAsync();
+
+                    var users = await _context.Users
+                        .Where(u => u.Apps.Any(ua => ua.AppId == app.Id))
+                        .ToListAsync();
                     
                     var games = await _context.Games
                         .Where(g => g.AppId == app.Id)
                         .ToListAsync();
 
+                    var sudokuMatrixIds = new List<int>();
+                    var solutionItems = new List<SolutionItem>();
+
+                    foreach (var game in games) {
+
+                        sudokuMatrixIds.Add(game.SudokuMatrixId);
+                        solutionItems.Add(new SolutionItem() {
+                            SolutionId = game.SudokuSolutionId,
+                            ContinueGame = game.ContinueGame
+                        });
+                    }
+
+                    var cells = new List<SudokuCell>();
+                    var matrices = new List<SudokuMatrix>();
+                    var solutions = new List<SudokuSolution>();
+
+                    foreach (var sudokuMatrixId in sudokuMatrixIds) {
+
+                        cells.AddRange(
+                            await _context.SudokuCells
+                            .Where(c => c.SudokuMatrixId == sudokuMatrixId)
+                            .ToListAsync());
+
+                        matrices.AddRange(
+                            await _context.SudokuMatrices
+                            .Where(m => m.Id == sudokuMatrixId)
+                            .ToListAsync());
+                    }
+
+                    foreach (var solutionItem in solutionItems) {
+
+                        if (solutionItem.ContinueGame) {
+
+                            solutions.AddRange(
+                                await _context.SudokuSolutions
+                                .Where(s => s.Id == solutionItem.SolutionId)
+                                .ToListAsync());
+                        }
+                    }
+
+                    _context.SudokuCells.RemoveRange(cells);
+                    _context.SudokuMatrices.RemoveRange(matrices);
+                    _context.SudokuSolutions.RemoveRange(solutions);
                     _context.Games.RemoveRange(games);
+
+                    foreach (var user in users) {
+
+                        if (user.Apps.Count == 1 && user.IsAdmin == false) {
+
+                            _context.Users.Remove(user);
+                        }
+                    }
+
+                    _context.Apps.Remove(app);
 
                     await _context.SaveChangesAsync();
 

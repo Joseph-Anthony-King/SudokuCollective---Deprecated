@@ -84,6 +84,18 @@ namespace SudokuCollective.Tests.TestData {
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
                         true, 
                         dateCreated, 
+                        DateTime.MinValue),
+
+                    new User(
+                        3,
+                        "TestUser2",
+                        "Test",
+                        "User2",
+                        "Test User 2",
+                        "TestUser2@example.com",
+                        BCrypt.Net.BCrypt.HashPassword("password1", salt),
+                        true,
+                        dateCreated,
                         DateTime.MinValue)
                 );
 
@@ -97,7 +109,8 @@ namespace SudokuCollective.Tests.TestData {
                     new UserRole(1,1,2),
                     new UserRole(2,1,3),
                     new UserRole(3,1,4),
-                    new UserRole(4,2,4)
+                    new UserRole(4,2,4),
+                    new UserRole(5,3,4)
                 );
 
                 await databaseContext.SaveChangesAsync();
@@ -139,7 +152,8 @@ namespace SudokuCollective.Tests.TestData {
                     new UserApp(1,1,1),
                     new UserApp(2,1,2),
                     new UserApp(3,2,1),
-                    new UserApp(4,2,2)
+                    new UserApp(4,2,2),
+                    new UserApp(5,3,2)
                 );
 
                 await databaseContext.SaveChangesAsync();

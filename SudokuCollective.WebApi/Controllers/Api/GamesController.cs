@@ -34,7 +34,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 baseRequest.License, 
                 baseRequest.RequestorId)) {
 
-                var result = await _gamesService.GetGame(id);
+                var result = await _gamesService.GetGame(
+                    id, baseRequest.AppId);
 
                 if (result.Success) {
                     
@@ -213,7 +214,11 @@ namespace SudokuCollective.WebApi.Controllers {
                 getMyGameRequest.License,
                 getMyGameRequest.RequestorId)) {
 
-                var result = await _gamesService.GetMyGame(getMyGameRequest.UserId, id, fullRecord);
+                var result = await _gamesService.GetMyGame(
+                    getMyGameRequest.UserId, 
+                    id,
+                    getMyGameRequest.AppId,
+                    fullRecord);
 
                 if (result.Success) {
 

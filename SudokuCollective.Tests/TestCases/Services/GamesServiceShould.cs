@@ -182,9 +182,10 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             // Arrange
             var gameId = 1;
+            var appId = 1;
 
             // Act
-            var result = await sut.GetGame(gameId);
+            var result = await sut.GetGame(gameId, appId);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -197,9 +198,10 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             // Arrange
             var gameId = 5;
+            var appId = 1;
 
             // Act
-            var result = await sut.GetGame(gameId);
+            var result = await sut.GetGame(gameId, appId);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -218,7 +220,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Games.Count, Is.EqualTo(2));
+            Assert.That(result.Games.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -228,9 +230,10 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Arrange
             var userId = 1;
             var gameId = 1;
+            var appId = 1;
 
             // Act
-            var result = await sut.GetMyGame(userId, gameId);
+            var result = await sut.GetMyGame(userId, gameId, appId);
 
             // Assert
             Assert.That(result.Success, Is.True);

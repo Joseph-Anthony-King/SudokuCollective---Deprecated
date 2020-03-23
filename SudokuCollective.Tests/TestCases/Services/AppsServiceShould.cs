@@ -219,7 +219,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Arrange
             var user = new User() {
 
-                Id = 3,
+                Id = 4,
                 UserName = "TestUser3",
                 FirstName = "John",
                 LastName = "Doe",
@@ -233,7 +233,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             var userRole = new UserRole() {
 
-                UserId = 3,
+                UserId = 4,
                 RoleId = 4
             };
 
@@ -277,14 +277,24 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Arrange
 
             // Act
+            var confirmAppCountBeforeDeletion = _context.Apps.ToList();
+            var confirmGameCountBeforeDeletion = _context.Games.ToList();
+            var confirmUserCountBeforeDeletion = _context.Users.ToList();
+
             var result = await sut.DeleteApp(2);
-            var confirmAppCount = _context.Apps.ToList();
-            var confirmGameCount = _context.Games.ToList();
+
+            var confirmAppCountAfterDeletion = _context.Apps.ToList();
+            var confirmGameCountAfterDeletion = _context.Games.ToList();
+            var confirmUserCountAfterDeletion = _context.Users.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(confirmAppCount.Count, Is.EqualTo(1));
-            Assert.That(confirmGameCount.Count, Is.EqualTo(1));
+            Assert.That(confirmAppCountBeforeDeletion.Count, Is.EqualTo(2));
+            Assert.That(confirmAppCountAfterDeletion.Count, Is.EqualTo(1));
+            Assert.That(confirmGameCountBeforeDeletion.Count, Is.EqualTo(2));
+            Assert.That(confirmGameCountAfterDeletion.Count, Is.EqualTo(1));
+            Assert.That(confirmUserCountBeforeDeletion.Count, Is.EqualTo(3));
+            Assert.That(confirmUserCountAfterDeletion.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -355,7 +365,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Arrange
             var user = new User() {
 
-                Id = 3,
+                Id = 4,
                 UserName = "TestUser3",
                 FirstName = "John",
                 LastName = "Doe",
@@ -369,13 +379,13 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             var userRole = new UserRole() {
 
-                UserId = 3,
+                UserId = 4,
                 RoleId = 4
             };
 
             var userApp = new UserApp() {
 
-                UserId = 3,
+                UserId = 4,
                 AppId = 2
             };
 
