@@ -486,6 +486,13 @@ namespace SudokuCollective.WebApi.Services {
                 if (app != null) {
 
                     _context.Apps.Remove(app);
+                    
+                    var games = await _context.Games
+                        .Where(g => g.AppId == app.Id)
+                        .ToListAsync();
+
+                    _context.Games.RemoveRange(games);
+
                     await _context.SaveChangesAsync();
 
                     result.Success = true;

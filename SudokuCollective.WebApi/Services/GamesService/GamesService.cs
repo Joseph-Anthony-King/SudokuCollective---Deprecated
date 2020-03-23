@@ -55,7 +55,8 @@ namespace SudokuCollective.WebApi.Services {
                 var game = new Game(
                     user,
                     matrix,
-                    difficulty);
+                    difficulty,
+                    createGameRequest.AppId);
 
                 _context.ChangeTracker.TrackGraph(user, 
                     e => {

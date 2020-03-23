@@ -31,7 +31,7 @@ namespace SudokuCollective.Tests.MockServices {
 
                     Success = true,
                     Message = string.Empty,
-                    Game = new Game(3, 1, 3, 3, true, DateTime.UtcNow, DateTime.MinValue)
+                    Game = new Game(3, 1, 3, 3, 1, true, DateTime.UtcNow, DateTime.MinValue)
                 }));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
