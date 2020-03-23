@@ -279,10 +279,12 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Act
             var result = await sut.DeleteApp(2);
             var confirmAppCount = _context.Apps.ToList();
+            var confirmGameCount = _context.Games.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
             Assert.That(confirmAppCount.Count, Is.EqualTo(1));
+            Assert.That(confirmGameCount.Count, Is.EqualTo(1));
         }
 
         [Test]
