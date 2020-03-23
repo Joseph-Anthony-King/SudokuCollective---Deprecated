@@ -57,7 +57,7 @@ namespace SudokuCollective.Tests.MockServices {
                 }));
 
             AppsServiceSuccessfulRequest.Setup(appService => 
-                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>()))
+                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(true));
 
             AppsServiceSuccessfulRequest.Setup(appService => 
@@ -148,7 +148,10 @@ namespace SudokuCollective.Tests.MockServices {
                 }));
 
             AppsServiceFailedRequest.Setup(appService => 
-                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>()))
+                appService.IsRequestValidOnThisLicense(
+                    It.IsAny<string>(), 
+                    It.IsAny<int>(), 
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(true));
 
             AppsServiceFailedRequest.Setup(appService => 
@@ -210,7 +213,10 @@ namespace SudokuCollective.Tests.MockServices {
                 }));
 
             AppsServiceInvalidRequest.Setup(appService => 
-                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>()))
+                appService.IsRequestValidOnThisLicense(
+                    It.IsAny<string>(), 
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(false));
         }
     }

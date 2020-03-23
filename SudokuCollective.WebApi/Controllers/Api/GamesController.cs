@@ -32,7 +32,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _gamesService.GetGame(
                     id, baseRequest.AppId);
@@ -61,7 +62,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _gamesService.GetGames(baseRequest, fullRecord);
 
@@ -89,7 +91,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _gamesService.DeleteGame(id);
 
@@ -117,7 +120,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 updateGameRequest.License,
-                updateGameRequest.RequestorId)) {
+                updateGameRequest.RequestorId,
+                updateGameRequest.AppId)) {
 
                 if (id != updateGameRequest.GameId) {
 
@@ -151,7 +155,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 createGameRequest.License,
-                createGameRequest.RequestorId)) {
+                createGameRequest.RequestorId,
+                createGameRequest.AppId)) {
             
                 var result = await _gamesService.CreateGame(createGameRequest, fullRecord);
 
@@ -183,7 +188,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 updateGameRequest.License,
-                updateGameRequest.RequestorId)) {
+                updateGameRequest.RequestorId,
+                updateGameRequest.AppId)) {
 
                 var result = await _gamesService.CheckGame(id, updateGameRequest);
 
@@ -212,7 +218,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 getMyGameRequest.License,
-                getMyGameRequest.RequestorId)) {
+                getMyGameRequest.RequestorId,
+                getMyGameRequest.AppId)) {
 
                 var result = await _gamesService.GetMyGame(
                     getMyGameRequest.UserId, 
@@ -244,7 +251,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 getMyGameRequest.License,
-                getMyGameRequest.RequestorId)) {
+                getMyGameRequest.RequestorId,
+                getMyGameRequest.AppId)) {
 
                 var result = await _gamesService
                     .GetMyGames(getMyGameRequest.UserId, getMyGameRequest, fullRecord);
@@ -273,7 +281,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 getMyGameRequest.License,
-                getMyGameRequest.RequestorId)) {
+                getMyGameRequest.RequestorId,
+                getMyGameRequest.AppId)) {
                 
                 var result = await _gamesService.DeleteMyGame(
                     getMyGameRequest.UserId, 

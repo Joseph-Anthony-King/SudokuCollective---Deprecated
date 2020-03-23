@@ -20,6 +20,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
         private DateTime dateCreated;
         private string license;
         private BaseRequest baseRequest;
+        private int userId;
+        private int appId;
 
         [SetUp]
         public async Task Setup() {
@@ -29,6 +31,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
             dateCreated = DateTime.UtcNow;
             license = TestObjects.GetLicense();
             baseRequest = TestObjects.GetBaseRequest();
+            userId = 1;
+            appId = 1;
         }
 
         [Test]
@@ -338,7 +342,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Arrange
 
             // Act
-            var result = await sut.IsRequestValidOnThisLicense(license, 1);
+            var result = await sut.IsRequestValidOnThisLicense(license, userId, appId);
 
             // Assert
             Assert.That(result, Is.True);
@@ -352,7 +356,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             var invalidLicense = "5CDBFC8F-F304-4703-831B-750A7B7F8531";
 
             // Act
-            var result = await sut.IsRequestValidOnThisLicense(invalidLicense, 1);
+            var result = await sut.IsRequestValidOnThisLicense(invalidLicense, userId, appId);
 
             // Assert
             Assert.That(result, Is.False);
@@ -401,7 +405,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
                 .Where(a => a.Id == 1)
                 .Any(a => a.Users.Any(ua => ua.UserId == user.Id));
 
-            var result = await sut.IsRequestValidOnThisLicense(license, user.Id);
+            var result = await sut.IsRequestValidOnThisLicense(license, user.Id, appId);
 
             // Assert
             Assert.That(userIsInApp, Is.False);
@@ -432,7 +436,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             var superUserIsInApp = newAppResult.App.Users
                 .Any(ua => ua.UserId == superUser.Id);
 
-            var result = await sut.IsRequestValidOnThisLicense(license, superUser.Id);
+            var result = await sut.IsRequestValidOnThisLicense(license, superUser.Id, appId);
 
             // Assert
             Assert.That(superUserIsInApp, Is.False);

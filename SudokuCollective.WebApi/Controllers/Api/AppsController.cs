@@ -31,7 +31,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
                 
                 var result = await _appsService.GetApp(id, fullRecord);
 
@@ -59,7 +60,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
                 
                 var result = await _appsService
                     .GetAppByLicense(baseRequest.License, fullRecord);
@@ -88,7 +90,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
                 
                 var result = await _appsService
                     .GetApps(baseRequest.PageListModel, fullRecord);
@@ -116,7 +119,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 appRequest.License,
-                appRequest.RequestorId)) {
+                appRequest.RequestorId,
+                appRequest.AppId)) {
                 
                 var result = await _appsService.UpdateApp(appRequest);
 
@@ -144,7 +148,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
                 
                 var result = await _appsService
                     .GetAppUsers(baseRequest, fullRecord);
@@ -171,7 +176,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _appsService.AddAppUser(userId, baseRequest);
 
@@ -197,7 +203,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _appsService.RemoveAppUser(userId, baseRequest);
 

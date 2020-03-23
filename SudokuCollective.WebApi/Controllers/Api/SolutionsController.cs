@@ -34,7 +34,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _solutionService.GetSolution(id, fullRecord);
 
@@ -63,7 +64,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _solutionService
                     .GetSolutions(baseRequest, fullRecord, userId);
@@ -91,7 +93,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 solveRequest.License,
-                solveRequest.RequestorId)) {
+                solveRequest.RequestorId,
+                solveRequest.AppId)) {
 
                 var result = await _solutionService.Solve(solveRequest);
 
@@ -125,7 +128,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 solveRequest.License,
-                solveRequest.RequestorId)) {
+                solveRequest.RequestorId,
+                solveRequest.AppId)) {
 
                 var result = await _solutionService.Generate();
 
@@ -152,7 +156,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 addSolutionRequest.License,
-                addSolutionRequest.RequestorId)) {
+                addSolutionRequest.RequestorId,
+                addSolutionRequest.AppId)) {
 
                 if (addSolutionRequest.Limit <= 1000) {
 

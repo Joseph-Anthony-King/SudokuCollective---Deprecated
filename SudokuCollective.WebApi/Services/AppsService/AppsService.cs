@@ -626,12 +626,14 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<bool> IsRequestValidOnThisLicense(string license, int userId) {
+        public async Task<bool> IsRequestValidOnThisLicense(string license, int userId, int appId) {
 
             var result = false;
             var requestor = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
             var validLicense = _context.Apps.Any(a => a.License.Equals(license));
-            var requestorRegisteredToApp = _context.Apps.Where(a => a.License.Equals(license)).Any(a => a.Users.Any(ua => ua.UserId == userId));
+            var requestorRegisteredToApp = _context.Apps
+                .Where(a => a.License.Equals(license))
+                    .Any(a => a.Users.Any(ua => ua.UserId == userId) && a.Id == appId);
 
             if (requestorRegisteredToApp && validLicense) {
                 

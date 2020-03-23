@@ -35,7 +35,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _userService.GetUser(id, fullRecord);
 
@@ -63,7 +64,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _userService.GetUsers(baseRequest.PageListModel, fullRecord);
 
@@ -90,7 +92,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 updateUserRequest.License,
-                updateUserRequest.RequestorId)) {
+                updateUserRequest.RequestorId,
+                updateUserRequest.AppId)) {
             
                 var result = await _userService.UpdateUser(id, updateUserRequest);
 
@@ -117,7 +120,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 updatePasswordRequest.License,
-                updatePasswordRequest.RequestorId)) {
+                updatePasswordRequest.RequestorId,
+                updatePasswordRequest.AppId)) {
 
                 var result = await _userService.UpdatePassword(id, updatePasswordRequest);
 
@@ -144,7 +148,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
             
                 var result = await _userService.DeleteUser(id);
 
@@ -172,7 +177,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 updateUserRoleRequest.License,
-                updateUserRoleRequest.RequestorId)) {
+                updateUserRoleRequest.RequestorId,
+                updateUserRoleRequest.AppId)) {
             
                 var result = await _userService.AddUserRoles(
                     id,
@@ -202,7 +208,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 updateUserRoleRequest.License,
-                updateUserRoleRequest.RequestorId)) {
+                updateUserRoleRequest.RequestorId,
+                updateUserRoleRequest.AppId)) {
             
                 var result = await _userService.RemoveUserRoles(
                     id,
