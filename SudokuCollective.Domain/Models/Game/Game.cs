@@ -11,11 +11,11 @@ namespace SudokuCollective.Domain {
         public int UserId { get; set; }
         public User User { get; set; }
         public int SudokuMatrixId { get; set; }
-        public int AppId { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
         public int SudokuSolutionId { get; set; }
         public SudokuSolution SudokuSolution { get; set; }
         public bool ContinueGame { get; set; }
+        public int AppId { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateCompleted { get; set; }
 

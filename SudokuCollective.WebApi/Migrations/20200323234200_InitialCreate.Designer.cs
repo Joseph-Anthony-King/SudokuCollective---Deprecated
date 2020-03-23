@@ -10,8 +10,8 @@ using SudokuCollective.WebApi.Models.DataModel;
 namespace SudokuCollective.WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200323063104_AddAppIdToGame")]
-    partial class AddAppIdToGame
+    [Migration("20200323234200_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

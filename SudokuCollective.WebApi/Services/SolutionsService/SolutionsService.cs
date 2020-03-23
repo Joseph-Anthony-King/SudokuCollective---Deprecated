@@ -280,16 +280,19 @@ namespace SudokuCollective.WebApi.Services {
                 matrix.GenerateSolution();
 
                 var solutions = await _context.SudokuSolutions
-                    .Where(s => s.SolutionList.Count > 0)
                     .ToListAsync();
 
                 var matrixNotInDB = true;
 
-                foreach (var solution in solutions) {
+                if (solutions.Count > 0) {
 
-                    if (solution.ToString().Equals(matrix)) {
-                            
-                        matrixNotInDB = false;
+                    foreach (var solution in solutions) {
+
+                        if (solution.SolutionList.Count > 0 && solution.ToString().Equals(matrix)) {
+
+                            matrixNotInDB = false;
+
+                        }
                     }
                 }
 
@@ -323,18 +326,24 @@ namespace SudokuCollective.WebApi.Services {
             var reduceLimitBy = 0;
 
             var solutions = await _context.SudokuSolutions
-                .Where(s => s.SolutionList.Count > 0)
                 .ToListAsync();
 
             List<List<int>> solutionsInDB = new List<List<int>>();
 
+            if (solutions.Count > 0) {
+
+                foreach (var solution in solutions) {
+
+                    if (solution.SolutionList.Count > 0) {
+
+                        solutionsInDB.Add(solution.SolutionList);
+
+                    }
+                }
+            }
+
             var matrix = new SudokuMatrix();
             var baseTaskResult = new BaseResult();
-
-            foreach (var solution in solutions) {
-
-                solutionsInDB.Add(solution.SolutionList);
-            }
 
             try {
 

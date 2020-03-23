@@ -36,7 +36,10 @@ namespace SudokuCollective.Domain.Models {
 
         public SudokuSolution(List<int> intList) : this() {
 
+            var solvedDate = DateTime.UtcNow;
+
             SolutionList = intList;
+            DateSolved = solvedDate;
         }
 
         [JsonConstructor]
