@@ -443,5 +443,32 @@ namespace SudokuCollective.Tests.TestCases.Services {
             Assert.That(superUser.IsSuperUser, Is.True);
             Assert.That(result, Is.True);
         }
+
+        [Test]
+        [Category("Services")]
+        public async Task PermitOwnerRequests() {
+
+            // Arrange
+
+            // Act
+            var result = await sut.IsOwnerOfThisLicense(license, userId, appId);
+
+            // Assert
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task DenyInvalidOwnerRequests() {
+
+            // Arrange
+            var invalidLicense = "5CDBFC8F-F304-4703-831B-750A7B7F8531";
+
+            // Act
+            var result = await sut.IsOwnerOfThisLicense(invalidLicense, userId, appId);
+
+            // Assert
+            Assert.That(result, Is.False);
+        }
     }
 }

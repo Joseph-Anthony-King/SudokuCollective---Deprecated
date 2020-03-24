@@ -254,7 +254,53 @@ namespace SudokuCollective.WebApi.Controllers {
             } else {
 
                 return NotFound(result.Message);
-            }         
+            }
+        }
+
+        // GET: api/Apps/5
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpDelete, Route("{id}/DeleteApp")]
+        public async Task<ActionResult> DeleteApp(int id) {
+
+            var result = await _appsService.DeleteApp(id);
+
+            if (result.Success) {
+
+                return Ok(result.Message);
+
+            } else {
+
+                return NotFound(result.Message);
+            }
+        }
+
+        // GET: api/Apps/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpDelete, Route("{id}/ResetApp")]
+        public async Task<ActionResult> ResetApp(
+            int id,
+            [FromBody] BaseRequest baseRequest) {
+
+            if (await _appsService.IsOwnerOfThisLicense(
+                baseRequest.License,
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
+
+                var result = await _appsService.DeleteApp(id, true);
+
+                if (result.Success) {
+
+                    return Ok(result.Message);
+
+                } else {
+
+                    return NotFound(result.Message);
+                }
+
+            } else {
+
+                return BadRequest("You are not the owner of this app");
+            }
         }
     }
 }

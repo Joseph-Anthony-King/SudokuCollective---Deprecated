@@ -19,9 +19,10 @@ namespace SudokuCollective.WebApi.Services.Interfaces {
         Task<BaseResult> UpdateApp(AppRequest updateAppRO);
         Task<BaseResult> AddAppUser(int id, BaseRequest baseRequestRO);
         Task<BaseResult> RemoveAppUser(int id, BaseRequest baseRequestRO);
-        Task<BaseResult> DeleteApp(int id);
+        Task<BaseResult> DeleteApp(int id, bool isReset = false);
         Task<BaseResult> ActivateApp(int id);
         Task<BaseResult> DeactivateApp(int id);
         Task<bool> IsRequestValidOnThisLicense(string license, int userId, int appId);
+        Task<bool> IsOwnerOfThisLicense(string license, int userId, int appId);
     }
 }

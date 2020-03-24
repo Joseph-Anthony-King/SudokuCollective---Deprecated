@@ -475,7 +475,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseResult> DeleteApp(int id) {
+        public async Task<BaseResult> DeleteApp(int id, bool isReset = false) {
 
             var result = new BaseResult();
 
@@ -549,11 +549,15 @@ namespace SudokuCollective.WebApi.Services {
                         }
                     }
 
-                    _context.Apps.Remove(app);
+                    if (!isReset) {
+
+                        _context.Apps.Remove(app);
+                    }
 
                     await _context.SaveChangesAsync();
 
                     result.Success = true;
+                    result.Message = string.Format("{0} app successfully deleted", app.Name);
                 }
 
                 return result;
@@ -637,6 +641,33 @@ namespace SudokuCollective.WebApi.Services {
 
             if (requestorRegisteredToApp && validLicense) {
                 
+                result = true;
+
+            } else if (requestor.IsSuperUser && validLicense) {
+
+                result = true;
+
+            } else {
+
+                result = false;
+            }
+
+            return result;
+        }
+
+        public async Task<bool> IsOwnerOfThisLicense(string license, int userId, int appId) {
+
+            var result = false;
+            var requestor = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            var validLicense = _context.Apps.Any(a => a.License.Equals(license));
+            var requestorOwnerOfThisApp = _context.Apps
+                .Any(predicate: 
+                    a => a.License.Equals(license) 
+                    && a.OwnerId == userId 
+                    && a.Id == appId);
+
+            if (requestorOwnerOfThisApp && validLicense) {
+
                 result = true;
 
             } else if (requestor.IsSuperUser && validLicense) {
