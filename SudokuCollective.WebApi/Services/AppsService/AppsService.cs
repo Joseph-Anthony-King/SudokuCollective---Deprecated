@@ -475,7 +475,7 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
 
-        public async Task<BaseResult> DeleteApp(int id, bool isReset = false) {
+        public async Task<BaseResult> DeleteOrResetApp(int id, bool isReset = false) {
 
             var result = new BaseResult();
 
@@ -484,9 +484,6 @@ namespace SudokuCollective.WebApi.Services {
                 var app = await _context.Apps.FindAsync(id);
 
                 if (app != null) {
-
-                    var users2 = await _context.Users
-                        .ToListAsync();
 
                     var users = await _context.Users
                         .Where(u => u.Apps.Any(ua => ua.AppId == app.Id))

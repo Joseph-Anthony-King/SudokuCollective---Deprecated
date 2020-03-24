@@ -131,7 +131,7 @@ namespace SudokuCollective.Tests.MockServices {
                 }));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
-                appService.DeleteApp(It.IsAny<int>(), It.IsAny<bool>()))
+                appService.DeleteOrResetApp(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new BaseResult() {
 
                     Success = true,
@@ -238,7 +238,7 @@ namespace SudokuCollective.Tests.MockServices {
                 }));
 
             AppsServiceFailedRequest.Setup(appService =>
-                appService.DeleteApp(It.IsAny<int>(), It.IsAny<bool>()))
+                appService.DeleteOrResetApp(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new BaseResult() {
 
                     Success = false,

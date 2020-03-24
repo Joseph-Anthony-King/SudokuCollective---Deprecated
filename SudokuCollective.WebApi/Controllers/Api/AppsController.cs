@@ -262,7 +262,7 @@ namespace SudokuCollective.WebApi.Controllers {
         [HttpDelete, Route("{id}/DeleteApp")]
         public async Task<ActionResult> DeleteApp(int id) {
 
-            var result = await _appsService.DeleteApp(id);
+            var result = await _appsService.DeleteOrResetApp(id);
 
             if (result.Success) {
 
@@ -286,7 +286,7 @@ namespace SudokuCollective.WebApi.Controllers {
                 baseRequest.RequestorId,
                 baseRequest.AppId)) {
 
-                var result = await _appsService.DeleteApp(id, true);
+                var result = await _appsService.DeleteOrResetApp(id, true);
 
                 if (result.Success) {
 

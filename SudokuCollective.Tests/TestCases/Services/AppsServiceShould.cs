@@ -285,7 +285,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             var confirmGameCountBeforeDeletion = _context.Games.ToList();
             var confirmUserCountBeforeDeletion = _context.Users.ToList();
 
-            var result = await sut.DeleteApp(2);
+            var result = await sut.DeleteOrResetApp(2);
 
             var confirmAppCountAfterDeletion = _context.Apps.ToList();
             var confirmGameCountAfterDeletion = _context.Games.ToList();
