@@ -23,6 +23,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
         private SolveRequest solveRequest;
+        private AddSolutionRequest addSolutionRequest;
+        private AddSolutionRequest invalidAddSolutionRequest;
 
         [SetUp]
         public async Task Setup() {
@@ -49,6 +51,16 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
                 PageListModel = new PageListModel()
+            };
+
+            addSolutionRequest = new AddSolutionRequest() {
+
+                Limit = 1000
+            };
+
+            invalidAddSolutionRequest = new AddSolutionRequest() {
+
+                Limit = 1001
             };
 
             sutSuccess = new SolutionsController(
@@ -114,7 +126,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<SudokuSolution>>>());
-            Assert.That(((List<SudokuSolution>)difficulties).Count, Is.EqualTo(2));
+            Assert.That(((List<SudokuSolution>)difficulties).Count, Is.EqualTo(3));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -221,6 +233,54 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
             Assert.That(solution, Is.EqualTo("Need more values in order to deduce a solution."));
             Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyAddSolutions() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.AddSolutions(addSolutionRequest);
+            var statusCode = ((OkResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void RejectAddSolutionRequestsOfMoreThanAThousand() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.AddSolutions(invalidAddSolutionRequest);
+            var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
+            var statusMessage = ((BadRequestObjectResult)result.Result).Value;
+            var errorMessage = "The amount of solutions requested, 1001, exceeds the service's 1,000 solution limit";
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCode, Is.EqualTo(400));
+            Assert.That(statusMessage, Is.EqualTo(errorMessage));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldAddSolutionsFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.AddSolutions(addSolutionRequest);
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCode, Is.EqualTo(404));
         }
     }
 }

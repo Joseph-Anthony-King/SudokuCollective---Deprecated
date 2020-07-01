@@ -391,9 +391,75 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             Assert.That(statusCodeFour, Is.EqualTo(400));
             Assert.That(resultFive.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
             Assert.That(statusCodeFive, Is.EqualTo(400));
+            Assert.That(resultSix.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCodeSix, Is.EqualTo(400));
             Assert.That(resultSeven.Result, Is.InstanceOf<ActionResult>());
             Assert.That(statusCodeSeven, Is.EqualTo(400));
 
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyAllowSuperuserToDeleteApps() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.DeleteApp(2);
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyAllowSuperuserToDeleteAppsFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.DeleteApp(2);
+            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(errorMessage, Is.EqualTo("Error deleting app"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyAllowAdminToDeleteApps() {
+
+            // Arrange
+
+            // Act
+            var result = sutSuccess.ResetApp(2, baseRequest);
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyAllowAdminToDeleteAppsFail() {
+
+            // Arrange
+
+            // Act
+            var result = sutFailure.ResetApp(2, baseRequest);
+            var errorMessage = ((BadRequestObjectResult)result.Result).Value;
+            var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(errorMessage, Is.EqualTo("You are not the owner of this app"));
+            Assert.That(statusCode, Is.EqualTo(400));
         }
     }
 }

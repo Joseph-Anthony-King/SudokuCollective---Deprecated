@@ -8,6 +8,7 @@ using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
 using SudokuCollective.WebApi.Models.ResultModels.SolutionResults;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -63,6 +64,14 @@ namespace SudokuCollective.Tests.MockServices {
                             Solution = _context.SudokuSolutions.FirstOrDefault(predicate: solution => solution.Id == 1)
                         }));
 
+            SolutionsServiceSuccessfulRequest.Setup(solutionsService =>
+                solutionsService.AddSolutions(It.IsAny<int>())).Returns(
+                    Task.FromResult(new BaseResult(){
+
+                            Success = true,
+                            Message = string.Empty
+                        }));
+
             SolutionsServiceFailedRequest.Setup(solutionsService =>
                 solutionsService.GetSolution(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new SolutionResult() {
@@ -97,6 +106,14 @@ namespace SudokuCollective.Tests.MockServices {
                         Success = false,
                         Message = "Error generating solution",
                         Solution = new SudokuSolution()
+                    }));
+
+            SolutionsServiceFailedRequest.Setup(solutionsService =>
+                solutionsService.AddSolutions(It.IsAny<int>())).Returns(
+                    Task.FromResult(new BaseResult() {
+
+                        Success = false,
+                        Message = "Error generating solutions"
                     }));
 
             SolutionsServiceSolveFailedRequest.Setup(solutionsService =>

@@ -84,6 +84,18 @@ namespace SudokuCollective.Tests.TestData {
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
                         true, 
                         dateCreated, 
+                        DateTime.MinValue),
+
+                    new User(
+                        3,
+                        "TestUser2",
+                        "Test",
+                        "User2",
+                        "Test User 2",
+                        "TestUser2@example.com",
+                        BCrypt.Net.BCrypt.HashPassword("password1", salt),
+                        true,
+                        dateCreated,
                         DateTime.MinValue)
                 );
 
@@ -97,7 +109,8 @@ namespace SudokuCollective.Tests.TestData {
                     new UserRole(1,1,2),
                     new UserRole(2,1,3),
                     new UserRole(3,1,4),
-                    new UserRole(4,2,4)
+                    new UserRole(4,2,4),
+                    new UserRole(5,3,4)
                 );
 
                 await databaseContext.SaveChangesAsync();
@@ -139,7 +152,8 @@ namespace SudokuCollective.Tests.TestData {
                     new UserApp(1,1,1),
                     new UserApp(2,1,2),
                     new UserApp(3,2,1),
-                    new UserApp(4,2,2)
+                    new UserApp(4,2,2),
+                    new UserApp(5,3,2)
                 );
 
                 await databaseContext.SaveChangesAsync();
@@ -333,7 +347,8 @@ namespace SudokuCollective.Tests.TestData {
                 databaseContext.SudokuSolutions.AddRange(
 
                     new SudokuSolution(1, new List<int>(), dateCreated, DateTime.MinValue),
-                    new SudokuSolution(2, new List<int>(), dateCreated, DateTime.MinValue)
+                    new SudokuSolution(2, new List<int>(), dateCreated, DateTime.MinValue),
+                    new SudokuSolution(3, new List<int>() { 1, 2, 9, 5, 6, 7, 8, 3, 4, 8, 3, 4, 9, 2, 1, 7, 6, 5, 5, 7, 6, 8, 4, 3, 2, 9, 1, 4, 1, 8, 2, 5, 6, 3, 7, 9, 9, 6, 7, 3, 1, 4, 5, 8, 2, 3, 5, 2, 7, 8, 9, 1, 4, 6, 2, 9, 1, 4, 3, 8, 6, 5, 7, 6, 4, 3, 1, 7, 5, 9, 2, 8, 7, 8, 5, 6, 9, 2, 4, 1, 3 }, dateCreated, DateTime.MinValue)
                 );
 
                 await databaseContext.SaveChangesAsync();
@@ -343,8 +358,8 @@ namespace SudokuCollective.Tests.TestData {
 
                 databaseContext.Games.AddRange(
 
-                    new Game(1, 1, 1, 1, true, dateCreated, DateTime.MinValue),
-                    new Game(2, 2, 2, 2, true, dateCreated, DateTime.MinValue)
+                    new Game(1, 1, 1, 1, 1, true, dateCreated, DateTime.MinValue),
+                    new Game(2, 2, 2, 2, 2, true, dateCreated, DateTime.MinValue)
                 );
 
                 await databaseContext.SaveChangesAsync();

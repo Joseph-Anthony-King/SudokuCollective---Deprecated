@@ -15,6 +15,7 @@ namespace SudokuCollective.WebApi.Services {
         internal static async Task<List<Game>> RetrieveGames(
             PageListModel pageListModel, 
             DatabaseContext context,
+            int appId,
             int userId = 0) {
 
             var result = new List<Game>();
@@ -30,6 +31,7 @@ namespace SudokuCollective.WebApi.Services {
                             .Include(g => g.User).ThenInclude(u => u.Roles)
                             .Include(g => g.SudokuMatrix)
                             .Include(g => g.SudokuSolution)
+                            .Where(g => g.AppId == appId)
                             .ToListAsync();
 
                     } else {
@@ -39,7 +41,7 @@ namespace SudokuCollective.WebApi.Services {
                             .Include(g => g.User).ThenInclude(u => u.Roles)
                             .Include(g => g.SudokuMatrix)
                             .Include(g => g.SudokuSolution)
-                            .Where(g => g.User.Id == userId)
+                            .Where(g => g.User.Id == userId && g.AppId == appId)
                             .ToListAsync();
                     }
 
@@ -52,7 +54,7 @@ namespace SudokuCollective.WebApi.Services {
                             .Include(g => g.User).ThenInclude(u => u.Roles)
                             .Include(g => g.SudokuMatrix)
                             .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true)
+                            .Where(g => g.ContinueGame == true && g.AppId == appId)
                             .ToListAsync();
 
                     } else {
@@ -62,7 +64,8 @@ namespace SudokuCollective.WebApi.Services {
                             .Include(g => g.User).ThenInclude(u => u.Roles)
                             .Include(g => g.SudokuMatrix)
                             .Include(g => g.SudokuSolution)
-                            .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                            .Where(g => g.ContinueGame == true 
+                                && g.User.Id == userId && g.AppId == appId)
                             .ToListAsync();
                     }
                 }
@@ -80,6 +83,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -91,7 +95,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -106,7 +110,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -118,7 +122,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -136,6 +141,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -147,7 +153,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -162,7 +168,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -174,7 +180,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -195,6 +202,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -206,7 +214,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -221,7 +229,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -233,7 +241,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -251,6 +260,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -262,7 +272,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -277,7 +287,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -289,7 +299,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -310,6 +321,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -321,7 +333,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -336,7 +348,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -348,7 +360,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -366,6 +379,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -377,7 +391,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -392,7 +406,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -404,7 +418,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -425,6 +440,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -436,7 +452,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -451,7 +467,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -463,7 +479,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -481,6 +498,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -492,7 +510,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -507,7 +525,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -519,7 +537,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -540,6 +559,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -551,7 +571,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -566,7 +586,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -578,7 +598,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -596,6 +617,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -607,7 +629,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -622,7 +644,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -634,7 +656,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -655,6 +678,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -666,7 +690,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -681,7 +705,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -693,7 +717,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -711,6 +736,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -722,7 +748,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -737,7 +763,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -749,7 +775,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -770,6 +797,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -781,7 +809,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -796,7 +824,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -808,7 +836,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -826,6 +855,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -837,7 +867,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.User.Id == userId)
+                                .Where(g => g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -852,7 +882,7 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true)
+                                .Where(g => g.ContinueGame == true && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();
@@ -864,7 +894,8 @@ namespace SudokuCollective.WebApi.Services {
                                 .Include(g => g.User).ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
                                 .Include(g => g.SudokuSolution)
-                                .Where(g => g.ContinueGame == true && g.User.Id == userId)
+                                .Where(g => g.ContinueGame == true 
+                                    && g.User.Id == userId && g.AppId == appId)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage)
                                 .ToListAsync();

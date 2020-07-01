@@ -18,7 +18,8 @@ namespace SudokuCollective.Tests.TestData {
             return new BaseRequest() {
              
                 License = GetLicense(),
-                RequestorId = 1
+                RequestorId = 1,
+                AppId = 1
             };
         }
 

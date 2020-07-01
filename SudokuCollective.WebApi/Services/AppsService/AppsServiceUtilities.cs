@@ -357,4 +357,10 @@ namespace SudokuCollective.WebApi.Services {
             }
         }
     }
+
+    internal class SolutionItem {
+
+        internal int SolutionId { get; set; }
+        internal bool ContinueGame { get; set; }
+    }
 }

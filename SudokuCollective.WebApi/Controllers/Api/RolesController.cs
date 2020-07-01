@@ -34,7 +34,8 @@ namespace SudokuCollective.WebApi.Controllers {
 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _rolesService.GetRole(id, fullRecord);
 
@@ -62,7 +63,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _rolesService.GetRoles(fullRecord);
 
@@ -90,7 +92,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 updateRoleRequest.License,
-                updateRoleRequest.RequestorId)) {
+                updateRoleRequest.RequestorId,
+                updateRoleRequest.AppId)) {
 
                 if (id != updateRoleRequest.Id) {
 
@@ -122,7 +125,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 createRoleRequest.License,
-                createRoleRequest.RequestorId)) {
+                createRoleRequest.RequestorId,
+                createRoleRequest.AppId)) {
             
                 var result = await _rolesService
                     .CreateRole(createRoleRequest.Name, createRoleRequest.RoleLevel);
@@ -153,7 +157,8 @@ namespace SudokuCollective.WebApi.Controllers {
             
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _rolesService.DeleteRole(id);
                 

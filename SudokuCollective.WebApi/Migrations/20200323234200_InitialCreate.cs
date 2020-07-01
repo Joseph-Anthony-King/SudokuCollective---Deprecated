@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SudokuCollective.WebApi.Migrations
 {
-    public partial class Initiate_Database : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -174,6 +174,7 @@ namespace SudokuCollective.WebApi.Migrations
                     SudokuMatrixId = table.Column<int>(nullable: false),
                     SudokuSolutionId = table.Column<int>(nullable: false),
                     ContinueGame = table.Column<bool>(nullable: false),
+                    AppId = table.Column<int>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateCompleted = table.Column<DateTime>(nullable: false)
                 },

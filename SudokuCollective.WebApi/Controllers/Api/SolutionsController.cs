@@ -34,7 +34,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _solutionService.GetSolution(id, fullRecord);
 
@@ -63,7 +64,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License,
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _solutionService
                     .GetSolutions(baseRequest, fullRecord, userId);
@@ -91,7 +93,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 solveRequest.License,
-                solveRequest.RequestorId)) {
+                solveRequest.RequestorId,
+                solveRequest.AppId)) {
 
                 var result = await _solutionService.Solve(solveRequest);
 
@@ -125,7 +128,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 solveRequest.License,
-                solveRequest.RequestorId)) {
+                solveRequest.RequestorId,
+                solveRequest.AppId)) {
 
                 var result = await _solutionService.Generate();
 
@@ -136,6 +140,45 @@ namespace SudokuCollective.WebApi.Controllers {
                 } else {
 
                     return NotFound(result.Message);
+                }
+
+            } else {
+
+                return BadRequest("Invalid Request on this License");
+            }
+        }
+
+        // GET: api/solutions/addsolutions
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPost, Route("AddSolutions")]
+        public async Task<IActionResult> AddSolutions(
+            [FromBody] AddSolutionRequest addSolutionRequest) {
+                
+            if (await _appsService.IsRequestValidOnThisLicense(
+                addSolutionRequest.License,
+                addSolutionRequest.RequestorId,
+                addSolutionRequest.AppId)) {
+
+                if (addSolutionRequest.Limit <= 1000) {
+
+                    var result = await _solutionService.AddSolutions(addSolutionRequest.Limit);
+
+                    if (result.Success) {
+
+                        return Ok();
+
+                    } else {
+
+                        return NotFound(result.Message);
+                    }
+
+                } else {
+
+                    return BadRequest(
+                        string.Format(
+                            "The amount of solutions requested, {0}, exceeds the service's 1,000 solution limit", 
+                        addSolutionRequest.Limit.ToString())
+                        );
                 }
 
             } else {

@@ -34,7 +34,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _difficultiesService.GetDifficulty(id, fullRecord);
 
@@ -61,7 +62,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _difficultiesService.GetDifficulties(fullRecord);
 
@@ -88,7 +90,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 updateDifficultyRequest.License,
-                updateDifficultyRequest.RequestorId)) {
+                updateDifficultyRequest.RequestorId,
+                updateDifficultyRequest.AppId)) {
 
                 if (id != updateDifficultyRequest.Id) {
 
@@ -120,7 +123,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 createDifficultyRequest.License,
-                createDifficultyRequest.RequestorId)) {  
+                createDifficultyRequest.RequestorId,
+                createDifficultyRequest.AppId)) {  
             
                 var result = await _difficultiesService
                     .CreateDifficulty(createDifficultyRequest.Name, createDifficultyRequest.DifficultyLevel);
@@ -151,7 +155,8 @@ namespace SudokuCollective.WebApi.Controllers {
                 
             if (await _appsService.IsRequestValidOnThisLicense(
                 baseRequest.License, 
-                baseRequest.RequestorId)) {
+                baseRequest.RequestorId,
+                baseRequest.AppId)) {
 
                 var result = await _difficultiesService.DeleteDifficulty(id);
 

@@ -10,8 +10,8 @@ using SudokuCollective.WebApi.Models.DataModel;
 namespace SudokuCollective.WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20191019005621_Initiate_Database")]
-    partial class Initiate_Database
+    [Migration("20200323234200_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,6 +27,9 @@ namespace SudokuCollective.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AppId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("ContinueGame")
                         .HasColumnType("boolean");

@@ -76,7 +76,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Users.Count, Is.EqualTo(2));
+            Assert.That(result.Users.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace SudokuCollective.Tests.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.True);
             Assert.That(result.User, Is.TypeOf<User>());
-            Assert.That(users.Count, Is.EqualTo(3));
+            Assert.That(users.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace SudokuCollective.Tests.TestCases.Services
             Assert.That(result.Success, Is.True);
             Assert.That(result.User, Is.TypeOf<User>());
             Assert.That(result.User.IsAdmin, Is.True);
-            Assert.That(users.Count, Is.EqualTo(3));
+            Assert.That(users.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -468,7 +468,7 @@ namespace SudokuCollective.Tests.TestCases.Services
         public async Task RejectPasswordUpdatesIfUserNotFound() {
 
             // Arrange
-            var userId = 3;
+            var userId = 4;
 
             var updatePasswordRequest = new UpdatePasswordRequest() {
 
@@ -499,7 +499,7 @@ namespace SudokuCollective.Tests.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(users.Count, Is.EqualTo(1));
+            Assert.That(users.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -507,7 +507,7 @@ namespace SudokuCollective.Tests.TestCases.Services
         public async Task ReturnErrorMessageIfUserNotFoundForDeletion() {
 
             // Arrange
-            var userId = 3;
+            var userId = 4;
 
             // Act
             var result = await sut.DeleteUser(userId);

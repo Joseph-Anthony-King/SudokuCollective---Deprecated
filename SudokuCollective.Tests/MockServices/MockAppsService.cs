@@ -57,7 +57,17 @@ namespace SudokuCollective.Tests.MockServices {
                 }));
 
             AppsServiceSuccessfulRequest.Setup(appService => 
-                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>()))
+                appService.IsRequestValidOnThisLicense(
+                    It.IsAny<string>(), 
+                    It.IsAny<int>(), 
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(true));
+
+            AppsServiceSuccessfulRequest.Setup(appService =>
+                appService.IsOwnerOfThisLicense(
+                    It.IsAny<string>(), 
+                    It.IsAny<int>(), 
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(true));
 
             AppsServiceSuccessfulRequest.Setup(appService => 
@@ -120,6 +130,14 @@ namespace SudokuCollective.Tests.MockServices {
                     Message = string.Empty
                 }));
 
+            AppsServiceSuccessfulRequest.Setup(appService =>
+                appService.DeleteOrResetApp(It.IsAny<int>(), It.IsAny<bool>()))
+                .Returns(Task.FromResult(new BaseResult() {
+
+                    Success = true,
+                    Message = string.Empty
+                }));
+
             AppsServiceFailedRequest.Setup(appService => 
                 appService.GetApp(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppResult() {
@@ -148,8 +166,18 @@ namespace SudokuCollective.Tests.MockServices {
                 }));
 
             AppsServiceFailedRequest.Setup(appService => 
-                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>()))
+                appService.IsRequestValidOnThisLicense(
+                    It.IsAny<string>(), 
+                    It.IsAny<int>(), 
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(true));
+
+            AppsServiceFailedRequest.Setup(appService =>
+                appService.IsOwnerOfThisLicense(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(false));
 
             AppsServiceFailedRequest.Setup(appService => 
                 appService.UpdateApp(It.IsAny<AppRequest>()))
@@ -209,8 +237,19 @@ namespace SudokuCollective.Tests.MockServices {
                     Message = "Error deactivating app"
                 }));
 
+            AppsServiceFailedRequest.Setup(appService =>
+                appService.DeleteOrResetApp(It.IsAny<int>(), It.IsAny<bool>()))
+                .Returns(Task.FromResult(new BaseResult() {
+
+                    Success = false,
+                    Message = "Error deleting app"
+                }));
+
             AppsServiceInvalidRequest.Setup(appService => 
-                appService.IsRequestValidOnThisLicense(It.IsAny<string>(), It.IsAny<int>()))
+                appService.IsRequestValidOnThisLicense(
+                    It.IsAny<string>(), 
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(false));
         }
     }

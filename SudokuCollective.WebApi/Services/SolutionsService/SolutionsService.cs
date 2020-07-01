@@ -8,6 +8,7 @@ using SudokuCollective.WebApi.Helpers;
 using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
+using SudokuCollective.WebApi.Models.ResultModels;
 using SudokuCollective.WebApi.Models.ResultModels.SolutionResults;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -166,31 +167,59 @@ namespace SudokuCollective.WebApi.Services {
                 intList.AddRange(solveRequest.EighthRow);
                 intList.AddRange(solveRequest.NinthRow);
 
-                var solutions = await _context.SudokuSolutions.ToListAsync();
+                var firstNonZeroValue = 0;
+                var firstNonZeroValueIndex = 0;
+
+                for (var i = 0; i < intList.Count - 1; i++) {
+
+                    if (intList[i] != 0) {
+
+                        firstNonZeroValue = intList[i];
+                        firstNonZeroValueIndex = i;
+                        i = intList.Count - 2;
+                    }
+                }
+
+                var solvedSolutions = await _context.SudokuSolutions
+                    .Where(s => s.DateSolved > DateTime.MinValue)
+                    .ToListAsync();
+
+                var solutions = new List<SudokuSolution>();
+
+                if (solvedSolutions.Count > 0) {
+                    
+                    solutions = solvedSolutions
+                        .Where(s => s.SolutionList[firstNonZeroValueIndex]
+                            .Equals((char)firstNonZeroValue))
+                        .ToList();
+                }
 
                 var solutionInDB = false;
 
-                foreach (var solution in solutions) {
+                if (solutions.Count > 0) {
 
-                    if (solution.SolutionList.Count > 0) {
+                    foreach (var solution in solutions) {
 
-                        var possibleSolution = true;
+                        if (solution.SolutionList.Count > 0) {
 
-                        for (var i = 0; i < intList.Count - 1; i++) {
+                            var possibleSolution = true;
 
-                            if (intList[i] != 0 && intList[i] != solution.SolutionList[i]) {
+                            for (var i = 0; i < intList.Count - 1; i++) {
 
-                                possibleSolution = false;
+                                if (intList[i] != 0 && intList[i] != solution.SolutionList[i]) {
+
+                                    possibleSolution = false;
+                                    break;
+                                }
+                            }
+
+                            if (possibleSolution) {
+
+                                solutionInDB = possibleSolution;
+                                solutionTaskResult.Success = true;
+                                solutionTaskResult.Solution = solution;
                                 break;
                             }
-                        }
-
-                        if (possibleSolution) {
-
-                            solutionInDB = possibleSolution;
-                            solutionTaskResult.Success = true;
-                            solutionTaskResult.Solution = solution;
-                            break;
                         }
                     }
                 }
@@ -245,7 +274,7 @@ namespace SudokuCollective.WebApi.Services {
 
                 return solutionTaskResult;
             }
-        }        
+        }
 
         public async Task<SolutionResult> Generate() {
 
@@ -264,13 +293,14 @@ namespace SudokuCollective.WebApi.Services {
 
                 var matrixNotInDB = true;
 
-                foreach (var solution in solutions) {
+                if (solutions.Count > 0) {
 
-                    if (solution.SolutionList.Count > 0) {
+                    foreach (var solution in solutions) {
 
-                        if (solution.ToString().Equals(matrix)) {
-                            
+                        if (solution.SolutionList.Count > 0 && solution.ToString().Equals(matrix)) {
+
                             matrixNotInDB = false;
+
                         }
                     }
                 }
@@ -291,6 +321,90 @@ namespace SudokuCollective.WebApi.Services {
             solutionTaskResult.Success = true;
 
             return solutionTaskResult;
+        }
+
+        public async Task<BaseResult> AddSolutions(int limitArg) {
+
+            var limit = 1000;
+
+            if (limitArg <= limit) {
+
+                limit = limitArg;
+            }
+
+            var reduceLimitBy = 0;
+
+            var solutions = await _context.SudokuSolutions
+                .ToListAsync();
+
+            List<List<int>> solutionsInDB = new List<List<int>>();
+
+            if (solutions.Count > 0) {
+
+                foreach (var solution in solutions) {
+
+                    if (solution.SolutionList.Count > 0) {
+
+                        solutionsInDB.Add(solution.SolutionList);
+
+                    }
+                }
+            }
+
+            var matrix = new SudokuMatrix();
+            var baseTaskResult = new BaseResult();
+
+            try {
+
+                List<List<int>> solutionsList = new List<List<int>>();
+                List<SudokuSolution> result = new List<SudokuSolution>();
+
+                var continueLoop = true;
+
+                do {
+
+                    for (var i = 0; i < limit - reduceLimitBy; i++) {
+
+                        matrix.GenerateSolution();
+
+                        if (!solutionsInDB.Contains(matrix.ToInt32List())) {
+
+                            solutionsList.Add(matrix.ToInt32List());
+                        }
+                    }
+
+                    solutionsList = solutionsList
+                        .Distinct()
+                        .ToList();
+
+                    if (limit == solutionsList.Count) {
+
+                        continueLoop = false;
+
+                    } else {
+
+                        reduceLimitBy = limit - solutionsList.Count;
+                    }
+
+                } while (continueLoop);
+
+                foreach(var solutionList in solutionsList) {
+
+                    result.Add(new SudokuSolution(solutionList));
+                }
+
+                _context.SudokuSolutions.AddRange(result);
+                await _context.SaveChangesAsync();
+
+                baseTaskResult.Success = true;
+                
+            } catch (Exception e) {
+                
+                baseTaskResult.Message = e.Message;
+                baseTaskResult.Success = false;
+            }
+
+            return baseTaskResult;
         }
     }
 }

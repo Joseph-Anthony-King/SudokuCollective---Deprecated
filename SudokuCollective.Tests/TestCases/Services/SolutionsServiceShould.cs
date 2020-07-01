@@ -84,7 +84,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Assert
             Assert.That(result.Success, Is.True);
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
-            Assert.That(solutionsResult.Count, Is.EqualTo(3));
+            Assert.That(solutionsResult.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -100,7 +100,23 @@ namespace SudokuCollective.Tests.TestCases.Services {
             // Assert
             Assert.That(result.Success, Is.True);
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
-            Assert.That(solutionsResult.Count, Is.EqualTo(3));
+            Assert.That(solutionsResult.Count, Is.EqualTo(4));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task AddSolutions() {
+
+            // Arrange
+            var limit = 10;
+
+            // Act
+            var result = await sut.AddSolutions(limit);
+            var solutionsResult = _context.SudokuSolutions.ToList();
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(solutionsResult.Count, Is.EqualTo(limit + 3));
         }
     }
 }

@@ -26,6 +26,9 @@ namespace SudokuCollective.WebApi.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("AppId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("ContinueGame")
                         .HasColumnType("boolean");
 

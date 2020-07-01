@@ -15,6 +15,7 @@ namespace SudokuCollective.Domain {
         public int SudokuSolutionId { get; set; }
         public SudokuSolution SudokuSolution { get; set; }
         public bool ContinueGame { get; set; }
+        public int AppId { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateCompleted { get; set; }
 
@@ -24,12 +25,14 @@ namespace SudokuCollective.Domain {
             DateCreated = DateTime.UtcNow;
             ContinueGame = true;
             SudokuSolution = new SudokuSolution();
+            AppId = 0;
         }
 
         public Game(
             User user, 
             SudokuMatrix matrix, 
-            Difficulty difficulty) : this() {
+            Difficulty difficulty,
+            int appId = 0) : this() {
 
             User = user;
             SudokuMatrix = matrix;
@@ -37,6 +40,8 @@ namespace SudokuCollective.Domain {
             SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
 
             User.Games.Add(this);
+
+            AppId = appId;
         }
 
         [JsonConstructor]
@@ -45,6 +50,7 @@ namespace SudokuCollective.Domain {
             int userId,
             int sudokuMatrixId,
             int sudokuSolutionId,
+            int appId,
             bool continueGame,
             DateTime dateCreated,
             DateTime dateCompleted) {
@@ -53,6 +59,7 @@ namespace SudokuCollective.Domain {
             UserId = userId;
             SudokuMatrixId = sudokuMatrixId;
             SudokuSolutionId = sudokuSolutionId;
+            AppId = appId;
             ContinueGame = continueGame;
             DateCreated = dateCreated;
             DateCompleted = dateCompleted;
