@@ -15,6 +15,7 @@ using SudokuCollective.WebApi.Models.DataModel;
 using SudokuCollective.WebApi.Services.Interfaces;
 using SudokuCollective.WebApi.Services;
 using SudokuCollective.WebApi.Models.TokenModels;
+using VueCliMiddleware;
 
 namespace SudokuCollective.WebApi {
 
@@ -114,6 +115,20 @@ namespace SudokuCollective.WebApi {
             app.UseStaticFiles();
 
             app.UseMvc();
+
+            app.UseSpa(spa =>
+            {
+                if (env.IsDevelopment())
+                    spa.Options.SourcePath = "client";
+                else
+                    spa.Options.SourcePath = "dist";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseVueCli(npmScript: "serve");
+                }
+
+            });
 
             SeedData.EnsurePopulated(app, Configuration);
         }
