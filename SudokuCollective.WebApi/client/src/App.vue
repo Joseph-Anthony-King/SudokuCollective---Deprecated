@@ -20,7 +20,6 @@
           width="100"
         />
       </div>
-
       <v-spacer></v-spacer>
 
       <v-btn
@@ -34,23 +33,25 @@
     </v-app-bar>
 
     <v-content>
-      <HelloWorld />
+      <v-row class="text-center">
+        <v-col cols="12">
+          <router-link to="/">Home</router-link> |
+          <router-link to="/login">Login</router-link> | 
+          <a :href=apiUrl target="blank">API</a>
+        </v-col>
+      </v-row>
+      <router-view />
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
 
 export default {
   name: "App",
 
-  components: {
-    HelloWorld
-  },
-
   data: () => ({
-    //
+    apiUrl: process.env.VUE_APP_API
   })
 };
 </script>
