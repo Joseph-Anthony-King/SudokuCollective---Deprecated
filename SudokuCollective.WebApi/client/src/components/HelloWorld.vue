@@ -20,13 +20,10 @@ export default {
   },
   async mounted() {
     
-    // When running the api in kestrel...
-    const response = await axios.get('https://localhost:5001/api/v1/helloworld', { crossdomain: true });
-
-    // When running the api in IIS Express...
-    //const response = await axios.get('https://localhost:44371/api/v1/helloworld', { crossdomain: true });
+    const response = await axios.get(`${process.env.VUE_APP_API}/api/v1/helloworld`, { crossdomain: true });
 
     console.log('api response: ', response);
+
     this.$data.apiMsg = response.data;
   }
 };
