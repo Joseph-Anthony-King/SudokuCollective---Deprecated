@@ -1,4 +1,4 @@
-# client
+# Sudoku Collective Admin Vue
 
 ## Project setup
 ```
