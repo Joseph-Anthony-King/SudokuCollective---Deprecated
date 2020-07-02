@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       appTitle: `Welcome to ${process.env.VUE_APP_TITLE}`
-    }
+    };
   },
   components: {
     HelloWorld
