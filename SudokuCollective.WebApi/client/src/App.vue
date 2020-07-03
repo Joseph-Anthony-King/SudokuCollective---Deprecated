@@ -32,7 +32,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content>
+    <v-main>
       <v-row class="text-center">
         <v-col cols="12">
           <router-link to="/">Home</router-link> |
@@ -41,7 +41,7 @@
         </v-col>
       </v-row>
       <router-view />
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
