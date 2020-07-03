@@ -50,24 +50,28 @@ export default {
 
       try {
         const config = {
-          method: "post",
-          url: `${process.env.VUE_APP_API}/api/v1/authenticate`,
-          headers: {
-              "Content-Type": "application/json"
-          },
-          data: {
-            UserName: `${this.$data.username}`,
-            Password: `${this.$data.password}`
-          }
+            method: "post",
+            url: `${process.env.VUE_APP_API}/api/v1/authenticate`,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: {
+                UserName: `${this.$data.username}`,
+                Password: `${this.$data.password}`
+            }
         };
 
         console.log("config: ", config);
 
-        const response = await axios(config);
+          const response = await axios(config);
 
-        console.log("Success: ", response.data);
+          var user = response.data.user;
+
+          console.log("Success: ", response.data);
+          alert(`${user.fullName} is now logged in!`);
       } catch (error) {
-        console.log(error);
+          console.log(error);
+          alert(`Log in failed...`);
       }
     }
   }
