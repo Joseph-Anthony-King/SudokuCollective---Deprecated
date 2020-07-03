@@ -65,8 +65,7 @@ export default {
 
       } catch (error) {
 
-        console.log(error);
-        alert(`Log in failed...`);
+        alert(error);
       }
     }
   }
