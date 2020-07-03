@@ -140,7 +140,7 @@ export default {
     ],
     apiMsg: ""
   }),
-  async mounted() {
+  async created() {
     
     const response = await axios.get(`${process.env.VUE_APP_API}/api/v1/helloworld`, { crossdomain: true });
     console.log('api response: ', response);
