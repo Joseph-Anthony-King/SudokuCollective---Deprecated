@@ -40,7 +40,7 @@ export default {
     },
     methods: {
         submit() {            
-            console.log(`Submitting the following username, ${this.$data.username}, and password, ${this.$data.password}...`);
+            console.log(`Submitting the following username and password: \n\n\tusername: ${this.$data.username} \n\tpassword: ${this.$data.password}`);
         }
     },
 }
