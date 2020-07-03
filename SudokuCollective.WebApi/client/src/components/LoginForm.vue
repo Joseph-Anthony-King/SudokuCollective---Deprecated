@@ -44,9 +44,6 @@ export default {
   },
   methods: {
     async submit() {
-      console.log(
-        `Submitting the following username and password: \n\n\tusername: ${this.$data.username} \n\tpassword: ${this.$data.password}`
-      );
 
       try {
         const config = {
@@ -61,17 +58,15 @@ export default {
             }
         };
 
-        console.log("config: ", config);
+        const response = await axios(config);
 
-          const response = await axios(config);
+        var user = response.data.user;
+        alert(`${user.fullName} is now logged in!`);
 
-          var user = response.data.user;
-
-          console.log("Success: ", response.data);
-          alert(`${user.fullName} is now logged in!`);
       } catch (error) {
-          console.log(error);
-          alert(`Log in failed...`);
+
+        console.log(error);
+        alert(`Log in failed...`);
       }
     }
   }
