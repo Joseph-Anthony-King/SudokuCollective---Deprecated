@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.AppRequests;

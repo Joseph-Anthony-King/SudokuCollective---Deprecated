@@ -1,47 +1,75 @@
 <template>
   <v-form>
-    <v-container>        
-        <h1>Login</h1>
-        <v-row>
-            <v-col cols="12" >
-            <v-text-field 
-                prepend-icon="person" 
-                name="Username" 
-                label="Username" 
-                required 
-                outlined
-                v-model="username"></v-text-field>
-            <v-text-field 
-                prepend-icon="lock" 
-                name="Password" 
-                label="Password" 
-                required 
-                outlined
-                v-model="password"></v-text-field>
-            <v-card-actions>
-                <v-flex justify-center>
-                    <v-btn @click="submit()" color="primary">Login</v-btn>
-                </v-flex>
-            </v-card-actions>
-            </v-col>
-        </v-row>
+    <v-container>
+      <h1>Login</h1>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            prepend-icon="person"
+            name="Username"
+            label="Username"
+            required
+            outlined
+            v-model="username"
+          ></v-text-field>
+          <v-text-field
+            prepend-icon="lock"
+            name="Password"
+            label="Password"
+            required
+            outlined
+            v-model="password"
+          ></v-text-field>
+          <v-card-actions>
+            <v-flex justify-center>
+              <v-btn @click="submit()" color="primary">Login</v-btn>
+            </v-flex>
+          </v-card-actions>
+        </v-col>
+      </v-row>
     </v-container>
   </v-form>
 </template>
 
 <script>
+import * as axios from "axios";
+
 export default {
-    name: "LoginForm",
-    data() {
-        return {
-            username: "",
-            password: ""
-        }
-    },
-    methods: {
-        submit() {            
-            console.log(`Submitting the following username and password: \n\n\tusername: ${this.$data.username} \n\tpassword: ${this.$data.password}`);
-        }
-    },
-}
+  name: "LoginForm",
+  data() {
+    return {
+      username: "",
+      password: ""
+    };
+  },
+  methods: {
+    async submit() {
+      console.log(
+        `Submitting the following username and password: \n\n\tusername: ${this.$data.username} \n\tpassword: ${this.$data.password}`
+      );
+
+      try {
+        const config = {
+          method: "post",
+          url: `${process.env.VUE_APP_API}/api/v1/authenticate`,
+          headers: {
+              "Content-Type": "application/json"
+          },
+          data: {
+            UserName: `${this.$data.username}`,
+            Password: `${this.$data.password}`
+          }
+        };
+
+        console.log("config: ", config);
+
+        const response = await axios(config);
+
+        console.log("Success: ", response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+};
 </script>

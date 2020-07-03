@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Models.Enums;
 using SudokuCollective.WebApi.Models.PageModels;
 

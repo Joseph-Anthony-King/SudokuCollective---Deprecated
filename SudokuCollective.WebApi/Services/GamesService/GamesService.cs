@@ -7,7 +7,7 @@ using SudokuCollective.Domain;
 using SudokuCollective.Domain.Interfaces;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
 using SudokuCollective.WebApi.Models.ResultModels;
@@ -47,7 +47,7 @@ namespace SudokuCollective.WebApi.Services {
                         .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
                 }
 
-                user.updateRoles();
+                user.UpdateRoles();
 
                 SudokuMatrix matrix = new SudokuMatrix();
                 matrix.GenerateSolution();

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.WebApi.Helpers;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;

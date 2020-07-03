@@ -178,7 +178,7 @@ namespace SudokuCollective.Domain.Models {
             IsActive = false;
         }
 
-        public void updateRoles() {
+        public void UpdateRoles() {
 
             if (Roles != null) {
 

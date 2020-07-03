@@ -7,7 +7,7 @@ using Moq;
 using SudokuCollective.Domain;
 using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 
 namespace SudokuCollective.Tests.TestData {
 

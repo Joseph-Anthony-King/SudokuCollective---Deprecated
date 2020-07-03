@@ -7,7 +7,7 @@ using SudokuCollective.Domain.Models;
 using SudokuCollective.Tests.MockServices;
 using SudokuCollective.Tests.TestData;
 using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels;
 using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;

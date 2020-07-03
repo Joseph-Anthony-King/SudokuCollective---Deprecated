@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Moq;
 using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
 using SudokuCollective.WebApi.Models.ResultModels;
 using SudokuCollective.WebApi.Models.ResultModels.RoleRequests;

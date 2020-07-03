@@ -3,13 +3,14 @@ using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Collections.Generic;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SudokuCollective.WebApi.Models.DataModel;
-using SudokuCollective.WebApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using SudokuCollective.WebApi.Services.Interfaces;
 using SudokuCollective.WebApi.Models.TokenModels;
+using SudokuCollective.WebApi.Models.DataModels;
+using SudokuCollective.WebApi.Models.DTOModels;
 
 namespace SudokuCollective.WebApi.Services {
 
@@ -29,9 +30,10 @@ namespace SudokuCollective.WebApi.Services {
             _tokenManagement = tokenManagment.Value;
         }
 
-        public bool IsAuthenticated(TokenRequest request, out string token) {
+        public bool IsAuthenticated(TokenRequest request, out string token, out AuthenticatedUser user) {
 
             token = string.Empty;
+            user = new AuthenticatedUser();
 
             var validateUserTask = _userManagementService.IsValidUser(request.UserName, request.Password);
             validateUserTask.Wait();
@@ -41,17 +43,30 @@ namespace SudokuCollective.WebApi.Services {
                 return false;
             }
             
-            var user = _context.Users
+            var authenticatedUser = _context.Users
                 .Where(u => u.UserName.Equals(request.UserName))
                 .Include(u => u.Roles)
                 .FirstOrDefault();
+
+            foreach (var role in authenticatedUser.Roles){
+
+                role.Role = _context.Roles.Where(x => x.Id == role.RoleId).FirstOrDefault();
+            }
+
+            user.UpdateWithUserInfo(authenticatedUser);
+
+            // UpdateWithUserInfo works with an instance of IUser and has no knowledge
+            // for user roles or the IsSuperUser or IsAdmin properites on which those
+            // properties are based.  As such these values are set manually.
+            user.IsSuperUser = authenticatedUser.IsSuperUser;
+            user.IsAdmin = authenticatedUser.IsAdmin;
 
             var claim = new List<Claim> {
 
                 new Claim(ClaimTypes.Name, request.UserName)
             };
 
-            foreach (var role in user.Roles) {
+            foreach (var role in authenticatedUser.Roles) {
 
                 var r = _context.Roles.Where(x => x.Id == role.RoleId).FirstOrDefault();
                 

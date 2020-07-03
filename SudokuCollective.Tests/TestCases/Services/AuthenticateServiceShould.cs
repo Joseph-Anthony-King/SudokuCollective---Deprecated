@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
+using SudokuCollective.WebApi.Models.DTOModels;
 using SudokuCollective.WebApi.Models.TokenModels;
 using SudokuCollective.WebApi.Services.Interfaces;
 using SudokuCollective.Tests.TestData;
@@ -66,10 +67,15 @@ namespace SudokuCollective.Tests.TestCases.Services {
             };
 
             // Act
-            var result = sutValid.IsAuthenticated(tokenRequest, out string token);
+            var result = sutValid.IsAuthenticated(
+                tokenRequest, 
+                out string token, 
+                out AuthenticatedUser user);
 
             // Assert
             Assert.That(result, Is.True);
+            Assert.IsNotNull(token);
+            Assert.AreEqual(userName, user.UserName);
         }
 
         [Test]
@@ -84,10 +90,14 @@ namespace SudokuCollective.Tests.TestCases.Services {
             };
 
             // Act
-            var result = sutInvalid.IsAuthenticated(tokenRequest, out string token);
+            var result = sutInvalid.IsAuthenticated(tokenRequest, 
+                out string token,
+                out AuthenticatedUser user);
 
             // Assert
             Assert.That(result, Is.False);
+            Assert.IsEmpty(token);
+            Assert.AreNotEqual(userName, user.UserName);
         }
     }
 }

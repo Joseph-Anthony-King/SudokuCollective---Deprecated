@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Services.Interfaces;
 using System.Threading.Tasks;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Models.PageModels;
 using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
 using SudokuCollective.WebApi.Models.RequestModels.UserRequests;

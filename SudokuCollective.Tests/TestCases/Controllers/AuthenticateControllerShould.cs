@@ -3,7 +3,9 @@ using Moq;
 using NUnit.Framework;
 using SudokuCollective.WebApi.Controllers;
 using SudokuCollective.WebApi.Models.TokenModels;
+using SudokuCollective.WebApi.Models.DTOModels;
 using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.WebApi.Models.ResultModels.UserResults;
 
 namespace SudokuCollective.Tests.TestCases.Controllers {
 
@@ -33,12 +35,13 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             };
 
             var token = string.Empty;
+            var user = new AuthenticatedUser();
 
             mockValidAuthenticateService
-                .Setup(authService => authService.IsAuthenticated(tokenRequest, out token))
+                .Setup(authService => authService.IsAuthenticated(tokenRequest, out token, out user))
                 .Returns(true);
             mockInvalidAuthenticateService
-                .Setup(authService => authService.IsAuthenticated(tokenRequest, out token))
+                .Setup(authService => authService.IsAuthenticated(tokenRequest, out token, out user))
                 .Returns(false);
 
             sut = new AuthenticateController(mockValidAuthenticateService.Object);
@@ -53,10 +56,12 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             // Act
             var result = sut.RequestToken(tokenRequest);
+            var returnedValue = (AuthenticatedUserResult)((OkObjectResult)result).Value;
             var statusCode = ((OkObjectResult)result).StatusCode;
 
             // Assert
             Assert.That(result, Is.TypeOf<OkObjectResult>());
+            Assert.That(returnedValue.User, Is.TypeOf<AuthenticatedUser>());
             Assert.That(statusCode, Is.EqualTo(200));
         }
 

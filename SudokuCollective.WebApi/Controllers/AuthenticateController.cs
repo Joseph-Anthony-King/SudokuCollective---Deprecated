@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.WebApi.Models.TokenModels;
+using SudokuCollective.WebApi.Models.DTOModels;
+using SudokuCollective.WebApi.Models.ResultModels.UserResults;
 using SudokuCollective.WebApi.Services.Interfaces;
 
 namespace SudokuCollective.WebApi.Controllers {
@@ -18,7 +20,7 @@ namespace SudokuCollective.WebApi.Controllers {
         }
         
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         public ActionResult RequestToken([FromBody] TokenRequest request) {
 
             if (!ModelState.IsValid) {
@@ -26,9 +28,13 @@ namespace SudokuCollective.WebApi.Controllers {
                 return BadRequest(ModelState);
             }
 
-            if (_authService.IsAuthenticated(request, out string token)) {
+            if (_authService.IsAuthenticated(request, out string token, out AuthenticatedUser user)) {
 
-                return Ok(token);
+                var result = new AuthenticatedUserResult(user, token) { 
+                    Success = true 
+                };
+
+                return Ok(result);
             }
 
             return BadRequest("Status Code 400: Invalid User");

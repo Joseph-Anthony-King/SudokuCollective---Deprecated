@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SudokuCollective.WebApi.Models;
-using SudokuCollective.WebApi.Models.DataModel;
+using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Services.Interfaces;
 using SudokuCollective.WebApi.Services;
 using SudokuCollective.WebApi.Models.TokenModels;

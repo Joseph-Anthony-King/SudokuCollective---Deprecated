@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using SudokuCollective.Domain;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.WebApi.Models.DataModel {
+namespace SudokuCollective.WebApi.Models.DataModels {
 
     public class DatabaseContext : DbContext {
         
