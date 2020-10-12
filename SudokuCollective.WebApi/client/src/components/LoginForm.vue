@@ -32,42 +32,46 @@
 </template>
 
 <script>
-import * as axios from "axios";
+    import * as axios from "axios";
 
-export default {
-  name: "LoginForm",
-  data() {
-    return {
-      username: "",
-      password: ""
-    };
-  },
-  methods: {
-    async submit() {
+    export default {
 
-      try {
-        const config = {
-            method: "post",
-            url: `${process.env.VUE_APP_API}/api/v1/authenticate`,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: {
-                UserName: `${this.$data.username}`,
-                Password: `${this.$data.password}`
+        name: "LoginForm",
+
+        data: () => ({
+            username: "",
+            password: ""
+        }),
+
+        methods: {
+
+            async submit() {
+
+                try {
+
+                    const config = {
+                        method: "post",
+                        url: `${this.$store.getters.getBaseURL}/api/v1/authenticate`,
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        data: {
+                            UserName: `${this.$data.username}`,
+                            Password: `${this.$data.password}`
+                        }
+                    };
+
+                    const response = await axios(config);
+
+                    var user = response.data.user;
+
+                    alert(`${user.fullName} is now logged in!`);
+
+                } catch (error) {
+
+                    alert(error);
+                }
             }
-        };
-
-        const response = await axios(config);
-
-        var user = response.data.user;
-        alert(`${user.fullName} is now logged in!`);
-
-      } catch (error) {
-
-        alert(error);
-      }
-    }
-  }
-};
+        }
+    };
 </script>

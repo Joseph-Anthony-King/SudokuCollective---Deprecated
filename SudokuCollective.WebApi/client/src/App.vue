@@ -37,7 +37,7 @@
         <v-col cols="12">
           <router-link to="/">Home</router-link> |
           <router-link to="/login">Login</router-link> | 
-          <a :href=apiUrl target="blank">API</a>
+          <a :href=apiUrl target="blank">API Status Page</a>
         </v-col>
       </v-row>
       <router-view />
@@ -46,12 +46,25 @@
 </template>
 
 <script>
+    import { mapActions } from "vuex";
 
-export default {
-  name: "App",
+    export default {
 
-  data: () => ({
-    apiUrl: process.env.VUE_APP_API
-  })
-};
+        name: "App",
+
+        data: () => ({
+            apiUrl: ""
+        }),
+
+        methods: {
+            ...mapActions(["confirmBaseURL"])
+        },
+
+        async created() {
+
+            await this.confirmBaseURL();
+
+            this.apiUrl = this.$store.getters.getBaseURL
+        },
+    };
 </script>
