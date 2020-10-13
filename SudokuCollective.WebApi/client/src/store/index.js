@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import { appConfig } from "./modules/appConfig/appConfig"
+import appConfig from "./modules/appConfig/appConfig"
 
 Vue.use(Vuex);
 
