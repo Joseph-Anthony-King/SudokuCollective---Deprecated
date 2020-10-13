@@ -34,11 +34,12 @@
 
     <v-main>
       <v-row class="text-center">
-        <v-col cols="12">
-          <router-link to="/">Home</router-link> |
-          <router-link to="/login">Login</router-link> | 
-          <a :href=apiUrl target="blank">API Status Page</a>
-        </v-col>
+          <v-col cols="12">
+              <router-link to="/">Home</router-link> |
+              <a :href=apiUrl target="blank">API Status Page</a> |
+              <a href=https://github.com/Joseph-Anthony-King/SudokuCollective target="blank">View Code on GitHub</a> |
+              <router-link to="/login">Login</router-link>
+          </v-col>
       </v-row>
       <router-view />
     </v-main>
