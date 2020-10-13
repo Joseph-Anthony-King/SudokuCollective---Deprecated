@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import appConfig from "./modules/appConfig/appConfig"
+import appConfigModule from "./modules/appConfigModule/appConfigModule";
+import userModule from "./modules/userModule/userModule";
 
 Vue.use(Vuex);
 
@@ -10,6 +11,7 @@ export default new Vuex.Store({
     mutations: {},
     actions: {},
     modules: {
-        appConfig
+        appConfigModule,
+        userModule,
     }
 });

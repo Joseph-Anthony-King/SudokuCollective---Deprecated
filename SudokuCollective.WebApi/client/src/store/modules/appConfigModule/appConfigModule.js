@@ -1,13 +1,13 @@
 ﻿import { baseURLConfirmationService } from "../../../services/baseURLConfirmation.service";
 import { CONFIRM_BASE_URL, UPDATE_API_MESSAGE } from "./mutation-types";
 
-const appConfig = {
+const appConfigModule = {
 
-    namsespaced: false,
+    namespaced: true,
 
     state: () => ({
         baseURL: "",
-        apiMessage: "Sudoku Collective Admin Vue"
+        apiMessage: ""
     }),
 
     mutations: {
@@ -33,4 +33,4 @@ const appConfig = {
     }
 }
 
-export default appConfig;
+export default appConfigModule;

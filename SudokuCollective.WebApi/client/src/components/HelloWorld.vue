@@ -11,9 +11,9 @@
       </v-col>
 
       <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          {{ apiMsg }}
-        </h1>
+          <h1 class="display-2 font-weight-bold mb-3">
+               Welcome to the Sudoku Collective Admin Vue
+          </h1>
 
         <p class="subheading font-weight-regular">
           For help and collaboration with other Vuetify developers,
@@ -27,23 +27,3 @@
     </v-row>
   </v-container>
 </template>
-
-<script>
-    import { mapGetters } from "vuex";
-
-    export default {
-
-        name: "HelloWorld",
-
-        data: () => ({
-        }),
-
-        computed: {
-            ...mapGetters(["getAPIMessage"])
-        },
-
-        created() {    
-            this.apiMsg =  this.getAPIMessage;
-        }
-    };
-</script>

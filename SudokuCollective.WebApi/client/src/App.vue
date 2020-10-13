@@ -57,14 +57,14 @@
         }),
 
         methods: {
-            ...mapActions(["confirmBaseURL"])
+            ...mapActions("appConfigModule", ["confirmBaseURL"])
         },
 
         async created() {
 
             await this.confirmBaseURL();
 
-            this.apiUrl = this.$store.getters.getBaseURL
+            this.apiUrl = this.$store.getters["appConfigModule/getBaseURL"];
         },
     };
 </script>

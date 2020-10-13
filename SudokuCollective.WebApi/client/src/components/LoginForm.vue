@@ -1,49 +1,110 @@
 <template>
   <v-form>
     <v-container>
-      <h1>Login</h1>
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            prepend-icon="person"
-            name="Username"
-            label="Username"
-            required
-            outlined
-            v-model="username"
-          ></v-text-field>
-          <v-text-field
-            prepend-icon="lock"
-            name="Password"
-            label="Password"
-            required
-            outlined
-            v-model="password"
-          ></v-text-field>
-          <v-card-actions>
-            <v-flex justify-center>
-              <v-btn @click="submit()" color="primary">Login</v-btn>
-            </v-flex>
-          </v-card-actions>
-        </v-col>
-      </v-row>
+        <div v-if="!user.isLoggedIn">
+            <h1>Login</h1>
+            <v-row>
+                <v-col cols="12">
+                    <v-text-field prepend-icon="person"
+                                  name="Username"
+                                  label="Username"
+                                  required
+                                  outlined
+                                  v-model="username"></v-text-field>
+                    <v-text-field prepend-icon="lock"
+                                  name="Password"
+                                  label="Password"
+                                  required
+                                  outlined
+                                  v-model="password"></v-text-field>
+                    <v-card-actions>
+                        <v-flex justify-center>
+                            <v-btn @click="submit()" color="primary">Login</v-btn>
+                        </v-flex>
+                    </v-card-actions>
+                </v-col>
+            </v-row>
+
+        </div>
+        <div v-if="user.isLoggedIn">
+            <h1 class="display-2 font-weight-bold mb-3">
+                {{ apiMsg }}
+            </h1>
+            <h2>{{ user.userName }} is logged in!</h2>
+            <v-row>
+                <v-col cols="12">
+                    <v-text-field prepend-icon="person"
+                                  name="user_userName"
+                                  label="Username"
+                                  disabled
+                                  outlined
+                                  v-model="user.userName"></v-text-field>
+                    <v-text-field prepend-icon="person"
+                                  name="user_firstName"
+                                  label="First Name"
+                                  disabled
+                                  outlined
+                                  v-model="user.firstName"></v-text-field>
+                    <v-text-field prepend-icon="person"
+                                  name="user_lastName"
+                                  label="Last Name"
+                                  disabled
+                                  outlined
+                                  v-model="user.lastName"></v-text-field>
+                    <v-text-field prepend-icon="person"
+                                  name="user_fullName"
+                                  label="Fullname"
+                                  disabled
+                                  outlined
+                                  v-model="user.fullName"></v-text-field>
+                    <v-text-field prepend-icon="person"
+                                  name="user_nickName"
+                                  label="Nickname"
+                                  disabled
+                                  outlined
+                                  v-model="user.nickName"></v-text-field>
+                    <v-checkbox name="user_isActive"
+                                label="Is Active"
+                                v-model="user.isActive"
+                                disabled></v-checkbox>
+                    <v-checkbox name="user_isAdmin"
+                                label="Is Admin"
+                                v-model="user.isAdmin"
+                                disabled></v-checkbox>
+                    <v-checkbox name="user_isSuperUser"
+                                label="Is Super User"
+                                v-model="user.isSuperUser"
+                                disabled></v-checkbox>
+                    <v-card-actions>
+                        <v-flex justify-center>
+                            <v-btn @click="logout()" color="primary">Logout</v-btn>
+                        </v-flex>
+                    </v-card-actions>
+                </v-col>
+            </v-row>
+        </div>
     </v-container>
   </v-form>
 </template>
 
 <script>
     import * as axios from "axios";
+    import { mapActions, mapGetters } from "vuex";
 
     export default {
 
         name: "LoginForm",
 
         data: () => ({
+            apiMsg: "",
             username: "",
-            password: ""
+            password: "",
+            user: {},
         }),
 
         methods: {
+
+            ...mapActions("userModule", ["updateUser"]),
 
             async submit() {
 
@@ -51,7 +112,7 @@
 
                     const config = {
                         method: "post",
-                        url: `${this.$store.getters.getBaseURL}/api/v1/authenticate`,
+                        url: `${this.$store.getters["appConfigModule/getBaseURL"]}/api/v1/authenticate`,
                         headers: {
                             "Content-Type": "application/json"
                         },
@@ -63,15 +124,58 @@
 
                     const response = await axios(config);
 
-                    var user = response.data.user;
+                    this.$data.user.id = response.data.user.id;
+                    this.$data.user.userName = response.data.user.userName;
+                    this.$data.user.firstName = response.data.user.firstName;
+                    this.$data.user.lastName = response.data.user.lastName;
+                    this.$data.user.nickName = response.data.user.nickName;
+                    this.$data.user.fullName = response.data.user.fullName;
+                    this.$data.user.isActive = response.data.user.isActive;
+                    this.$data.user.isAdmin = response.data.user.isAdmin;
+                    this.$data.user.isSuperUser = response.data.user.isSuperUser;
+                    this.$data.user.dateCreated = response.data.user.dateCreated;
+                    this.$data.user.dateUpdated = response.data.user.dateUpdated;
 
-                    alert(`${user.fullName} is now logged in!`);
+                    this.$data.user.login();
+
+                    this.updateUser(this.$data.user);
 
                 } catch (error) {
 
                     alert(error);
                 }
+            },
+
+            logout() {
+
+                this.$data.user.logout();
+
+                this.updateUser(this.$data.user);
+
+                this.resetData();
+            },
+
+            resetData() {
+                this.$data.username = "";
+                this.$data.password = "";
             }
+        },
+
+        computed: {
+            ...mapGetters("appConfigModule", ["getAPIMessage"]),
+            ...mapGetters("userModule", ["getUser"])
+        },
+
+        created() {
+            this.$data.apiMsg = this.$store.getters["appConfigModule/getAPIMessage"];
+        },
+
+        mounted() {
+            this.$data.user = this.getUser;
+        },
+
+        updated() {
+            this.$data.apiMsg = this.$store.getters["appConfigModule/getAPIMessage"];
         }
     };
 </script>
