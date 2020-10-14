@@ -1,6 +1,6 @@
 ﻿class User {
 
-    constructor(id, username, firstname, lastname, nickname, fullname, isactive, isadmin, issuperuser, datecreated, dateupdated) {
+    constructor(id, username, firstname, lastname, nickname, fullname, email, isactive, isadmin, issuperuser, datecreated, dateupdated) {
 
         if (!arguments.length) {
 
@@ -10,6 +10,7 @@
             this.lastName = "";
             this.nickName = "";
             this.fullName = "";
+            this.email = "";
             this.isActive = false;
             this.isAdmin = false;
             this.isSuperUser = "";
@@ -25,6 +26,7 @@
             this.lastName = lastname;
             this.nickName = nickname;
             this.fullName = fullname;
+            this.email = email;
             this.isActive = isactive;
             this.isActive = isadmin;
             this.isSuperUser = issuperuser;
@@ -47,6 +49,7 @@
         this.lastName = "";
         this.nickName = "";
         this.fullName = "";
+        this.email = "";
         this.isActive = false;
         this.isAdmin = false;
         this.isSuperUser = "";

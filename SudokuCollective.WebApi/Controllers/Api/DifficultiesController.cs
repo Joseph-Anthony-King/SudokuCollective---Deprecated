@@ -26,7 +26,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // GET: api/Difficulties/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet("{id}")]
+        [HttpPost("{id}")]
         public async Task<ActionResult<Difficulty>> GetDifficulty(
             int id, 
             [FromBody] BaseRequest baseRequest, 
@@ -56,7 +56,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // GET: api/Difficulties
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet]
+        [HttpPost]
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
             [FromBody] BaseRequest baseRequest, [FromQuery] bool fullRecord = false) {
                 

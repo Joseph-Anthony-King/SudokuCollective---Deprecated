@@ -63,6 +63,12 @@
                                   disabled
                                   outlined
                                   v-model="user.nickName"></v-text-field>
+                    <v-text-field prepend-icon="email"
+                                  name="user_email"
+                                  label="email"
+                                  disabled
+                                  outlined
+                                  v-model="user.email"></v-text-field>
                     <v-checkbox name="user_isActive"
                                 label="Is Active"
                                 v-model="user.isActive"
@@ -88,8 +94,9 @@
 </template>
 
 <script>
-    import * as axios from "axios";
     import { mapActions, mapGetters } from "vuex";
+    import { userService } from "../services/user.service";
+    import { authenticationService } from "../services/authentication.service";
 
     export default {
 
@@ -105,36 +112,18 @@
         methods: {
 
             ...mapActions("userModule", ["updateUser"]),
+            ...mapActions("appConfigModule", ["updateAuthToken", "updateRequestorId"]),
 
             async submit() {
 
                 try {
 
-                    const config = {
-                        method: "post",
-                        url: `${this.$store.getters["appConfigModule/getBaseURL"]}/api/v1/authenticate`,
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        data: {
-                            UserName: `${this.$data.username}`,
-                            Password: `${this.$data.password}`
-                        }
-                    };
+                    const response = await authenticationService.authenticateUser(this.$data.username, this.$data.password);
 
-                    const response = await axios(config);
+                    this.updateAuthToken(response.data.token);
+                    this.updateRequestorId(response.data.user.id);
 
-                    this.$data.user.id = response.data.user.id;
-                    this.$data.user.userName = response.data.user.userName;
-                    this.$data.user.firstName = response.data.user.firstName;
-                    this.$data.user.lastName = response.data.user.lastName;
-                    this.$data.user.nickName = response.data.user.nickName;
-                    this.$data.user.fullName = response.data.user.fullName;
-                    this.$data.user.isActive = response.data.user.isActive;
-                    this.$data.user.isAdmin = response.data.user.isAdmin;
-                    this.$data.user.isSuperUser = response.data.user.isSuperUser;
-                    this.$data.user.dateCreated = response.data.user.dateCreated;
-                    this.$data.user.dateUpdated = response.data.user.dateUpdated;
+                    this.$data.user = userService.assignAPIReponseToUser(response.data.user);
 
                     this.$data.user.login();
 

@@ -26,7 +26,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // GET: api/Games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpGet("{id}")]
+        [HttpPost("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id, 
             [FromBody] BaseRequest baseRequest) {
 
@@ -55,7 +55,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // GET: api/Games
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpGet]
+        [HttpPost]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
             [FromBody] BaseRequest baseRequest, 
             [FromQuery] bool fullRecord = false) {
@@ -210,7 +210,7 @@ namespace SudokuCollective.WebApi.Controllers {
         
         // GET: api/Games/5/GetMyGame
         [Authorize(Roles = "USER")]
-        [HttpGet, Route("{id}/GetMyGame")]
+        [HttpPost, Route("{id}/GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame(
             int id,
             [FromBody] GetMyGameRequest getMyGameRequest, 
@@ -244,7 +244,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // GET: api/Games/GetMyGames
         [Authorize(Roles = "USER")]
-        [HttpGet, Route("GetMyGames")]
+        [HttpPost, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
             [FromBody] GetMyGameRequest getMyGameRequest,
             [FromQuery] bool fullRecord = false) {
