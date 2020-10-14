@@ -94,7 +94,7 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from "vuex";
+    import { mapGetters } from "vuex";
     import { userService } from "../services/user.service";
     import { authenticationService } from "../services/authentication.service";
     import User from "../models/user"
@@ -112,23 +112,32 @@
 
         methods: {
 
-            ...mapActions("userModule", ["updateUser"]),
-            ...mapActions("appConfigModule", ["updateAuthToken", "updateRequestorId"]),
-
             async submit() {
 
                 try {
 
-                    const response = await authenticationService.authenticateUser(this.$data.username, this.$data.password);
+                    const response = await authenticationService.authenticateUser(
+                        this.$data.username, 
+                        this.$data.password);
 
-                    this.updateAuthToken(response.data.token);
-                    this.updateRequestorId(response.data.user.id);
+                    if (response.status === 200) {
 
-                    this.$data.user = userService.assignAPIReponseToUser(response.data.user);
+                        this.$data.user.shallowClone(response.data.user);
 
-                    this.$data.user.login();
+                        this.$data.user = userService.loginUser(
+                            this.$data.user, 
+                            response.data.token);
 
-                    this.updateUser(this.$data.user);
+                        alert(`${this.$data.user.fullName} is logged in.`);
+
+                    } else if (response.status === 400) {
+
+                        alert("Username or Password is incorrect.");
+
+                    } else {
+
+                        alert("An error occurred while trying to authenticate the user");
+                    }
 
                 } catch (error) {
 
@@ -138,13 +147,13 @@
 
             logout() {
 
-                this.$data.user.logout();
+                const userFullName = this.$data.user.fullName;
 
-                this.updateUser(this.$data.user);
-                this.updateAuthToken("");
-                this.updateRequestorId(0);
+                this.$data.user = userService.logoutUser(this.$data.user);
 
                 this.resetData();
+
+                alert(`${userFullName} has been logged out.`);
             },
 
             resetData() {
@@ -154,12 +163,12 @@
         },
 
         computed: {
-            ...mapGetters("appConfigModule", ["getAPIMessage"]),
+            ...mapGetters("appSettingsModule", ["getAPIMessage"]),
             ...mapGetters("userModule", ["getUser"])
         },
 
         created() {
-            this.$data.apiMsg = this.$store.getters["appConfigModule/getAPIMessage"];
+            this.$data.apiMsg = this.$store.getters["appSettingsModule/getAPIMessage"];
         },
 
         mounted() {
@@ -168,7 +177,7 @@
         },
 
         updated() {
-            this.$data.apiMsg = this.$store.getters["appConfigModule/getAPIMessage"];
+            this.$data.apiMsg = this.$store.getters["appSettingsModule/getAPIMessage"];
         }
     };
 </script>

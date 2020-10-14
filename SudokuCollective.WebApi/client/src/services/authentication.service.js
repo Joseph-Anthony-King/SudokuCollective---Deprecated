@@ -4,7 +4,7 @@ import { requestHeader } from "../helpers/requestHeader";
 
 const authenticateUser = async function (username, password) {
 
-    const baseURL = store.getters["appConfigModule/getBaseURL"];
+    const baseURL = store.getters["appSettingsModule/getBaseURL"];
     const route = "/api/v1/authenticate";
     const headers = requestHeader();
 
@@ -18,9 +18,16 @@ const authenticateUser = async function (username, password) {
         }
     };
 
-    const response = await axios(config);
+    try {
 
-    return response;
+        const response = await axios(config);
+    
+        return response;
+
+    } catch (error) {
+
+        return error.response;
+    }
 }
 
 export const authenticationService = {

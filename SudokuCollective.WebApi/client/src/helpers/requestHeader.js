@@ -2,7 +2,7 @@
 
 export function requestHeader() {
 
-    const token = store.getters["appConfigModule/getAuthToken"];
+    const token = store.getters["appSettingsModule/getAuthToken"];
 
     if (token !== "") {
 

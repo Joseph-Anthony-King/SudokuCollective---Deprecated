@@ -6,7 +6,7 @@ import {
     UPDATE_REQUESTOR_ID
 } from "./mutation-types";
 
-const appConfigModule = {
+const appSettingsModule = {
 
     namespaced: true,
 
@@ -56,4 +56,4 @@ const appConfigModule = {
     }
 }
 
-export default appConfigModule;
+export default appSettingsModule;

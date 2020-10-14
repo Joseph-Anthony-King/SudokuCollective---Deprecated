@@ -7,7 +7,7 @@ const getUser = async function (id) {
 
     try {
 
-        const baseURL = store.getters["appConfigModule/getBaseURL"];
+        const baseURL = store.getters["appSettingsModule/getBaseURL"];
         const route = "/api/v1/users/";
         const headers = requestHeader();
 
@@ -17,39 +17,46 @@ const getUser = async function (id) {
             headers: headers,
             data: {
                 License: process.env.VUE_APP_LICENSE,
-                RequestorId: store.getters["appConfigModule/getRequestorId"],
+                RequestorId: store.getters["appSettingsModule/getRequestorId"],
                 AppId: parseInt(process.env.VUE_APP_ID),
                 PageListModel: null
             }
         };
 
-        console.log("request config:", config);
-
         let user = new User();
 
         const response = await axios(config);
 
-        user.id = response.data.id;
-        user.userName = response.data.userName;
-        user.firstName = response.data.firstName;
-        user.lastName = response.data.lastName;
-        user.nickName = response.data.nickName;
-        user.fullName = response.data.fullName;
-        user.email = response.data.email;
-        user.isActive = response.data.isActive;
-        user.isAdmin = response.data.isAdmin;
-        user.isSuperUser = response.data.isSuperUser;
-        user.dateCreated = response.data.dateCreated;
-        user.dateUpdated = response.data.dateUpdated;
-
-        console.log("userService getUser result:", user);
+        user = assignAPIReponseToUser(response.data);
 
         return user;
 
     } catch (error) {
-
-        console.error(error);
+        
+        return error.response;
     }
+}
+
+const loginUser = function(user, token) {
+
+    user.login();
+
+    store.dispatch("userModule/updateUser", user);
+    store.dispatch("appSettingsModule/updateAuthToken", token);
+    store.dispatch("appSettingsModule/updateRequestorId", user.id);
+
+    return user;
+}
+
+const logoutUser = function(user) {
+
+    user.logout();
+
+    store.dispatch("userModule/updateUser", user);
+    store.dispatch("appSettingsModule/updateAuthToken", "");
+    store.dispatch("appSettingsModule/updateRequestorId", 0);
+
+    return user;
 }
 
 const assignAPIReponseToUser = function (data) {
@@ -74,5 +81,7 @@ const assignAPIReponseToUser = function (data) {
 
 export const userService = {
     getUser,
+    loginUser,
+    logoutUser,
     assignAPIReponseToUser
 };
