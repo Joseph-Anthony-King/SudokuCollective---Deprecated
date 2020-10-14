@@ -4,7 +4,7 @@ import { requestHeader } from "../helpers/requestHeader";
 
 const authenticateUser = async function (username, password) {
 
-    const baseURL = store.getters["appSettingsModule/getBaseURL"];
+    const baseURL = store.getters["appSettingsModule/getApiURL"];
     const route = "/api/v1/authenticate";
     const headers = requestHeader();
 

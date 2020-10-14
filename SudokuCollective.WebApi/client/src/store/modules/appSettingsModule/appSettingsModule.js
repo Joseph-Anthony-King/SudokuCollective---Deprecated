@@ -1,6 +1,6 @@
-﻿import { baseURLConfirmationService } from "../../../services/baseURLConfirmation.service";
+﻿import { apiURLConfirmationService } from "../../../services/apiURLConfirmation.service";
 import {
-    CONFIRM_BASE_URL,
+    CONFIRM_API_URL,
     UPDATE_API_MESSAGE,
     UPDATE_AUTH_TOKEN,
     UPDATE_REQUESTOR_ID
@@ -11,15 +11,15 @@ const appSettingsModule = {
     namespaced: true,
 
     state: () => ({
-        baseURL: "",
+        apiURL: "",
         apiMessage: "",
         authToken: "",
         requestorId: 0
     }),
 
     mutations: {
-        [CONFIRM_BASE_URL](state, confirmedURL) {
-            state.baseURL = confirmedURL;
+        [CONFIRM_API_URL](state, confirmedURL) {
+            state.apiURL = confirmedURL;
         },
         [UPDATE_API_MESSAGE](state, updatedAPIMessage) {
             state.apiMessage = updatedAPIMessage;
@@ -33,9 +33,9 @@ const appSettingsModule = {
     },
 
     actions: {
-        async confirmBaseURL({ commit }, baseURL) {
-            const response = await baseURLConfirmationService.confirm(baseURL);
-            commit(CONFIRM_BASE_URL, response.url);
+        async confirmBaseURL({ commit }, apiURL) {
+            const response = await apiURLConfirmationService.confirm(apiURL);
+            commit(CONFIRM_API_URL, response.url);
             commit(UPDATE_API_MESSAGE, response.message);
         },
 
@@ -49,7 +49,7 @@ const appSettingsModule = {
     },
 
     getters: {
-        getBaseURL: state => { return state.baseURL },
+        getApiURL: state => { return state.apiURL },
         getAPIMessage: state => { return state.apiMessage },
         getAuthToken: state => { return state.authToken },
         getRequestorId: state => { return state.requestorId }

@@ -7,7 +7,7 @@ const getUser = async function (id) {
 
     try {
 
-        const baseURL = store.getters["appSettingsModule/getBaseURL"];
+        const baseURL = store.getters["appSettingsModule/getApiURL"];
         const route = "/api/v1/users/";
         const headers = requestHeader();
 

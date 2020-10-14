@@ -1,4 +1,5 @@
 import * as axios from "axios";
+import { requestHeader } from "../helpers/requestHeader";
 
 const confirm = async function() {
 
@@ -6,11 +7,10 @@ const confirm = async function() {
     const iisAPI = process.env.VUE_APP_API_IIS;
     const prodAPI = process.env.VUE_APP_API;
 
+    const headers = requestHeader();
+
     const configRequest = {
-        headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        }
+        headers: headers
     };
 
     if (process.env.NODE_ENV !== "production") {
@@ -20,6 +20,7 @@ const confirm = async function() {
             const response = await axios.get(`${kestralAPI}/api/v1/helloworld`, configRequest );
             
             console.log(`The api is using kestral: ${kestralAPI}`);
+
             return { "url" : kestralAPI, "message" : response.data};
     
         } catch (error) {
@@ -29,6 +30,7 @@ const confirm = async function() {
             const response = await axios.get(`${iisAPI}/api/v1/helloworld`, configRequest);
             
             console.log(`The api is using IIS Express: ${iisAPI}`);
+            
             return { "url" : iisAPI, "message" : response.data};
         }
 
@@ -40,6 +42,6 @@ const confirm = async function() {
     }
 };
 
-export const baseURLConfirmationService = {
+export const apiURLConfirmationService = {
     confirm,
 };

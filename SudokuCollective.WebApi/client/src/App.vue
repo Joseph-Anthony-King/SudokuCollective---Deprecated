@@ -65,7 +65,7 @@
 
             await this.confirmBaseURL();
 
-            this.apiUrl = this.$store.getters["appSettingsModule/getBaseURL"];
+            this.apiUrl = this.$store.getters["appSettingsModule/getApiURL"];
         },
     };
 </script>
