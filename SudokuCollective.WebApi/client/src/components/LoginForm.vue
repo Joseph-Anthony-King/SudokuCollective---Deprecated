@@ -97,6 +97,7 @@
     import { mapActions, mapGetters } from "vuex";
     import { userService } from "../services/user.service";
     import { authenticationService } from "../services/authentication.service";
+    import User from "../models/user"
 
     export default {
 
@@ -106,7 +107,7 @@
             apiMsg: "",
             username: "",
             password: "",
-            user: {},
+            user: {}
         }),
 
         methods: {
@@ -140,6 +141,8 @@
                 this.$data.user.logout();
 
                 this.updateUser(this.$data.user);
+                this.updateAuthToken("");
+                this.updateRequestorId(0);
 
                 this.resetData();
             },
@@ -160,7 +163,8 @@
         },
 
         mounted() {
-            this.$data.user = this.getUser;
+            this.$data.user = new User();
+            this.$data.user.shallowClone(this.getUser);
         },
 
         updated() {
