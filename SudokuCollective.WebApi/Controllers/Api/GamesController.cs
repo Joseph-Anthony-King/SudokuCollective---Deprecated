@@ -148,7 +148,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // POST: api/Games
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost]
+        [HttpPost, Route("Create")]
         public async Task<ActionResult<Game>> PostGame(
             [FromBody] CreateGameRequest createGameRequest,
             [FromQuery] bool fullRecord = false) {

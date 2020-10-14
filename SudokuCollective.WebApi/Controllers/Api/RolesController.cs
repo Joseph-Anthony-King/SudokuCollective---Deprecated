@@ -119,7 +119,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // POST: api/Roles
         [Authorize(Roles = "SUPERUSER")]
-        [HttpPost]
+        [HttpPost, Route("Create")]
         public async Task<ActionResult<Role>> PostRole(
             [FromBody] CreateRoleRequest createRoleRequest) {
             

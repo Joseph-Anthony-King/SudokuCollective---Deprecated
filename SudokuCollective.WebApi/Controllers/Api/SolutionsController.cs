@@ -87,7 +87,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // GET: api/solutions
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost]
+        [HttpPost, Route("Solve")]
         public async Task<ActionResult<SudokuSolution>> Solve(
             [FromBody] SolveRequest solveRequest) {
                 

@@ -117,7 +117,7 @@ namespace SudokuCollective.WebApi.Controllers {
 
         // POST: api/Difficulties
         [Authorize(Roles = "SUPERUSER")]
-        [HttpPost]
+        [HttpPost, Route("Create")]
         public async Task<ActionResult<Difficulty>> PostDifficulty(
             [FromBody] CreateDifficultyRequest createDifficultyRequest) {
                 
