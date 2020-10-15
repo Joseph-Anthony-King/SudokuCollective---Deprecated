@@ -75,12 +75,12 @@ const getUsers = async function (pageListModel, fullRecord) {
 
 const updateUser = async function (
     id,
-    pageListModel,
     userName,
     firstName,
     lastName,
     nickName,
-    email) {
+    email,
+    pageListModel) {
 
     try {
 
