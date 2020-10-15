@@ -97,7 +97,7 @@
     import { mapGetters } from "vuex";
     import { userService } from "../services/userService/user.service";
     import { authenticationService } from "../services/authenticationService/authentication.service";
-    import User from "../models/user"
+    import User from "../models/user";
 
     export default {
 

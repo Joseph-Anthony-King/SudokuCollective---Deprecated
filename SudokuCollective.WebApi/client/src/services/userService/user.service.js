@@ -14,11 +14,11 @@ const getUser = async function (id, pageListModel, fullRecord) {
 
         if (fullRecord) {
 
-            params = `${id}?fullRecord=${fullRecord}`;
+            params = `/${id}?fullrecord=${fullRecord}`;
 
         } else {
 
-            params = `${id}`;
+            params = `/${id}`;
         }
 
         const config = {
@@ -38,6 +38,7 @@ const getUser = async function (id, pageListModel, fullRecord) {
 
     } catch (error) {
         
+        console.error(error.name, error.message);
         return error.response;
     }
 }
@@ -50,7 +51,7 @@ const getUsers = async function (pageListModel, fullRecord) {
 
         if (fullRecord) {
 
-            params = `?fullRecord=${fullRecord}`;
+            params = `?fullrecord=${fullRecord}`;
 
         }
 
@@ -66,22 +67,36 @@ const getUsers = async function (pageListModel, fullRecord) {
         return response;
 
     } catch (error) {
-
+        
+        console.error(error.name, error.message);
         return error.response;
     }
 }
 
-const updateUser = async function (id, pageListModel, userName, firstName, lastName, nickName, email) {
+const updateUser = async function (
+    id,
+    pageListModel,
+    userName,
+    firstName,
+    lastName,
+    nickName,
+    email) {
 
     try {
 
-        const params = `${id}`;
+        const params = `/${id}`;
 
         const config = {
             method: "put",
             url: `${getUserEnpoint}${params}`,
             headers: requestHeader(),
-            data: requestDataUpdateUser(pageListModel, userName, firstName, lastName, nickName, email)
+            data: requestDataUpdateUser(
+                pageListModel,
+                userName,
+                firstName,
+                lastName,
+                nickName,
+                email)
         };
 
         let user = new User();

@@ -29,7 +29,7 @@ export function requestDataUpdateUser(
     return result;
 }
 
-export function requestDataUpdatePassword(pageListModel, roleIds) {
+export function requestDataUpdateUserRoles(pageListModel, roleIds) {
 
     let result = requestData(pageListModel);
 
