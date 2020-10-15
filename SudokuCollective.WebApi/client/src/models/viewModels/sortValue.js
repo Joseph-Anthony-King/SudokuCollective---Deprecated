@@ -1,0 +1,15 @@
+﻿export default sortValue[
+    { "NULL": "Null" },
+    { "ID": "ID" },
+    { "USERNAME": "User Name" },
+    { "FIRSTNAME": "First Name" },
+    { "LASTNAME": "Last Name" },
+    { "FULLNAME", "Full Name" },
+    { "NICKNAME": "Nickname" },
+    { "GAMECOUNT": "Game Count" },
+    { "APPCOUNT": "App Count" },
+    { "NAME": "Name" },
+    { "DATE": "Date" },
+    { "DIFFICULTY", "Difficulty" },
+    { "USERCOUNT", "User Count" },
+];

@@ -2,24 +2,30 @@
 import store from "../../store";
 import User from "../../models/user";
 import { requestHeader } from "../../helpers/requestHeader";
+import { requestData } from "../../helpers/requestData";
+import { requestDataUpdateUser } from "../../helpers/userRequestData/userRequestData";
 import { getUserEnpoint } from "./service.endpoints";
 
-const getUser = async function (id) {
+const getUser = async function (id, pageListModel, fullRecord) {
 
     try {
 
-        const headers = requestHeader();
+        let params = "";
+
+        if (fullRecord) {
+
+            params = `${id}?fullRecord=${fullRecord}`;
+
+        } else {
+
+            params = `${id}`;
+        }
 
         const config = {
             method: "post",
-            url: `${getUserEnpoint}${id}`,
-            headers: headers,
-            data: {
-                License: process.env.VUE_APP_LICENSE,
-                RequestorId: store.getters["appSettingsModule/getRequestorId"],
-                AppId: parseInt(process.env.VUE_APP_ID),
-                PageListModel: null
-            }
+            url: `${getUserEnpoint}${params}`,
+            headers: requestHeader(),
+            data: requestData(pageListModel)
         };
 
         let user = new User();
@@ -32,6 +38,62 @@ const getUser = async function (id) {
 
     } catch (error) {
         
+        return error.response;
+    }
+}
+
+const getUsers = async function (pageListModel, fullRecord) {
+
+    try {
+
+        let params = "";
+
+        if (fullRecord) {
+
+            params = `?fullRecord=${fullRecord}`;
+
+        }
+
+        const config = {
+            method: "post",
+            url: `${getUserEnpoint}${params}`,
+            headers: requestHeader(),
+            data: requestData(pageListModel)
+        };
+
+        const response = await axios(config);
+
+        return response;
+
+    } catch (error) {
+
+        return error.response;
+    }
+}
+
+const updateUser = async function (id, pageListModel, userName, firstName, lastName, nickName, email) {
+
+    try {
+
+        const params = `${id}`;
+
+        const config = {
+            method: "put",
+            url: `${getUserEnpoint}${params}`,
+            headers: requestHeader(),
+            data: requestDataUpdateUser(pageListModel, userName, firstName, lastName, nickName, email)
+        };
+
+        let user = new User();
+
+        const response = await axios(config);
+
+        user = assignAPIReponseToUser(response.data);
+
+        return user;
+
+    } catch (error) {
+
         return error.response;
     }
 }
@@ -80,6 +142,8 @@ const assignAPIReponseToUser = function (data) {
 
 export const userService = {
     getUser,
+    getUsers,
+    updateUser,
     loginUser,
     logoutUser,
     assignAPIReponseToUser
