@@ -8,12 +8,11 @@ const getUser = async function (id) {
 
     try {
 
-        const url = getUserEnpoint;
         const headers = requestHeader();
 
         const config = {
             method: "post",
-            url: `${url}${id}`,
+            url: `${getUserEnpoint}${id}`,
             headers: headers,
             data: {
                 License: process.env.VUE_APP_LICENSE,
