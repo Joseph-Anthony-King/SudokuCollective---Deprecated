@@ -95,8 +95,8 @@
 
 <script>
     import { mapGetters } from "vuex";
-    import { userService } from "../services/user.service";
-    import { authenticationService } from "../services/authentication.service";
+    import { userService } from "../services/userService/user.service";
+    import { authenticationService } from "../services/authenticationService/authentication.service";
     import User from "../models/user"
 
     export default {

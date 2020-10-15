@@ -1,4 +1,4 @@
-﻿import { apiURLConfirmationService } from "../../../services/apiURLConfirmation.service";
+﻿import { apiURLConfirmationService } from "../../../services/apiURLConfirmationService/apiURLConfirmation.service";
 import {
     CONFIRM_API_URL,
     UPDATE_API_MESSAGE,

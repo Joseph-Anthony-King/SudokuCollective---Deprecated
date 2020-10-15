@@ -1,19 +1,19 @@
 ﻿import * as axios from "axios";
-import store from "../store";
-import User from "../models/user";
-import { requestHeader } from "../helpers/requestHeader";
+import store from "../../store";
+import User from "../../models/user";
+import { requestHeader } from "../../helpers/requestHeader";
+import { getUserEnpoint } from "./service.endpoints";
 
 const getUser = async function (id) {
 
     try {
 
-        const baseURL = store.getters["appSettingsModule/getApiURL"];
-        const route = "/api/v1/users/";
+        const url = getUserEnpoint;
         const headers = requestHeader();
 
         const config = {
             method: "post",
-            url: `${baseURL}${route}${id}`,
+            url: `${url}${id}`,
             headers: headers,
             data: {
                 License: process.env.VUE_APP_LICENSE,

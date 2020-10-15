@@ -1,16 +1,14 @@
 ﻿import * as axios from "axios";
-import store from "../store";
-import { requestHeader } from "../helpers/requestHeader";
+import { requestHeader } from "../../helpers/requestHeader";
+import { authenticateEndpoint } from "./service.endpoints";
 
 const authenticateUser = async function (username, password) {
 
-    const baseURL = store.getters["appSettingsModule/getApiURL"];
-    const route = "/api/v1/authenticate";
     const headers = requestHeader();
 
     const config = {
         method: "post",
-        url: `${baseURL}${route}`,
+        url: authenticateEndpoint,
         headers: headers,
         data: {
             UserName: `${username}`,
