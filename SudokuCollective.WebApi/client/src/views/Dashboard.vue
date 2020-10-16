@@ -2,18 +2,18 @@
   <v-container>
     <v-row class="text-center">
       <v-col class="mb-4">
-        <LoginForm />
+        <DashboardForm />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-  import LoginForm from "@/components/LoginForm.vue";
+  import DashboardForm from "@/components/DashboardForm.vue";
   export default {
-    name: "Login",
+    name: "Dashboard",
     components: {
-      LoginForm
+      DashboardForm
     }
   }
 </script>

@@ -101,7 +101,7 @@
 
     export default {
 
-        name: "LoginForm",
+        name: "DashboardForm",
 
         data: () => ({
             apiMsg: "",
