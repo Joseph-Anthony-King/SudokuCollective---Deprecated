@@ -24,6 +24,7 @@
           />
         </router-link>
       </div>
+
       <v-spacer></v-spacer>
 
       <v-btn
@@ -54,15 +55,44 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main>
-      <v-row class="text-center">
-          <v-col cols="12">
-              <router-link to="/">Home</router-link> | 
-              <router-link to="/login">Login</router-link>
-          </v-col>
-      </v-row>
-      <router-view />
-    </v-main>
+    <v-content>
+      
+      <v-navigation-drawer
+        absolute
+        permanent
+        color="secondary"
+      >
+
+        <v-list>
+        
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                <router-link to="/">Home</router-link>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                <router-link to="/login">Login</router-link>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+        </v-list>
+
+      </v-navigation-drawer>
+
+      <main>
+        <transition name="fade">
+            <router-view></router-view>
+        </transition>
+      </main>
+
+    </v-content>
+
   </v-app>
 </template>
 
