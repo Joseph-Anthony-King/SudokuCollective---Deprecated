@@ -1,4 +1,4 @@
-﻿import { sortValue } from "../viewModels/sortValue";
+﻿import { SortValue } from "../viewModels/sortValue";
 
 class PageListModel {
 
@@ -8,7 +8,7 @@ class PageListModel {
 
             this.page = 0;
             this.itemsPerPage = 0;
-            this.sortBy = sortValue[0].value;
+            this.sortBy = SortValue[0].value;
             this.orderByDescending = false;
             this.includeCompletedGames = false;
 

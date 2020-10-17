@@ -56,6 +56,7 @@
           </v-btn>
         </template>
         <v-list>
+          <!-- outside links -->
           <v-list-item v-for="(menuItem, index) in menuItems" :key="index">
             <v-list-item-content>
               <v-list-item-title>
@@ -104,6 +105,7 @@
         <transition name="fade">
           <router-view></router-view>
         </transition>
+
         <v-dialog v-model="dialog" persistent max-width="600px">
           <v-card>
             <v-card-title>
@@ -271,6 +273,10 @@ export default {
     }
   },
 
+  computed: {
+    
+  },
+
   async created() {
     await this.confirmBaseURL();
 
@@ -282,7 +288,7 @@ export default {
 
   mounted() {
     this.$data.user = new User();
-    this.$data.user.shallowClone(this.getUser);
+    this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
   }
 };
 </script>
