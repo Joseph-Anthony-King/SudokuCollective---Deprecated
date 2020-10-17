@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app color="secondary">
+    <v-navigation-drawer app color="secondary"  v-if="user.isLoggedIn">
       <v-list>
         <v-list-item>
           <v-list-item-content>
@@ -14,7 +14,7 @@
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title>
-              <router-link to="/Dashboard" class="nav-drawer-item">Dashboard</router-link>
+              <router-link to="/Dashboard" class="nav-drawer-item">DASHBOARD</router-link>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -59,22 +59,35 @@
           <v-list-item v-for="(menuItem, index) in menuItems" :key="index">
             <v-list-item-content>
               <v-list-item-title>
-                <div v-if="!menuItem.isSitePage">
-                  <a
-                    :href="menuItem.url"
-                    target="blank"
-                    :title="menuItem.text"
-                    class="menu-item"
-                  >
-                    <v-icon>{{ menuItem.mdiIcon }}</v-icon>
-                    <span class="mr-2">{{ menuItem.text }}</span>
-                  </a>
+                <a
+                  :href="menuItem.url"
+                  target="blank"
+                  :title="menuItem.text"
+                  class="menu-item"
+                >
+                  <v-icon>{{ menuItem.mdiIcon }}</v-icon>
+                  <span class="mr-2">{{ menuItem.text }}</span>
+                </a>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <!-- User Functionality -->
+          <v-list-item v-if="!user.isLoggedIn">
+            <v-list-item-content>
+              <v-list-item-title>
+                <div class="menu-item" @click="dialog = true">
+                  <v-icon>mdi-login-variant</v-icon>
+                  <span class="mr-2">Login</span>
                 </div>
-                <div v-if="menuItem.isSitePage">
-                  <div class="menu-item" @click="dialog = true">
-                    <v-icon>{{ menuItem.mdiIcon }}</v-icon>
-                    <span class="mr-2">{{ menuItem.text }}</span>
-                  </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item v-if="user.isLoggedIn">
+            <v-list-item-content>
+              <v-list-item-title>
+                <div class="menu-item" @click="logout">
+                  <v-icon>mdi-logout-variant</v-icon>
+                  <span class="mr-2">Logout</span>
                 </div>
               </v-list-item-title>
             </v-list-item-content>
@@ -122,12 +135,13 @@
               <v-btn color="blue darken-1" text @click="dialog = false">
                 Close
               </v-btn>
-              <v-btn color="blue darken-1" text @click="login()">
+              <v-btn color="blue darken-1" text @click="login">
                 Login
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
+        
       </v-container>
     </v-main>
 
@@ -141,6 +155,7 @@
 .menu-item {
   text-decoration: none !important;
   color: #9b9b9b;
+  cursor: pointer;
 }
 .nav-drawer-item {
   text-decoration: none !important;
@@ -187,19 +202,41 @@ export default {
           );
 
           alert(`${this.$data.user.fullName} is logged in.`);
+
+          this.$data.dialog = false;
+          this.resetData();
+          this.$router.push("/dashboard");
+
         } else if (response.status === 400) {
+
           alert("Username or Password is incorrect.");
+
         } else {
+
           alert("An error occurred while trying to authenticate the user");
         }
 
-        this.$data.dialog = false;
-        this.$data.username = "";
-        this.$data.password = "";
-
       } catch (error) {
+
         alert(error);
       }
+    },
+
+    logout() {
+      console.log("logout run...");
+      const userFullName = this.$data.user.fullName;
+
+      this.$data.user = userService.logoutUser(this.$data.user);
+
+      this.resetData();
+
+      alert(`${userFullName} has been logged out.`);
+      this.$router.push("/");
+    },
+
+    resetData() {
+      this.$data.username = "";
+      this.$data.password = "";
     },
 
     populateMenuItems() {
@@ -207,9 +244,7 @@ export default {
         new MenuItem(
           this.$store.getters["appSettingsModule/getApiURL"],
           "API Status",
-          "mdi-apps",
-          false,
-          false
+          "mdi-apps"
         )
       );
 
@@ -217,9 +252,7 @@ export default {
         new MenuItem(
           `${this.apiUrl}/swagger/index.html`,
           "API Documentation",
-          "mdi-open-in-new",
-          false,
-          false
+          "mdi-open-in-new"
         )
       );
 
@@ -227,14 +260,8 @@ export default {
         new MenuItem(
           "https://github.com/Joseph-Anthony-King/SudokuCollective",
           "GitHub Page",
-          "mdi-github",
-          false,
-          false
+          "mdi-github"
         )
-      );
-
-      this.$data.menuItems.push(
-        new MenuItem("", "Login", "mdi-login-variant", true, false)
       );
 
       // Drop the first empty item

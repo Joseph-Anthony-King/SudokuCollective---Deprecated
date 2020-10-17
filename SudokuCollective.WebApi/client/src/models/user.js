@@ -60,19 +60,22 @@
 
     shallowClone(data) {
 
-        this.id = data.id;
-        this.userName = data.userName;
-        this.firstName = data.firstName;
-        this.lastName = data.lastName;
-        this.nickName = data.nickName;
-        this.fullName = data.fullName;
-        this.email = data.email;
-        this.isActive = data.isActive;
-        this.isAdmin = data.isAdmin
-        this.isSuperUser = data.isSuperUser;
-        this.dateCreated = data.dateCreated;
-        this.dateUpdated = data.dateUpdated;
-        this.isLoggedIn = data.isLoggedIn;
+        if (data !== undefined) {
+
+            this.id = data.id;
+            this.userName = data.userName;
+            this.firstName = data.firstName;
+            this.lastName = data.lastName;
+            this.nickName = data.nickName;
+            this.fullName = data.fullName;
+            this.email = data.email;
+            this.isActive = data.isActive;
+            this.isAdmin = data.isAdmin
+            this.isSuperUser = data.isSuperUser;
+            this.dateCreated = data.dateCreated;
+            this.dateUpdated = data.dateUpdated;
+            this.isLoggedIn = data.isLoggedIn;
+        }
     }
 }
 
