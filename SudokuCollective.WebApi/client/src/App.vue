@@ -1,20 +1,13 @@
 <template>
   <v-app>
-    <v-navigation-drawer app color="secondary"  v-if="user.isLoggedIn">
-      <v-list>
-        <v-list-item>
+    <v-navigation-drawer app color="secondary" v-if="user.isLoggedIn">
+      <v-list v-if="navMenuItems.length > 1">
+        <v-list-item v-for="(navItem, index) in navMenuItems" :key="index">
           <v-list-item-content>
             <v-list-item-title>
-              <router-link to="/" class="nav-drawer-item">HOME</router-link>
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-      <v-list>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>
-              <router-link to="/Dashboard" class="nav-drawer-item">DASHBOARD</router-link>
+              <router-link :to="navItem.url" class="nav-drawer-item">{{
+                navItem.text
+              }}</router-link>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -55,9 +48,9 @@
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>
-        <v-list>
+        <v-list v-if="appMenuItems.length > 1">
           <!-- outside links -->
-          <v-list-item v-for="(menuItem, index) in menuItems" :key="index">
+          <v-list-item v-for="(menuItem, index) in appMenuItems" :key="index">
             <v-list-item-content>
               <v-list-item-title>
                 <a
@@ -143,7 +136,6 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        
       </v-container>
     </v-main>
 
@@ -178,7 +170,8 @@ export default {
   data: () => ({
     apiUrl: "",
     apiDocumentationUrl: "",
-    menuItems: [{}],
+    appMenuItems: [{}],
+    navMenuItems: [{}],
     dialog: false,
     username: "",
     password: "",
@@ -203,46 +196,43 @@ export default {
             response.data.token
           );
 
-          alert(`${this.$data.user.fullName} is logged in.`);
+          await this.resetData();
 
           this.$data.dialog = false;
-          this.resetData();
           this.$router.push("/dashboard");
 
+          this.$snack.success(`${this.$data.user.fullName} is logged in.`);
         } else if (response.status === 400) {
-
-          alert("Username or Password is incorrect.");
-
+          this.$snack.success("Username or Password is incorrect.");
         } else {
-
-          alert("An error occurred while trying to authenticate the user");
+          this.$snack.success(
+            "An error occurred while trying to authenticate the user"
+          );
         }
-
       } catch (error) {
-
         alert(error);
       }
     },
 
-    logout() {
-      console.log("logout run...");
+    async logout() {
+      await this.resetData();
+
       const userFullName = this.$data.user.fullName;
 
       this.$data.user = userService.logoutUser(this.$data.user);
 
-      this.resetData();
-
-      alert(`${userFullName} has been logged out.`);
       this.$router.push("/");
+
+      this.$snack.success(`${userFullName} has been logged out.`);
     },
 
-    resetData() {
+    async resetData() {
       this.$data.username = "";
       this.$data.password = "";
     },
 
-    populateMenuItems() {
-      this.$data.menuItems.push(
+    populateAppMenuItems() {
+      this.$data.appMenuItems.push(
         new MenuItem(
           this.$store.getters["appSettingsModule/getApiURL"],
           "API Status",
@@ -250,7 +240,7 @@ export default {
         )
       );
 
-      this.$data.menuItems.push(
+      this.$data.appMenuItems.push(
         new MenuItem(
           `${this.apiUrl}/swagger/index.html`,
           "API Documentation",
@@ -258,7 +248,7 @@ export default {
         )
       );
 
-      this.$data.menuItems.push(
+      this.$data.appMenuItems.push(
         new MenuItem(
           "https://github.com/Joseph-Anthony-King/SudokuCollective",
           "GitHub Page",
@@ -267,15 +257,20 @@ export default {
       );
 
       // Drop the first empty item
-      this.$data.menuItems.shift();
+      this.$data.appMenuItems.shift();
+    },
 
-      console.log("menuItems:", this.$data.menuItems);
+    populateNavMenuItems() {
+      this.$router.options.routes.forEach(route => {
+        this.$data.navMenuItems.push(new MenuItem(route.path, route.name, ""));
+      });
+
+      // Drop the first empty item
+      this.$data.navMenuItems.shift();
     }
   },
 
-  computed: {
-    
-  },
+  computed: {},
 
   async created() {
     await this.confirmBaseURL();
@@ -283,7 +278,8 @@ export default {
     this.apiUrl = this.$store.getters["appSettingsModule/getApiURL"];
     this.apiDocumentationUrl = `${this.apiUrl}/swagger/index.html`;
 
-    this.populateMenuItems();
+    this.populateNavMenuItems();
+    this.populateAppMenuItems();
   },
 
   mounted() {
