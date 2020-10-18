@@ -13,7 +13,7 @@
             this.email = "";
             this.isActive = false;
             this.isAdmin = false;
-            this.isSuperUser = "";
+            this.isSuperUser = false;
             this.dateCreated = new Date('0001-01-01T00:00:00Z');
             this.dateUpdated = new Date('0001-01-01T00:00:00Z');
             this.isLoggedIn = false;

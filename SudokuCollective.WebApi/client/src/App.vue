@@ -53,7 +53,7 @@
           <v-list-item v-if="!user.isLoggedIn">
             <v-list-item-content>
               <v-list-item-title>
-                <div class="menu-item" @click="dialog = true">
+                <div class="menu-item" @click="userLoggingIn = true">
                   <v-icon>mdi-login-variant</v-icon>
                   <span class="mr-2">Login</span>
                 </div>
@@ -115,40 +115,8 @@
           <router-view></router-view>
         </transition>
 
-        <v-dialog v-model="dialog" persistent max-width="600px">
-          <v-card>
-            <v-card-title>
-              <span class="headline">Login</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="username"
-                      label="User Name"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="password"
-                      label="Password"
-                      type="password"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="dialog = false">
-                Close
-              </v-btn>
-              <v-btn color="blue darken-1" text @click="login"> Login </v-btn>
-            </v-card-actions>
-          </v-card>
+        <v-dialog v-model="userLoggingIn" persistent max-width="600px">
+          <LoginForm :userForAuthentication="user" v-on:user-logging-in="login" />
         </v-dialog>
       </v-container>
     </v-main>
@@ -174,7 +142,7 @@
 <script>
 import { mapActions } from "vuex";
 import { userService } from "../src/services/userService/user.service";
-import { authenticationService } from "../src/services/authenticationService/authentication.service";
+import LoginForm from "../src/components/LoginForm";
 import User from "../src/models/user";
 import MenuItem from "../src/models/viewModels/menuItem";
 import { AppMenuItems } from "../src/models/arrays/appMenuItems";
@@ -182,77 +150,47 @@ import { AppMenuItems } from "../src/models/arrays/appMenuItems";
 export default {
   name: "App",
 
+  components: {
+    LoginForm,
+  },
+
   data: () => ({
     appMenuItems: [{}],
     navMenuItems: [{}],
-    dialog: false,
-    username: "",
-    password: "",
-    user: {}
+    userLoggingIn: false,
+    user: {},
   }),
 
   methods: {
     ...mapActions("appSettingsModule", ["confirmBaseURL"]),
 
-    async login() {
-      try {
-        const response = await authenticationService.authenticateUser(
-          this.$data.username,
-          this.$data.password
+    login(user, token) {
+      if (user !== null && token !== null) {
+        this.$data.user = user;
+
+        this.$data.user = userService.loginUser(
+          this.$data.user,
+          token
         );
-
-        if (response.status === 200) {
-          this.$data.user.shallowClone(response.data.user);
-
-          this.$data.user = userService.loginUser(
-            this.$data.user,
-            response.data.token
-          );
-
-          await this.resetData();
-
-          this.$data.dialog = false;
-          this.$router.push("/dashboard");
-
-          this.$toasted.success(`${this.$data.user.fullName} is logged in.`, {
-            duration: 3000,
-          });
-        } else if (response.status === 400) {
-          this.$toasted.error("Username or Password is incorrect.", {
-            duration: 3000,
-          });
-        } else {
-          this.$toasted.error(
-            "An error occurred while trying to authenticate the user",
-            {
-              duration: 3000,
-            }
-          );
-        }
-      } catch (error) {
-        this.$toasted.error(error, {
-          duration: 3000,
-        });
+        
+        this.$router.push("/dashboard");
       }
+
+      this.$data.userLoggingIn = false;
     },
 
-    async logout() {
-      await this.resetData();
-
+    logout() {
       const userFullName = this.$data.user.fullName;
 
       this.$data.user = userService.logoutUser(this.$data.user);
 
-      this.$router.push("/");
+      if (this.$router.currentRoute.path !== "/") {
+        this.$router.push("/");
+      }
 
       this.$toasted.show(`${userFullName} has been logged out.`, {
         duration: 3000,
       });
-    },
-
-    async resetData() {
-      this.$data.username = "";
-      this.$data.password = "";
     },
 
     populateAppMenuItems() {
@@ -278,8 +216,6 @@ export default {
 
   async created() {
     await this.confirmBaseURL();
-
-    await this.resetData();
 
     this.populateNavMenuItems();
     this.populateAppMenuItems();
