@@ -27,7 +27,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn color="blue darken-1" text @click="close"> Close </v-btn>
-      <v-btn color="blue darken-1" text @click="login"> Login </v-btn>
+      <v-btn color="blue darken-1" text @click="authenticate"> Login </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -45,7 +45,7 @@ export default {
     user: {},
   }),
   methods: {
-    async login() {
+    async authenticate() {
       try {
         const response = await authenticationService.authenticateUser(
           this.$data.username,
