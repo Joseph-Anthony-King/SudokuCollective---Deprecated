@@ -1,4 +1,4 @@
-﻿export const SortValue = [
+﻿export const SortValues = [
     { key: "Null", value: 0 },
     { key: "Id", value:  1} ,
     { key: "User Name", value: 2 },

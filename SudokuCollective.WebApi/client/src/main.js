@@ -3,12 +3,11 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
-import VueSnackbar from "vue-snack";
-import "vue-snack/dist/vue-snack.min.css";
+import Toasted from "vue-toasted";
 
 Vue.config.productionTip = false;
 
-Vue.use(VueSnackbar);
+Vue.use(Toasted);
 
 new Vue({
   router,

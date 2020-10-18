@@ -1,9 +1,9 @@
 class MenuItem {
 
-    constructor(url, text, mdiIcon) {
+    constructor(url, title, mdiIcon) {
 
         this.url = url,
-        this.text = text,
+        this.title = title,
         this.mdiIcon = mdiIcon
     }
 }
