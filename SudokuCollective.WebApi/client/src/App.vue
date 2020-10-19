@@ -79,7 +79,7 @@
                   <span class="mr-2">Links</span>
                 </div>
               </template>
-              <v-list class="menu-item-link">
+              <v-list class="menu-link-list">
                 <!-- outside links -->
                 <v-list-item
                   v-for="(menuItem, index) in appMenuItems"
@@ -133,7 +133,7 @@
   color: #9b9b9b;
   cursor: pointer;
 }
-.menu-item-link {
+.menu-link-list {
   width: 215px;
 }
 .nav-drawer-item {

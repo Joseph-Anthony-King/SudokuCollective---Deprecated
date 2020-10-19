@@ -57,7 +57,7 @@ export default {
 
           await this.resetData();
 
-          this.$emit("user-logging-in", this.$data.user, response.data.token);
+          this.$emit("user-logging-in-event", this.$data.user, response.data.token);
 
           this.$toasted.success(`${this.$data.user.fullName} is logged in.`, {
             duration: 3000,
@@ -82,7 +82,7 @@ export default {
     },
 
     close() {
-      this.$emit("user-logging-in", null, null);
+      this.$emit("user-logging-in-event", null, null);
     },
 
     async resetData() {
