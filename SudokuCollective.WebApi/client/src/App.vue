@@ -116,7 +116,7 @@
         </transition>
 
         <v-dialog v-model="userLoggingIn" persistent max-width="600px">
-          <LoginForm :userForAuthentication="user" v-on:user-logging-in="login" />
+          <LoginForm :userForAuthentication="user" v-on:user-logging-in-event="login" />
         </v-dialog>
       </v-container>
     </v-main>
@@ -158,8 +158,8 @@ export default {
   },
 
   data: () => ({
-    appMenuItems: [{}],
-    navMenuItems: [{}],
+    appMenuItems: [],
+    navMenuItems: [],
     userLoggingIn: false,
     user: {},
   }),
@@ -200,18 +200,12 @@ export default {
       AppMenuItems.forEach((route) => {
         this.$data.appMenuItems.push(route);
       });
-
-      // Drop the first empty item
-      this.$data.appMenuItems.shift();
     },
 
     populateNavMenuItems() {
       this.$router.options.routes.forEach((route) => {
         this.$data.navMenuItems.push(new MenuItem(route.path, route.name, ""));
       });
-
-      // Drop the first empty item
-      this.$data.navMenuItems.shift();
     },
   },
 
