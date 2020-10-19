@@ -73,13 +73,13 @@
           <!-- outside links -->
           <hr v-if="appMenuItems.length > 1" />
           <v-list-item v-if="appMenuItems.length > 1">
-            <v-menu right>
+            <v-menu left bottom>
               <template v-slot:activator="{ on, attrs }">
                 <div class="menu-item" v-bind="attrs" v-on="on">
                   <span class="mr-2">Links</span>
                 </div>
               </template>
-              <v-list>
+              <v-list class="menu-item-link">
                 <!-- outside links -->
                 <v-list-item
                   v-for="(menuItem, index) in appMenuItems"
@@ -132,6 +132,9 @@
   text-decoration: none !important;
   color: #9b9b9b;
   cursor: pointer;
+}
+.menu-item-link {
+  width: 215px;
 }
 .nav-drawer-item {
   text-decoration: none !important;
