@@ -3,7 +3,7 @@
     <v-card-title>
       <span class="headline">Login</span>
     </v-card-title>
-    <v-form v-model="formIsValid">
+    <v-form v-model="formIsValid" ref="form">
       <v-card-text>
         <v-container>
           <v-row>
@@ -33,6 +33,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="resetForm"> Reset </v-btn>
         <v-btn color="blue darken-1" text @click="close"> Close </v-btn>
         <v-btn
           color="blue darken-1"
@@ -75,15 +76,15 @@ export default {
           if (response.status === 200) {
             this.$data.user.shallowClone(response.data.user);
 
-            await this.resetData();
+            this.resetLoginFormStatus;
+
+            this.resetForm();
 
             this.$emit(
               "user-logging-in-event",
               this.$data.user,
               response.data.token
             );
-
-            this.resetLoginFormStatus;
 
             this.$toasted.success(`${this.$data.user.fullName} is logged in.`, {
               duration: 3000,
@@ -110,11 +111,12 @@ export default {
 
     close() {
       this.$emit("user-logging-in-event", null, null);
+
+      this.resetForm();
     },
 
-    async resetData() {
-      this.$data.username = "";
-      this.$data.password = "";
+    resetForm() {
+      this.$refs.form.reset();
     },
   },
 
@@ -124,7 +126,7 @@ export default {
     },
     resetLoginFormStatus() {
       return !this.loginFormStatus;
-    }
+    },
   },
 
   mounted() {

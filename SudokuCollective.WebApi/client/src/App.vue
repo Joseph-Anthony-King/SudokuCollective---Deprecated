@@ -142,6 +142,7 @@
 }
 .nav-drawer-item {
   text-decoration: none !important;
+  text-transform: uppercase;
   color: #ffffff;
 }
 </style>
