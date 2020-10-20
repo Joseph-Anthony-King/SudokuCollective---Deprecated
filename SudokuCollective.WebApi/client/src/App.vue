@@ -116,7 +116,11 @@
         </transition>
 
         <v-dialog v-model="userLoggingIn" persistent max-width="600px">
-          <LoginForm :userForAuthentication="user" v-on:user-logging-in-event="login" />
+          <LoginForm
+            :userForAuthentication="user"
+            :loginFormStatus="userLoggingIn"
+            v-on:user-logging-in-event="login"
+          />
         </v-dialog>
       </v-container>
     </v-main>
@@ -171,28 +175,44 @@ export default {
       if (user !== null && token !== null) {
         this.$data.user = user;
 
-        this.$data.user = userService.loginUser(
-          this.$data.user,
-          token
-        );
-        
-        this.$router.push("/dashboard");
+        this.$data.user = userService.loginUser(this.$data.user, token);
+
+        if (this.$router.currentRoute.path !== "/dashboard") {
+          this.$router.push("/dashboard");
+        }
       }
 
       this.$data.userLoggingIn = false;
     },
 
     logout() {
-      const userFullName = this.$data.user.fullName;
+      this.$toasted.show("Are you sure you want to log out?", {
+        action: [
+          {
+            text: "Yes",
+            onClick: (e, toastObject) => {
+              toastObject.goAway(0);
 
-      this.$data.user = userService.logoutUser(this.$data.user);
+              const userFullName = this.$data.user.fullName;
 
-      if (this.$router.currentRoute.path !== "/") {
-        this.$router.push("/");
-      }
+              this.$data.user = userService.logoutUser(this.$data.user);
 
-      this.$toasted.show(`${userFullName} has been logged out.`, {
-        duration: 3000,
+              if (this.$router.currentRoute.path !== "/") {
+                this.$router.push("/");
+              }
+
+              this.$toasted.show(`${userFullName} has been logged out.`, {
+                duration: 3000,
+              });
+            },
+          },
+          {
+            text: "No",
+            onClick: (e, toastObject) => {
+              toastObject.goAway(0);
+            },
+          },
+        ],
       });
     },
 
@@ -208,8 +228,6 @@ export default {
       });
     },
   },
-
-  computed: {},
 
   async created() {
     await this.confirmBaseURL();
