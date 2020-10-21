@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SudokuCollective.Tests.TestData;
 using SudokuCollective.WebApi.Models.DataModels;
 using SudokuCollective.WebApi.Models.Enums;
+using SudokuCollective.WebApi.Models.ResultModels.AuthenticationResults;
 using SudokuCollective.WebApi.Services;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -14,6 +15,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
         private IUserManagementService sut;
         private string userName;
         private string password;
+        private string email;
 
         [SetUp]
         public async Task Setup() {
@@ -22,6 +24,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
             sut = new UserManagementService(_context);
             userName = "TestSuperUser";
             password = "password1";
+            email = "TestSuperUser@example.com";
         }
 
         [Test]
@@ -67,8 +70,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ReturnUserAuthenticationErrorTypeIfUserInvalid()
-        {
+        public async Task ReturnUserAuthenticationErrorTypeIfUserInvalid() {
 
             // Arrange
             var invalidUserName = "invalidUser";
@@ -82,8 +84,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ReturnPasswordAuthenticationErrorTypeIfPasswordInvalid()
-        {
+        public async Task ReturnPasswordAuthenticationErrorTypeIfPasswordInvalid() {
 
             // Arrange
             var invalidPassword = "invalidPassword";
@@ -93,6 +94,41 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             // Assert
             Assert.That(result, Is.EqualTo(UserAuthenticationErrorType.PASSWORDINVALID));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnUserNameIfEmailIsValid() {
+
+            // Arrange
+
+            // Act
+            var result = await sut.ConfirmUserName(email);
+            var success = result.Success;
+            var username = result.UserName;
+
+            // Assert
+            Assert.That(success, Is.True);
+            Assert.That(result, Is.InstanceOf<AuthenticationResult>());
+            Assert.That(username, Is.EqualTo("TestSuperUser"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnMessageIfUserNameInvalid() {
+
+            // Arrange
+            var invalidEmail = "invalidEmail@example.com";
+
+            // Act
+            var result = await sut.ConfirmUserName(invalidEmail);
+            var success = result.Success;
+            var message = result.Message;
+
+            // Assert
+            Assert.That(success, Is.False);
+            Assert.That(result, Is.InstanceOf<AuthenticationResult>());
+            Assert.That(message, Is.EqualTo("Email Does Not Exist"));
         }
     }
 }

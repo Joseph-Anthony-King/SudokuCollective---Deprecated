@@ -64,5 +64,21 @@ namespace SudokuCollective.WebApi.Controllers {
                 }
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet("/ConfirmUserName")]
+        public async Task<ActionResult> ConfirmUserName([FromQuery] string email) {
+
+            var result = await _userManagementService.ConfirmUserName(email);
+
+            if (result.Success)
+            {
+                return Ok(result.UserName);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }            
+        }
     }
 }
