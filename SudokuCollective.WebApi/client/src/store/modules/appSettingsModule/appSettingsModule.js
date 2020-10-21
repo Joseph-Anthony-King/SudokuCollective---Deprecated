@@ -3,7 +3,8 @@ import {
     CONFIRM_API_URL,
     UPDATE_API_MESSAGE,
     UPDATE_AUTH_TOKEN,
-    UPDATE_REQUESTOR_ID
+    UPDATE_REQUESTOR_ID,
+    UPDATE_TOAST_DURATION
 } from "./mutation-types";
 
 const appSettingsModule = {
@@ -14,7 +15,8 @@ const appSettingsModule = {
         apiURL: "",
         apiMessage: "",
         authToken: "",
-        requestorId: 0
+        requestorId: 0,
+        toastDuration: 500
     }),
 
     mutations: {
@@ -29,6 +31,9 @@ const appSettingsModule = {
         },
         [UPDATE_REQUESTOR_ID](state, requestorId) {
             state.requestorId = requestorId;
+        },
+        [UPDATE_TOAST_DURATION](state, duration) {
+            state.toastDuration = duration;
         }
     },
 
@@ -45,6 +50,10 @@ const appSettingsModule = {
 
         updateRequestorId({ commit }, id) {
             commit(UPDATE_REQUESTOR_ID, id);
+        },
+
+        updateToastDuration({ commit }, duration) {
+            commit(UPDATE_TOAST_DURATION, duration);
         }
     },
 
@@ -52,7 +61,8 @@ const appSettingsModule = {
         getApiURL: state => { return state.apiURL },
         getAPIMessage: state => { return state.apiMessage },
         getAuthToken: state => { return state.authToken },
-        getRequestorId: state => { return state.requestorId }
+        getRequestorId: state => { return state.requestorId },
+        getToastDuration: state => { return state.toastDuration }
     }
 }
 

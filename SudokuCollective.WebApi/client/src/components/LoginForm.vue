@@ -49,8 +49,10 @@
 </template>
 
 <script>
-import { authenticationService } from "../services/authenticationService/authentication.service";
-import User from "../models/user";
+import { authenticationService } from "@/services/authenticationService/authentication.service";
+import User from "@/models/user";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import { showToast } from "@/helpers/toastHelper";
 
 export default {
   name: "LoginForm",
@@ -64,10 +66,9 @@ export default {
     invalidUserNames: [],
     invalidUserNameMessage: "User name does not exist.",
     invalidPasswords: [],
-    invalidPasswordMessage: "Password is incorrect."
+    invalidPasswordMessage: "Password is incorrect.",
   }),
   methods: {
-
     async authenticate() {
       if (this.getloginFormStatus) {
         try {
@@ -92,32 +93,36 @@ export default {
             if (response.data === "Status Code 400: User Name Invalid") {
               this.$data.invalidUserNames.push(this.$data.username);
               this.$refs.form.validate();
-              this.$toasted.error(this.$data.invalidUserNameMessage, {
-                duration: 3000,
-              });
+              showToast(
+                this,
+                ToastMethods["error"],
+                this.$data.invalidUserNameMessage,
+                { duration: 3000 }
+              );
             } else if (response.data === "Status Code 400: Password Invalid") {
               this.$data.invalidPasswords.push(this.$data.password);
               this.$refs.form.validate();
-              this.$toasted.error(this.$data.invalidPasswordMessage, {
-                duration: 3000,
-              });
+              showToast(
+                this,
+                ToastMethods["error"],
+                this.$data.invalidPasswordMessage,
+                { duration: 3000 }
+              );
             } else {
-              this.$toasted.error(response.data, {
+              showToast(this, ToastMethods["error"], response.data, {
                 duration: 3000,
               });
             }
           } else {
-            this.$toasted.error(
+            showToast(
+              this,
+              ToastMethods["error"],
               "An error occurred while trying to authenticate the user",
-              {
-                duration: 3000,
-              }
+              { duration: 3000 }
             );
           }
         } catch (error) {
-          this.$toasted.error(error, {
-            duration: 3000,
-          });
+          showToast(this, ToastMethods["error"], error, { duration: 3000 });
         }
       }
     },
@@ -136,7 +141,6 @@ export default {
   },
 
   computed: {
-
     userNameRules() {
       return [
         (v) => !!v || "User Name is required",

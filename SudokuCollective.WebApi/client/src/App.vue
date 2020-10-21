@@ -149,11 +149,13 @@
 
 <script>
 import { mapActions } from "vuex";
-import { userService } from "../src/services/userService/user.service";
-import LoginForm from "../src/components/LoginForm";
-import User from "../src/models/user";
-import MenuItem from "../src/models/viewModels/menuItem";
-import { AppMenuItems } from "../src/models/arrays/appMenuItems";
+import { userService } from "@/services/userService/user.service";
+import LoginForm from "@/components/LoginForm";
+import User from "@/models/user";
+import MenuItem from "@/models/viewModels/menuItem";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import { AppMenuItems } from "@/models/arrays/appMenuItems";
+import { showToast } from "@/helpers/toastHelper";
 
 export default {
   name: "App",
@@ -182,51 +184,49 @@ export default {
           this.$router.push("/dashboard");
         }
 
-        let self = this;
-
-        // Set a slight delay on the log in notification toast
-        setTimeout(function () {
-          self.$toasted.success("You are logged in.", {
-            duration: 3000,
-          });
-        }, 500);
+        showToast(
+          this, 
+          ToastMethods["success"], 
+          "You are logged in.", 
+          { duration: 3000 });
       }
 
       this.$data.userLoggingIn = false;
     },
 
     logout() {
-      this.$toasted.show("Are you sure you want to log out?", {
-        action: [
-          {
-            text: "Yes",
-            onClick: (e, toastObject) => {
-              toastObject.goAway(0);
+      const action = [
+        {
+          text: "Yes",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
 
-              this.$data.user = userService.logoutUser(this.$data.user);
+            this.$data.user = userService.logoutUser(this.$data.user);
 
-              if (this.$router.currentRoute.path !== "/") {
-                this.$router.push("/");
-              }
+            if (this.$router.currentRoute.path !== "/") {
+              this.$router.push("/");
+            }
 
-              let self = this;
-
-              // Set a slight delay on the logged out notification toast
-              setTimeout(function () {
-                self.$toasted.show("You are logged out.", {
-                  duration: 3000,
-                });
-              }, 500);
-            },
+            showToast(
+              this, 
+              ToastMethods["info"], 
+              "You are logged out.",
+              { duration: 3000 });
           },
-          {
-            text: "No",
-            onClick: (e, toastObject) => {
-              toastObject.goAway(0);
-            },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
           },
-        ],
-      });
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to log out?",
+        { action: action });
     },
 
     populateAppMenuItems() {
