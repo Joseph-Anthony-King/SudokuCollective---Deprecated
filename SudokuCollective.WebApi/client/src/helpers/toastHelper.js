@@ -28,10 +28,10 @@ export function showToast(component, type, message, options) {
             component.$toasted.error(message, options);
         }, timeout);
 
-    } else if (type === "register") {
+    } else {
 
         setTimeout(function () {
-            component.$toasted.register(message, options);
+            component.$toasted.show(message, options);
         }, timeout);
     }
 }
