@@ -71,7 +71,7 @@
             </v-list-item-content>
           </v-list-item>
           <!-- outside links -->
-          <hr v-if="appMenuItems.length > 1" />
+          <hr v-if="appMenuItems.length > 1" class="mx-2" />
           <v-list-item v-if="appMenuItems.length > 1">
             <v-menu left bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -181,6 +181,15 @@ export default {
         if (this.$router.currentRoute.path !== "/dashboard") {
           this.$router.push("/dashboard");
         }
+
+        let self = this;
+
+        // Set a slight delay on the log in notification toast
+        setTimeout(function () {
+          self.$toasted.success("You are logged in.", {
+            duration: 3000,
+          });
+        }, 500);
       }
 
       this.$data.userLoggingIn = false;
@@ -194,17 +203,20 @@ export default {
             onClick: (e, toastObject) => {
               toastObject.goAway(0);
 
-              const userFullName = this.$data.user.fullName;
-
               this.$data.user = userService.logoutUser(this.$data.user);
 
               if (this.$router.currentRoute.path !== "/") {
                 this.$router.push("/");
               }
 
-              this.$toasted.show(`${userFullName} has been logged out.`, {
-                duration: 3000,
-              });
+              let self = this;
+
+              // Set a slight delay on the logged out notification toast
+              setTimeout(function () {
+                self.$toasted.show("You are logged out.", {
+                  duration: 3000,
+                });
+              }, 500);
             },
           },
           {

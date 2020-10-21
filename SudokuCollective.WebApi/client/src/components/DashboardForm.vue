@@ -109,7 +109,7 @@ export default {
   },
 
   created() {
-    this.$data.apiMsg = this.$store.getters["appSettingsModule/getAPIMessage"];
+    this.$data.apiMsg = this.getAPIMessage;
   },
 
   mounted() {

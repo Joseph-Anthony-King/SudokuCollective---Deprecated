@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SudokuCollective.Tests.TestData;
 using SudokuCollective.WebApi.Models.DataModels;
+using SudokuCollective.WebApi.Models.Enums;
 using SudokuCollective.WebApi.Services;
 using SudokuCollective.WebApi.Services.Interfaces;
 
@@ -62,6 +63,36 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             // Assert
             Assert.That(result, Is.False);
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnUserAuthenticationErrorTypeIfUserInvalid()
+        {
+
+            // Arrange
+            var invalidUserName = "invalidUser";
+
+            // Act
+            var result = await sut.ConfirmAuthenticationIssue(invalidUserName, password);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(UserAuthenticationErrorType.USERNAMEINVALID));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnPasswordAuthenticationErrorTypeIfPasswordInvalid()
+        {
+
+            // Arrange
+            var invalidPassword = "invalidPassword";
+
+            // Act
+            var result = await sut.ConfirmAuthenticationIssue(userName, invalidPassword);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(UserAuthenticationErrorType.PASSWORDINVALID));
         }
     }
 }

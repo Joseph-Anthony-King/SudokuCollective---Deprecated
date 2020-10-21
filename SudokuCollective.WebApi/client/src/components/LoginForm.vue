@@ -12,7 +12,7 @@
                 v-model="username"
                 label="User Name"
                 prepend-icon="mdi-account circle"
-                :rules="userNameRequired"
+                :rules="userNameRules"
                 required
               ></v-text-field>
             </v-col>
@@ -24,7 +24,7 @@
                 prepend-icon="mdi-lock"
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="showPassword = !showPassword"
-                :rules="passwordRequired"
+                :rules="passwordRules"
                 required
               ></v-text-field>
             </v-col>
@@ -61,10 +61,13 @@ export default {
     user: {},
     formIsValid: true,
     showPassword: false,
-    userNameRequired: [(v) => !!v || "User Name is required"],
-    passwordRequired: [(v) => !!v || "Password is required"],
+    invalidUserNames: [],
+    invalidUserNameMessage: "User name does not exist.",
+    invalidPasswords: [],
+    invalidPasswordMessage: "Password is incorrect."
   }),
   methods: {
+
     async authenticate() {
       if (this.getloginFormStatus) {
         try {
@@ -85,14 +88,24 @@ export default {
               this.$data.user,
               response.data.token
             );
-
-            this.$toasted.success(`${this.$data.user.fullName} is logged in.`, {
-              duration: 3000,
-            });
           } else if (response.status === 400) {
-            this.$toasted.error("Username or Password is incorrect.", {
-              duration: 3000,
-            });
+            if (response.data === "Status Code 400: User Name Invalid") {
+              this.$data.invalidUserNames.push(this.$data.username);
+              this.$refs.form.validate();
+              this.$toasted.error(this.$data.invalidUserNameMessage, {
+                duration: 3000,
+              });
+            } else if (response.data === "Status Code 400: Password Invalid") {
+              this.$data.invalidPasswords.push(this.$data.password);
+              this.$refs.form.validate();
+              this.$toasted.error(this.$data.invalidPasswordMessage, {
+                duration: 3000,
+              });
+            } else {
+              this.$toasted.error(response.data, {
+                duration: 3000,
+              });
+            }
           } else {
             this.$toasted.error(
               "An error occurred while trying to authenticate the user",
@@ -117,10 +130,31 @@ export default {
 
     resetForm() {
       this.$refs.form.reset();
+      this.$data.invalidUserNames = [];
+      this.$data.invalidPasswords = [];
     },
   },
 
   computed: {
+
+    userNameRules() {
+      return [
+        (v) => !!v || "User Name is required",
+        (v) =>
+          !this.$data.invalidUserNames.includes(v) ||
+          this.$data.invalidUserNameMessage,
+      ];
+    },
+
+    passwordRules() {
+      return [
+        (v) => !!v || "Password is required",
+        (v) =>
+          !this.$data.invalidPasswords.includes(v) ||
+          this.$data.invalidPasswordMessage,
+      ];
+    },
+
     getloginFormStatus() {
       return this.loginFormStatus;
     },

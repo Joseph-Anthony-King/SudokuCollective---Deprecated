@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SudokuCollective.WebApi.Models.DataModels;
+using SudokuCollective.WebApi.Models.Enums;
 using SudokuCollective.WebApi.Services.Interfaces;
 using System.Threading.Tasks;
 
@@ -26,6 +27,26 @@ namespace SudokuCollective.WebApi.Services {
             } else {
 
                 return false;
+            }
+        }
+
+        public async Task<UserAuthenticationErrorType> ConfirmAuthenticationIssue(string userName, string password)
+        {
+
+            var user = await _context.Users.SingleOrDefaultAsync(u =>
+                u.UserName.Equals(userName));
+
+            if (user == null) {
+
+                return UserAuthenticationErrorType.USERNAMEINVALID;
+
+            } else if (!BCrypt.Net.BCrypt.Verify(password, user.Password)) {
+
+                return UserAuthenticationErrorType.PASSWORDINVALID;
+
+            } else {
+
+                return UserAuthenticationErrorType.NULL;
             }
         }
     }
