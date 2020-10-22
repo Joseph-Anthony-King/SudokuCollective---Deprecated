@@ -236,6 +236,7 @@ export default {
       this.$refs.userNameForm.reset();
       this.$data.invalidUserNames = [];
       this.$data.invalidPasswords = [];
+      this.$data.showPassword = false;
       this.$data.needHelp = false;
       this.$data.gettingHelp = false;
     },
