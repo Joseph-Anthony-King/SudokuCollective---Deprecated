@@ -1,9 +1,12 @@
 <template>
   <v-card>
-    <v-card-title>
+    <v-card-title v-show="!gettingHelp">
       <span class="headline">Login</span>
     </v-card-title>
-    <v-form v-model="formIsValid" ref="form">
+    <v-card-title v-show="gettingHelp">
+      <span class="headline">Look Up User Name</span>
+    </v-card-title>
+    <v-form v-model="loginFormIsValid" ref="loginForm" v-show="!gettingHelp">
       <v-card-text>
         <v-container>
           <v-row>
@@ -33,15 +36,59 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click="gettingHelp = true"
+          v-show="needHelp"
+        >
+          Help
+        </v-btn>
         <v-btn color="blue darken-1" text @click="resetForm"> Reset </v-btn>
         <v-btn color="blue darken-1" text @click="close"> Close </v-btn>
         <v-btn
           color="blue darken-1"
           text
           @click="authenticate"
-          :disabled="!formIsValid"
+          :disabled="!loginFormIsValid"
         >
           Login
+        </v-btn>
+      </v-card-actions>
+    </v-form>
+    <v-form
+      v-model="userNameFormIsValid"
+      ref="userNameForm"
+      v-show="gettingHelp"
+    >
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                v-model="email"
+                label="Please Confirm Your Email"
+                prepend-icon="mdi-email"
+                required
+                :rules="emailRules"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click="confirmUserName"
+          :disabled="!userNameFormIsValid"
+        >
+          Confirm User Name
+        </v-btn>
+        <v-btn color="blue darken-1" text @click="close"> Close </v-btn>
+        <v-btn color="blue darken-1" text @click="gettingHelp = false">
+          Go Back
         </v-btn>
       </v-card-actions>
     </v-form>
@@ -60,17 +107,22 @@ export default {
   data: () => ({
     username: "",
     password: "",
+    email: "",
     user: {},
-    formIsValid: true,
+    loginFormIsValid: true,
+    userNameFormIsValid: true,
     showPassword: false,
+    needHelp: false,
+    gettingHelp: false,
     invalidUserNames: [],
     invalidUserNameMessage: "User name does not exist.",
     invalidPasswords: [],
     invalidPasswordMessage: "Password is incorrect.",
+    invalidEmails: [],
   }),
   methods: {
     async authenticate() {
-      if (this.getloginFormStatus) {
+      if (this.getLoginFormStatus) {
         try {
           const response = await authenticationService.authenticateUser(
             this.$data.username,
@@ -92,7 +144,8 @@ export default {
           } else if (response.status === 400) {
             if (response.data === "Status Code 400: User Name Invalid") {
               this.$data.invalidUserNames.push(this.$data.username);
-              this.$refs.form.validate();
+              this.$refs.loginForm.validate();
+              this.$data.needHelp = true;
               showToast(
                 this,
                 ToastMethods["error"],
@@ -101,7 +154,8 @@ export default {
               );
             } else if (response.data === "Status Code 400: Password Invalid") {
               this.$data.invalidPasswords.push(this.$data.password);
-              this.$refs.form.validate();
+              this.$refs.loginForm.validate();
+              this.$data.needHelp = true;
               showToast(
                 this,
                 ToastMethods["error"],
@@ -109,11 +163,13 @@ export default {
                 { duration: 3000 }
               );
             } else {
+              this.$data.needHelp = true;
               showToast(this, ToastMethods["error"], response.data, {
                 duration: 3000,
               });
             }
           } else {
+            this.$data.needHelp = true;
             showToast(
               this,
               ToastMethods["error"],
@@ -122,8 +178,50 @@ export default {
             );
           }
         } catch (error) {
+          this.$data.needHelp = true;
           showToast(this, ToastMethods["error"], error, { duration: 3000 });
         }
+      }
+    },
+
+    async confirmUserName() {
+      try {
+        const response = await authenticationService.confirmUserName(
+          this.$data.email
+        );
+
+        if (response.status === 200) {
+          this.$data.username = response.data;
+
+          showToast(
+            this,
+            ToastMethods["success"],
+            "Your user name has been retrieved",
+            { duration: 3000 }
+          );
+
+          this.$data.gettingHelp = false;
+        } else if (response.status === 400) {
+          this.$data.invalidEmails.push(this.$data.email);
+          this.$refs.userNameForm.validate();
+          if (response.data === "Status Code 400: No Record Of Email Address") {
+            showToast(
+              this,
+              ToastMethods["error"],
+              `Sudoku Collective does not have a record for ${this.$data.email}.`,
+              { duration: 3000 }
+            );
+          } else {
+            showToast(
+              this,
+              ToastMethods["error"],
+              "Experienced an error retrieving the user name.",
+              { duration: 3000 }
+            );
+          }
+        }
+      } catch (error) {
+        showToast(this, ToastMethods["error"], error, { duration: 3000 });
       }
     },
 
@@ -134,9 +232,12 @@ export default {
     },
 
     resetForm() {
-      this.$refs.form.reset();
+      this.$refs.loginForm.reset();
+      this.$refs.userNameForm.reset();
       this.$data.invalidUserNames = [];
       this.$data.invalidPasswords = [];
+      this.$data.needHelp = false;
+      this.$data.gettingHelp = false;
     },
   },
 
@@ -159,9 +260,23 @@ export default {
       ];
     },
 
-    getloginFormStatus() {
-      return this.loginFormStatus;
+    emailRules() {
+      return [
+        (v) => !!v || "Email is required",
+        (v) =>
+          !v ||
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "Email must be valid",
+        (v) =>
+          !this.$data.invalidEmails.includes(v) ||
+          `Sudoku Collective does not have a record for ${this.$data.email}, please review the sign up feature to establish an account.`,
+      ];
     },
+
+    getLoginFormStatus() {
+      return this.loginFormStatus && !this.$data.gettingHelp;
+    },
+
     resetLoginFormStatus() {
       return !this.loginFormStatus;
     },

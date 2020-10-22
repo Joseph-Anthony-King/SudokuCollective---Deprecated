@@ -196,7 +196,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             // Assert
             Assert.That(result, Is.TypeOf<Task<ActionResult>>());
-            Assert.That(message, Is.EqualTo("Email Does Not Exist"));
+            Assert.That(message, Is.EqualTo("Status Code 400: No Record Of Email Address"));
         }
     }
 }

@@ -77,7 +77,7 @@ namespace SudokuCollective.WebApi.Controllers {
             }
             else
             {
-                return BadRequest(result.Message);
+                return BadRequest("Status Code 400: No Record Of Email Address");
             }            
         }
     }

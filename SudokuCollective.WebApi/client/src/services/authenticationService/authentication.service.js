@@ -1,6 +1,6 @@
 ﻿import * as axios from "axios";
 import { requestHeader } from "../../helpers/requestHeader";
-import { authenticateEndpoint } from "./service.endpoints";
+import { authenticateEndpoint, confirmUserNameEndpoint } from "./service.endpoints";
 
 const authenticateUser = async function (username, password) {
 
@@ -28,6 +28,30 @@ const authenticateUser = async function (username, password) {
     }
 }
 
+const confirmUserName = async function (email) {
+
+    const headers = requestHeader();
+    const url =  `${confirmUserNameEndpoint}/${email}`;
+
+    const config = {
+        method: "get",
+        url: url,
+        headers: headers
+    };
+
+    try {
+
+        const response = await axios(config);
+    
+        return response;
+
+    } catch (error) {
+
+        return error.response;
+    }
+}
+
 export const authenticationService = {
-    authenticateUser
+    authenticateUser,
+    confirmUserName
 };
