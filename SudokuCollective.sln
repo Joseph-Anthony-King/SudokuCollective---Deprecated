@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Test", "SudokuCollective.Tests\SudokuCollective.Test.csproj", "{F852B147-9264-41A9-B126-6E127191C74A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Api", "SudokuCollective.WebApi\SudokuCollective.Api.csproj", "{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Api", "SudokuCollective.Api\SudokuCollective.Api.csproj", "{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Core", "SudokuCollective.Core\SudokuCollective.Core.csproj", "{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}"
 EndProject
