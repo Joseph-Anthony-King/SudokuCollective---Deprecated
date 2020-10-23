@@ -3,18 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using SudokuCollective.Domain;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
-using SudokuCollective.WebApi.Services;
-using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Services;
+using SudokuCollective.Domain.Models;
+using SudokuCollective.Test.TestData;
 
-namespace SudokuCollective.Tests.TestCases.Services {
-
-    public class GamesServiceShould {
-
+namespace SudokuCollective.Test.TestCases.Services
+{
+    public class GamesServiceShould
+    {
         private DatabaseContext _context;
         private IGamesService sut;
         private DateTime dateCreated;
@@ -22,8 +21,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
         private BaseRequest baseRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             _context = await TestDatabase.GetDatabaseContext();
 
             sut = new GamesService(_context);
@@ -35,11 +34,11 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task CreateGames() {
-
+        public async Task CreateGames()
+        {
             // Arrange
-            var createGameRequest = new CreateGameRequest() {
-
+            var createGameRequest = new CreateGameRequest()
+            {
                 UserId = 1,
                 DifficultyId = 4,
                 License = TestObjects.GetLicense(),
@@ -57,11 +56,11 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task FailToCreateGameIfUserDoesNotExist() {
-
+        public async Task FailToCreateGameIfUserDoesNotExist()
+        {
             // Arrange
-            var createGameRequest = new CreateGameRequest() {
-
+            var createGameRequest = new CreateGameRequest()
+            {
                 UserId = 5,
                 DifficultyId = 4,
                 License = TestObjects.GetLicense(),
@@ -79,14 +78,14 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task UpdateGames() {
-
+        public async Task UpdateGames()
+        {
             var gameId = 1;
             var updatedValue = 6;
 
             // Arrange
-            var updateGameRequest = new UpdateGameRequest() {
-                
+            var updateGameRequest = new UpdateGameRequest()
+            {
                 GameId = gameId,
                 SudokuCells = TestObjects.GetUpdateSudokuCells(updatedValue),
                 License = TestObjects.GetLicense(),
@@ -95,7 +94,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
             // Act
             var result = await sut.UpdateGame(gameId, updateGameRequest);
-            
+
             var checkValue = result.Game.SudokuMatrix.SudokuCells
                 .OrderBy(cell => cell.Index)
                 .Where(cell => cell.Index == 2)
@@ -110,14 +109,14 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task RejectUpdateIfCellsAreInvalid() {
-
+        public async Task RejectUpdateIfCellsAreInvalid()
+        {
             // Arrange
             var gameId = 1;
             var updatedValue = 6;
 
-            var updateGameRequest = new UpdateGameRequest() {
-
+            var updateGameRequest = new UpdateGameRequest()
+            {
                 GameId = gameId,
                 SudokuCells = TestObjects.GetUpdateInvalidSudokuCells(updatedValue),
                 License = TestObjects.GetLicense(),
@@ -143,8 +142,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DeleteGames() {
-
+        public async Task DeleteGames()
+        {
             // Arrange
             var gameId = 1;
 
@@ -160,8 +159,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DeleteReturnsErrorMessageIfGameNotFound() {
-
+        public async Task DeleteReturnsErrorMessageIfGameNotFound()
+        {
             // Arrange
             var gameId = 5;
 
@@ -178,8 +177,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetAGame() {
-
+        public async Task GetAGame()
+        {
             // Arrange
             var gameId = 1;
             var appId = 1;
@@ -194,8 +193,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ReturnErrorMessageIfGameNotFound() {
-
+        public async Task ReturnErrorMessageIfGameNotFound()
+        {
             // Arrange
             var gameId = 5;
             var appId = 1;
@@ -211,8 +210,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetGames() {
-
+        public async Task GetGames()
+        {
             // Arrange
 
             // Act
@@ -225,8 +224,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetUsersGame() {
-
+        public async Task GetUsersGame()
+        {
             // Arrange
             var userId = 1;
             var gameId = 1;
@@ -242,11 +241,12 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetUsersGames() {
-
+        public async Task GetUsersGames()
+        {
             // Arrange
             var userId = 1;
-            var getMyGameRequest = new GetMyGameRequest() {
+            var getMyGameRequest = new GetMyGameRequest()
+            {
 
                 UserId = userId
             };
@@ -261,8 +261,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DeleteAUsersGame() {
-
+        public async Task DeleteAUsersGame()
+        {
             // Arrange
             var userId = 1;
             var gameId = 1;
@@ -280,13 +280,14 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task CheckGames() {
-
+        public async Task CheckGames()
+        {
             var gameId = 1;
             var updatedValue = 6;
 
             // Arrange
-            var updateGameRequest = new UpdateGameRequest() {
+            var updateGameRequest = new UpdateGameRequest()
+            {
 
                 GameId = gameId,
                 SudokuCells = TestObjects.GetUpdateSudokuCells(updatedValue),
@@ -313,12 +314,13 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task NoteWhenGameIsSolvedOnUpdate() {
-
+        public async Task NoteWhenGameIsSolvedOnUpdate()
+        {
             var gameId = 1;
 
             // Arrange
-            var updateGameRequest = new UpdateGameRequest() {
+            var updateGameRequest = new UpdateGameRequest()
+            {
 
                 GameId = gameId,
                 SudokuCells = TestObjects.GetSolvedSudokuCells(),
@@ -342,12 +344,13 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task CheckGameShouldReturnMessageIfGameNotFound() {
-
+        public async Task CheckGameShouldReturnMessageIfGameNotFound()
+        {
             var gameId = 5;
 
             // Arrange
-            var updateGameRequest = new UpdateGameRequest() {
+            var updateGameRequest = new UpdateGameRequest()
+            {
 
                 GameId = gameId,
                 SudokuCells = TestObjects.GetSolvedSudokuCells(),

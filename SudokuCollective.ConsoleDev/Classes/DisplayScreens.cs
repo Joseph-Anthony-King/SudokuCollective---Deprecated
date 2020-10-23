@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using SudokuCollective.Domain;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Interfaces.Models;
 
-namespace SudokuCollective.ConsoleDev.Classes {
-
-    public static class DisplayScreens {
-        
-        public static void GameScreen(Game game) {
-
+namespace SudokuCollective.ConsoleDev.Classes
+{
+    public static class DisplayScreens
+    {
+        public static void GameScreen(IGame game)
+        {
             DisplayMatix(game.SudokuMatrix);
 
             Console.Write(string.Format("\n\n{0}, please make your selection\n\n1) Enter a value (ENTER)", game.User.NickName));
@@ -17,8 +16,8 @@ namespace SudokuCollective.ConsoleDev.Classes {
             Console.Write("\nYour Selection: ");
         }
 
-        internal static void ProgramPrompt() {
-
+        internal static void ProgramPrompt()
+        {
             Console.WriteLine("\nWould you like to generate solutions or solve a solution:\n");
             Console.WriteLine("Enter 1 to generate solutions");
             Console.WriteLine("Enter 2 to solve a solution");
@@ -28,31 +27,32 @@ namespace SudokuCollective.ConsoleDev.Classes {
 
         }
 
-        internal static void DisplayMatix(SudokuMatrix matrix) {
-
+        internal static void DisplayMatix(ISudokuMatrix matrix)
+        {
             Console.Write("\n       SudokuApp\n");
             Console.Write("\n   1 2 3 4 5 6 7 8 9\n");
             var i = 1;
-            foreach (var row in matrix.Rows) {
+            foreach (var row in matrix.Rows)
+            {
                 Console.Write(string.Format("\n{0}  ", i));
                 DisplayRow(row);
                 i++;
             }
         }
-        
-        private static void DisplayRow(List<SudokuCell> row) {
 
-            foreach (var cell in row) {
-
-                if (!cell.Obscured) {
-
+        private static void DisplayRow(List<ISudokuCell> row)
+        {
+            foreach (var cell in row)
+            {
+                if (!cell.Obscured)
+                {
                     var _previousColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(string.Format("{0} ", cell));
                     Console.ForegroundColor = _previousColor;
-
-                } else {
-
+                }
+                else
+                {
                     Console.Write(string.Format("{0} ", cell));
                 }
             }

@@ -10,14 +10,14 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using SudokuCollective.WebApi.Models;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Services.Interfaces;
-using SudokuCollective.WebApi.Services;
-using SudokuCollective.WebApi.Models.TokenModels;
+using SudokuCollective.Api.Models;
 using VueCliMiddleware;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.TokenModels;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Services;
 
-namespace SudokuCollective.WebApi {
+namespace SudokuCollective.Api {
 
     public class Startup {
 
@@ -67,7 +67,7 @@ namespace SudokuCollective.WebApi {
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IGamesService, GamesService>();
             services.AddScoped<IDifficultiesService, DifficultiesService>();
-            services.AddScoped<IRolesService, RolesService>();
+            services.AddScoped<RolesService, RolesService>();
             services.AddScoped<ISolutionsService, SolutionsService>();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -119,7 +119,7 @@ namespace SudokuCollective.WebApi {
             app.UseSpa(spa =>
             {
                 if (env.IsDevelopment())
-                    spa.Options.SourcePath = "client";
+                    spa.Options.SourcePath = "Client";
                 else
                     spa.Options.SourcePath = "dist";
 

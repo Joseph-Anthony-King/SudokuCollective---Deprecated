@@ -2,19 +2,18 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using SudokuCollective.Domain;
-using SudokuCollective.Tests.MockServices;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.GameRequests;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
+using SudokuCollective.Api.Controllers;
+using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-
-    public class GamesControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class GamesControllerShould
+    {
         private DatabaseContext context;
         private GamesController sutSuccess;
         private GamesController sutFailure;
@@ -26,8 +25,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private GetMyGameRequest getMyGameRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             context = await TestDatabase.GetDatabaseContext();
             mockGamesService = new MockGamesService(context);
             mockAppsService = new MockAppsService(context);
@@ -36,8 +35,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             createGameRequest = new CreateGameRequest();
 
-            getMyGameRequest = new GetMyGameRequest() {
-
+            getMyGameRequest = new GetMyGameRequest()
+            {
                 UserId = 1,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
@@ -47,18 +46,18 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             updateGameRequest = TestObjects.GetUpdateGameRequest();
 
             sutSuccess = new GamesController(
-                mockGamesService.GamesServiceSuccessfulRequest.Object, 
+                mockGamesService.GamesServiceSuccessfulRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
 
             sutFailure = new GamesController(
-                mockGamesService.GamesServiceFailedRequest.Object, 
+                mockGamesService.GamesServiceFailedRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
         }
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetGame() {
-
+        public void SuccessfullyGetGame()
+        {
             // Arrange
             var gameId = 1;
 
@@ -75,8 +74,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetGameFail() {
-
+        public void IssueErrorAndMessageShouldGetGameFail()
+        {
             // Arrange
             var gameId = 1;
 
@@ -94,8 +93,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetGames() {
-
+        public void SuccessfullyGetGames()
+        {
             // Arrange
 
             // Act
@@ -111,8 +110,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetGamesFail() {
-
+        public void IssueErrorAndMessageShouldGetGamesFail()
+        {
             // Arrange
 
             // Act
@@ -129,8 +128,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyDeleteGames () {
-
+        public void SuccessfullyDeleteGames()
+        {
             // Arrange
 
             // Act
@@ -144,8 +143,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldDeleteGamesFail () {
-
+        public void IssueErrorAndMessageShouldDeleteGamesFail()
+        {
             // Arrange
 
             // Act
@@ -162,8 +161,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyUpdateGames() {
-
+        public void SuccessfullyUpdateGames()
+        {
             // Arrange
 
             // Act
@@ -177,8 +176,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldUpdateGamesFail() {
-
+        public void IssueErrorAndMessageShouldUpdateGamesFail()
+        {
             // Arrange
 
             // Act
@@ -195,8 +194,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyCreateGames() {
-
+        public void SuccessfullyCreateGames()
+        {
             // Arrange
 
             // Act
@@ -210,8 +209,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldCreateGamesFail() {
-
+        public void IssueErrorAndMessageShouldCreateGamesFail()
+        {
             // Arrange
 
             // Act
@@ -225,8 +224,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyCheckGames() {
-
+        public void SuccessfullyCheckGames()
+        {
             // Arrange
 
             // Act
@@ -240,8 +239,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldCheckGamesFail() {
-
+        public void IssueErrorAndMessageShouldCheckGamesFail()
+        {
             // Arrange
 
             // Act
@@ -255,8 +254,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetGameByUserId() {
-
+        public void SuccessfullyGetGameByUserId()
+        {
             // Arrange
             var userId = 1;
 
@@ -271,8 +270,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetGameByUserIdFail() {
-
+        public void IssueErrorAndMessageShouldGetGameByUserIdFail()
+        {
             // Arrange
             var userId = 1;
 
@@ -290,8 +289,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetGamesByUserId() {
-
+        public void SuccessfullyGetGamesByUserId()
+        {
             // Arrange
 
             // Act
@@ -308,8 +307,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetGamesByUserIdFail() {
-
+        public void IssueErrorAndMessageShouldGetGamesByUserIdFail()
+        {
             // Arrange
 
             // Act
@@ -326,8 +325,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyDeleteGameByUserId() {
-
+        public void SuccessfullyDeleteGameByUserId()
+        {
             // Arrange
             var userId = 1;
 
@@ -343,8 +342,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldDeleteGameByUserIdFail() {
-
+        public void IssueErrorAndMessageShouldDeleteGameByUserIdFail()
+        {
             // Arrange
             var userId = 1;
 

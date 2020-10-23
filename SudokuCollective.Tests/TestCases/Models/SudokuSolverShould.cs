@@ -1,26 +1,26 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuCollective.Domain.Enums;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests.TestCases.Models {
-
-    public class SudokuSolverShould {
-
+namespace SudokuCollective.Test.TestCases.Models
+{
+    public class SudokuSolverShould
+    {
         [Test]
         [Category("Utilities")]
-        public void HaveAConstructorWhichAcceptsIntList() {
-
+        public void HaveAConstructorWhichAcceptsIntList()
+        {
             // Arrange and Act
             var intList = new List<int>() {
-                    4, 1, 9, 2, 6, 5, 3, 8, 7, 
-                    2, 8, 3, 1, 7, 9, 4, 5, 6, 
-                    5, 6, 7, 4, 3, 8, 9, 1, 2, 
-                    1, 2, 5, 3, 9, 4, 7, 6, 8, 
-                    7, 3, 8, 5, 1, 6, 2, 4, 9, 
-                    6, 9, 4, 7, 8, 2, 5, 3, 1, 
-                    3, 5, 6, 8, 2, 7, 1, 9, 4, 
-                    8, 7, 1, 9, 4, 3, 6, 2, 5, 
+                    4, 1, 9, 2, 6, 5, 3, 8, 7,
+                    2, 8, 3, 1, 7, 9, 4, 5, 6,
+                    5, 6, 7, 4, 3, 8, 9, 1, 2,
+                    1, 2, 5, 3, 9, 4, 7, 6, 8,
+                    7, 3, 8, 5, 1, 6, 2, 4, 9,
+                    6, 9, 4, 7, 8, 2, 5, 3, 1,
+                    3, 5, 6, 8, 2, 7, 1, 9, 4,
+                    8, 7, 1, 9, 4, 3, 6, 2, 5,
                     9, 4, 2, 6, 5, 1, 8, 7, 3
                 };
 
@@ -32,8 +32,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Utilities")]
-        public void HaveAConstructorWhichAcceptsAString() {
-
+        public void HaveAConstructorWhichAcceptsAString()
+        {
             // Arrange and Act
             var intString = string.Format("{0}{1}{2}{3}{4}{5}{6}{7}{8}",
                 "419265387",
@@ -54,30 +54,31 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Utilities")]
-        public void SolveSudokuMatrices() {
-
+        public async void SolveSudokuMatrices()
+        {
             // Arrange
             var intList = new List<int>() {
-                    4, 1, 9, 2, 6, 5, 3, 8, 7, 
-                    2, 8, 3, 1, 7, 9, 4, 5, 6, 
-                    5, 6, 7, 4, 3, 8, 9, 1, 2, 
-                    1, 2, 5, 3, 9, 4, 7, 6, 8, 
-                    7, 3, 8, 5, 1, 6, 2, 4, 9, 
-                    6, 9, 4, 7, 8, 2, 5, 3, 1, 
-                    3, 5, 6, 8, 2, 7, 1, 9, 4, 
-                    8, 7, 1, 9, 4, 3, 6, 2, 5, 
+                    4, 1, 9, 2, 6, 5, 3, 8, 7,
+                    2, 8, 3, 1, 7, 9, 4, 5, 6,
+                    5, 6, 7, 4, 3, 8, 9, 1, 2,
+                    1, 2, 5, 3, 9, 4, 7, 6, 8,
+                    7, 3, 8, 5, 1, 6, 2, 4, 9,
+                    6, 9, 4, 7, 8, 2, 5, 3, 1,
+                    3, 5, 6, 8, 2, 7, 1, 9, 4,
+                    8, 7, 1, 9, 4, 3, 6, 2, 5,
                     9, 4, 2, 6, 5, 1, 8, 7, 3
                 };
 
             var sut = new SudokuSolver(intList);
-            sut.SetDifficulty(new Difficulty() {
-                    Name = "Easy", 
-                    DifficultyLevel = DifficultyLevel.EASY
-                }
+            sut.SetDifficulty(new Difficulty()
+            {
+                Name = "Easy",
+                DifficultyLevel = DifficultyLevel.EASY
+            }
             );
 
             // Act
-            var result = sut.Solve();
+            await sut.Solve();
 
             // Assert
             Assert.That(sut.IsValid(), Is.EqualTo(true));

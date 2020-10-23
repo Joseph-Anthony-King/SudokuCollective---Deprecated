@@ -1,26 +1,26 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using SudokuCollective.Domain.Enums;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Services;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
-using SudokuCollective.WebApi.Services;
-using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.Test.TestData;
 
-namespace SudokuCollective.Tests.TestCases.Services {
-
-    public class DifficultiesServiceShould {
-
+namespace SudokuCollective.Test.TestCases.Services
+{
+    public class DifficultiesServiceShould
+    {
         private DatabaseContext _context;
         private IDifficultiesService sut;
         private string license;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             _context = await TestDatabase.GetDatabaseContext();
             sut = new DifficultiesService(_context);
             license = TestObjects.GetLicense();
@@ -28,8 +28,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetADifficulty() {
-
+        public async Task GetADifficulty()
+        {
             // Arrange
 
             // Act
@@ -42,8 +42,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetDifficulties() {
-
+        public async Task GetDifficulties()
+        {
             // Arrange
 
             // Act
@@ -56,15 +56,15 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetDifficultiesWithoutNullOrTestDifficultyLevel() {
-
+        public async Task GetDifficultiesWithoutNullOrTestDifficultyLevel()
+        {
             // Arrange
 
             // Act
             var result = await sut.GetDifficulties();
             var nullAndTestDifficultyLevelsBlocked = result.Difficulties
-                .Any(difficulty => 
-                    difficulty.DifficultyLevel.Equals(DifficultyLevel.NULL) 
+                .Any(difficulty =>
+                    difficulty.DifficultyLevel.Equals(DifficultyLevel.NULL)
                     || difficulty.DifficultyLevel.Equals(DifficultyLevel.TEST));
 
             // Assert
@@ -75,8 +75,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task CreateADifficulty() {
-
+        public async Task CreateADifficulty()
+        {
             // Arrange
 
             // Act
@@ -90,11 +90,11 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task UpdateADifficulty() {
-
+        public async Task UpdateADifficulty()
+        {
             // Arrange
-            var updateDifficultyRequest = new UpdateDifficultyRequest() {
-
+            var updateDifficultyRequest = new UpdateDifficultyRequest()
+            {
                 Id = 1,
                 Name = "Null UPDATED!",
                 DifficultyLevel = DifficultyLevel.NULL,
@@ -115,8 +115,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DeleteADifficulty() {
-
+        public async Task DeleteADifficulty()
+        {
             // Arrange
 
             // Act

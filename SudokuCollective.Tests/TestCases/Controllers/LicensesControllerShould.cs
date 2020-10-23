@@ -1,18 +1,17 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using SudokuCollective.Tests.MockServices;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
+using SudokuCollective.Api.Controllers;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-    
-    public class LicenseControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class LicenseControllerShould
+    {
         private DatabaseContext context;
         private LicensesController sutSuccess;
         private LicensesController sutFailure;
@@ -21,15 +20,15 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private AppRequest appRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             context = await TestDatabase.GetDatabaseContext();
             mockAppsService = new MockAppsService(context);
 
             baseRequest = new BaseRequest();
 
-            appRequest = new AppRequest() {
-
+            appRequest = new AppRequest()
+            {
                 Name = "New Test App 3",
                 DevUrl = "https://localhost:8080",
                 LiveUrl = "https://TestApp3.com",
@@ -44,8 +43,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetLicense() {
-
+        public void SuccessfullyGetLicense()
+        {
             // Arrange
             var appId = 1;
 
@@ -62,8 +61,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetLicenseFail() {
-
+        public void IssueErrorAndMessageShouldGetLicenseFail()
+        {
             // Arrange
             var appId = 1;
 

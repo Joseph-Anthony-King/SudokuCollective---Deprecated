@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using SudokuCollective.WebApi.Controllers;
+using SudokuCollective.Api.Controllers;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-
-    public class HelloWorldControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class HelloWorldControllerShould
+    {
         [Test]
         [Category("Controllers")]
-        public void ReturnAMessage() {
-
+        public void ReturnAMessage()
+        {
             // Arrange
             var sut = new HelloWorldController();
 

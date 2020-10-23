@@ -1,28 +1,28 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuCollective.Domain.Enums;
-using SudokuCollective.Domain.Interfaces;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.Domain.Utilities;
+using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Core.Enums;
 
-namespace SudokuCollective.Tests.TestCases.Models {
-
-    public class SudokuMatrixShould {
-
+namespace SudokuCollective.Test.TestCases.Models
+{
+    public class SudokuMatrixShould
+    {
         private List<int> intList;
         private string stringList;
         private SudokuMatrix populatedTestMatrix;
 
         [SetUp]
-        public void Setup() {
-
+        public void Setup()
+        {
             intList = UtilityMethods.GenerateSudokuCompliantIntList();
 
             StringBuilder sb = new StringBuilder();
 
-            foreach (var i in intList) {
-
+            foreach (var i in intList)
+            {
                 sb.Append(i.ToString());
             }
 
@@ -33,19 +33,19 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void ImplementIDBEntry() {
-
+        public void ImplementIDBEntry()
+        {
             // Arrange and Act
             var sut = new SudokuMatrix(stringList);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<IEntityBase>());
         }
-        
+
         [Test]
         [Category("Models")]
-        public void HaveAnID() {
-
+        public void HaveAnID()
+        {
             // Arrange and Act
             var sut = new SudokuMatrix(stringList);
 
@@ -56,8 +56,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void AcceptStringInConstructor() {
-
+        public void AcceptStringInConstructor()
+        {
             // Arrange and Act
             var sut = new SudokuMatrix(stringList);
 
@@ -69,8 +69,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void AcceptIntListInConstructor() {
-
+        public void AcceptIntListInConstructor()
+        {
             // Arrange and Act
             var sut = new SudokuMatrix(intList);
 
@@ -82,8 +82,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void CreateZeroedListWithBlankConstructor() {
-
+        public void CreateZeroedListWithBlankConstructor()
+        {
             // Arrange and Act
             var sut = new SudokuMatrix();
 
@@ -101,8 +101,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void ReturnTrueIfValid() {
-
+        public void ReturnTrueIfValid()
+        {
             // Arrange and Act
             var sut = populatedTestMatrix;
 
@@ -112,8 +112,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void OutputValuesAsIntListWithToInt32List() {
-
+        public void OutputValuesAsIntListWithToInt32List()
+        {
             // Arrange
             var sut = populatedTestMatrix;
 
@@ -127,8 +127,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void OutputValuesAsIntListWithToDisplayedValuesList() {
-
+        public void OutputValuesAsIntListWithToDisplayedValuesList()
+        {
             // Arrange
             var sut = populatedTestMatrix;
 
@@ -142,8 +142,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void OutputValuesAsStringWithToString() {
-
+        public void OutputValuesAsStringWithToString()
+        {
             // Arrange
             var sut = populatedTestMatrix;
 
@@ -157,10 +157,11 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveNoObscuredCellsOnTestDifficulty() {
-
+        public void HaveNoObscuredCellsOnTestDifficulty()
+        {
             // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty() {
+            populatedTestMatrix.SetDifficulty(new Difficulty()
+            {
                 Name = "Test",
                 DifficultyLevel = DifficultyLevel.TEST
             });
@@ -169,10 +170,10 @@ namespace SudokuCollective.Tests.TestCases.Models {
             var sut = populatedTestMatrix;
             var result = 0;
 
-            foreach(var cell in sut.SudokuCells) {
-
-                if (cell.Obscured == false) {
-
+            foreach (var cell in sut.SudokuCells)
+            {
+                if (cell.Obscured == false)
+                {
                     result++;
                 }
             }
@@ -183,10 +184,11 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void Have35VisibleCellsOnEasyDifficulty() {
-
+        public void Have35VisibleCellsOnEasyDifficulty()
+        {
             // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty() {
+            populatedTestMatrix.SetDifficulty(new Difficulty()
+            {
                 Name = "Easy",
                 DifficultyLevel = DifficultyLevel.EASY
             });
@@ -195,10 +197,10 @@ namespace SudokuCollective.Tests.TestCases.Models {
             var sut = populatedTestMatrix;
             var result = 0;
 
-            foreach(var cell in sut.SudokuCells) {
-
-                if (cell.Obscured == false) {
-
+            foreach (var cell in sut.SudokuCells)
+            {
+                if (cell.Obscured == false)
+                {
                     result++;
                 }
             }
@@ -209,10 +211,11 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void Have29VisibleCellsOnMediumDifficulty() {
-
+        public void Have29VisibleCellsOnMediumDifficulty()
+        {
             // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty() {
+            populatedTestMatrix.SetDifficulty(new Difficulty()
+            {
                 Name = "Medium",
                 DifficultyLevel = DifficultyLevel.MEDIUM
             });
@@ -221,10 +224,10 @@ namespace SudokuCollective.Tests.TestCases.Models {
             var sut = populatedTestMatrix;
             var result = 0;
 
-            foreach(var cell in sut.SudokuCells) {
-
-                if (cell.Obscured == false) {
-
+            foreach (var cell in sut.SudokuCells)
+            {
+                if (cell.Obscured == false)
+                {
                     result++;
                 }
             }
@@ -235,10 +238,11 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void Have23VisibleCellsOnHardDifficulty() {
-
+        public void Have23VisibleCellsOnHardDifficulty()
+        {
             // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty() {
+            populatedTestMatrix.SetDifficulty(new Difficulty()
+            {
                 Name = "Hard",
                 DifficultyLevel = DifficultyLevel.HARD
             });
@@ -247,10 +251,10 @@ namespace SudokuCollective.Tests.TestCases.Models {
             var sut = populatedTestMatrix;
             var result = 0;
 
-            foreach(var cell in sut.SudokuCells) {
-
-                if (cell.Obscured == false) {
-
+            foreach (var cell in sut.SudokuCells)
+            {
+                if (cell.Obscured == false)
+                {
                     result++;
                 }
             }
@@ -261,10 +265,11 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void Have17VisibleCellsOnEvilDifficulty() {
-
+        public void Have17VisibleCellsOnEvilDifficulty()
+        {
             // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty() {
+            populatedTestMatrix.SetDifficulty(new Difficulty()
+            {
                 Name = "Evil",
                 DifficultyLevel = DifficultyLevel.EVIL
             });
@@ -273,10 +278,10 @@ namespace SudokuCollective.Tests.TestCases.Models {
             var sut = populatedTestMatrix;
             var result = 0;
 
-            foreach(var cell in sut.SudokuCells) {
-
-                if (cell.Obscured == false) {
-
+            foreach (var cell in sut.SudokuCells)
+            {
+                if (cell.Obscured == false)
+                {
                     result++;
                 }
             }
@@ -287,24 +292,25 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void DetermineIfMatrixIsSolved() {
-
+        public void DetermineIfMatrixIsSolved()
+        {
             // Arrange
             var intList = new List<int>() {
-                    4, 1, 9, 2, 6, 5, 3, 8, 7, 
-                    2, 8, 3, 1, 7, 9, 4, 5, 6, 
-                    5, 6, 7, 4, 3, 8, 9, 1, 2, 
-                    1, 2, 5, 3, 9, 4, 7, 6, 8, 
-                    7, 3, 8, 5, 1, 6, 2, 4, 9, 
-                    6, 9, 4, 7, 8, 2, 5, 3, 1, 
-                    3, 5, 6, 8, 2, 7, 1, 9, 4, 
-                    8, 7, 1, 9, 4, 3, 6, 2, 5, 
+                    4, 1, 9, 2, 6, 5, 3, 8, 7,
+                    2, 8, 3, 1, 7, 9, 4, 5, 6,
+                    5, 6, 7, 4, 3, 8, 9, 1, 2,
+                    1, 2, 5, 3, 9, 4, 7, 6, 8,
+                    7, 3, 8, 5, 1, 6, 2, 4, 9,
+                    6, 9, 4, 7, 8, 2, 5, 3, 1,
+                    3, 5, 6, 8, 2, 7, 1, 9, 4,
+                    8, 7, 1, 9, 4, 3, 6, 2, 5,
                     9, 4, 2, 6, 5, 1, 8, 7, 3
                 };
 
             // Act
             var sut = new SudokuMatrix(intList);
-            sut.SetDifficulty(new Difficulty() {
+            sut.SetDifficulty(new Difficulty()
+            {
                 Name = "Test",
                 DifficultyLevel = DifficultyLevel.TEST
             });
@@ -315,8 +321,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void GenerateValidSolutions() {
-
+        public void GenerateValidSolutions()
+        {
             // Arrange
             var sut = new SudokuMatrix();
 

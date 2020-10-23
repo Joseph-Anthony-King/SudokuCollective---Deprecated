@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SudokuCollective.Domain.AppExtensions;
+using SudokuCollective.Core.Extensions;
 
 namespace SudokuCollective.Domain.Utilities {
     
@@ -25,7 +25,7 @@ namespace SudokuCollective.Domain.Utilities {
                 List<int> firstRow = listOfNineNumbers.ToList();
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(firstRow, random);
+                CoreExtensions.Shuffle(firstRow, random);
 
                 List<int> secondRow = listOfNineNumbers.ToList();
 
@@ -118,7 +118,7 @@ namespace SudokuCollective.Domain.Utilities {
             do {
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(_secondRow, random);
+                CoreExtensions.Shuffle(_secondRow, random);
 
                 ++iterations;
 
@@ -139,7 +139,7 @@ namespace SudokuCollective.Domain.Utilities {
             do {
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(thirdRow, random);
+                CoreExtensions.Shuffle(thirdRow, random);
 
                 ++iterations;
 
@@ -207,7 +207,7 @@ namespace SudokuCollective.Domain.Utilities {
             do {
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(fourthRow, random);
+                CoreExtensions.Shuffle(fourthRow, random);
 
                 ++iterations;
 
@@ -247,7 +247,7 @@ namespace SudokuCollective.Domain.Utilities {
             do {
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(fifthRow, random);
+                CoreExtensions.Shuffle(fifthRow, random);
 
                 ++iterations;
 
@@ -290,7 +290,7 @@ namespace SudokuCollective.Domain.Utilities {
             do {
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(sixthRow, random);
+                CoreExtensions.Shuffle(sixthRow, random);
 
                 ++iterations;
 
@@ -336,7 +336,7 @@ namespace SudokuCollective.Domain.Utilities {
             do {
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(seventhRow, random);
+                CoreExtensions.Shuffle(seventhRow, random);
 
                 ++iterations;
 
@@ -376,7 +376,7 @@ namespace SudokuCollective.Domain.Utilities {
             do {
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(eighthRow, random);
+                CoreExtensions.Shuffle(eighthRow, random);
 
                 ++iterations;
 
@@ -419,7 +419,7 @@ namespace SudokuCollective.Domain.Utilities {
             do {
 
                 Random random = new Random();
-                AppExtensions.AppExtensions.Shuffle(ninthRow, random);
+                CoreExtensions.Shuffle(ninthRow, random);
 
                 ++iterations;
 

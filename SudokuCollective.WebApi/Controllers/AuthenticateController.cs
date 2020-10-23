@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.WebApi.Models.TokenModels;
-using SudokuCollective.WebApi.Models.DTOModels;
-using SudokuCollective.WebApi.Models.Enums;
-using SudokuCollective.WebApi.Models.ResultModels.UserResults;
-using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models.TokenModels;
+using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
+using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Enums;
 
-namespace SudokuCollective.WebApi.Controllers {
+namespace SudokuCollective.Api.Controllers
+{
 
     [Authorize]
     [Route("api/v1/[controller]")]
@@ -37,10 +38,14 @@ namespace SudokuCollective.WebApi.Controllers {
             if (_authService.IsAuthenticated(
                 request, 
                 out string token, 
-                out AuthenticatedUser user)) {
+                out IAuthenticatedUser user)) {
 
-                var result = new AuthenticatedUserResult(user, token) { 
-                    Success = true 
+                var result = new AuthenticatedUserResult()
+                {
+                    Success = true,
+                    Message = string.Empty,
+                    User = user,
+                    Token = token
                 };
 
                 return Ok(result);

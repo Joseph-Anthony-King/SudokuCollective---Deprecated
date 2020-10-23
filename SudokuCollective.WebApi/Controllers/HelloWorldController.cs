@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SudokuCollective.WebApi.Controllers {
+namespace SudokuCollective.Api.Controllers {
 
     [Authorize]
     [Route("api/v1/helloworld")]

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using SudokuCollective.Domain.Enums;
 using SudokuCollective.ConsoleDev.Classes;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.ConsoleDev.Routines {
-
-    internal static class SolveSolutions {
-
-        internal static void Run() {
-
+namespace SudokuCollective.ConsoleDev.Routines
+{
+    internal static class SolveSolutions
+    {
+        internal static void Run()
+        {
             var firstRun = true;
 
             Console.WriteLine("\nPlease enter the sudoku puzzle you wish to solve.");
@@ -26,8 +26,8 @@ namespace SudokuCollective.ConsoleDev.Routines {
 
             var continueLoop = true;
 
-            do {
-
+            do
+            {
                 var response = new StringBuilder();
 
                 Console.Write("Enter the first row:   ");
@@ -66,8 +66,8 @@ namespace SudokuCollective.ConsoleDev.Routines {
 
                 response.Append(Console.ReadLine());
 
-                if (firstRun) {
-                    
+                if (firstRun)
+                {
                     Console.WriteLine("\nThe solver will run for 3 minutes by default.  You");
                     Console.WriteLine("can adjust this time from anywhere between 1 to 15");
                     Console.WriteLine("minutes.  If you do not want to adjust the default");
@@ -81,9 +81,10 @@ namespace SudokuCollective.ConsoleDev.Routines {
                 Console.WriteLine();
 
                 var matrix = new SudokuSolver(response.ToString());
-                if (Int32.TryParse(runningTimeResponse, out var runningTime)) {
-                    
-                    if (runningTime > 0 && runningTime < 16) {
+                if (Int32.TryParse(runningTimeResponse, out var runningTime))
+                {
+                    if (runningTime > 0 && runningTime < 16)
+                    {
 
                         matrix.SetTimeLimit(runningTime);
                     }
@@ -92,20 +93,22 @@ namespace SudokuCollective.ConsoleDev.Routines {
                 Task solver = matrix.Solve();
 
                 ConsoleSpiner spin = new ConsoleSpiner();
-                
-                while (!solver.IsCompleted) {
-                    
+
+                while (!solver.IsCompleted)
+                {
                     spin.Turn();
                 }
 
                 Console.WriteLine();
                 Console.Beep();
 
-                if (matrix.IsValid()) {
-                    
-                    matrix.SetDifficulty(new Difficulty() { 
-                        Name = "Test", 
-                        DifficultyLevel = DifficultyLevel.TEST});
+                if (matrix.IsValid())
+                {
+                    matrix.SetDifficulty(new Difficulty()
+                    {
+                        Name = "Test",
+                        DifficultyLevel = DifficultyLevel.TEST
+                    });
 
                     DisplayScreens.DisplayMatix(matrix);
 
@@ -118,8 +121,9 @@ namespace SudokuCollective.ConsoleDev.Routines {
 
                     Console.Write("\n\nTime to generate solution: " + elapsedTime + "\n\n");
 
-                } else {
-
+                }
+                else
+                {
                     Console.WriteLine("\nNeed more values in order to deduce a solution.\n");
                 }
 
@@ -127,12 +131,12 @@ namespace SudokuCollective.ConsoleDev.Routines {
 
                 var result = Console.ReadLine();
 
-                if (result.ToLower().Equals("no") || result.ToLower().Equals("n")) {
-
+                if (result.ToLower().Equals("no") || result.ToLower().Equals("n"))
+                {
                     continueLoop = false;
-
-                } else {
-
+                }
+                else
+                {
                     Console.WriteLine();
                 }
 

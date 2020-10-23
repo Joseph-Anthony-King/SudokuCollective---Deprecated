@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuCollective.Domain.Interfaces;
+using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Domain.Models;
 using SudokuCollective.Domain.Utilities;
 
-namespace SudokuCollective.Tests.TestCases.Models {
-
-    public class SudokuCellShould {
-
+namespace SudokuCollective.Test.TestCases.Models
+{
+    public class SudokuCellShould
+    {
         private List<int> intList;
         private int firstInt;
         private SudokuMatrix populatedTestMatrix;
-        
-        [SetUp]
-        public void Setup() {
 
+        [SetUp]
+        public void Setup()
+        {
             intList = UtilityMethods.GenerateSudokuCompliantIntList();
             firstInt = intList[0];
 
@@ -23,22 +23,22 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void ImplementIDBEntry() {
-
+        public void ImplementIDBEntry()
+        {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut, Is.InstanceOf<IEntityBase>());
         }
-        
+
         [Test]
         [Category("Models")]
-        public void HaveAnID() {
-
+        public void HaveAnID()
+        {
             // Arrange and Act
-           var sut = populatedTestMatrix.SudokuCells[0];
-           
+            var sut = populatedTestMatrix.SudokuCells[0];
+
             // Assert
             Assert.That(sut.Id, Is.TypeOf<int>());
             Assert.That(sut.Id, Is.EqualTo(0));
@@ -46,8 +46,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAnAssociatedMatrix() {
-
+        public void HaveAnAssociatedMatrix()
+        {
             // Arrange and Act
             var testMatrix = new SudokuMatrix();
             var sut = testMatrix.SudokuCells[0];
@@ -58,8 +58,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void SetCoordinatesInConstructor() {
-
+        public void SetCoordinatesInConstructor()
+        {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
 
@@ -72,8 +72,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveADefaultValueOfZero() {
-
+        public void HaveADefaultValueOfZero()
+        {
             // Arrange and Act
             var testMatrix = new SudokuMatrix();
             var sut = testMatrix.SudokuCells[0];
@@ -84,8 +84,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void BeObscuredByDefault() {
-
+        public void BeObscuredByDefault()
+        {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
 
@@ -97,8 +97,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void BeVisibleIfObscuredIsFalse() {
-
+        public void BeVisibleIfObscuredIsFalse()
+        {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
             sut.Obscured = false;
@@ -111,8 +111,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAvailableValuesNineCountIfValueIsZero() {
-
+        public void HaveAvailableValuesNineCountIfValueIsZero()
+        {
             // Arrange and Act
             var testMatrix = new SudokuMatrix();
             var sut = testMatrix.SudokuCells[0];
@@ -123,8 +123,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAvailableValuesZeroCountIfValueNonZero() {
-
+        public void HaveAvailableValuesZeroCountIfValueNonZero()
+        {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
 
@@ -134,8 +134,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveToInt32OutputValueAsInt() {
-
+        public void HaveToInt32OutputValueAsInt()
+        {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
             sut.Obscured = false;
@@ -147,8 +147,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveToStringOutputValueAsString() {
-
+        public void HaveToStringOutputValueAsString()
+        {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
             sut.Obscured = false;

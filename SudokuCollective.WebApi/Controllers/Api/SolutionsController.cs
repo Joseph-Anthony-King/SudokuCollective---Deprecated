@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
-using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.WebApi.Controllers {
+namespace SudokuCollective.Api.Controllers {
 
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]

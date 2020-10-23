@@ -2,20 +2,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using SudokuCollective.Domain.Enums;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.MockServices;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.DifficultyRequests;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
+using SudokuCollective.Api.Controllers;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-    
-    public class DifficultiesControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class DifficultiesControllerShould
+    {
         private DatabaseContext context;
         private DifficultiesController sutSuccess;
         private DifficultiesController sutFailure;
@@ -26,16 +25,16 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private CreateDifficultyRequest createDifficultyRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             context = await TestDatabase.GetDatabaseContext();
             mockDifficultiesService = new MockDifficultiesService(context);
             mockAppsService = new MockAppsService(context);
 
             baseRequest = new BaseRequest();
 
-            updateDifficultyRequest = new UpdateDifficultyRequest() {
-
+            updateDifficultyRequest = new UpdateDifficultyRequest()
+            {
                 Id = 1,
                 Name = "Test Difficulty",
                 DifficultyLevel = DifficultyLevel.TEST,
@@ -44,8 +43,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
                 PageListModel = new PageListModel()
             };
 
-            createDifficultyRequest = new CreateDifficultyRequest() {
-                
+            createDifficultyRequest = new CreateDifficultyRequest()
+            {
                 Name = "Test Difficulty",
                 DifficultyLevel = DifficultyLevel.TEST,
                 License = TestObjects.GetLicense(),
@@ -54,18 +53,18 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             };
 
             sutSuccess = new DifficultiesController(
-                mockDifficultiesService.DifficultiesServiceSuccessfulRequest.Object, 
+                mockDifficultiesService.DifficultiesServiceSuccessfulRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
 
             sutFailure = new DifficultiesController(
-                mockDifficultiesService.DifficultiesServiceFailedRequest.Object, 
+                mockDifficultiesService.DifficultiesServiceFailedRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
         }
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetDifficulty() {
-
+        public void SuccessfullyGetDifficulty()
+        {
             // Arrange
             var difficultyId = 2;
 
@@ -82,8 +81,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetDifficultyFail() {
-
+        public void IssueErrorAndMessageShouldGetDifficultyFail()
+        {
             // Arrange
             var difficultyId = 2;
 
@@ -101,8 +100,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetDifficulties() {
-
+        public void SuccessfullyGetDifficulties()
+        {
             // Arrange
 
             // Act
@@ -118,8 +117,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetDifficultiesFail() {
-
+        public void IssueErrorAndMessageShouldGetDifficultiesFail()
+        {
             // Arrange
 
             // Act
@@ -136,8 +135,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyUpdateDifficulties() {
-
+        public void SuccessfullyUpdateDifficulties()
+        {
             // Arrange
 
             // Act
@@ -151,8 +150,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldUpdateGamesFail() {
-
+        public void IssueErrorAndMessageShouldUpdateGamesFail()
+        {
             // Arrange
 
             // Act
@@ -169,8 +168,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyCreateDifficulties() {
-
+        public void SuccessfullyCreateDifficulties()
+        {
             // Arrange
 
             // Act
@@ -184,8 +183,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldCreateDifficultiesFail() {
-
+        public void IssueErrorAndMessageShouldCreateDifficultiesFail()
+        {
             // Arrange
 
             // Act
@@ -199,8 +198,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyDeleteDifficulties() {
-
+        public void SuccessfullyDeleteDifficulties()
+        {
             // Arrange
             var difficultyId = 2;
 
@@ -215,8 +214,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldDeleteDifficultiesFail() {
-
+        public void IssueErrorAndMessageShouldDeleteDifficultiesFail()
+        {
             // Arrange
             var difficultyId = 2;
 

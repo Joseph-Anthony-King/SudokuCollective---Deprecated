@@ -2,19 +2,18 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.MockServices;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
+using SudokuCollective.Api.Controllers;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-
-    public class AppsControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class AppsControllerShould
+    {
         private DatabaseContext context;
         private AppsController sutSuccess;
         private AppsController sutFailure;
@@ -24,15 +23,15 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private AppRequest appRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             context = await TestDatabase.GetDatabaseContext();
             mockAppsService = new MockAppsService(context);
 
             baseRequest = new BaseRequest();
 
-            appRequest = new AppRequest() {
-
+            appRequest = new AppRequest()
+            {
                 Name = "New Test App 3",
                 DevUrl = "https://localhost:8080",
                 LiveUrl = "https://TestApp3.com",
@@ -48,8 +47,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetApp() {
-
+        public void SuccessfullyGetApp()
+        {
             // Arrange
             var appId = 1;
 
@@ -67,8 +66,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetAppFail() {
-
+        public void IssueErrorAndMessageShouldGetAppFail()
+        {
             // Arrange
             var appId = 1;
 
@@ -86,8 +85,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetAppByLicense() {
-
+        public void SuccessfullyGetAppByLicense()
+        {
             // Arrange
 
             // Act
@@ -103,8 +102,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetAppByLicenseFail() {
-
+        public void IssueErrorAndMessageShouldGetAppByLicenseFail()
+        {
             // Arrange
 
             // Act
@@ -121,8 +120,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetApps() {
-
+        public void SuccessfullyGetApps()
+        {
             // Arrange
 
             // Act
@@ -138,8 +137,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyGetAppsFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyGetAppsFail()
+        {
             // Arrange
 
             // Act
@@ -156,8 +155,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyUpdateApps() {
-
+        public void SuccessfullyUpdateApps()
+        {
             // Arrange
 
             // Act
@@ -171,8 +170,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyUpdateAppsFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyUpdateAppsFail()
+        {
             // Arrange
 
             // Act
@@ -189,8 +188,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetAppUsers() {
-
+        public void SuccessfullyGetAppUsers()
+        {
             // Arrange
 
             // Act
@@ -204,8 +203,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyGetAppUsersFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyGetAppUsersFail()
+        {
             // Arrange
 
             // Act
@@ -222,8 +221,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyAddUserToApp() {
-
+        public void SuccessfullyAddUserToApp()
+        {
             // Arrange
 
             // Act
@@ -237,8 +236,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyAddUserToAppFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyAddUserToAppFail()
+        {
             // Arrange
 
             // Act
@@ -255,8 +254,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyRemoveUserFromApp() {
-
+        public void SuccessfullyRemoveUserFromApp()
+        {
             // Arrange
 
             // Act
@@ -271,8 +270,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyRemoveUserFromAppFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyRemoveUserFromAppFail()
+        {
             // Arrange
 
             // Act
@@ -289,8 +288,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyActivateAnApp() {
-
+        public void SuccessfullyActivateAnApp()
+        {
             // Arrange
 
             // Act
@@ -304,8 +303,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyActivateAnAppFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyActivateAnAppFail()
+        {
             // Arrange
 
             // Act
@@ -322,8 +321,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyDeactivateAnApp() {
-
+        public void SuccessfullyDeactivateAnApp()
+        {
             // Arrange
 
             // Act
@@ -337,8 +336,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyDeactivateAnAppFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyDeactivateAnAppFail()
+        {
             // Arrange
 
             // Act
@@ -355,8 +354,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void ReturnBadRequestResponseShouldLicenseValidationFail() {
-
+        public void ReturnBadRequestResponseShouldLicenseValidationFail()
+        {
             // Arrange
             var appId = 1;
 
@@ -369,16 +368,16 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
             var resultThree = sutInvalid.GetApps(baseRequest, true);
             var statusCodeThree = ((BadRequestObjectResult)resultThree.Result.Result).StatusCode;
-            
+
             var resultFour = sutInvalid.UpdateApp(appRequest);
             var statusCodeFour = ((BadRequestObjectResult)resultFour.Result).StatusCode;
-            
+
             var resultFive = sutInvalid.GetUsers(baseRequest, true);
             var statusCodeFive = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
-            
+
             var resultSix = sutInvalid.AddUser(3, baseRequest);
             var statusCodeSix = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
-            
+
             var resultSeven = sutInvalid.RemoveUser(3, baseRequest);
             var statusCodeSeven = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
 
@@ -400,8 +399,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyAllowSuperuserToDeleteApps() {
-
+        public void SuccessfullyAllowSuperuserToDeleteApps()
+        {
             // Arrange
 
             // Act
@@ -415,8 +414,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyAllowSuperuserToDeleteAppsFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyAllowSuperuserToDeleteAppsFail()
+        {
             // Arrange
 
             // Act
@@ -432,8 +431,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyAllowAdminToDeleteApps() {
-
+        public void SuccessfullyAllowAdminToDeleteApps()
+        {
             // Arrange
 
             // Act
@@ -447,8 +446,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyAllowAdminToDeleteAppsFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyAllowAdminToDeleteAppsFail()
+        {
             // Arrange
 
             // Act

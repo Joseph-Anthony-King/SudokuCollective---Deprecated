@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Domain;
-using SudokuCollective.Domain.Interfaces;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests.TestCases.Models {
-
-    public class UserShould {
-
+namespace SudokuCollective.Test.TestCases.Models
+{
+    public class UserShould
+    {
         [Test]
         [Category("Models")]
-        public void ImplementIDBEntry() {
-
+        public void ImplementIDBEntry()
+        {
             // Arrange and Act
             var sut = new User();
 
@@ -22,8 +22,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAnID() {
-
+        public void HaveAnID()
+        {
             // Arrange and Act
             var sut = new User();
 
@@ -34,12 +34,12 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void AcceptFirstAndLastName() {
-
+        public void AcceptFirstAndLastName()
+        {
             // Arrange and Act
             var sut = new User(
-                "John", 
-                "Doe", 
+                "John",
+                "Doe",
                 "Password");
 
             // Assert
@@ -51,8 +51,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveWorkingProperties() {
-
+        public void HaveWorkingProperties()
+        {
             // Arrange
             var sut = new User();
 
@@ -67,8 +67,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveMinimumDateTimeValueWhenCreated() {
-
+        public void HaveMinimumDateTimeValueWhenCreated()
+        {
             // Arrange and Act
             var sut = new User();
 
@@ -78,8 +78,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAGameList() {
-
+        public void HaveAGameList()
+        {
             // Arrange and Act
             var sut = new User();
 
@@ -90,8 +90,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveARolesList() {
-
+        public void HaveARolesList()
+        {
             // Arrange and Act
             var sut = new User();
 
@@ -102,8 +102,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAnAppList() {
-
+        public void HaveAnAppList()
+        {
             // Arrange and Act
             var sut = new User();
 
@@ -114,8 +114,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAPassword() {
-
+        public void HaveAPassword()
+        {
             // Arrange and Act
             var sut = new User();
 
@@ -125,8 +125,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAnActiveStatus() {
-
+        public void HaveAnActiveStatus()
+        {
             // Arrange and Act
             var sut = new User();
 
@@ -136,8 +136,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAMethodToActivate() {
-
+        public void HaveAMethodToActivate()
+        {
             // Arrange
             var sut = new User();
 
@@ -150,8 +150,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAMethodToDeactivate() {
-
+        public void HaveAMethodToDeactivate()
+        {
             // Arrange
             var sut = new User();
 
@@ -164,8 +164,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAUserNameThatAcceptsAlphaNumericCharacters() {
-
+        public void HaveAUserNameThatAcceptsAlphaNumericCharacters()
+        {
             // Arrange
             var sut = new User();
 
@@ -178,8 +178,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAUserNameThatRejectsSpecialCharacters() {
-
+        public void HaveAUserNameThatRejectsSpecialCharacters()
+        {
             // Arrange
             var sut = new User();
 
@@ -192,8 +192,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void ProvideSuperUserStatus() {
-
+        public void ProvideSuperUserStatus()
+        {
             // Arrange
             var sut = new User();
 
@@ -205,8 +205,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void ProvideAdminStatus() {
-
+        public void ProvideAdminStatus()
+        {
             // Arrange
             var sut = new User();
 

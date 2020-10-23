@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuCollective.Domain.Interfaces;
+using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests.TestCases.Models {
-
-    public class AppShould {
-
+namespace SudokuCollective.Test.TestCases.Models
+{
+    public class AppShould
+    {
         [Test]
         [Category("Models")]
-        public void ImplementIDBEntry() {
-
+        public void ImplementIDBEntry()
+        {
             // Arrange and Act
             var sut = new App();
 
@@ -21,8 +21,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAnID() {
-
+        public void HaveAnID()
+        {
             // Arrange and Act
             var sut = new App();
 
@@ -33,8 +33,8 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveExpectedProperties() {
-
+        public void HaveExpectedProperties()
+        {
             // Arrange and Act
             var sut = new App();
 
@@ -49,36 +49,36 @@ namespace SudokuCollective.Tests.TestCases.Models {
             Assert.That(sut.DateUpdated, Is.TypeOf<DateTime>());
             Assert.That(sut.Users, Is.InstanceOf<ICollection<UserApp>>());
         }
-        
+
         [Test]
         [Category("Models")]
-        public void DefaultToActiveStatus() {
-
+        public void DefaultToActiveStatus()
+        {
             // Arrange and Act
-            var sut =  new App();
+            var sut = new App();
 
             // Assert
             Assert.That(sut.IsActive, Is.True);
         }
-        
+
         [Test]
         [Category("Models")]
-        public void ProvideLicenseByCallingGetLicense() {
-
+        public void ProvideLicenseByCallingGetLicense()
+        {
             // Arrange and Act
-            var sut =  new App();
+            var sut = new App();
 
             // Assert
-            Assert.That(sut.GetLicense(0,0), Is.TypeOf<string>());
-            Assert.That(sut.GetLicense(0,0), Is.EqualTo(sut.License));
+            Assert.That(sut.GetLicense(0, 0), Is.TypeOf<string>());
+            Assert.That(sut.GetLicense(0, 0), Is.EqualTo(sut.License));
         }
-        
+
         [Test]
         [Category("Models")]
-        public void HaveATrueActiveStatusIfActivateAppCalled() {
-
+        public void HaveATrueActiveStatusIfActivateAppCalled()
+        {
             // Arrange
-            var sut =  new App();
+            var sut = new App();
 
             // Act
             sut.ActivateApp();
@@ -86,13 +86,13 @@ namespace SudokuCollective.Tests.TestCases.Models {
             // Assert
             Assert.That(sut.IsActive, Is.True);
         }
-        
+
         [Test]
         [Category("Models")]
-        public void HaveAFalseActiveStatusIfDeactivateAppCalled() {
-
+        public void HaveAFalseActiveStatusIfDeactivateAppCalled()
+        {
             // Arrange
-            var sut =  new App();
+            var sut = new App();
 
             // Act
             sut.DeactivateApp();

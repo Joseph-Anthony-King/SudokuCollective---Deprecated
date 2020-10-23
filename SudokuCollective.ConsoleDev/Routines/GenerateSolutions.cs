@@ -1,25 +1,27 @@
 ﻿using System;
 using SudokuCollective.ConsoleDev.Classes;
-using SudokuCollective.Domain.Enums;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.ConsoleDev.Routines {
-
-    internal static class GenerateSolutions {
-
-        internal static void Run() {
-
-            var result = string.Empty;
+namespace SudokuCollective.ConsoleDev.Routines
+{
+    internal static class GenerateSolutions
+    {
+        internal static void Run()
+        {
+            string result;
             var continueLoop = true;
 
-            do {
+            do
+            {
                 var matrix = new SudokuMatrix();
 
-                matrix.SetDifficulty(new Difficulty() {
+                matrix.SetDifficulty(new Difficulty()
+                {
                     Name = "Test",
                     DifficultyLevel = DifficultyLevel.TEST
                 });
-                
+
                 matrix.GenerateSolution();
 
                 DisplayScreens.DisplayMatix(matrix);
@@ -28,8 +30,8 @@ namespace SudokuCollective.ConsoleDev.Routines {
 
                 result = Console.ReadLine();
 
-                if (result.ToLower().Equals("no") || result.ToLower().Equals("n")) {
-
+                if (result.ToLower().Equals("no") || result.ToLower().Equals("n"))
+                {
                     continueLoop = false;
                 }
 

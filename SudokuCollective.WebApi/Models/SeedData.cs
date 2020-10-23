@@ -4,25 +4,25 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Core.Enums;
 
-namespace SudokuCollective.WebApi.Models {
-
-    public class SeedData {
-
-        public static void EnsurePopulated(IApplicationBuilder app, IConfiguration config) {
-
-            using (var servicesScope = app.ApplicationServices.CreateScope()) {
-                
+namespace SudokuCollective.Api.Models
+{
+    public class SeedData
+    {
+        public static void EnsurePopulated(IApplicationBuilder app, IConfiguration config)
+        {
+            using (var servicesScope = app.ApplicationServices.CreateScope())
+            {
                 var createdDate = DateTime.UtcNow;
 
                 DatabaseContext context = servicesScope.ServiceProvider.GetRequiredService<DatabaseContext>();
                 context.Database.Migrate();
 
-                if (!context.Roles.Any()) {
-
+                if (!context.Roles.Any())
+                {
                     context.Roles.Add(
 
                         new Role(0, "Null", RoleLevel.NULL)
@@ -52,8 +52,8 @@ namespace SudokuCollective.WebApi.Models {
                     context.SaveChanges();
                 }
 
-                if (!context.Difficulties.Any()) {
-
+                if (!context.Difficulties.Any())
+                {
                     context.Difficulties.Add(
 
                         new Difficulty(0, "Null", "Null", DifficultyLevel.NULL)
@@ -97,8 +97,8 @@ namespace SudokuCollective.WebApi.Models {
                     context.SaveChanges();
                 }
 
-                if (!context.Users.Any()) {
-
+                if (!context.Users.Any())
+                {
                     var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
                     context.Users.Add(
@@ -111,8 +111,8 @@ namespace SudokuCollective.WebApi.Models {
                             config.GetValue<string>("DefaultUserAccounts:SuperUser:NickName"),
                             config.GetValue<string>("DefaultUserAccounts:SuperUser:Email"),
                             BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt)),
-                            true, 
-                            createdDate, 
+                            true,
+                            createdDate,
                             DateTime.MinValue)
                     );
 
@@ -137,8 +137,8 @@ namespace SudokuCollective.WebApi.Models {
 
                 }
 
-                if (!context.Apps.Any()) {
-
+                if (!context.Apps.Any())
+                {
                     context.Apps.Add(
 
                         new App(
@@ -172,8 +172,8 @@ namespace SudokuCollective.WebApi.Models {
                     context.SaveChanges();
                 }
 
-                if (!context.UsersApps.Any()) {
-                    
+                if (!context.UsersApps.Any())
+                {
                     context.UsersApps.Add(
 
                         new UserApp(0, 1, 1)
@@ -203,8 +203,8 @@ namespace SudokuCollective.WebApi.Models {
                     context.SaveChanges();
                 }
 
-                if (!context.UsersRoles.Any()) {
-
+                if (!context.UsersRoles.Any())
+                {
                     context.UsersRoles.Add(
 
                         new UserRole(0, 1, 2)

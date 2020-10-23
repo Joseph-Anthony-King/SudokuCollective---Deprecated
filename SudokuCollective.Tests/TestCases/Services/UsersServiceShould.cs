@@ -3,20 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Services;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
-using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
-using SudokuCollective.WebApi.Services;
-using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.Test.TestData;
 
-namespace SudokuCollective.Tests.TestCases.Services
+namespace SudokuCollective.Test.TestCases.Services
 {
-
-    public class UsersServiceShould {
-
+    public class UsersServiceShould
+    {
         private DatabaseContext _context;
         private IUsersService sut;
         private DateTime dateCreated;
@@ -24,8 +21,8 @@ namespace SudokuCollective.Tests.TestCases.Services
         private BaseRequest baseRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             _context = await TestDatabase.GetDatabaseContext();
             sut = new UsersService(_context);
             dateCreated = DateTime.UtcNow;
@@ -35,8 +32,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task GetUser() {
-
+        public async Task GetUser()
+        {
             // Arrange
             var userId = 1;
 
@@ -50,8 +47,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task ReturnMessageIfUserNotFound() {
-
+        public async Task ReturnMessageIfUserNotFound()
+        {
             // Arrange
             var userId = 5;
 
@@ -67,8 +64,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task GetUsers() {
-
+        public async Task GetUsers()
+        {
             // Arrange
 
             // Act
@@ -81,11 +78,11 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateUser() {
-
+        public async Task CreateUser()
+        {
             // Arrange
-            var registerRequest = new RegisterRequest() {
-
+            var registerRequest = new RegisterRequest()
+            {
                 UserName = "NewUser",
                 FirstName = "New",
                 LastName = "User",
@@ -108,11 +105,11 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateAdminUser() {
-
+        public async Task CreateAdminUser()
+        {
             // Arrange
-            var registerRequest = new RegisterRequest() {
-
+            var registerRequest = new RegisterRequest()
+            {
                 UserName = "NewUser",
                 FirstName = "New",
                 LastName = "User",
@@ -127,22 +124,23 @@ namespace SudokuCollective.Tests.TestCases.Services
 
             // Act
             var result = await sut.CreateUser(registerRequest, provideAdminRole);
+            var user = (User)result.User;
             var users = _context.Users.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.User, Is.TypeOf<User>());
-            Assert.That(result.User.IsAdmin, Is.True);
+            Assert.That(user, Is.TypeOf<User>());
+            Assert.That(user.IsAdmin, Is.True);
             Assert.That(users.Count, Is.EqualTo(4));
         }
 
         [Test]
         [Category("Services")]
-        public async Task RequireUserNameUnique() {
-
+        public async Task RequireUserNameUnique()
+        {
             // Arrange
-            var registerRequest = new RegisterRequest() {
-
+            var registerRequest = new RegisterRequest()
+            {
                 UserName = "TestUser",
                 FirstName = "New",
                 LastName = "User",
@@ -163,11 +161,11 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireUserName() {
-
+        public async Task RequireUserName()
+        {
             // Arrange
-            var registerRequest = new RegisterRequest() {
-
+            var registerRequest = new RegisterRequest()
+            {
                 UserName = null,
                 FirstName = "New",
                 LastName = "User",
@@ -188,11 +186,11 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RejectUserNameWithSpecialCharacters() {
-
+        public async Task RejectUserNameWithSpecialCharacters()
+        {
             // Arrange
-            var registerRequest = new RegisterRequest() {
-
+            var registerRequest = new RegisterRequest()
+            {
                 UserName = "@#$%^&*",
                 FirstName = "New",
                 LastName = "User",
@@ -213,12 +211,11 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireUniqueEmail() {
-
+        public async Task RequireUniqueEmail()
+        {
             // Arrange
             var registerRequest = new RegisterRequest()
             {
-
                 UserName = "NewUser",
                 FirstName = "New",
                 LastName = "User",
@@ -239,11 +236,11 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireEmail() {
-
+        public async Task RequireEmail()
+        {
             // Arrange
-            var registerRequest = new RegisterRequest() {
-
+            var registerRequest = new RegisterRequest()
+            {
                 UserName = "NewUser",
                 FirstName = "New",
                 LastName = "User",
@@ -264,13 +261,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task UpdateUser() {
-
+        public async Task UpdateUser()
+        {
             // Arrange
             var userId = 1;
 
-            var updateUserRequest = new UpdateUserRequest() {
-
+            var updateUserRequest = new UpdateUserRequest()
+            {
                 UserName = "TestSuperUserUPDATED",
                 FirstName = "Test Super",
                 LastName = "User",
@@ -290,13 +287,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireUniqueUserNameForUpdates() {
-
+        public async Task RequireUniqueUserNameForUpdates()
+        {
             // Arrange
             var userId = 1;
 
-            var updateUserRequest = new UpdateUserRequest() {
-
+            var updateUserRequest = new UpdateUserRequest()
+            {
                 UserName = "TestUser",
                 FirstName = "Test Super",
                 LastName = "User",
@@ -316,13 +313,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireUserNameForUpdates() {
-
+        public async Task RequireUserNameForUpdates()
+        {
             // Arrange
             var userId = 1;
 
-            var updateUserRequest = new UpdateUserRequest() {
-
+            var updateUserRequest = new UpdateUserRequest()
+            {
                 UserName = null,
                 FirstName = "Test Super",
                 LastName = "User",
@@ -342,13 +339,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RejectUserNamewithSpecialCharacters() {
-
+        public async Task RejectUserNamewithSpecialCharacters()
+        {
             // Arrange
             var userId = 1;
 
-            var updateUserRequest = new UpdateUserRequest() {
-
+            var updateUserRequest = new UpdateUserRequest()
+            {
                 UserName = "@#$%^&*",
                 FirstName = "Test Super",
                 LastName = "User",
@@ -368,13 +365,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireUniqueEmailWithUpdates() {
-
+        public async Task RequireUniqueEmailWithUpdates()
+        {
             // Arrange
             var userId = 1;
 
-            var updateUserRequest = new UpdateUserRequest() {
-
+            var updateUserRequest = new UpdateUserRequest()
+            {
                 UserName = "TestSuperUserUPDATED",
                 FirstName = "Test Super",
                 LastName = "User",
@@ -394,13 +391,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireEmailWithUpdates() {
-
+        public async Task RequireEmailWithUpdates()
+        {
             // Arrange
             var userId = 1;
 
-            var updateUserRequest = new UpdateUserRequest() {
-
+            var updateUserRequest = new UpdateUserRequest()
+            {
                 UserName = "TestSuperUserUPDATED",
                 FirstName = "Test Super",
                 LastName = "User",
@@ -420,13 +417,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task UpdateUserPassword() {
-
+        public async Task UpdateUserPassword()
+        {
             // Arrange
             var userId = 1;
 
-            var updatePasswordRequest = new UpdatePasswordRequest() {
-
+            var updatePasswordRequest = new UpdatePasswordRequest()
+            {
                 OldPassword = "password1",
                 NewPassword = "password2",
                 License = TestObjects.GetLicense(),
@@ -442,13 +439,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireOldPaswordForUpdateRequests() {
-
+        public async Task RequireOldPaswordForUpdateRequests()
+        {
             // Arrange
             var userId = 1;
 
-            var updatePasswordRequest = new UpdatePasswordRequest() {
-
+            var updatePasswordRequest = new UpdatePasswordRequest()
+            {
                 OldPassword = "password!",
                 NewPassword = "password2",
                 License = TestObjects.GetLicense(),
@@ -465,13 +462,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RejectPasswordUpdatesIfUserNotFound() {
-
+        public async Task RejectPasswordUpdatesIfUserNotFound()
+        {
             // Arrange
             var userId = 4;
 
-            var updatePasswordRequest = new UpdatePasswordRequest() {
-
+            var updatePasswordRequest = new UpdatePasswordRequest()
+            {
                 OldPassword = "password1",
                 NewPassword = "password2",
                 License = TestObjects.GetLicense(),
@@ -488,8 +485,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task DeleteUsers() {
-
+        public async Task DeleteUsers()
+        {
             // Arrange
             var userId = 1;
 
@@ -504,14 +501,13 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task ReturnErrorMessageIfUserNotFoundForDeletion() {
-
+        public async Task ReturnErrorMessageIfUserNotFoundForDeletion()
+        {
             // Arrange
             var userId = 4;
 
             // Act
             var result = await sut.DeleteUser(userId);
-            var users = _context.Users.ToList();
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -520,8 +516,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task AddRolesToUsers() {
-
+        public async Task AddRolesToUsers()
+        {
             // Arrange
             var userId = 2;
 
@@ -547,8 +543,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RemoveRolesFromUsers() {
-
+        public async Task RemoveRolesFromUsers()
+        {
             // Arrange
             var userId = 1;
 
@@ -574,8 +570,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task ActivateUsers() {
-
+        public async Task ActivateUsers()
+        {
             // Arrange
             var userId = 1;
 
@@ -592,8 +588,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task DeactivateUsers() {
-
+        public async Task DeactivateUsers()
+        {
             // Arrange
             var userId = 1;
 

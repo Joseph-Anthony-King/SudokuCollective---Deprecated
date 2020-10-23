@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace SudokuCollective.WebApi {
+namespace SudokuCollective.Api {
 
     public class Program {
 

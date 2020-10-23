@@ -2,20 +2,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.MockServices;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
+using SudokuCollective.Api.Controllers;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Data.Models.PageModels;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-    
-    public class RolesControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class RolesControllerShould
+    {
         private DatabaseContext context;
         private RolesController sutSuccess;
         private RolesController sutFailure;
@@ -26,16 +25,16 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private CreateRoleRequest createRoleRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             context = await TestDatabase.GetDatabaseContext();
             mockRolesService = new MockRolesService(context);
             mockAppsService = new MockAppsService(context);
 
             baseRequest = new BaseRequest();
 
-            updateRoleRequest = new UpdateRoleRequest() {
-
+            updateRoleRequest = new UpdateRoleRequest()
+            {
                 Id = 1,
                 Name = "Test Role",
                 RoleLevel = RoleLevel.NULL,
@@ -44,8 +43,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
                 PageListModel = new PageListModel()
             };
 
-            createRoleRequest = new CreateRoleRequest() {
-                
+            createRoleRequest = new CreateRoleRequest()
+            {
                 Name = "Test Difficulty",
                 RoleLevel = RoleLevel.NULL,
                 License = TestObjects.GetLicense(),
@@ -54,18 +53,18 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             };
 
             sutSuccess = new RolesController(
-                mockRolesService.RolesServiceSuccessfulRequest.Object, 
+                mockRolesService.RolesServiceSuccessfulRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
 
             sutFailure = new RolesController(
-                mockRolesService.RolesServiceFailedRequest.Object, 
+                mockRolesService.RolesServiceFailedRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
         }
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetRole() {
-
+        public void SuccessfullyGetRole()
+        {
             // Arrange
             var roleId = 1;
 
@@ -82,8 +81,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetRoleFail() {
-
+        public void IssueErrorAndMessageShouldGetRoleFail()
+        {
             // Arrange
             var roleId = 2;
 
@@ -101,8 +100,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetRoles() {
-
+        public void SuccessfullyGetRoles()
+        {
             // Arrange
 
             // Act
@@ -118,8 +117,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetRolesFail() {
-
+        public void IssueErrorAndMessageShouldGetRolesFail()
+        {
             // Arrange
 
             // Act
@@ -136,8 +135,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyUpdateRoles() {
-
+        public void SuccessfullyUpdateRoles()
+        {
             // Arrange
 
             // Act
@@ -151,8 +150,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldUpdateRolesFail() {
-
+        public void IssueErrorAndMessageShouldUpdateRolesFail()
+        {
             // Arrange
 
             // Act
@@ -169,8 +168,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyCreateRoles() {
-
+        public void SuccessfullyCreateRoles()
+        {
             // Arrange
 
             // Act
@@ -184,8 +183,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldCreateRolesFail() {
-
+        public void IssueErrorAndMessageShouldCreateRolesFail()
+        {
             // Arrange
 
             // Act
@@ -199,8 +198,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyDeleteRoles() {
-
+        public void SuccessfullyDeleteRoles()
+        {
             // Arrange
             var roleId = 1;
 
@@ -215,8 +214,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldDeleteRolesFail() {
-
+        public void IssueErrorAndMessageShouldDeleteRolesFail()
+        {
             // Arrange
             var roleId = 1;
 

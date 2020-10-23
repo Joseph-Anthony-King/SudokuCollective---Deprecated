@@ -1,27 +1,26 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using SudokuCollective.Domain.Enums;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Services;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels.RoleRequests;
-using SudokuCollective.WebApi.Services;
-using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.Test.TestData;
 
-namespace SudokuCollective.Tests.TestCases.Services
+namespace SudokuCollective.Test.TestCases.Services
 {
-
-    public class RolesServiceShould {
-
+    public class RolesServiceShould
+    {
         private DatabaseContext _context;
-        private IRolesService sut;
+        private RolesService sut;
         private string license;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             _context = await TestDatabase.GetDatabaseContext();
             sut = new RolesService(_context);
             license = TestObjects.GetLicense();
@@ -29,8 +28,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task GetARole() {
-
+        public async Task GetARole()
+        {
             // Arrange
 
             // Act
@@ -43,8 +42,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task GetRoles() {
-
+        public async Task GetRoles()
+        {
             // Arrange
 
             // Act
@@ -57,8 +56,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task GetRolesWithoutNullOrSuperUserRoleLevel() {
-
+        public async Task GetRolesWithoutNullOrSuperUserRoleLevel()
+        {
             // Arrange
 
             // Act
@@ -76,8 +75,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task CreateARole() {
-
+        public async Task CreateARole()
+        {
             // Arrange
 
             // Act
@@ -91,14 +90,15 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task UpdateADifficulty() {
-
+        public async Task UpdateADifficulty()
+        {
             // Arrange
-            var updateRoleRequest = new UpdateRoleRequest() {
+            var updateRoleRequest = new UpdateRoleRequest()
+            {
 
                 Id = 1,
                 Name = "Null UPDATED!",
-                RoleLevel = RoleLevel.NULL,                
+                RoleLevel = RoleLevel.NULL,
                 License = license,
                 RequestorId = 1,
                 PageListModel = new PageListModel()
@@ -116,8 +116,8 @@ namespace SudokuCollective.Tests.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task DeleteADifficulty() {
-
+        public async Task DeleteADifficulty()
+        {
             // Arrange
 
             // Act

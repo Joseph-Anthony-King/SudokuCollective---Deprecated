@@ -1,26 +1,25 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Services;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
-using SudokuCollective.WebApi.Services;
-using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.Test.TestData;
 
-namespace SudokuCollective.Tests.TestCases.Services {
-
-    public class SolutionsServiceShould {
-
+namespace SudokuCollective.Test.TestCases.Services
+{
+    public class SolutionsServiceShould
+    {
         private DatabaseContext _context;
         private ISolutionsService sut;
         private string license;
         private BaseRequest baseRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             _context = await TestDatabase.GetDatabaseContext();
             sut = new SolutionsService(_context);
             license = TestObjects.GetLicense();
@@ -29,8 +28,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetASolution() {
-
+        public async Task GetASolution()
+        {
             // Arrange
 
             // Act
@@ -43,8 +42,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetSolutions() {
-
+        public async Task GetSolutions()
+        {
             // Arrange
 
             // Act
@@ -57,11 +56,11 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task SolveSudokuMatrices() {
-
+        public async Task SolveSudokuMatrices()
+        {
             // Arrange
-            var solveRequest = new SolveRequest() {
-
+            var solveRequest = new SolveRequest()
+            {
                 UserId = 1,
                 Minutes = 3,
                 FirstRow = new int[9] { 0, 2, 0, 5, 0, 0, 8, 7, 6 },
@@ -89,8 +88,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GenerateASolution() {
-
+        public async Task GenerateASolution()
+        {
             // Arrange
 
             // Act
@@ -105,8 +104,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task AddSolutions() {
-
+        public async Task AddSolutions()
+        {
             // Arrange
             var limit = 10;
 

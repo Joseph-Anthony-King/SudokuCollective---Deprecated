@@ -1,23 +1,24 @@
 using NUnit.Framework;
-using SudokuCollective.Domain.Enums;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Domain.Utilities;
 using SudokuCollective.Domain.Models;
 
-namespace SudokuCollective.Tests.TestCases.Models {
-
-    public class UtilitiesShould {
-
+namespace SudokuCollective.Test.TestCases.Models
+{
+    public class UtilitiesShould
+    {
         [Test]
         [Category("Utilities")]
-        public void CreateASudokuCompliantIntList() {
-
+        public void CreateASudokuCompliantIntList()
+        {
             // Arrange
             var sut = UtilityMethods.GenerateSudokuCompliantIntList();
 
             // Act
             var result = new SudokuMatrix(sut);
-            result.SetDifficulty(new Difficulty() {
-                    Name = "Test", 
+            result.SetDifficulty(new Difficulty()
+                {
+                    Name = "Test",
                     DifficultyLevel = DifficultyLevel.TEST
                 }
             );

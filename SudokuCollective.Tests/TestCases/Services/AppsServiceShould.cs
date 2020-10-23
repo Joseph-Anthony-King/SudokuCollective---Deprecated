@@ -2,19 +2,18 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Services;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.AppRequests;
-using SudokuCollective.WebApi.Services;
-using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.Test.TestData;
 
-namespace SudokuCollective.Tests.TestCases.Services {
-
-    public class AppsServiceShould {
-
+namespace SudokuCollective.Test.TestCases.Services
+{
+    public class AppsServiceShould
+    {
         private DatabaseContext _context;
         private IAppsService sut;
         private DateTime dateCreated;
@@ -24,8 +23,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
         private int appId;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             _context = await TestDatabase.GetDatabaseContext();
             sut = new AppsService(_context);
             dateCreated = DateTime.UtcNow;
@@ -37,8 +36,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetAppByID() {
-
+        public async Task GetAppByID()
+        {
             // Arrange
 
             // Act
@@ -51,8 +50,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetAppByIDReturnsFalseIfNotFound() {
-
+        public async Task GetAppByIDReturnsFalseIfNotFound()
+        {
             // Arrange
 
             // Act
@@ -66,8 +65,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetMultipleApps() {
-
+        public async Task GetMultipleApps()
+        {
             // Arrange
 
             // Act
@@ -80,12 +79,13 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task CreateApps() {
-
+        public async Task CreateApps()
+        {
             // Arrange
 
             // Act
-            var result = await sut.CreateApp(new LicenseRequest() {
+            var result = await sut.CreateApp(new LicenseRequest()
+            {
 
                 Name = "Test App 3",
                 OwnerId = 1,
@@ -101,12 +101,13 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task NotCreateAppsIfOwnerDoesNotExist() {
-
+        public async Task NotCreateAppsIfOwnerDoesNotExist()
+        {
             // Arrange
 
             // Act
-            var result = await sut.CreateApp(new LicenseRequest() {
+            var result = await sut.CreateApp(new LicenseRequest()
+            {
 
                 Name = "Test App 3",
                 OwnerId = 4,
@@ -121,8 +122,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetAppByLicense() {
-
+        public async Task GetAppByLicense()
+        {
             // Arrange
 
             // Act
@@ -136,8 +137,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task NotGetAppByLicenseIfInvalid() {
-
+        public async Task NotGetAppByLicenseIfInvalid()
+        {
             // Arrange
             var invalidLicense = "5CDBFC8F-F304-4703-831B-750A7B7F8531";
 
@@ -151,8 +152,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task RetrieveLicense() {
-
+        public async Task RetrieveLicense()
+        {
             // Arrange
 
             // Act
@@ -164,8 +165,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task NotRetrieveLicenseIfAppDoesNotExist() {
-
+        public async Task NotRetrieveLicenseIfAppDoesNotExist()
+        {
             // Arrange
 
             // Act
@@ -179,8 +180,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task GetUsersByApp() {
-
+        public async Task GetUsersByApp()
+        {
             // Arrange
 
             // Act
@@ -192,13 +193,14 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task UpdateApps() {
-
+        public async Task UpdateApps()
+        {
             // Arrange
 
             // Act
             var result = await sut.UpdateApp(
-                new AppRequest() {
+                new AppRequest()
+                {
 
                     License = license,
                     RequestorId = 1,
@@ -218,11 +220,11 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task AddUsersToApp() {
-
+        public async Task AddUsersToApp()
+        {
             // Arrange
-            var user = new User() {
-
+            var user = new User()
+            {
                 Id = 4,
                 UserName = "TestUser3",
                 FirstName = "John",
@@ -235,8 +237,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
                 DateUpdated = dateCreated
             };
 
-            var userRole = new UserRole() {
-
+            var userRole = new UserRole()
+            {
                 UserId = 4,
                 RoleId = 4
             };
@@ -259,8 +261,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task RemoveUsersFromApps() {
-
+        public async Task RemoveUsersFromApps()
+        {
             // Arrange
 
             // Act
@@ -276,8 +278,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DeleteApps() {
-
+        public async Task DeleteApps()
+        {
             // Arrange
 
             // Act
@@ -303,8 +305,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ActivateApps() {
-
+        public async Task ActivateApps()
+        {
             // Arrange
 
             // Act
@@ -320,8 +322,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DeactivateApps() {
-
+        public async Task DeactivateApps()
+        {
             // Arrange
 
             // Act
@@ -337,8 +339,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task PermitValidRequests() {
-
+        public async Task PermitValidRequests()
+        {
             // Arrange
 
             // Act
@@ -350,8 +352,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DenyInvalidLicenseRequests() {
-
+        public async Task DenyInvalidLicenseRequests()
+        {
             // Arrange
             var invalidLicense = "5CDBFC8F-F304-4703-831B-750A7B7F8531";
 
@@ -364,11 +366,11 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DenyRequestWhereUserIsNotRegisteredToApp() {
-
+        public async Task DenyRequestWhereUserIsNotRegisteredToApp()
+        {
             // Arrange
-            var user = new User() {
-
+            var user = new User()
+            {
                 Id = 4,
                 UserName = "TestUser3",
                 FirstName = "John",
@@ -381,14 +383,14 @@ namespace SudokuCollective.Tests.TestCases.Services {
                 DateUpdated = dateCreated
             };
 
-            var userRole = new UserRole() {
-
+            var userRole = new UserRole()
+            {
                 UserId = 4,
                 RoleId = 4
             };
 
-            var userApp = new UserApp() {
-
+            var userApp = new UserApp()
+            {
                 UserId = 4,
                 AppId = 2
             };
@@ -414,11 +416,11 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task PermitSuperUserSystemWideAccess() {
-
+        public async Task PermitSuperUserSystemWideAccess()
+        {
             // Arrange
-            var newAppResult = await sut.CreateApp(new LicenseRequest() {
-
+            var newAppResult = await sut.CreateApp(new LicenseRequest()
+            {
                 Name = "Test App 3",
                 OwnerId = 2,
                 DevUrl = "https://localhost:5001",
@@ -430,7 +432,7 @@ namespace SudokuCollective.Tests.TestCases.Services {
                 .Select(a => a.License)
                 .FirstOrDefault();
 
-            var superUser = _context.Users.Where(user => user.Id == 1).FirstOrDefault();
+            var superUser = (User)_context.Users.Where(user => user.Id == 1).FirstOrDefault();
 
             // Act
             var superUserIsInApp = newAppResult.App.Users
@@ -446,8 +448,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task PermitOwnerRequests() {
-
+        public async Task PermitOwnerRequests()
+        {
             // Arrange
 
             // Act
@@ -459,8 +461,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DenyInvalidOwnerRequests() {
-
+        public async Task DenyInvalidOwnerRequests()
+        {
             // Arrange
             var invalidLicense = "5CDBFC8F-F304-4703-831B-750A7B7F8531";
 

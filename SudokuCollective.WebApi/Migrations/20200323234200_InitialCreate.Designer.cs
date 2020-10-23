@@ -3,11 +3,10 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SudokuCollective.WebApi.Models.DataModels;
+using SudokuCollective.Data.Models;
 
-namespace SudokuCollective.WebApi.Migrations
+namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
     [Migration("20200323234200_InitialCreate")]

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace SudokuCollective.WebApi.Migrations
+namespace SudokuCollective.Api.Migrations
 {
     public partial class InitialCreate : Migration
     {

@@ -1,18 +1,18 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.MockServices;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
+using SudokuCollective.Api.Controllers;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-
-    public class RegisterControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class RegisterControllerShould
+    {
         private DatabaseContext _context;
         private RegisterController sutSuccess;
         private RegisterController sutFailure;
@@ -20,8 +20,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private RegisterRequest registerRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             _context = await TestDatabase.GetDatabaseContext();
 
             mockUsersService = new MockUsersService(_context);
@@ -29,8 +29,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             sutSuccess = new RegisterController(mockUsersService.UsersServiceSuccessfulRequest.Object);
             sutFailure = new RegisterController(mockUsersService.UsersServiceFailedRequest.Object);
 
-            registerRequest = new RegisterRequest() {                
-
+            registerRequest = new RegisterRequest()
+            {
                 UserName = "TestUser3",
                 FirstName = "Test",
                 LastName = "User 3",
@@ -45,8 +45,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyRegisterUsers() {
-
+        public void SuccessfullyRegisterUsers()
+        {
             // Arrange
 
             // Act
@@ -60,8 +60,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSuccessfullyRegisterUsersFail() {
-
+        public void IssueErrorAndMessageShouldSuccessfullyRegisterUsersFail()
+        {
             // Arrange
 
             // Act

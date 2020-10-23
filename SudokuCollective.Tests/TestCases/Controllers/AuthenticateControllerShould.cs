@@ -2,18 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.TokenModels;
-using SudokuCollective.WebApi.Models.DTOModels;
-using SudokuCollective.WebApi.Models.Enums;
-using SudokuCollective.WebApi.Services.Interfaces;
-using SudokuCollective.WebApi.Models.ResultModels.UserResults;
-using SudokuCollective.WebApi.Models.ResultModels.AuthenticationResults;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
+using SudokuCollective.Data.Models.DTOModels;
+using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Models.TokenModels;
+using SudokuCollective.Api.Controllers;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-
-    public class AuthenticateControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class AuthenticateControllerShould
+    {
         private AuthenticateController sut;
         private AuthenticateController sutInvalid;
         private AuthenticateController sutInvalidUserName;
@@ -34,8 +34,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private string email;
 
         [SetUp]
-        public void Setup() {
-
+        public void Setup()
+        {
             userName = "TestSuperUser";
             password = "password1";
             email = "TestSuperUser@example.com";
@@ -49,14 +49,14 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             mockUserManagementUserNameFoundService = new Mock<IUserManagementService>();
             mockUserManagementUserNameNotFoundService = new Mock<IUserManagementService>();
 
-            tokenRequest = new TokenRequest() {
-
+            tokenRequest = new TokenRequest()
+            {
                 UserName = userName,
                 Password = password
             };
 
             var token = string.Empty;
-            var user = new AuthenticatedUser();
+            var user = new AuthenticatedUser() as IAuthenticatedUser;
 
             mockValidAuthenticateService
                 .Setup(authService => authService.IsAuthenticated(tokenRequest, out token, out user))
@@ -80,16 +80,16 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
                 .ReturnsAsync(new AuthenticationResult() { Success = false, Message = "Email Does Not Exist" });
 
             sut = new AuthenticateController(
-                mockValidAuthenticateService.Object, 
+                mockValidAuthenticateService.Object,
                 mockUserManagementService.Object);
             sutInvalid = new AuthenticateController(
-                mockInvalidAuthenticateService.Object, 
+                mockInvalidAuthenticateService.Object,
                 mockUserManagementService.Object);
             sutInvalidUserName = new AuthenticateController(
-                mockAuthenticateService.Object, 
+                mockAuthenticateService.Object,
                 mockUserManagementInvalidUserNameService.Object);
             sutInvalidPassword = new AuthenticateController(
-                mockAuthenticateService.Object, 
+                mockAuthenticateService.Object,
                 mockUserManagementInvalidPasswordService.Object);
             sutUserNameFound = new AuthenticateController(
                 mockAuthenticateService.Object,
@@ -101,8 +101,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void AuthenticateUsers() {
-
+        public void AuthenticateUsers()
+        {
             // Arrange
 
             // Act
@@ -120,7 +120,6 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         [Category("Controllers")]
         public void ReturnBadRequestMessageWhenUserNameIsInvalid()
         {
-
             // Arrange
 
             // Act
@@ -138,7 +137,6 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         [Category("Controllers")]
         public void ReturnBadRequestMessageWhenPasswordIsInvalid()
         {
-
             // Arrange
 
             // Act
@@ -154,8 +152,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void ReturnBadRequestMessageWhenUsersArentAuthenticated() {
-
+        public void ReturnBadRequestMessageWhenUsersArentAuthenticated()
+        {
             // Arrange
 
             // Act
@@ -171,8 +169,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void ReturnUserName() {
-
+        public void ReturnUserName()
+        {
             // Arrange
 
             // Act
@@ -186,8 +184,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void ReturnErrorMessageIfUserNameNotFound() {
-
+        public void ReturnErrorMessageIfUserNameNotFound()
+        {
             // Arrange
 
             // Act

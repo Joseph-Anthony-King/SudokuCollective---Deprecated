@@ -1,20 +1,21 @@
 using NUnit.Framework;
 using Moq;
 using SudokuCollective.Domain;
-using SudokuCollective.Domain.Enums;
-using SudokuCollective.Domain.Interfaces;
 using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Interfaces.Models;
 
-namespace SudokuCollective.Tests.TestCases.Models {
-
-    public class GameShould {
-
+namespace SudokuCollective.Test.TestCases.Models
+{
+    public class GameShould
+    {
         private Mock<User> user;
         private Mock<SudokuMatrix> matrix;
 
         [SetUp]
-        public void Setup() {
-            
+        public void Setup()
+        {
+
             user = new Mock<User>();
             matrix = new Mock<SudokuMatrix>();
 
@@ -23,14 +24,15 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void ImplementIDBEntry() {
-
+        public void ImplementIDBEntry()
+        {
             // Arrange and Act
             Game sut = new Game(
-                user.Object, 
-                matrix.Object, 
-                new Difficulty() { 
-                    Name = "Test", 
+                user.Object,
+                matrix.Object,
+                new Difficulty()
+                {
+                    Name = "Test",
                     DifficultyLevel = DifficultyLevel.TEST
                 }
             );
@@ -41,14 +43,15 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAnID() {
-
+        public void HaveAnID()
+        {
             // Arrange and Act
             Game sut = new Game(
-                user.Object, 
-                matrix.Object, 
-                new Difficulty() { 
-                    Name = "Test", 
+                user.Object,
+                matrix.Object,
+                new Difficulty()
+                {
+                    Name = "Test",
                     DifficultyLevel = DifficultyLevel.TEST
                 }
             );
@@ -60,14 +63,15 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAWorkingConstructor() {
-            
+        public void HaveAWorkingConstructor()
+        {
             // Arrange and Act
             Game sut = new Game(
-                user.Object, 
-                matrix.Object, 
-                new Difficulty() { 
-                    Name = "Test", 
+                user.Object,
+                matrix.Object,
+                new Difficulty()
+                {
+                    Name = "Test",
                     DifficultyLevel = DifficultyLevel.TEST
                 }
             );
@@ -78,14 +82,15 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAnAssociatedMatrix() {
-            
+        public void HaveAnAssociatedMatrix()
+        {
             // Arrange and Act
             Game sut = new Game(
-                user.Object, 
-                new SudokuMatrix(), 
-                new Difficulty() { 
-                    Name = "Test", 
+                user.Object,
+                new SudokuMatrix(),
+                new Difficulty()
+                {
+                    Name = "Test",
                     DifficultyLevel = DifficultyLevel.TEST
                 }
             );
@@ -96,14 +101,15 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void HaveAnAssociatedSolution() {
-            
+        public void HaveAnAssociatedSolution()
+        {
             // Arrange and Act
             Game sut = new Game(
-                user.Object, 
-                matrix.Object, 
-                new Difficulty() { 
-                    Name = "Test", 
+                user.Object,
+                matrix.Object,
+                new Difficulty()
+                {
+                    Name = "Test",
                     DifficultyLevel = DifficultyLevel.TEST
                 }
             );
@@ -114,14 +120,15 @@ namespace SudokuCollective.Tests.TestCases.Models {
 
         [Test]
         [Category("Models")]
-        public void ReturnTrueIfSolved() {
-
+        public void ReturnTrueIfSolved()
+        {
             // Arrange and Act
             Game sut = new Game(
-                user.Object, 
-                matrix.Object, 
-                new Difficulty() { 
-                    Name = "Test", 
+                user.Object,
+                matrix.Object,
+                new Difficulty()
+                {
+                    Name = "Test",
                     DifficultyLevel = DifficultyLevel.TEST
                 }
             );

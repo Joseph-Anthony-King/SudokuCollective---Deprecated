@@ -1,18 +1,18 @@
 ﻿using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.DTOModels;
-using SudokuCollective.WebApi.Models.TokenModels;
-using SudokuCollective.WebApi.Services.Interfaces;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Services;
+using SudokuCollective.Test.TestData;
 using Microsoft.Extensions.Options;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models.TokenModels;
+using SudokuCollective.Data.Services;
+using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
 
-namespace SudokuCollective.Tests.TestCases.Services {
-
-    public class AuthenticateServiceShould {
-
+namespace SudokuCollective.Test.TestCases.Services
+{
+    public class AuthenticateServiceShould
+    {
         private DatabaseContext _context;
         private IAuthenticateService sutValid;
         private IAuthenticateService sutInvalid;
@@ -23,8 +23,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
         private string password;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             userName = "TestSuperUser";
             password = "password1";
 
@@ -40,8 +40,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
                 .Setup(service => service.IsValidUser(userName, password))
                 .Returns(Task.FromResult(false));
 
-            tokenManagement = new TokenManagement() {
-
+            tokenManagement = new TokenManagement()
+            {
                 Secret = "3c1ad157-be37-40d2-9cc8-e7527a56aa7b",
                 Issuer = "testProject",
                 Audience = "testEnvironment",
@@ -57,20 +57,20 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public void AuthenticateUsersIfValidated() {
-
+        public void AuthenticateUsersIfValidated()
+        {
             // Arrange
-            var tokenRequest = new TokenRequest() {
-
+            var tokenRequest = new TokenRequest()
+            {
                 UserName = userName,
                 Password = password
             };
 
             // Act
             var result = sutValid.IsAuthenticated(
-                tokenRequest, 
-                out string token, 
-                out AuthenticatedUser user);
+                tokenRequest,
+                out string token,
+                out IAuthenticatedUser user);
 
             // Assert
             Assert.That(result, Is.True);
@@ -80,19 +80,19 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public void RejectUsersIfNotValidated() {
-
+        public void RejectUsersIfNotValidated()
+        {
             // Arrange
-            var tokenRequest = new TokenRequest() {
-
+            var tokenRequest = new TokenRequest()
+            {
                 UserName = userName,
                 Password = password
             };
 
             // Act
-            var result = sutInvalid.IsAuthenticated(tokenRequest, 
+            var result = sutInvalid.IsAuthenticated(tokenRequest,
                 out string token,
-                out AuthenticatedUser user);
+                out IAuthenticatedUser user);
 
             // Assert
             Assert.That(result, Is.False);

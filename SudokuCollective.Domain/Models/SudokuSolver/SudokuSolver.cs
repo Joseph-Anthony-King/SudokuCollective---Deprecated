@@ -2,57 +2,66 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using SudokuCollective.Core.Extensions;
 
-namespace SudokuCollective.Domain.Models {
-
-    public class SudokuSolver : SudokuMatrix {
-
+namespace SudokuCollective.Domain.Models
+{
+    public class SudokuSolver : SudokuMatrix
+    {
+        #region Fields
         private int _minutes;
         private long timeLimit;
 
         public Stopwatch stopwatch = new Stopwatch();
-        public int Minutes {
+        #endregion
 
+        #region Properties
+        public int Minutes
+        {
             get => _minutes;
-            set {
-
-                if (value < 1) {
-
+            set
+            {
+                if (value < 1)
+                {
                     _minutes = 1;
-
-                } else if (value > 15) {
-
+                }
+                else if (value > 15)
+                {
                     _minutes = 15;
-
-                } else {
-
+                }
+                else
+                {
                     _minutes = value;
                 }
             }
         }
+        #endregion
 
-        public SudokuSolver(string values) : base(values) { 
-
+        #region Constructors
+        public SudokuSolver(string values) : base(values)
+        {
             Minutes = 3;
             timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
-        public SudokuSolver(List<int> values) : base(values) { 
-
+        public SudokuSolver(List<int> values) : base(values)
+        {
             Minutes = 3;
             timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
+        #endregion
 
-        public void SetTimeLimit(int limit) {
-
+        #region Methods
+        public void SetTimeLimit(int limit)
+        {
             Minutes = limit;
             timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
-        public async Task Solve() {
-            
-            await Task.Run(() => {
-
+        public async Task Solve()
+        {
+            await Task.Run(() =>
+            {
                 stopwatch.Reset();
                 stopwatch.Start();
 
@@ -60,14 +69,14 @@ namespace SudokuCollective.Domain.Models {
                 var tmp = new SudokuMatrix(this.ToInt32List());
                 var loopSeed = SudokuSolverMethods.IsolateIntersectingValues(tmp, tmp.ToInt32List());
 
-                if (loopSeed.Contains(0)) {
-
+                if (loopSeed.Contains(0))
+                {
                     var loopTmp = new SudokuMatrix(loopSeed);
 
-                    do {
-
-                        if (!stopwatch.IsRunning) {
-
+                    do
+                    {
+                        if (!stopwatch.IsRunning)
+                        {
                             stopwatch.Start();
                         }
 
@@ -75,32 +84,32 @@ namespace SudokuCollective.Domain.Models {
 
                         var unknownsIndex = new List<int>();
 
-                        for (var i = 0; i < loopTmp.SudokuCells.Count; i++) {
-
-                            if (loopTmp.SudokuCells[i].Value == 0) {
-
+                        for (var i = 0; i < loopTmp.SudokuCells.Count; i++)
+                        {
+                            if (loopTmp.SudokuCells[i].Value == 0)
+                            {
                                 unknownsIndex.Add(i);
                             }
                         }
 
-                        for (var i = 0; i < unknownsIndex.Count;) {
-
-                            if (loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues.Count > 0) {
-
+                        for (var i = 0; i < unknownsIndex.Count;)
+                        {
+                            if (loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues.Count > 0)
+                            {
                                 Random random = new Random();
 
-                                AppExtensions.AppExtensions.Shuffle(loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues, random);
+                                CoreExtensions.Shuffle(loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues, random);
 
                                 loopTmp.SudokuCells[unknownsIndex[i]].Value = loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues[0];
 
                                 i++;
-
-                            } else if (loopTmp.SudokuCells[unknownsIndex[i]].Value > 0) {
-
+                            }
+                            else if (loopTmp.SudokuCells[unknownsIndex[i]].Value > 0)
+                            {
                                 i++;
-
-                            } else {
-
+                            }
+                            else
+                            {
                                 loopTmp = new SudokuMatrix(loopSeed);
                                 i = 0;
                             }
@@ -111,20 +120,21 @@ namespace SudokuCollective.Domain.Models {
                     } while (stopwatch.Elapsed.Ticks < timeLimit && !loopTmp.IsValid());
 
                     resultSeed.AddRange(loopTmp.ToInt32List());
-
-                } else {
-                
+                }
+                else
+                {
                     resultSeed.AddRange(loopSeed);
                 }
 
                 var result = new SudokuMatrix(resultSeed);
                 SudokuCells = result.SudokuCells;
 
-                if (stopwatch.IsRunning) {
-
+                if (stopwatch.IsRunning)
+                {
                     stopwatch.Stop();
                 }
             });
         }
+        #endregion
     }
 }

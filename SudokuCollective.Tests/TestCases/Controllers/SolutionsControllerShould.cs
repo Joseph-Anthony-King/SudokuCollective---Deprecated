@@ -3,18 +3,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.MockServices;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.SolveRequests;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
+using SudokuCollective.Api.Controllers;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Models.PageModels;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-    
-    public class SolutionsControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class SolutionsControllerShould
+    {
         private DatabaseContext context;
         private SolutionsController sutSuccess;
         private SolutionsController sutFailure;
@@ -27,48 +26,48 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private AddSolutionRequest invalidAddSolutionRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             context = await TestDatabase.GetDatabaseContext();
             mockSolutionsService = new MockSolutionsService(context);
             mockAppsService = new MockAppsService(context);
 
             baseRequest = new BaseRequest();
 
-            solveRequest = new SolveRequest() {
-
+            solveRequest = new SolveRequest()
+            {
                 UserId = 1,
                 Minutes = 15,
-                FirstRow = new int[9] {0,0,0,0,0,0,0,0,0},
-                SecondRow = new int[9] {0,0,0,0,0,0,0,0,0},
-                ThirdRow = new int[9] {0,0,0,0,0,0,0,0,0},
-                FourthRow = new int[9] {0,0,0,0,0,0,0,0,0},
-                FifthRow = new int[9] {0,0,0,0,0,0,0,0,0},
-                SixthRow = new int[9] {0,0,0,0,0,0,0,0,0},
-                SeventhRow = new int[9] {0,0,0,0,0,0,0,0,0},
-                EighthRow = new int[9] {0,0,0,0,0,0,0,0,0},
-                NinthRow = new int[9] {0,0,0,0,0,0,0,0,0},
+                FirstRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                SecondRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                ThirdRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                FourthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                FifthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                SixthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                SeventhRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                EighthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                NinthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
                 PageListModel = new PageListModel()
             };
 
-            addSolutionRequest = new AddSolutionRequest() {
-
+            addSolutionRequest = new AddSolutionRequest()
+            {
                 Limit = 1000
             };
 
-            invalidAddSolutionRequest = new AddSolutionRequest() {
-
+            invalidAddSolutionRequest = new AddSolutionRequest()
+            {
                 Limit = 1001
             };
 
             sutSuccess = new SolutionsController(
-                mockSolutionsService.SolutionsServiceSuccessfulRequest.Object, 
+                mockSolutionsService.SolutionsServiceSuccessfulRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
 
             sutFailure = new SolutionsController(
-                mockSolutionsService.SolutionsServiceFailedRequest.Object, 
+                mockSolutionsService.SolutionsServiceFailedRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
 
             sutSolvedFailure = new SolutionsController(
@@ -78,8 +77,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetSolution() {
-
+        public void SuccessfullyGetSolution()
+        {
             // Arrange
             var solutionId = 1;
 
@@ -96,8 +95,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetSolutionFail() {
-
+        public void IssueErrorAndMessageShouldGetSolutionFail()
+        {
             // Arrange
             var solutionId = 2;
 
@@ -115,8 +114,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetSolutions() {
-
+        public void SuccessfullyGetSolutions()
+        {
             // Arrange
 
             // Act
@@ -132,8 +131,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetSolutionsFail() {
-
+        public void IssueErrorAndMessageShouldGetSolutionsFail()
+        {
             // Arrange
 
             // Act
@@ -150,8 +149,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullySolveSolution() {
-
+        public void SuccessfullySolveSolution()
+        {
             // Arrange
 
             // Act
@@ -167,8 +166,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldSolveSolutionFail() {
-
+        public void IssueErrorAndMessageShouldSolveSolutionFail()
+        {
             // Arrange
 
             // Act
@@ -185,8 +184,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGenerateSolution() {
-
+        public void SuccessfullyGenerateSolution()
+        {
             // Arrange
 
             // Act
@@ -202,8 +201,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGenerateSolutionFail() {
-
+        public void IssueErrorAndMessageShouldGenerateSolutionFail()
+        {
             // Arrange
 
             // Act
@@ -220,8 +219,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueMessageIfSudokuSolutionSolveFailed() {
-
+        public void IssueMessageIfSudokuSolutionSolveFailed()
+        {
             // Arrange
 
             // Act
@@ -237,8 +236,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyAddSolutions() {
-
+        public void SuccessfullyAddSolutions()
+        {
             // Arrange
 
             // Act
@@ -252,8 +251,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void RejectAddSolutionRequestsOfMoreThanAThousand() {
-
+        public void RejectAddSolutionRequestsOfMoreThanAThousand()
+        {
             // Arrange
 
             // Act
@@ -270,8 +269,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldAddSolutionsFail() {
-
+        public void IssueErrorAndMessageShouldAddSolutionsFail()
+        {
             // Arrange
 
             // Act

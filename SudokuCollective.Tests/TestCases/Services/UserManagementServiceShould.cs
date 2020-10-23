@@ -1,16 +1,16 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.Enums;
-using SudokuCollective.WebApi.Models.ResultModels.AuthenticationResults;
-using SudokuCollective.WebApi.Services;
-using SudokuCollective.WebApi.Services.Interfaces;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Services;
+using SudokuCollective.Test.TestData;
 
-namespace SudokuCollective.Tests.TestCases.Services {
-
-    public class UserManagementServiceShould {
-
+namespace SudokuCollective.Test.TestCases.Services
+{
+    public class UserManagementServiceShould
+    {
         private DatabaseContext _context;
         private IUserManagementService sut;
         private string userName;
@@ -18,8 +18,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
         private string email;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             _context = await TestDatabase.GetDatabaseContext();
             sut = new UserManagementService(_context);
             userName = "TestSuperUser";
@@ -29,8 +29,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ConfirmUserIfValid() {
-
+        public async Task ConfirmUserIfValid()
+        {
             // Arrange
 
             // Act
@@ -42,8 +42,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DenyUserIfUserNameInvalid() {
-
+        public async Task DenyUserIfUserNameInvalid()
+        {
             // Arrange
             var invalidUserName = "invalidUser";
 
@@ -56,8 +56,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task DenyUserIfPasswordInvalid() {
-
+        public async Task DenyUserIfPasswordInvalid()
+        {
             // Arrange
             var invalidPassword = "invalidPassword";
 
@@ -70,8 +70,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ReturnUserAuthenticationErrorTypeIfUserInvalid() {
-
+        public async Task ReturnUserAuthenticationErrorTypeIfUserInvalid()
+        {
             // Arrange
             var invalidUserName = "invalidUser";
 
@@ -84,8 +84,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ReturnPasswordAuthenticationErrorTypeIfPasswordInvalid() {
-
+        public async Task ReturnPasswordAuthenticationErrorTypeIfPasswordInvalid()
+        {
             // Arrange
             var invalidPassword = "invalidPassword";
 
@@ -98,8 +98,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ReturnUserNameIfEmailIsValid() {
-
+        public async Task ReturnUserNameIfEmailIsValid()
+        {
             // Arrange
 
             // Act
@@ -115,8 +115,8 @@ namespace SudokuCollective.Tests.TestCases.Services {
 
         [Test]
         [Category("Services")]
-        public async Task ReturnMessageIfUserNameInvalid() {
-
+        public async Task ReturnMessageIfUserNameInvalid()
+        {
             // Arrange
             var invalidEmail = "invalidEmail@example.com";
 

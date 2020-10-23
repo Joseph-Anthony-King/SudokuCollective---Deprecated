@@ -12,9 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Tests", "SudokuCollective.Tests\SudokuCollective.Tests.csproj", "{F852B147-9264-41A9-B126-6E127191C74A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Test", "SudokuCollective.Tests\SudokuCollective.Test.csproj", "{F852B147-9264-41A9-B126-6E127191C74A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.WebApi", "SudokuCollective.WebApi\SudokuCollective.WebApi.csproj", "{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Api", "SudokuCollective.WebApi\SudokuCollective.Api.csproj", "{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Core", "SudokuCollective.Core\SudokuCollective.Core.csproj", "{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Data", "SudokuCollective.Data\SudokuCollective.Data.csproj", "{20341B10-DCED-4317-ABFA-C19FE58F1423}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +78,30 @@ Global
 		{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}.Release|x64.Build.0 = Release|Any CPU
 		{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}.Release|x86.ActiveCfg = Release|Any CPU
 		{A1E6B0BB-1F39-4B12-85ED-5A1A6ACFEB69}.Release|x86.Build.0 = Release|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Debug|x64.Build.0 = Debug|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Debug|x86.Build.0 = Debug|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Release|x64.ActiveCfg = Release|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Release|x64.Build.0 = Release|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Release|x86.ActiveCfg = Release|Any CPU
+		{EFFDEC7D-4E9B-4313-B045-1AA033E696E0}.Release|x86.Build.0 = Release|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Debug|x64.Build.0 = Debug|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Debug|x86.Build.0 = Debug|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Release|x64.ActiveCfg = Release|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Release|x64.Build.0 = Release|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Release|x86.ActiveCfg = Release|Any CPU
+		{20341B10-DCED-4317-ABFA-C19FE58F1423}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

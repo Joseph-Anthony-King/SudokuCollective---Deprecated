@@ -4,17 +4,17 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Data.Models;
 using SudokuCollective.Domain;
-using SudokuCollective.Domain.Enums;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.WebApi.Models.DataModels;
 
-namespace SudokuCollective.Tests.TestData {
-
-    public static class TestDatabase {
-
-        public static async Task<DatabaseContext> GetDatabaseContext() {
-
+namespace SudokuCollective.Test.TestData
+{
+    public static class TestDatabase
+    {
+        public static async Task<DatabaseContext> GetDatabaseContext()
+        {
             Mock<IConfiguration> config = new Mock<IConfiguration>();
 
             var options = new DbContextOptionsBuilder<DatabaseContext>()
@@ -27,8 +27,8 @@ namespace SudokuCollective.Tests.TestData {
 
             var dateCreated = DateTime.UtcNow;
 
-            if (await databaseContext.Roles.CountAsync() <= 0) {
-
+            if (await databaseContext.Roles.CountAsync() <= 0)
+            {
                 databaseContext.Roles.AddRange(
 
                     new Role(1, "Null", RoleLevel.NULL),
@@ -42,7 +42,6 @@ namespace SudokuCollective.Tests.TestData {
 
             if (await databaseContext.Difficulties.CountAsync() <= 0)
             {
-
                 databaseContext.Difficulties.AddRange(
 
                     new Difficulty(1, "Null", "Null", DifficultyLevel.NULL),
@@ -56,34 +55,34 @@ namespace SudokuCollective.Tests.TestData {
                 await databaseContext.SaveChangesAsync();
             }
 
-            if (await databaseContext.Users.CountAsync() <= 0) {
-
+            if (await databaseContext.Users.CountAsync() <= 0)
+            {
                 var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
                 databaseContext.Users.AddRange(
 
                     new User(
-                        1, 
-                        "TestSuperUser", 
-                        "Test Super", 
-                        "User", 
-                        "Test Super User", 
-                        "TestSuperUser@example.com", 
-                        BCrypt.Net.BCrypt.HashPassword("password1", salt), 
-                        true, 
-                        dateCreated, 
+                        1,
+                        "TestSuperUser",
+                        "Test Super",
+                        "User",
+                        "Test Super User",
+                        "TestSuperUser@example.com",
+                        BCrypt.Net.BCrypt.HashPassword("password1", salt),
+                        true,
+                        dateCreated,
                         DateTime.MinValue),
 
                     new User(
-                        2, 
-                        "TestUser", 
-                        "Test", 
-                        "User", 
-                        "Test User", 
-                        "TestUser@example.com", 
+                        2,
+                        "TestUser",
+                        "Test",
+                        "User",
+                        "Test User",
+                        "TestUser@example.com",
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
-                        true, 
-                        dateCreated, 
+                        true,
+                        dateCreated,
                         DateTime.MinValue),
 
                     new User(
@@ -102,69 +101,69 @@ namespace SudokuCollective.Tests.TestData {
                 await databaseContext.SaveChangesAsync();
             }
 
-            if (await databaseContext.UsersRoles.CountAsync() <= 0) {
-
+            if (await databaseContext.UsersRoles.CountAsync() <= 0)
+            {
                 databaseContext.UsersRoles.AddRange(
 
-                    new UserRole(1,1,2),
-                    new UserRole(2,1,3),
-                    new UserRole(3,1,4),
-                    new UserRole(4,2,4),
-                    new UserRole(5,3,4)
+                    new UserRole(1, 1, 2),
+                    new UserRole(2, 1, 3),
+                    new UserRole(3, 1, 4),
+                    new UserRole(4, 2, 4),
+                    new UserRole(5, 3, 4)
                 );
 
                 await databaseContext.SaveChangesAsync();
             }
 
-            if (await databaseContext.Apps.CountAsync() <= 0) {
-
+            if (await databaseContext.Apps.CountAsync() <= 0)
+            {
                 databaseContext.Apps.AddRange(
 
                     new App(
-                        1, 
-                        "Test App 1", 
-                        TestObjects.GetLicense(), 
-                        1, 
-                        "https://localhost:4200", 
-                        "https://testapp.com", 
+                        1,
+                        "Test App 1",
+                        TestObjects.GetLicense(),
+                        1,
+                        "https://localhost:4200",
+                        "https://testapp.com",
                         true,
                         dateCreated,
                         DateTime.MinValue),
                     new App(
-                        2, 
-                        "Test App 2", 
-                        "03C0D43F-3AD8-490A-A131-F73C81FE02C0", 
-                        1, 
-                        "https://localhost:8080", 
-                        "https://testapp2.com", 
+                        2,
+                        "Test App 2",
+                        "03C0D43F-3AD8-490A-A131-F73C81FE02C0",
+                        1,
+                        "https://localhost:8080",
+                        "https://testapp2.com",
                         true,
-                        dateCreated, 
+                        dateCreated,
                         DateTime.MinValue)
                 );
 
                 await databaseContext.SaveChangesAsync();
             }
 
-            if (await databaseContext.UsersApps.CountAsync() <= 0) {
-
+            if (await databaseContext.UsersApps.CountAsync() <= 0)
+            {
                 databaseContext.UsersApps.AddRange(
 
-                    new UserApp(1,1,1),
-                    new UserApp(2,1,2),
-                    new UserApp(3,2,1),
-                    new UserApp(4,2,2),
-                    new UserApp(5,3,2)
+                    new UserApp(1, 1, 1),
+                    new UserApp(2, 1, 2),
+                    new UserApp(3, 2, 1),
+                    new UserApp(4, 2, 2),
+                    new UserApp(5, 3, 2)
                 );
 
                 await databaseContext.SaveChangesAsync();
             }
 
-            if (await databaseContext.SudokuMatrices.CountAsync() <= 0) {
-
+            if (await databaseContext.SudokuMatrices.CountAsync() <= 0)
+            {
                 databaseContext.SudokuMatrices.AddRange(
 
-                    new SudokuMatrix(1,4),
-                    new SudokuMatrix(2,4)
+                    new SudokuMatrix(1, 4),
+                    new SudokuMatrix(2, 4)
                 );
 
                 await databaseContext.SaveChangesAsync();
@@ -172,7 +171,6 @@ namespace SudokuCollective.Tests.TestData {
 
             if (await databaseContext.SudokuCells.CountAsync() <= 0)
             {
-
                 databaseContext.SudokuCells.AddRange(
 
                     new SudokuCell(81, 1, 1, 1, 1, 4, 4, false, 1),
@@ -342,8 +340,8 @@ namespace SudokuCollective.Tests.TestData {
                 await databaseContext.SaveChangesAsync();
             }
 
-            if (await databaseContext.SudokuSolutions.CountAsync() <= 0) {
-
+            if (await databaseContext.SudokuSolutions.CountAsync() <= 0)
+            {
                 databaseContext.SudokuSolutions.AddRange(
 
                     new SudokuSolution(1, new List<int>(), dateCreated, DateTime.MinValue),
@@ -354,8 +352,8 @@ namespace SudokuCollective.Tests.TestData {
                 await databaseContext.SaveChangesAsync();
             }
 
-            if (await databaseContext.Games.CountAsync() <= 0) {
-
+            if (await databaseContext.Games.CountAsync() <= 0)
+            {
                 databaseContext.Games.AddRange(
 
                     new Game(1, 1, 1, 1, 1, true, dateCreated, DateTime.MinValue),

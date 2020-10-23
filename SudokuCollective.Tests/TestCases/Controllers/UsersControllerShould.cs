@@ -3,18 +3,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.Tests.MockServices;
-using SudokuCollective.Tests.TestData;
-using SudokuCollective.WebApi.Controllers;
-using SudokuCollective.WebApi.Models.DataModels;
-using SudokuCollective.WebApi.Models.PageModels;
-using SudokuCollective.WebApi.Models.RequestModels;
-using SudokuCollective.WebApi.Models.RequestModels.UserRequests;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
+using SudokuCollective.Api.Controllers;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Models.PageModels;
 
-namespace SudokuCollective.Tests.TestCases.Controllers {
-
-    public class UsersControllerShould {
-
+namespace SudokuCollective.Test.TestCases.Controllers
+{
+    public class UsersControllerShould
+    {
         private DatabaseContext context;
         private UsersController sutSuccess;
         private UsersController sutFailure;
@@ -26,16 +25,16 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
         private UpdateUserRoleRequest updateUserRoleRequest;
 
         [SetUp]
-        public async Task Setup() {
-
+        public async Task Setup()
+        {
             context = await TestDatabase.GetDatabaseContext();
             mockUsersService = new MockUsersService(context);
             mockAppsService = new MockAppsService(context);
-            
+
             baseRequest = new BaseRequest();
 
-            updateUserRequest = new UpdateUserRequest() {
-
+            updateUserRequest = new UpdateUserRequest()
+            {
                 UserName = "Test Username",
                 FirstName = "FirstName",
                 LastName = "LastName",
@@ -46,8 +45,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
                 PageListModel = new PageListModel()
             };
 
-            updatePasswordRequest = new UpdatePasswordRequest() {
-
+            updatePasswordRequest = new UpdatePasswordRequest()
+            {
                 OldPassword = "password1",
                 NewPassword = "password2",
                 License = TestObjects.GetLicense(),
@@ -55,8 +54,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
                 PageListModel = new PageListModel()
             };
 
-            updateUserRoleRequest = new UpdateUserRoleRequest() {
-
+            updateUserRoleRequest = new UpdateUserRoleRequest()
+            {
                 RoleIds = new List<int>() { 3 },
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
@@ -64,7 +63,7 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
             };
 
             sutSuccess = new UsersController(
-                mockUsersService.UsersServiceSuccessfulRequest.Object, 
+                mockUsersService.UsersServiceSuccessfulRequest.Object,
                 mockAppsService.AppsServiceSuccessfulRequest.Object);
 
             sutFailure = new UsersController(
@@ -74,8 +73,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetUser() {
-
+        public void SuccessfullyGetUser()
+        {
             // Arrange
             var userId = 1;
 
@@ -92,8 +91,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetUserFail() {
-
+        public void IssueErrorAndMessageShouldGetUserFail()
+        {
             // Arrange
             var userId = 1;
 
@@ -111,8 +110,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGetUsers() {
-
+        public void SuccessfullyGetUsers()
+        {
             // Arrange
 
             // Act
@@ -128,8 +127,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGetUsersFail() {
-
+        public void IssueErrorAndMessageShouldGetUsersFail()
+        {
             // Arrange
 
             // Act
@@ -146,8 +145,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyUpdateUsers() {
-
+        public void SuccessfullyUpdateUsers()
+        {
             // Arrange
             int userId = 1;
 
@@ -162,8 +161,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldUpdateUsersFail() {
-
+        public void IssueErrorAndMessageShouldUpdateUsersFail()
+        {
             // Arrange
             int userId = 1;
 
@@ -181,8 +180,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyUpdateUsersPasswords() {
-
+        public void SuccessfullyUpdateUsersPasswords()
+        {
             // Arrange
             int userId = 1;
 
@@ -197,8 +196,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldUpdateUsersPasswordsFail() {
-
+        public void IssueErrorAndMessageShouldUpdateUsersPasswordsFail()
+        {
             // Arrange
             int userId = 1;
 
@@ -216,8 +215,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyDeleteUsers() {
-
+        public void SuccessfullyDeleteUsers()
+        {
             // Arrange
             int userId = 1;
 
@@ -232,8 +231,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldDeleteUsersFail() {
-
+        public void IssueErrorAndMessageShouldDeleteUsersFail()
+        {
             // Arrange
             int userId = 1;
 
@@ -251,8 +250,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyAddUsersRole() {
-
+        public void SuccessfullyAddUsersRole()
+        {
             // Arrange
             int userId = 1;
 
@@ -267,8 +266,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldAddUsersRoleFail() {
-
+        public void IssueErrorAndMessageShouldAddUsersRoleFail()
+        {
             // Arrange
             int userId = 1;
 
@@ -286,8 +285,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyRemoveUsersRoles() {
-
+        public void SuccessfullyRemoveUsersRoles()
+        {
             // Arrange
             int userId = 1;
 
@@ -302,8 +301,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldRemoveUsersRolesFail() {
-
+        public void IssueErrorAndMessageShouldRemoveUsersRolesFail()
+        {
             // Arrange
             int userId = 1;
 
@@ -321,8 +320,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyActivateUsers() {
-
+        public void SuccessfullyActivateUsers()
+        {
             // Arrange
             int userId = 1;
 
@@ -337,8 +336,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldActivateUsersFail() {
-
+        public void IssueErrorAndMessageShouldActivateUsersFail()
+        {
             // Arrange
             int userId = 1;
 
@@ -356,8 +355,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyDeactivateUsers() {
-
+        public void SuccessfullyDeactivateUsers()
+        {
             // Arrange
             int userId = 1;
 
@@ -372,8 +371,8 @@ namespace SudokuCollective.Tests.TestCases.Controllers {
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldDeactivateUsersFail() {
-
+        public void IssueErrorAndMessageShouldDeactivateUsersFail()
+        {
             // Arrange
             int userId = 1;
 

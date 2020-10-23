@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Domain.Models;
-using SudokuCollective.WebApi.Models.RequestModels.RegisterRequests;
-using SudokuCollective.WebApi.Services.Interfaces;
 
-namespace SudokuCollective.WebApi.Controllers {
+namespace SudokuCollective.Api.Controllers
+{
 
     [Route("api/v1/[controller]")]
     [ApiController]
