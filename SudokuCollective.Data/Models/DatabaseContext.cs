@@ -177,6 +177,10 @@ namespace SudokuCollective.Data.Models
                 .Property(user => user.Password)
                 .IsRequired();
 
+            modelBuilder.Entity<User>()
+                .Ignore(user => user.IsAdmin)
+                .Ignore(user => user.IsSuperUser);
+
             modelBuilder.Entity<UserRole>()
                 .HasKey(ur => ur.Id);
 

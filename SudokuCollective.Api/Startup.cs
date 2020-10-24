@@ -67,7 +67,7 @@ namespace SudokuCollective.Api {
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IGamesService, GamesService>();
             services.AddScoped<IDifficultiesService, DifficultiesService>();
-            services.AddScoped<RolesService, RolesService>();
+            services.AddScoped<IRolesService, RolesService>();
             services.AddScoped<ISolutionsService, SolutionsService>();
 
             // Register the Swagger generator, defining 1 or more Swagger documents

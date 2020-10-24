@@ -47,7 +47,7 @@ namespace SudokuCollective.Data.Services
                 return false;
             }
 
-            var authenticatedUser = (User)_context.Users
+            var authenticatedUser = _context.Users
                 .Where(u => u.UserName.Equals(request.UserName))
                 .Include(u => u.Roles)
                 .FirstOrDefault();
