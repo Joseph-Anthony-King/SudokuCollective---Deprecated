@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SudokuCollective.Core.Models;
+using System;
 using System.Collections.Generic;
 
 namespace SudokuCollective.Core.Interfaces.Models
@@ -15,9 +16,9 @@ namespace SudokuCollective.Core.Interfaces.Models
         bool IsActive { get; set; }
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
-        List<IGame> Games { get; set; }
-        List<IUserRole> Roles { get; set; }
-        List<IUserApp> Apps { get; set; }
+        List<Game> Games { get; set; }
+        List<UserRole> Roles { get; set; }
+        List<UserApp> Apps { get; set; }
         void ActivateUser();
         void DeactiveUser();
         void UpdateRoles();

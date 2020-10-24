@@ -1,15 +1,16 @@
-﻿using System;
+﻿using SudokuCollective.Core.Models;
+using System;
 
 namespace SudokuCollective.Core.Interfaces.Models
 {
     public interface IGame : IEntityBase
     {
         int UserId { get; set; }
-        IUser User { get; set; }
+        User User { get; set; }
         int SudokuMatrixId { get; set; }
-        ISudokuMatrix SudokuMatrix { get; set; }
+        SudokuMatrix SudokuMatrix { get; set; }
         int SudokuSolutionId { get; set; }
-        ISudokuSolution SudokuSolution { get; set; }
+        SudokuSolution SudokuSolution { get; set; }
         bool ContinueGame { get; set; }
         int AppId { get; set; }
         DateTime DateCreated { get; set; }

@@ -8,7 +8,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.MockServices
 {
@@ -41,7 +41,7 @@ namespace SudokuCollective.Test.MockServices
                 {
                     Success = true,
                     Message = string.Empty,
-                    Solutions = _context.SudokuSolutions.ToList()
+                    Solutions = (_context.SudokuSolutions.ToList()).ConvertAll(s => s as ISudokuSolution)
                 } as ISolutionsResult));
 
             SolutionsServiceSuccessfulRequest.Setup(solutionsService =>

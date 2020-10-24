@@ -1,10 +1,12 @@
-﻿namespace SudokuCollective.Core.Interfaces.Models
+﻿using SudokuCollective.Core.Models;
+
+namespace SudokuCollective.Core.Interfaces.Models
 {
     public interface IUserApp : IEntityBase
     {
         int UserId { get; set; }
-        IUser User { get; set; }
+        User User { get; set; }
         int AppId { get; set; }
-        IApp App { get; set; }
+        App App { get; set; }
     }
 }

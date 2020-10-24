@@ -1,6 +1,6 @@
 ﻿using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Models.ResultModels
 {

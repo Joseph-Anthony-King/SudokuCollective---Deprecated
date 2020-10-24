@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.MockServices
 {
@@ -60,7 +60,7 @@ namespace SudokuCollective.Test.MockServices
                 {
                     Success = true,
                     Message = string.Empty,
-                    Users = context.Users.ToList()
+                    Users = (context.Users.ToList()).ConvertAll(u => u as IUser)
                 } as IUsersResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>

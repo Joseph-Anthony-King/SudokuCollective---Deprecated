@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.Controllers;

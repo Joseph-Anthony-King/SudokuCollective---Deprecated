@@ -5,10 +5,10 @@ using NUnit.Framework;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
-using SudokuCollective.Domain.Models;
 using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.Controllers;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {

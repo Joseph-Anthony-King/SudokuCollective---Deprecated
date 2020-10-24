@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SudokuCollective.Core\SudokuCollective.Core.csproj" />
     <ProjectReference Include="..\SudokuCollective.Data\SudokuCollective.Data.csproj" />
-    <ProjectReference Include="..\SudokuCollective.Domain\SudokuCollective.Domain.csproj" />
     <ProjectReference Include="..\SudokuCollective.Api\SudokuCollective.Api.csproj" />
   </ItemGroup>
 

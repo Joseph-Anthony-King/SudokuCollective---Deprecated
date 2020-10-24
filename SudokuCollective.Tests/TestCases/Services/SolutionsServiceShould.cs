@@ -5,7 +5,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Services;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Services

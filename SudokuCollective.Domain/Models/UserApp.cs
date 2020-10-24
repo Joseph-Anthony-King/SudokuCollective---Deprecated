@@ -34,5 +34,12 @@ namespace SudokuCollective.Domain.Models
             AppId = appId;
         }
         #endregion
+
+        #region Methods
+        public UserApp Convert(IUserApp userApp)
+        {
+            return (UserApp)userApp;
+        }
+        #endregion
     }
 }

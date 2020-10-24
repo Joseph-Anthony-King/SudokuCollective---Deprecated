@@ -6,8 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Models;
-using SudokuCollective.Domain;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.TestData
 {

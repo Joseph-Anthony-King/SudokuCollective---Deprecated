@@ -97,6 +97,11 @@ namespace SudokuCollective.Domain.Models
         {
             IsActive = false;
         }
+
+        public App Convert(IApp app)
+        {
+            return (App)app;
+        }
         #endregion
     }
 }

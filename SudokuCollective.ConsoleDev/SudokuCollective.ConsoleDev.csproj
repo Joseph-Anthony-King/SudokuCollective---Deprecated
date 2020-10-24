@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SudokuCollective.Domain\SudokuCollective.Domain.csproj" />
+    <ProjectReference Include="..\SudokuCollective.Core\SudokuCollective.Core.csproj" />
   </ItemGroup>
 
 </Project>

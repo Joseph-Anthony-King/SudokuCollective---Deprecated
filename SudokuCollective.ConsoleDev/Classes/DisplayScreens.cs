@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.ConsoleDev.Classes
 {
@@ -40,7 +41,7 @@ namespace SudokuCollective.ConsoleDev.Classes
             }
         }
 
-        private static void DisplayRow(List<ISudokuCell> row)
+        private static void DisplayRow(List<SudokuCell> row)
         {
             foreach (var cell in row)
             {

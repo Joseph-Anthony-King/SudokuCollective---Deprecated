@@ -9,7 +9,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.MockServices
 {
@@ -66,7 +66,7 @@ namespace SudokuCollective.Test.MockServices
                 {
                     Success = true,
                     Message = string.Empty,
-                    Games = _context.Games.ToList()
+                    Games = (_context.Games.ToList()).ConvertAll(g => g as IGame)
                 } as IGamesResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
@@ -84,7 +84,7 @@ namespace SudokuCollective.Test.MockServices
                 {
                     Success = true,
                     Message = string.Empty,
-                    Games = _context.Games.Where(game => game.UserId == 1).ToList()
+                    Games = (_context.Games.Where(game => game.UserId == 1).ToList()).ConvertAll(g => g as IGame)
                 } as IGamesResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>

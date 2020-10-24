@@ -1,44 +1,45 @@
-﻿using SudokuCollective.Core.Structs;
+﻿using SudokuCollective.Core.Models;
+using SudokuCollective.Core.Structs;
 using System.Collections.Generic;
 
 namespace SudokuCollective.Core.Interfaces.Models
 {
     public interface ISudokuMatrix : IEntityBase
     {
-        IGame Game { get; set; }
+        Game Game { get; set; }
         int DifficultyId { get; set; }
-        IDifficulty Difficulty { get; set; }
-        List<ISudokuCell> SudokuCells { get; set; }
-        List<List<ISudokuCell>> Columns { get; }
-        List<List<ISudokuCell>> Regions { get; }
-        List<List<ISudokuCell>> Rows { get; }
-        List<ISudokuCell> FirstColumn { get; }
-        List<ISudokuCell> SecondColumn { get; }
-        List<ISudokuCell> ThirdColumn { get; }
-        List<ISudokuCell> FourthColumn { get; }
-        List<ISudokuCell> FifthColumn { get; }
-        List<ISudokuCell> SixthColumn { get; }
-        List<ISudokuCell> SeventhColumn { get; }
-        List<ISudokuCell> EighthColumn { get; }
-        List<ISudokuCell> NinthColumn { get; }
-        List<ISudokuCell> FirstRegion { get; }
-        List<ISudokuCell> SecondRegion { get; }
-        List<ISudokuCell> ThirdRegion { get; }
-        List<ISudokuCell> FourthRegion { get; }
-        List<ISudokuCell> FifthRegion { get; }
-        List<ISudokuCell> SixthRegion { get; }
-        List<ISudokuCell> SeventhRegion { get; }
-        List<ISudokuCell> EighthRegion { get; }
-        List<ISudokuCell> NinthRegion { get; }
-        List<ISudokuCell> FirstRow { get; }
-        List<ISudokuCell> SecondRow { get; }
-        List<ISudokuCell> ThirdRow { get; }
-        List<ISudokuCell> FourthRow { get; }
-        List<ISudokuCell> FifthRow { get; }
-        List<ISudokuCell> SixthRow { get; }
-        List<ISudokuCell> SeventhRow { get; }
-        List<ISudokuCell> EighthRow { get; }
-        List<ISudokuCell> NinthRow { get; }
+        Difficulty Difficulty { get; set; }
+        List<SudokuCell> SudokuCells { get; set; }
+        List<List<SudokuCell>> Columns { get; }
+        List<List<SudokuCell>> Regions { get; }
+        List<List<SudokuCell>> Rows { get; }
+        List<SudokuCell> FirstColumn { get; }
+        List<SudokuCell> SecondColumn { get; }
+        List<SudokuCell> ThirdColumn { get; }
+        List<SudokuCell> FourthColumn { get; }
+        List<SudokuCell> FifthColumn { get; }
+        List<SudokuCell> SixthColumn { get; }
+        List<SudokuCell> SeventhColumn { get; }
+        List<SudokuCell> EighthColumn { get; }
+        List<SudokuCell> NinthColumn { get; }
+        List<SudokuCell> FirstRegion { get; }
+        List<SudokuCell> SecondRegion { get; }
+        List<SudokuCell> ThirdRegion { get; }
+        List<SudokuCell> FourthRegion { get; }
+        List<SudokuCell> FifthRegion { get; }
+        List<SudokuCell> SixthRegion { get; }
+        List<SudokuCell> SeventhRegion { get; }
+        List<SudokuCell> EighthRegion { get; }
+        List<SudokuCell> NinthRegion { get; }
+        List<SudokuCell> FirstRow { get; }
+        List<SudokuCell> SecondRow { get; }
+        List<SudokuCell> ThirdRow { get; }
+        List<SudokuCell> FourthRow { get; }
+        List<SudokuCell> FifthRow { get; }
+        List<SudokuCell> SixthRow { get; }
+        List<SudokuCell> SeventhRow { get; }
+        List<SudokuCell> EighthRow { get; }
+        List<SudokuCell> NinthRow { get; }
         List<int> FirstColumnValues { get; }
         List<int> SecondColumnValues { get; }
         List<int> ThirdColumnValues { get; }

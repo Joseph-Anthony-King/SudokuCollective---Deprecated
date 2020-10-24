@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.TestData
 {

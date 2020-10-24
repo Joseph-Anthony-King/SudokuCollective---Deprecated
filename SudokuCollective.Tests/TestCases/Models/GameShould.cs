@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using Moq;
-using SudokuCollective.Domain;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
 

@@ -11,7 +11,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Services
 {
@@ -60,10 +60,10 @@ namespace SudokuCollective.Data.Services
                             .Include(u => u.Roles)
                             .FirstOrDefaultAsync();
 
-                        r.User.Games = (await _context.Games
+                        r.User.Games = await _context.Games
                             .Where(g => g.User.Id == r.UserId)
                             .Include(g => g.SudokuMatrix)
-                            .ToListAsync()).ConvertAll(g => g as IGame);
+                            .ToListAsync();
 
                         foreach (var game in r.User.Games)
                         {
@@ -131,10 +131,10 @@ namespace SudokuCollective.Data.Services
                                 .Include(u => u.Roles)
                                 .FirstOrDefaultAsync();
 
-                            r.User.Games = (await _context.Games
+                            r.User.Games = await _context.Games
                                 .Where(g => g.User.Id == r.UserId)
                                 .Include(g => g.SudokuMatrix)
-                                .ToListAsync()).ConvertAll(g => g as IGame);
+                                .ToListAsync();
 
                             foreach (var game in r.User.Games)
                             {

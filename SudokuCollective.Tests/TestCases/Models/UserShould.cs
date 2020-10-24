@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Domain;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.TestCases.Models
 {

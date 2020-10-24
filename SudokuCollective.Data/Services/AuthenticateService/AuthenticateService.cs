@@ -7,7 +7,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
 using SudokuCollective.Core.Interfaces.APIModels.TokenModels;
 using SudokuCollective.Core.Interfaces.Services;

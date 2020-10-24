@@ -2,7 +2,7 @@
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Models.ResultModels
 {
@@ -19,7 +19,7 @@ namespace SudokuCollective.Data.Models.ResultModels
                 Id = 0,
                 Name = string.Empty,
                 DifficultyLevel = DifficultyLevel.NULL,
-                Matrices = new List<ISudokuMatrix>()
+                Matrices = new List<SudokuMatrix>()
             };
         }
     }

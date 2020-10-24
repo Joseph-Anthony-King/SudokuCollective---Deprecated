@@ -33,5 +33,12 @@ namespace SudokuCollective.Domain.Models
             RoleLevel = roleLevel;
         }
         #endregion
+
+        #region Methods
+        public Role Convert(IRole role)
+        {
+            return (Role)role;
+        }
+        #endregion
     }
 }

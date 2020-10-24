@@ -13,7 +13,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Services
 {

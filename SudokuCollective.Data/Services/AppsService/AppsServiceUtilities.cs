@@ -10,7 +10,7 @@ using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Services
 {
@@ -161,10 +161,10 @@ namespace SudokuCollective.Data.Services
                             .Include(u => u.Roles)
                             .FirstOrDefaultAsync(predicate: u => u.Id == user.UserId);
 
-                        user.User.Roles = (await context.UsersRoles
+                        user.User.Roles = await context.UsersRoles
                             .Include(ur => ur.Role)
                             .Where(ur => ur.UserId == user.UserId)
-                            .ToListAsync()).ConvertAll(ur => ur as IUserRole);
+                            .ToListAsync();
 
                         foreach (var userRole in user.User.Roles) {
 
@@ -182,7 +182,7 @@ namespace SudokuCollective.Data.Services
                     }
                 }
 
-                var users = new List<IUser>();
+                var users = new List<User>();
 
                 if (pageListModel.IsNull()) {
 
@@ -366,7 +366,7 @@ namespace SudokuCollective.Data.Services
                 }
 
                 userListTaskResult.Success = true;
-                userListTaskResult.Users = users;
+                userListTaskResult.Users = users.ConvertAll(u => u as IUser);
 
                 return userListTaskResult;
 

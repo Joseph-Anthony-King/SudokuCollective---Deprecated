@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Core.Enums;
 

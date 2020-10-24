@@ -10,8 +10,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Services
 {
@@ -533,10 +532,10 @@ namespace SudokuCollective.Data.Services
                     return gameTaskResult;
                 }
 
-                game.SudokuMatrix.SudokuCells = (_context.SudokuCells
+                game.SudokuMatrix.SudokuCells = _context.SudokuCells
                     .Where(cell => cell.SudokuMatrixId == game.SudokuMatrixId)
                     .OrderBy(cell => cell.Index)
-                    .ToList()).ConvertAll(c => c as ISudokuCell);
+                    .ToList();
 
                 int index = 1;
 

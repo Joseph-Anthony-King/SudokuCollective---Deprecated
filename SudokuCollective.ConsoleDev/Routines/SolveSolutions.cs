@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SudokuCollective.ConsoleDev.Classes;
 using SudokuCollective.Core.Enums;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.ConsoleDev.Routines
 {

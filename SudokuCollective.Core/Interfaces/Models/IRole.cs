@@ -1,4 +1,5 @@
 ﻿using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Models;
 using System.Collections.Generic;
 
 namespace SudokuCollective.Core.Interfaces.Models
@@ -7,6 +8,6 @@ namespace SudokuCollective.Core.Interfaces.Models
     {
         string Name { get; set; }
         RoleLevel RoleLevel { get; set; }
-        public List<IUserRole> Users { get; set; }
+        public List<UserRole> Users { get; set; }
     }
 }

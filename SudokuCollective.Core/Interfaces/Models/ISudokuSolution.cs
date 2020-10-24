@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SudokuCollective.Core.Models;
+using System;
 using System.Collections.Generic;
 
 namespace SudokuCollective.Core.Interfaces.Models
@@ -17,7 +18,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         List<int> SeventhRow { get; }
         List<int> EighthRow { get; }
         List<int> NinthRow { get; }
-        IGame Game { get; set; }
+        Game Game { get; set; }
         string ToString();
     }
 }

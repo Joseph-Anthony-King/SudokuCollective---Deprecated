@@ -9,21 +9,21 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.MockServices
 {
     public class MockRolesService
     {
         private DatabaseContext _context;
-        internal Mock<RolesService> RolesServiceSuccessfulRequest { get; set; }
-        internal Mock<RolesService> RolesServiceFailedRequest { get; set; }
+        internal Mock<IRolesService> RolesServiceSuccessfulRequest { get; set; }
+        internal Mock<IRolesService> RolesServiceFailedRequest { get; set; }
 
         public MockRolesService(DatabaseContext context)
         {
             _context = context;
-            RolesServiceSuccessfulRequest = new Mock<RolesService>();
-            RolesServiceFailedRequest = new Mock<RolesService>();
+            RolesServiceSuccessfulRequest = new Mock<IRolesService>();
+            RolesServiceFailedRequest = new Mock<IRolesService>();
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.GetRole(It.IsAny<int>(), It.IsAny<bool>()))
@@ -32,7 +32,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = true,
                     Message = string.Empty,
                     Role = _context.Roles.FirstOrDefault(predicate: role => role.Id == 1)
-                } as RoleResult));
+                } as IRoleResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.GetRoles(It.IsAny<bool>()))
@@ -40,8 +40,8 @@ namespace SudokuCollective.Test.MockServices
                 {
                     Success = true,
                     Message = string.Empty,
-                    Roles = _context.Roles.ToList()
-                } as RolesResult));
+                    Roles = (_context.Roles.ToList()).ConvertAll(r => r as IRole)
+                } as IRolesResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.CreateRole(It.IsAny<string>(), It.IsAny<RoleLevel>()))
@@ -50,7 +50,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = true,
                     Message = string.Empty,
                     Role = new Role(5, "New Role", RoleLevel.NULL)
-                } as RoleResult));
+                } as IRoleResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.UpdateRole(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>()))
@@ -75,7 +75,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = false,
                     Message = "Error retrieving role",
                     Role = new Role()
-                } as RoleResult));
+                } as IRoleResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
                 rolesService.GetRoles(It.IsAny<bool>()))
@@ -83,8 +83,8 @@ namespace SudokuCollective.Test.MockServices
                 {
                     Success = false,
                     Message = "Error retrieving roles",
-                    Roles = new List<Role>()
-                } as RolesResult));
+                    Roles = new List<IRole>()
+                } as IRolesResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
                 rolesService.CreateRole(It.IsAny<string>(), It.IsAny<RoleLevel>()))
@@ -93,7 +93,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = false,
                     Message = "Error creating role",
                     Role = new Role()
-                } as RoleResult));
+                } as IRoleResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
                 rolesService.UpdateRole(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>()))

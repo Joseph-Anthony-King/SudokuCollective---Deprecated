@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Api.Controllers {
 
@@ -13,10 +13,10 @@ namespace SudokuCollective.Api.Controllers {
     [ApiController]
     public class RolesController : ControllerBase {
 
-        private readonly RolesService _rolesService;
+        private readonly IRolesService _rolesService;
         private readonly IAppsService _appsService;
 
-        public RolesController(RolesService rolesService, 
+        public RolesController(IRolesService rolesService, 
             IAppsService appsService) {
             
             _rolesService = rolesService;

@@ -9,7 +9,7 @@ using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Services
 {
@@ -46,19 +46,19 @@ namespace SudokuCollective.Data.Services
                         return difficultyTaskResult;
                     }
 
-                    difficulty.Matrices = (await _context.SudokuMatrices
+                    difficulty.Matrices = await _context.SudokuMatrices
                         .Where(m => m.Difficulty.Id == difficulty.Id)
-                        .ToListAsync()).ConvertAll(m => m as ISudokuMatrix);
+                        .ToListAsync();
 
 
                     foreach (var matrix in difficulty.Matrices)
                     {
 
                         matrix.SudokuCells =
-                            (await _context.SudokuCells
+                            await _context.SudokuCells
                                 .Where(cell => cell.SudokuMatrix.Id == matrix.Id)
                                 .OrderBy(cell => cell.Index)
-                                .ToListAsync()).ConvertAll(c => c as ISudokuCell);
+                                .ToListAsync();
                     }
 
                     difficultyTaskResult.Success = true;

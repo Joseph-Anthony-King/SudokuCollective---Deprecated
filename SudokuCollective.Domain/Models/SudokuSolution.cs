@@ -69,6 +69,11 @@ namespace SudokuCollective.Domain.Models
             return result.ToString();
         }
 
+        public SudokuSolution Convert(ISudokuSolution solution)
+        {
+            return (SudokuSolution)solution;
+        }
+
         private List<int> GetValues(int skipValue, int takeValue)
         {
             return SolutionList.Skip(skipValue).Take(takeValue).ToList();

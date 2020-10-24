@@ -9,7 +9,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.MockServices
 {
@@ -40,7 +40,7 @@ namespace SudokuCollective.Test.MockServices
                 {
                     Success = true,
                     Message = string.Empty,
-                    Difficulties = _context.Difficulties.ToList()
+                    Difficulties = (_context.Difficulties.ToList()).ConvertAll(d => d as IDifficulty)
                 } as IDifficultiesResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>

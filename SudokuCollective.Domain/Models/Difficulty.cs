@@ -37,5 +37,12 @@ namespace SudokuCollective.Domain.Models
             DifficultyLevel = difficultyLevel;
         }
         #endregion
+
+        #region Methods
+        public Difficulty Convert(IDifficulty difficulty)
+        {
+            return (Difficulty)difficulty;
+        }
+        #endregion
     }
 }

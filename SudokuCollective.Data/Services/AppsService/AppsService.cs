@@ -12,7 +12,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Services
 {
@@ -65,12 +65,10 @@ namespace SudokuCollective.Data.Services
                                 .Include(u => u.Roles)
                                 .FirstOrDefaultAsync(predicate: u => u.Id == user.UserId);
 
-                            var query = await _context.UsersRoles
+                            user.User.Roles = await _context.UsersRoles
                                 .Include(ur => ur.Role)
                                 .Where(ur => ur.UserId == user.UserId)
                                 .ToListAsync();
-
-                            user.User.Roles = query.ConvertAll(ur => ur as IUserRole);
 
                             foreach (var userRole in user.User.Roles)
                             {
@@ -154,13 +152,11 @@ namespace SudokuCollective.Data.Services
                                 .Include(u => u.Roles)
                                 .FirstOrDefaultAsync(predicate: u => u.Id == ua.UserId);
 
-                            var query = await _context.Games
+                            ua.User.Games = await _context.Games
                                 .OrderBy(g => g.Id)
                                 .Include(g => g.SudokuMatrix)
                                 .Where(g => g.User.Id == ua.UserId)
                                 .ToListAsync();
-
-                            ua.User.Games = query.ConvertAll(g => g as IGame);
 
                             foreach (var game in ua.User.Games)
                             {
@@ -337,12 +333,10 @@ namespace SudokuCollective.Data.Services
                                 .Include(u => u.Roles)
                                 .FirstOrDefaultAsync(predicate: u => u.Id == user.UserId);
 
-                            var query = await _context.UsersRoles
+                            user.User.Roles = await _context.UsersRoles
                                 .Include(ur => ur.Role)
                                 .Where(ur => ur.UserId == user.UserId)
                                 .ToListAsync();
-
-                            user.User.Roles = query.ConvertAll(ur => ur as IUserRole);
 
                             foreach (var userRole in user.User.Roles)
                             {

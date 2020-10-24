@@ -442,6 +442,11 @@ namespace SudokuCollective.Domain.Models
             return result.ToString();
         }
 
+        public SudokuMatrix Convert(ISudokuMatrix matrix)
+        {
+            return (SudokuMatrix)matrix;
+        }
+
         private void ZeroOutSudokuCells()
         {
             foreach (var ISudokuCell in SudokuCells)

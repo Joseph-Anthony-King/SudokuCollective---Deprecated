@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
-using SudokuCollective.Domain.Utilities;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Utilities;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.TestCases.Models
 {

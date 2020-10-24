@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Structs;
 
 namespace SudokuCollective.Core.Interfaces.Models
@@ -14,7 +15,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         int DisplayValue { get; set; }
         bool Obscured { get; set; }
         int SudokuMatrixId { get; set; }
-        ISudokuMatrix SudokuMatrix { get; set; }
+        SudokuMatrix SudokuMatrix { get; set; }
         List<int> AvailableValues { get; set; }
         int ToInt32() => DisplayValue;
         string ToString() => DisplayValue.ToString();

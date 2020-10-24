@@ -17,7 +17,7 @@ namespace SudokuCollective.Data.Helpers
                 .Where(cell => cell.SudokuMatrixId == matrix.Id)
                 .ToListAsync();
 
-            matrix.SudokuCells = cells.ConvertAll(c => c as ISudokuCell);
+            matrix.SudokuCells = cells;
         }
     }
 }

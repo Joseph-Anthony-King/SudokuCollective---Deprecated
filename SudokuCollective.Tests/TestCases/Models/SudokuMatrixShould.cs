@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 using NUnit.Framework;
-using SudokuCollective.Domain.Models;
-using SudokuCollective.Domain.Utilities;
+using SudokuCollective.Core.Models;
+using SudokuCollective.Core.Utilities;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Enums;
 

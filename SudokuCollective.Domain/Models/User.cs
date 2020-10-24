@@ -207,6 +207,11 @@ namespace SudokuCollective.Domain.Models
                 }
             }
         }
+
+        public User Convert (IUser user)
+        {
+            return (User)user;
+        }
         #endregion
     }
 }

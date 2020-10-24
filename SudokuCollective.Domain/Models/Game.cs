@@ -86,6 +86,11 @@ namespace SudokuCollective.Domain.Models
 
             return !ContinueGame;
         }
+
+        public Game Convert(IGame game)
+        {
+            return (Game)game;
+        }
         #endregion
     }
 }

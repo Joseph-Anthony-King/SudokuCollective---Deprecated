@@ -10,7 +10,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Services
 {
@@ -50,9 +50,9 @@ namespace SudokuCollective.Data.Services
 
                     if (solution.Game != null)
                     {
-                        solution.Game.User.Roles = (await _context.UsersRoles
+                        solution.Game.User.Roles = await _context.UsersRoles
                             .Where(r => r.UserId == solution.Game.User.Id)
-                            .ToListAsync()).ConvertAll(ur => ur as IUserRole);
+                            .ToListAsync();
 
                         solution.Game.SudokuMatrix = await _context.SudokuMatrices
                             .Where(matrix => matrix.Id == solution.Game.SudokuMatrixId)
@@ -106,9 +106,9 @@ namespace SudokuCollective.Data.Services
                     {
                         if (solution.Game != null)
                         {
-                            solution.Game.User.Roles = (await _context.UsersRoles
+                            solution.Game.User.Roles = await _context.UsersRoles
                                 .Where(r => r.UserId == solution.Game.User.Id)
-                                .ToListAsync()).ConvertAll(ur => ur as IUserRole);
+                                .ToListAsync();
 
                             solution.Game.SudokuMatrix = await _context.SudokuMatrices
                                 .Where(matrix => matrix.Id == solution.Game.SudokuMatrixId)

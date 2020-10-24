@@ -9,7 +9,7 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Domain.Models;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.MockServices
@@ -54,7 +54,7 @@ namespace SudokuCollective.Test.MockServices
 
                     Success = true,
                     Message = string.Empty,
-                    Apps = _context.Apps.ToList()
+                    Apps = (_context.Apps.ToList()).ConvertAll(a => a as IApp)
                 } as IAppsResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
@@ -87,9 +87,9 @@ namespace SudokuCollective.Test.MockServices
 
                     Success = true,
                     Message = string.Empty,
-                    Users = context.Users
+                    Users = (context.Users
                         .Where(user => user.Apps.Any(userApp => userApp.AppId == 1))
-                        .ToList()
+                        .ToList()).ConvertAll(u => u as IUser)
                 } as IUsersResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>

@@ -1,4 +1,5 @@
 ﻿using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Models;
 using System.Collections.Generic;
 
 namespace SudokuCollective.Core.Interfaces.Models
@@ -8,6 +9,6 @@ namespace SudokuCollective.Core.Interfaces.Models
         string Name { get; set; }
         string DisplayName { get; set; }
         DifficultyLevel DifficultyLevel { get; set; }
-        List<ISudokuMatrix> Matrices { get; set; }
+        List<SudokuMatrix> Matrices { get; set; }
     }
 }

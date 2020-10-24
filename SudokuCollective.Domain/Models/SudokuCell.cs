@@ -206,6 +206,11 @@ namespace SudokuCollective.Domain.Models
                 AvailableValues.AddRange(tmp);
             }
         }
+
+        public SudokuCell Convert(ISudokuCell cell)
+        {
+            return (SudokuCell)cell;
+        }
         #endregion
 
         #region Event Handlers
