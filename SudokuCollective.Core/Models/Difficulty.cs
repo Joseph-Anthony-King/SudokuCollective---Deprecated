@@ -25,6 +25,7 @@ namespace SudokuCollective.Core.Models
             Id = 0;
             Name = string.Empty;
             DifficultyLevel = DifficultyLevel.NULL;
+            Matrices = new List<SudokuMatrix>();
         }
 
         [JsonConstructor]
@@ -35,13 +36,6 @@ namespace SudokuCollective.Core.Models
             Name = name;
             DisplayName = displayName;
             DifficultyLevel = difficultyLevel;
-        }
-        #endregion
-
-        #region Methods
-        public Difficulty Convert(IDifficulty difficulty)
-        {
-            return (Difficulty)difficulty;
         }
         #endregion
     }

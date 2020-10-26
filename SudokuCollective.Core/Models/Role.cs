@@ -23,6 +23,7 @@ namespace SudokuCollective.Core.Models
             Id = 0;
             Name = string.Empty;
             RoleLevel = RoleLevel.NULL;
+            Users = new List<UserRole>();
         }
 
         [JsonConstructor]
@@ -31,13 +32,6 @@ namespace SudokuCollective.Core.Models
             Id = id;
             Name = name;
             RoleLevel = roleLevel;
-        }
-        #endregion
-
-        #region Methods
-        public Role Convert(IRole role)
-        {
-            return (Role)role;
         }
         #endregion
     }

@@ -3,6 +3,7 @@ using Moq;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
+using System.Collections.Generic;
 
 namespace SudokuCollective.Test.TestCases.Models
 {
@@ -17,6 +18,9 @@ namespace SudokuCollective.Test.TestCases.Models
 
             user = new Mock<User>();
             matrix = new Mock<SudokuMatrix>();
+
+            user.Setup(u => u.Games).Returns(new List<Game>());
+            matrix.Setup(u => u.SudokuCells).Returns(new List<SudokuCell>());
 
             matrix.Setup(m => m.IsSolved()).Returns(true);
         }
@@ -66,8 +70,8 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange and Act
             Game sut = new Game(
-                user.Object,
-                matrix.Object,
+                new User(),
+                new SudokuMatrix(),
                 new Difficulty()
                 {
                     Name = "Test",

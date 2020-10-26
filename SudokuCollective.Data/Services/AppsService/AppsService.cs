@@ -18,40 +18,33 @@ namespace SudokuCollective.Data.Services
 {
     public class AppsService : IAppsService
     {
-
         private readonly DatabaseContext _context;
 
         public AppsService(DatabaseContext context)
         {
-
             _context = context;
         }
 
         public async Task<IAppResult> GetApp(int id, bool fullRecord = false)
         {
-
             var createdDate = DateTime.UtcNow;
 
             var appResult = new AppResult();
 
             try
             {
-
                 if (_context.Apps.Any(app => app.Id == id))
                 {
-
                     var app = new App();
 
                     if (fullRecord)
                     {
-
                         app = (App)await _context.Apps
                             .Include(a => a.Users)
                             .FirstOrDefaultAsync(predicate: a => a.Id == id);
 
                         if (app == null)
                         {
-
                             appResult.Message = "App not found";
 
                             return appResult;
@@ -59,7 +52,6 @@ namespace SudokuCollective.Data.Services
 
                         foreach (var user in app.Users)
                         {
-
                             user.User = await _context.Users
                                 .Include(u => u.Games)
                                 .Include(u => u.Roles)
@@ -76,18 +68,15 @@ namespace SudokuCollective.Data.Services
                                 userRole.Role.Users = null;
                             }
                         }
-
                     }
                     else
                     {
-
-                        app = (App)await _context.Apps
+                        app = await _context.Apps
                             .Include(a => a.Users)
                             .FirstOrDefaultAsync(predicate: a => a.Id == id);
 
                         if (app == null)
                         {
-
                             appResult.Message = "App not found";
 
                             return appResult;
@@ -95,7 +84,6 @@ namespace SudokuCollective.Data.Services
 
                         foreach (var user in app.Users)
                         {
-
                             user.User = await _context.Users
                                 .FirstOrDefaultAsync(predicate: u => u.Id == user.UserId);
                         }
@@ -103,11 +91,10 @@ namespace SudokuCollective.Data.Services
 
                     appResult.Success = true;
                     appResult.App = app;
-
                 }
                 else
                 {
-
+                    appResult.Success = false;
                     appResult.Message = "App not found";
                 }
 
@@ -116,7 +103,6 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception e)
             {
-
                 appResult.Message = e.Message;
 
                 return appResult;
@@ -127,26 +113,21 @@ namespace SudokuCollective.Data.Services
             IPageListModel pageListModel,
             bool fullRecord = false)
         {
-
             var appListTaskResult = new AppsResult();
 
             try
             {
-
                 var apps = new List<App>();
 
                 if (fullRecord)
                 {
-
                     apps = await AppsServiceUtilities
                         .RetrieveApps(pageListModel, _context);
 
                     foreach (var app in apps)
                     {
-
                         foreach (var ua in app.Users)
                         {
-
                             ua.User = await _context.Users
                                 .Include(u => u.Games)
                                 .Include(u => u.Roles)
@@ -160,7 +141,6 @@ namespace SudokuCollective.Data.Services
 
                             foreach (var game in ua.User.Games)
                             {
-
                                 await game.SudokuMatrix.AttachSudokuCells(_context);
                             }
                         }
@@ -168,11 +148,9 @@ namespace SudokuCollective.Data.Services
 
                     appListTaskResult.Success = true;
                     appListTaskResult.Apps = apps.ConvertAll(a => (IApp)a);
-
                 }
                 else
                 {
-
                     apps = await AppsServiceUtilities
                         .RetrieveApps(pageListModel, _context);
 
@@ -181,11 +159,9 @@ namespace SudokuCollective.Data.Services
                 }
 
                 return appListTaskResult;
-
             }
             catch (Exception e)
             {
-
                 appListTaskResult.Message = e.Message;
 
                 return appListTaskResult;
@@ -194,15 +170,12 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAppResult> CreateApp(ILicenseRequest licenseRequest)
         {
-
             var appResult = new AppResult();
 
             try
             {
-
                 if (_context.Users.Any(u => u.Id == licenseRequest.OwnerId))
                 {
-
                     var generatingGuid = true;
                     var license = new Guid();
 
@@ -210,12 +183,10 @@ namespace SudokuCollective.Data.Services
 
                     do
                     {
-
                         license = Guid.NewGuid();
 
                         if (!apps.Any(a => a.License.Equals(license.ToString())))
                         {
-
                             generatingGuid = false;
                         }
 
@@ -227,7 +198,6 @@ namespace SudokuCollective.Data.Services
 
                     foreach (var userRole in owner.Roles)
                     {
-
                         userRole.Role = await _context.Roles
                             .FirstOrDefaultAsync(predicate: r => r.Id == userRole.RoleId);
                     }
@@ -244,7 +214,6 @@ namespace SudokuCollective.Data.Services
 
                     var userApp = new UserApp()
                     {
-
                         UserId = owner.Id,
                         AppId = app.Id
                     };
@@ -256,23 +225,19 @@ namespace SudokuCollective.Data.Services
 
                     foreach (var userRole in owner.Roles)
                     {
-
                         if (userRole.Role.RoleLevel == RoleLevel.ADMIN)
                         {
-
                             addAdminRole = false;
                         }
                     }
 
                     if (addAdminRole)
                     {
-
                         var adminRole = await _context.Roles
                             .FirstOrDefaultAsync(predicate: r => r.RoleLevel == RoleLevel.ADMIN);
 
                         var newUserAdminRole = new UserRole()
                         {
-
                             UserId = owner.Id,
                             User = owner,
                             RoleId = adminRole.Id,
@@ -348,7 +313,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
 
-                        app = (App)await _context.Apps
+                        app = await _context.Apps
                             .Include(a => a.Users)
                             .FirstOrDefaultAsync(predicate: a => a.License.Equals(license));
 
@@ -375,7 +340,6 @@ namespace SudokuCollective.Data.Services
                 }
 
                 return appResult;
-
             }
             catch (Exception e)
             {
@@ -585,9 +549,7 @@ namespace SudokuCollective.Data.Services
 
                     foreach (var user in users)
                     {
-                        var u = (User)user;
-
-                        if (u.Apps.Count == 1 && u.IsAdmin == false)
+                        if (user.Apps.Count == 1 && user.IsAdmin == false)
                         {
                             _context.Users.Remove(user);
                         }
@@ -617,12 +579,10 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IBaseResult> ActivateApp(int id)
         {
-
             var result = new BaseResult();
 
             try
             {
-
                 var app = await _context.Apps.FindAsync(id);
 
                 if (app != null)
@@ -683,7 +643,7 @@ namespace SudokuCollective.Data.Services
         public async Task<bool> IsRequestValidOnThisLicense(string license, int userId, int appId)
         {
             var result = false;
-            var requestor = (User)await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            var requestor = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
             var validLicense = _context.Apps.Any(a => a.License.Equals(license));
             var requestorRegisteredToApp = _context.Apps
                 .Where(a => a.License.Equals(license))
@@ -708,7 +668,7 @@ namespace SudokuCollective.Data.Services
         public async Task<bool> IsOwnerOfThisLicense(string license, int userId, int appId)
         {
             var result = false;
-            var requestor = (User)await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            var requestor = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
             var validLicense = _context.Apps.Any(a => a.License.Equals(license));
             var requestorOwnerOfThisApp = _context.Apps
                 .Any(predicate:

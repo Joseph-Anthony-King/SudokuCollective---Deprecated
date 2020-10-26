@@ -17,36 +17,30 @@ namespace SudokuCollective.Data.Services
 {
     public class RolesService : IRolesService
     {
-
         private readonly DatabaseContext _context;
 
         public RolesService(DatabaseContext context)
         {
-
             _context = context;
         }
 
         public async Task<IRoleResult> GetRole(
             int id, bool fullRecord = false)
         {
-
             var roleTaskResult = new RoleResult();
 
             try
             {
-
                 var role = new Role();
 
                 if (fullRecord)
                 {
-
-                    role = (Role)await _context.Roles
+                    role = await _context.Roles
                         .Include(r => r.Users)
                         .SingleOrDefaultAsync(d => d.Id == id);
 
                     if (role == null)
                     {
-
                         roleTaskResult.Message = "Role not found";
 
                         return roleTaskResult;
@@ -54,7 +48,6 @@ namespace SudokuCollective.Data.Services
 
                     foreach (var r in role.Users)
                     {
-
                         r.User = await _context.Users
                             .Where(u => u.Id == r.UserId)
                             .Include(u => u.Roles)
@@ -67,24 +60,20 @@ namespace SudokuCollective.Data.Services
 
                         foreach (var game in r.User.Games)
                         {
-
                             await game.SudokuMatrix.AttachSudokuCells(_context);
                         }
                     }
 
                     roleTaskResult.Success = true;
                     roleTaskResult.Role = role;
-
                 }
                 else
                 {
-
-                    role = (Role)await _context.Roles
+                    role = await _context.Roles
                         .SingleOrDefaultAsync(d => d.Id == id);
 
                     if (role == null)
                     {
-
                         roleTaskResult.Message = "Role not found";
 
                         return roleTaskResult;
@@ -95,11 +84,9 @@ namespace SudokuCollective.Data.Services
                 }
 
                 return roleTaskResult;
-
             }
             catch (Exception e)
             {
-
                 roleTaskResult.Message = e.Message;
 
                 return roleTaskResult;

@@ -7,7 +7,6 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
 using SudokuCollective.Core.Interfaces.APIModels.TokenModels;
 using SudokuCollective.Core.Interfaces.Services;
@@ -19,7 +18,6 @@ namespace SudokuCollective.Data.Services
 {
     public class AuthenticateService : IAuthenticateService
     {
-
         private readonly DatabaseContext _context;
         private readonly IUserManagementService _userManagementService;
         private readonly ITokenManagement _tokenManagement;

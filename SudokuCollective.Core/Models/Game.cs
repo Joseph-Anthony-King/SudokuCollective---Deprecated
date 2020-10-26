@@ -1,7 +1,6 @@
 using System;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Core.Models
 {
@@ -32,14 +31,14 @@ namespace SudokuCollective.Core.Models
         }
 
         public Game(
-            IUser user,
-            ISudokuMatrix matrix,
-            IDifficulty difficulty,
+            User user,
+            SudokuMatrix matrix,
+            Difficulty difficulty,
             int appId = 0) : this()
         {
-            User = (User)user;
-            SudokuMatrix = (SudokuMatrix)matrix;
-            SudokuMatrix.Difficulty = (Difficulty)difficulty;
+            User = user;
+            SudokuMatrix = matrix;
+            SudokuMatrix.Difficulty = difficulty;
             SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
 
             User.Games.Add(this);

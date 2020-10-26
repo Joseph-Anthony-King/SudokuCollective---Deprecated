@@ -10,6 +10,7 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -111,7 +112,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Role>>>());
-            Assert.That(((List<Role>)roles).Count, Is.EqualTo(4));
+            Assert.That(((List<IRole>)roles).Count, Is.EqualTo(4));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 

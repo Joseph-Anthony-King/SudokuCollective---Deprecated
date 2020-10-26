@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;

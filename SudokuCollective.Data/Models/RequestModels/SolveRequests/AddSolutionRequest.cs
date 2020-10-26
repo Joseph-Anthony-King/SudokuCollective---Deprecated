@@ -10,5 +10,10 @@ namespace SudokuCollective.Data.Models.RequestModels
         public int AppId { get; set; }
         public IPageListModel PageListModel { get; set; }
         public int Limit { get; set; }
+
+        public AddSolutionRequest() : base()
+        {
+            Limit = 0;
+        }
     }
 }

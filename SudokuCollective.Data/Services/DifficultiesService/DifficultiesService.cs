@@ -25,22 +25,18 @@ namespace SudokuCollective.Data.Services
         public async Task<IDifficultyResult> GetDifficulty(
             int id, bool fullRecord = false)
         {
-
             var difficultyTaskResult = new DifficultyResult();
 
             try
             {
-
                 if (fullRecord)
                 {
-
                     var difficulty = await _context.Difficulties
                         .Include(d => d.Matrices)
                         .SingleOrDefaultAsync(d => d.Id == id);
 
                     if (difficulty == null)
                     {
-
                         difficultyTaskResult.Message = "Difficulty not found";
 
                         return difficultyTaskResult;
@@ -53,7 +49,6 @@ namespace SudokuCollective.Data.Services
 
                     foreach (var matrix in difficulty.Matrices)
                     {
-
                         matrix.SudokuCells =
                             await _context.SudokuCells
                                 .Where(cell => cell.SudokuMatrix.Id == matrix.Id)
@@ -63,17 +58,14 @@ namespace SudokuCollective.Data.Services
 
                     difficultyTaskResult.Success = true;
                     difficultyTaskResult.Difficulty = difficulty;
-
                 }
                 else
                 {
-
                     var difficulty = await _context.Difficulties
                         .SingleOrDefaultAsync(d => d.Id == id);
 
                     if (difficulty == null)
                     {
-
                         difficultyTaskResult.Message = "Difficulty not found";
 
                         return difficultyTaskResult;
@@ -90,7 +82,6 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception e)
             {
-
                 difficultyTaskResult.Message = e.Message;
 
                 return difficultyTaskResult;

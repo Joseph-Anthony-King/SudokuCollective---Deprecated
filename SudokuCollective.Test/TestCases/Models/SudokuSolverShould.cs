@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Models;
@@ -54,7 +55,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
         [Test]
         [Category("Utilities")]
-        public async void SolveSudokuMatrices()
+        public async Task SolveSudokuMatrices()
         {
             // Arrange
             var intList = new List<int>() {

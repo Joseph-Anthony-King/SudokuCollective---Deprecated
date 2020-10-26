@@ -9,6 +9,7 @@ using SudokuCollective.Api.Controllers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -121,7 +122,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
-            Assert.That(((List<User>)users).Count, Is.EqualTo(3));
+            Assert.That(((List<IUser>)users).Count, Is.EqualTo(3));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 

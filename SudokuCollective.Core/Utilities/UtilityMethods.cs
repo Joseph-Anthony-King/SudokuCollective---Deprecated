@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using SudokuCollective.Core.Extensions;
 
-namespace SudokuCollective.Core.Utilities {
-    
-    public static class UtilityMethods {
-
-        public static List<int> GenerateSudokuCompliantIntList() {
-
+namespace SudokuCollective.Core.Utilities
+{
+    public static class UtilityMethods
+    {
+        public static List<int> GenerateSudokuCompliantIntList()
+        {
             const int MAX_ITERATIONS = 1000000;
             int iterations;
             bool completed = false;
@@ -17,8 +17,8 @@ namespace SudokuCollective.Core.Utilities {
             List<List<int>> sudokuMatrix = new List<List<int>>();
             List<int> result = new List<int>();
 
-            do {
-
+            do
+            {
                 iterations = 0;
 
                 maxIterationsReached = false;
@@ -33,7 +33,8 @@ namespace SudokuCollective.Core.Utilities {
 
                 List<int> thirdRow = listOfNineNumbers.ToList();
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     SetThirdRow(MAX_ITERATIONS, ref iterations, ref maxIterationsReached, ref thirdRow, firstRow, secondRow);
                 }
 
@@ -47,7 +48,8 @@ namespace SudokuCollective.Core.Utilities {
                 List<int> eighthColumn = new List<int>();
                 List<int> ninthColumn = new List<int>();
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     SetColumns(ref firstColumn, ref secondColumn, ref thirdColumn, ref fourthColumn, ref fifthColumn,
                         ref sixthColumn, ref seventhColumn, ref eighthColumn, ref ninthColumn, firstRow, secondRow,
                         thirdRow);
@@ -55,7 +57,8 @@ namespace SudokuCollective.Core.Utilities {
 
                 List<int> fourthRow = listOfNineNumbers.ToList();
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     SetFourthRow(MAX_ITERATIONS, ref iterations, ref maxIterationsReached, ref fourthRow, ref firstColumn,
                         ref secondColumn, ref thirdColumn, ref fourthColumn, ref fifthColumn, ref sixthColumn, ref seventhColumn,
                         ref eighthColumn, ref ninthColumn);
@@ -63,7 +66,8 @@ namespace SudokuCollective.Core.Utilities {
 
                 List<int> fifthRow = listOfNineNumbers.ToList();
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     SetFifthRow(MAX_ITERATIONS, ref iterations, ref maxIterationsReached, ref fifthRow, ref firstColumn, ref secondColumn,
                         ref thirdColumn, ref fourthColumn, ref fifthColumn, ref sixthColumn, ref seventhColumn, ref eighthColumn,
                         ref ninthColumn, fourthRow);
@@ -71,7 +75,8 @@ namespace SudokuCollective.Core.Utilities {
 
                 List<int> sixthRow = listOfNineNumbers.ToList();
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     SetSixthRow(MAX_ITERATIONS, ref iterations, ref maxIterationsReached, ref sixthRow, ref firstColumn, ref secondColumn,
                         ref thirdColumn, ref fourthColumn, ref fifthColumn, ref sixthColumn, ref seventhColumn, ref eighthColumn,
                         ref ninthColumn, fourthRow, fifthRow);
@@ -79,7 +84,8 @@ namespace SudokuCollective.Core.Utilities {
 
                 List<int> seventhRow = listOfNineNumbers.ToList();
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     SetSeventhRow(MAX_ITERATIONS, ref iterations, ref maxIterationsReached, ref seventhRow, ref firstColumn, ref secondColumn,
                         ref thirdColumn, ref fourthColumn, ref fifthColumn, ref sixthColumn, ref seventhColumn, ref eighthColumn,
                         ref ninthColumn);
@@ -87,7 +93,8 @@ namespace SudokuCollective.Core.Utilities {
 
                 List<int> eighthRow = listOfNineNumbers.ToList();
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     SetEighthRow(MAX_ITERATIONS, ref iterations, ref maxIterationsReached, ref eighthRow, ref firstColumn, ref secondColumn,
                         ref thirdColumn, ref fourthColumn, ref fifthColumn, ref sixthColumn, ref seventhColumn, ref eighthColumn,
                         ref ninthColumn, seventhRow);
@@ -95,13 +102,15 @@ namespace SudokuCollective.Core.Utilities {
 
                 List<int> ninthRow = listOfNineNumbers.ToList();
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     SetNinthRow(MAX_ITERATIONS, ref iterations, ref maxIterationsReached, ref ninthRow, ref firstColumn, ref secondColumn,
                         ref thirdColumn, ref fourthColumn, ref fifthColumn, ref sixthColumn, ref seventhColumn, ref eighthColumn,
                         ref ninthColumn, seventhRow, eighthRow);
                 }
 
-                if (maxIterationsReached == false) {
+                if (maxIterationsReached == false)
+                {
                     AddRowsToSudokuMatrix(ref sudokuMatrix, ref firstRow, ref secondRow, ref thirdRow, ref fourthRow, ref fifthRow,
                         ref sixthRow, ref seventhRow, ref eighthRow, ref ninthRow);
 
@@ -113,16 +122,17 @@ namespace SudokuCollective.Core.Utilities {
             return result = sudokuMatrix.SelectMany(row => row).ToList();
         }
 
-        private static void SetSecondRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> _secondRow, List<int> _firstRow) {
-
-            do {
-
+        private static void SetSecondRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> _secondRow, List<int> _firstRow)
+        {
+            do
+            {
                 Random random = new Random();
                 CoreExtensions.Shuffle(_secondRow, random);
 
                 ++iterations;
 
-                if (iterations == MAX_ITERATIONS) {
+                if (iterations == MAX_ITERATIONS)
+                {
                     maxIterationsReached = true;
                     break;
                 }
@@ -134,16 +144,17 @@ namespace SudokuCollective.Core.Utilities {
             );
         }
 
-        private static void SetThirdRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> thirdRow, List<int> firstRow, List<int> secondRow) {
-
-            do {
-
+        private static void SetThirdRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> thirdRow, List<int> firstRow, List<int> secondRow)
+        {
+            do
+            {
                 Random random = new Random();
                 CoreExtensions.Shuffle(thirdRow, random);
 
                 ++iterations;
 
-                if (iterations == MAX_ITERATIONS) {
+                if (iterations == MAX_ITERATIONS)
+                {
                     maxIterationsReached = true;
                     break;
                 }
@@ -160,8 +171,8 @@ namespace SudokuCollective.Core.Utilities {
 
         private static void SetColumns(ref List<int> firstColumn, ref List<int> secondColumn, ref List<int> thirdColumn,
             ref List<int> fourthColumn, ref List<int> fifthColumn, ref List<int> sixthColumn, ref List<int> seventhColumn,
-            ref List<int> eighthColumn, ref List<int> ninthColumn, List<int> firstRow, List<int> secondRow, List<int> thirdRow) {
-
+            ref List<int> eighthColumn, ref List<int> ninthColumn, List<int> firstRow, List<int> secondRow, List<int> thirdRow)
+        {
             firstColumn.Add(firstRow[0]);
             firstColumn.Add(secondRow[0]);
             firstColumn.Add(thirdRow[0]);
@@ -202,16 +213,17 @@ namespace SudokuCollective.Core.Utilities {
         private static void SetFourthRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> fourthRow,
             ref List<int> firstColumn, ref List<int> secondColumn, ref List<int> thirdColumn, ref List<int> fourthColumn,
             ref List<int> fifthColumn, ref List<int> sixthColumn, ref List<int> seventhColumn, ref List<int> eighthColumn,
-            ref List<int> ninthColumn) {
-
-            do {
-
+            ref List<int> ninthColumn)
+        {
+            do
+            {
                 Random random = new Random();
                 CoreExtensions.Shuffle(fourthRow, random);
 
                 ++iterations;
 
-                if (iterations == MAX_ITERATIONS) {
+                if (iterations == MAX_ITERATIONS)
+                {
                     maxIterationsReached = true;
                     break;
                 }
@@ -242,16 +254,17 @@ namespace SudokuCollective.Core.Utilities {
         private static void SetFifthRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> fifthRow,
             ref List<int> firstColumn, ref List<int> secondColumn, ref List<int> thirdColumn, ref List<int> fourthColumn,
             ref List<int> fifthColumn, ref List<int> sixthColumn, ref List<int> seventhColumn, ref List<int> eighthColumn,
-            ref List<int> ninthColumn, List<int> fourthRow) {
-
-            do {
-
+            ref List<int> ninthColumn, List<int> fourthRow)
+        {
+            do
+            {
                 Random random = new Random();
                 CoreExtensions.Shuffle(fifthRow, random);
 
                 ++iterations;
 
-                if (iterations == MAX_ITERATIONS) {
+                if (iterations == MAX_ITERATIONS)
+                {
                     maxIterationsReached = true;
                     break;
                 }
@@ -285,16 +298,17 @@ namespace SudokuCollective.Core.Utilities {
         private static void SetSixthRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> sixthRow,
             ref List<int> firstColumn, ref List<int> secondColumn, ref List<int> thirdColumn, ref List<int> fourthColumn,
             ref List<int> fifthColumn, ref List<int> sixthColumn, ref List<int> seventhColumn, ref List<int> eighthColumn,
-            ref List<int> ninthColumn, List<int> fourthRow, List<int> fifthRow) {
-
-            do {
-
+            ref List<int> ninthColumn, List<int> fourthRow, List<int> fifthRow)
+        {
+            do
+            {
                 Random random = new Random();
                 CoreExtensions.Shuffle(sixthRow, random);
 
                 ++iterations;
 
-                if (iterations == MAX_ITERATIONS) {
+                if (iterations == MAX_ITERATIONS)
+                {
                     maxIterationsReached = true;
                     break;
                 }
@@ -331,16 +345,17 @@ namespace SudokuCollective.Core.Utilities {
         private static void SetSeventhRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> seventhRow,
             ref List<int> firstColumn, ref List<int> secondColumn, ref List<int> thirdColumn, ref List<int> fourthColumn,
             ref List<int> fifthColumn, ref List<int> sixthColumn, ref List<int> seventhColumn, ref List<int> eighthColumn,
-            ref List<int> ninthColumn) {
-
-            do {
-
+            ref List<int> ninthColumn)
+        {
+            do
+            {
                 Random random = new Random();
                 CoreExtensions.Shuffle(seventhRow, random);
 
                 ++iterations;
 
-                if (iterations == MAX_ITERATIONS) {
+                if (iterations == MAX_ITERATIONS)
+                {
                     maxIterationsReached = true;
                     break;
                 }
@@ -371,16 +386,17 @@ namespace SudokuCollective.Core.Utilities {
         private static void SetEighthRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> eighthRow,
             ref List<int> firstColumn, ref List<int> secondColumn, ref List<int> thirdColumn, ref List<int> fourthColumn,
             ref List<int> fifthColumn, ref List<int> sixthColumn, ref List<int> seventhColumn, ref List<int> eighthColumn,
-            ref List<int> ninthColumn, List<int> seventhRow) {
-
-            do {
-
+            ref List<int> ninthColumn, List<int> seventhRow)
+        {
+            do
+            {
                 Random random = new Random();
                 CoreExtensions.Shuffle(eighthRow, random);
 
                 ++iterations;
 
-                if (iterations == MAX_ITERATIONS) {
+                if (iterations == MAX_ITERATIONS)
+                {
                     maxIterationsReached = true;
                     break;
                 }
@@ -414,16 +430,17 @@ namespace SudokuCollective.Core.Utilities {
         private static void SetNinthRow(int MAX_ITERATIONS, ref int iterations, ref bool maxIterationsReached, ref List<int> ninthRow,
             ref List<int> firstColumn, ref List<int> secondColumn, ref List<int> thirdColumn, ref List<int> fourthColumn,
             ref List<int> fifthColumn, ref List<int> sixthColumn, ref List<int> seventhColumn, ref List<int> eighthColumn,
-            ref List<int> ninthColumn, List<int> seventhRow, List<int> eighthRow) {
-
-            do {
-
+            ref List<int> ninthColumn, List<int> seventhRow, List<int> eighthRow)
+        {
+            do
+            {
                 Random random = new Random();
                 CoreExtensions.Shuffle(ninthRow, random);
 
                 ++iterations;
 
-                if (iterations == MAX_ITERATIONS) {
+                if (iterations == MAX_ITERATIONS)
+                {
                     maxIterationsReached = true;
                     break;
                 }
@@ -459,7 +476,8 @@ namespace SudokuCollective.Core.Utilities {
 
         private static void AddRowsToSudokuMatrix(ref List<List<int>> sudokuMatrix, ref List<int> firstRow, ref List<int> secondRow,
             ref List<int> thirdRow, ref List<int> fourthRow, ref List<int> fifthRow, ref List<int> sixthRow, ref List<int> seventhRow,
-            ref List<int> eighthRow, ref List<int> ninthRow) {
+            ref List<int> eighthRow, ref List<int> ninthRow)
+        {
             sudokuMatrix.Add(firstRow);
             sudokuMatrix.Add(secondRow);
             sudokuMatrix.Add(thirdRow);

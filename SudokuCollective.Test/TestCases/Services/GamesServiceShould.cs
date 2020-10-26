@@ -9,6 +9,7 @@ using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Test.TestData;
+using SudokuCollective.Data.Models.PageModels;
 
 namespace SudokuCollective.Test.TestCases.Services
 {
@@ -247,7 +248,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var userId = 1;
             var getMyGameRequest = new GetMyGameRequest()
             {
-
+                PageListModel = new PageListModel(),
                 UserId = userId
             };
 

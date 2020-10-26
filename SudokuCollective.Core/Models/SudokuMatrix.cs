@@ -12,12 +12,26 @@ namespace SudokuCollective.Core.Models
 {
     public class SudokuMatrix : ISudokuMatrix
     {
+        #region Fields
+        private List<SudokuCell> _sudokuCells = new List<SudokuCell>();
+        #endregion
+
         #region Properties
         public int Id { get; set; }
         public Game Game { get; set; }
         public int DifficultyId { get; set; }
         public Difficulty Difficulty { get; set; }
-        public virtual List<SudokuCell> SudokuCells { get; set; }
+        public virtual List<SudokuCell> SudokuCells
+        {
+            get
+            {
+                return _sudokuCells;
+            }
+            set
+            {
+                _sudokuCells = value;
+            }
+        }
 
         public List<List<SudokuCell>> Columns
         {
@@ -275,7 +289,6 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Methods
-
         public bool IsValid()
         {
             if (FirstColumnValues.Count == 9 && SecondColumnValues.Count == 9
@@ -440,11 +453,6 @@ namespace SudokuCollective.Core.Models
             }
 
             return result.ToString();
-        }
-
-        public SudokuMatrix Convert(ISudokuMatrix matrix)
-        {
-            return (SudokuMatrix)matrix;
         }
 
         private void ZeroOutSudokuCells()

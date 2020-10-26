@@ -70,7 +70,10 @@ namespace SudokuCollective.ConsoleDev.Routines
             ISudokuMatrix matrix = new SudokuMatrix();
             matrix.GenerateSolution();
             matrix.SetDifficulty(difficulty);
-            IGame game = new Game(user, matrix, difficulty);
+            IGame game = new Game(
+                user, 
+                (SudokuMatrix)matrix, 
+                (Difficulty)difficulty);
 
             var continueGame = true;
 

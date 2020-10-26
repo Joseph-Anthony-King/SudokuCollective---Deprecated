@@ -35,7 +35,7 @@ namespace SudokuCollective.Core.Models
             DateCreated = DateTime.UtcNow;
             DevUrl = string.Empty;
             LiveUrl = string.Empty;
-            IsActive = true;
+            IsActive = false;
             Users = new List<UserApp>();
         }
 
@@ -96,11 +96,6 @@ namespace SudokuCollective.Core.Models
         public void DeactivateApp()
         {
             IsActive = false;
-        }
-
-        public App Convert(IApp app)
-        {
-            return (App)app;
         }
         #endregion
     }

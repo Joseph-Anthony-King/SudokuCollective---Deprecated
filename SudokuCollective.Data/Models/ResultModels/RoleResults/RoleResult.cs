@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Models;
@@ -14,13 +12,7 @@ namespace SudokuCollective.Data.Models.ResultModels
 
         public RoleResult() : base()
         {
-            Role = new Role()
-            {
-                Id = 0,
-                Name = string.Empty,
-                RoleLevel = RoleLevel.NULL,
-                Users = new List<UserRole>()
-            };
+            Role = new Role();
         }
     }
 }

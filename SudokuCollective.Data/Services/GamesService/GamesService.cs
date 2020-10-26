@@ -16,24 +16,20 @@ namespace SudokuCollective.Data.Services
 {
     public class GamesService : IGamesService
     {
-
         private readonly DatabaseContext _context;
 
         public GamesService(DatabaseContext context)
         {
-
             _context = context;
         }
 
         public async Task<IGameResult> CreateGame(
             ICreateGameRequest createGameRequest, bool fullRecord = false)
         {
-
             var gameTaskResult = new GameResult();
 
             try
             {
-
                 var difficulty = await _context.Difficulties
                     .FirstOrDefaultAsync(d => d.Id == createGameRequest.DifficultyId);
 
@@ -45,7 +41,6 @@ namespace SudokuCollective.Data.Services
 
                 foreach (var userRole in user.Roles)
                 {
-
                     userRole.Role = await _context.Roles
                         .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
                 }
@@ -85,13 +80,10 @@ namespace SudokuCollective.Data.Services
 
                 if (fullRecord)
                 {
-
                     gameTaskResult.Game = game;
-
                 }
                 else
                 {
-
                     game.User.Games = null;
                     game.User.Roles = null;
                     game.User.Apps = null;
@@ -100,11 +92,9 @@ namespace SudokuCollective.Data.Services
                 }
 
                 return gameTaskResult;
-
             }
             catch (Exception e)
             {
-
                 gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
@@ -113,19 +103,16 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IGameResult> UpdateGame(int id, IUpdateGameRequest updateGameRequest)
         {
-
             var gameTaskResult = new GameResult();
 
             try
             {
-
                 if (id == updateGameRequest.GameId && GamesServiceUtilities
                         .EnsureSudokuCellsAreAttachedToThisGame(
                             id,
                             updateGameRequest.SudokuCells,
                             _context))
                 {
-
                     var game = await _context.Games
                             .Include(g => g.User).ThenInclude(u => u.Roles)
                             .Include(g => g.SudokuMatrix).ThenInclude(m => m.Difficulty)
@@ -133,7 +120,6 @@ namespace SudokuCollective.Data.Services
 
                     if (game == null)
                     {
-
                         gameTaskResult.Message = "Game not found";
 
                         return gameTaskResult;
@@ -150,14 +136,12 @@ namespace SudokuCollective.Data.Services
 
                     foreach (var cell in game.SudokuMatrix.SudokuCells)
                     {
-
                         if (cell.DisplayValue
                             != updateGameRequest.SudokuCells
                                 .Where(c => c.Index == index)
                                 .Select(c => c.DisplayValue)
                                 .FirstOrDefault())
                         {
-
                             cell.DisplayValue = updateGameRequest.SudokuCells
                                 .Where(c => c.Index == index)
                                 .Select(c => c.DisplayValue)
@@ -178,13 +162,10 @@ namespace SudokuCollective.Data.Services
 
                             if (dbEntry.Id != 0)
                             {
-
                                 e.Entry.State = EntityState.Modified;
-
                             }
                             else
                             {
-
                                 e.Entry.State = EntityState.Added;
                             }
                         });
@@ -197,7 +178,6 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-
                     gameTaskResult.Message = "The game id or cells were incorrect";
                 }
 
@@ -206,7 +186,6 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception e)
             {
-
                 gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
@@ -215,19 +194,16 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IBaseResult> DeleteGame(int id)
         {
-
             var baseTaskResult = new BaseResult();
 
             try
             {
-
                 var game = await _context.Games
                     .Include(g => g.SudokuMatrix)
                     .FirstOrDefaultAsync(predicate: g => g.Id == id);
 
                 if (game == null)
                 {
-
                     baseTaskResult.Message = "Game not found";
 
                     return baseTaskResult;
@@ -242,7 +218,6 @@ namespace SudokuCollective.Data.Services
 
                 if (game.ContinueGame)
                 {
-
                     var solution = await _context.SudokuSolutions
                         .FirstOrDefaultAsync(predicate: s => s.Id == game.SudokuSolutionId);
 
@@ -258,11 +233,9 @@ namespace SudokuCollective.Data.Services
                 baseTaskResult.Success = true;
 
                 return baseTaskResult;
-
             }
             catch (Exception e)
             {
-
                 baseTaskResult.Message = e.Message;
 
                 return baseTaskResult;
@@ -271,12 +244,10 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IGameResult> GetGame(int id, int appId)
         {
-
             var gameTaskResult = new GameResult();
 
             try
             {
-
                 var game = await _context.Games
                     .Include(g => g.User).ThenInclude(u => u.Roles)
                     .Include(g => g.SudokuMatrix)
@@ -285,26 +256,21 @@ namespace SudokuCollective.Data.Services
 
                 if (game == null)
                 {
-
                     gameTaskResult.Message = "Game not found";
 
                     return gameTaskResult;
-
                 }
                 else
                 {
-
                     await game.SudokuMatrix.AttachSudokuCells(_context);
                     gameTaskResult.Success = true;
                     gameTaskResult.Game = game;
                 }
 
                 return gameTaskResult;
-
             }
             catch (Exception e)
             {
-
                 gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;
@@ -314,17 +280,14 @@ namespace SudokuCollective.Data.Services
         public async Task<IGamesResult> GetGames(
             IBaseRequest baseRequest, bool fullRecord = false)
         {
-
             var gameListTaskResult = new GamesResult();
 
             try
             {
-
                 var games = new List<IGame>();
 
                 if (fullRecord)
                 {
-
                     games = await GamesServiceUtilities
                         .RetrieveGames(
                             baseRequest.PageListModel,
@@ -333,14 +296,11 @@ namespace SudokuCollective.Data.Services
 
                     foreach (var game in games)
                     {
-
                         await game.SudokuMatrix.AttachSudokuCells(_context);
                     }
-
                 }
                 else
                 {
-
                     games = await GamesServiceUtilities
                         .RetrieveGames(
                             baseRequest.PageListModel,
@@ -352,11 +312,9 @@ namespace SudokuCollective.Data.Services
                 gameListTaskResult.Games = games;
 
                 return gameListTaskResult;
-
             }
             catch (Exception e)
             {
-
                 gameListTaskResult.Message = e.Message;
 
                 return gameListTaskResult;
@@ -373,7 +331,7 @@ namespace SudokuCollective.Data.Services
 
                 if (fullRecord)
                 {
-                    game = (Game)await _context.Games
+                    game = await _context.Games
                         .Include(g => g.User).ThenInclude(u => u.Roles)
                         .Include(g => g.SudokuMatrix)
                         .Include(g => g.SudokuSolution)
@@ -394,7 +352,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    game = (Game)await _context.Games
+                    game = await _context.Games
                         .FirstOrDefaultAsync(g => g.User.Id == userId && g.Id == gameId);
 
                     if (game == null)
@@ -411,7 +369,6 @@ namespace SudokuCollective.Data.Services
                 }
 
                 return gameTaskResult;
-
             }
             catch (Exception e)
             {
@@ -426,7 +383,6 @@ namespace SudokuCollective.Data.Services
             IGetMyGameRequest getMyGameRequest,
             bool fullRecord = false)
         {
-
             var gameListTaskResult = new GamesResult();
 
             try
@@ -584,11 +540,9 @@ namespace SudokuCollective.Data.Services
                 gameTaskResult.Game = game;
 
                 return gameTaskResult;
-
             }
             catch (Exception e)
             {
-
                 gameTaskResult.Message = e.Message;
 
                 return gameTaskResult;

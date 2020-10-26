@@ -52,13 +52,13 @@ namespace SudokuCollective.Test.TestCases.Models
 
         [Test]
         [Category("Models")]
-        public void DefaultToActiveStatus()
+        public void DefaultToDeactiveStatus()
         {
             // Arrange and Act
             var sut = new App();
 
             // Assert
-            Assert.That(sut.IsActive, Is.True);
+            Assert.That(sut.IsActive, Is.False);
         }
 
         [Test]

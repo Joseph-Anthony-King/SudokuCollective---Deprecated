@@ -37,7 +37,7 @@ namespace SudokuCollective.Data.Services
             {
                 if (fullRecord)
                 {
-                    user = (User)await _context.Users
+                    user = await _context.Users
                         .Include(u => u.Games)
                         .Include(u => u.Roles)
                         .Include(u => u.Apps)
@@ -83,7 +83,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    user = (User)await _context.Users
+                    user = await _context.Users
                         .Include(u => u.Roles)
                         .Include(u => u.Apps)
                         .FirstOrDefaultAsync(
@@ -172,7 +172,6 @@ namespace SudokuCollective.Data.Services
 
                     userListTaskResult.Success = true;
                     userListTaskResult.Users = users;
-
                 }
                 else
                 {
@@ -199,7 +198,6 @@ namespace SudokuCollective.Data.Services
                 }
 
                 return userListTaskResult;
-
             }
             catch (Exception e)
             {
@@ -253,7 +251,7 @@ namespace SudokuCollective.Data.Services
                     {
                         if (_context.Apps.Any(a => a.License.Equals(registerRequest.License)))
                         {
-                            app = (App)await _context.Apps
+                            app = await _context.Apps
                                 .Include(a => a.Users)
                                 .FirstOrDefaultAsync(
                                     predicate: a => a.License.Equals(registerRequest.License));
@@ -403,7 +401,7 @@ namespace SudokuCollective.Data.Services
 
                         if (emailIsUnique && userIdExists)
                         {
-                            user = (User)await _context.Users.FindAsync(id);
+                            user = await _context.Users.FindAsync(id);
 
                             user.UserName = updateUserRequest.UserName;
                             user.FirstName = updateUserRequest.FirstName;
@@ -419,7 +417,6 @@ namespace SudokuCollective.Data.Services
                             userResult.User = user;
 
                             return userResult;
-
                         }
                         else
                         {
@@ -594,7 +591,7 @@ namespace SudokuCollective.Data.Services
                        superuser. */
                     if (role.RoleLevel != RoleLevel.SUPERUSER)
                     {
-                        roles.Add((Role)role);
+                        roles.Add(role);
                     }
                 }
 
@@ -666,7 +663,6 @@ namespace SudokuCollective.Data.Services
                 baseTaskResult.Success = true;
 
                 return baseTaskResult;
-
             }
             catch (Exception e)
             {

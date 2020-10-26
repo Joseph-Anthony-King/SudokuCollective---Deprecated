@@ -1,6 +1,6 @@
-﻿using SudokuCollective.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Core.Interfaces.Models
 {

@@ -5,7 +5,7 @@ namespace SudokuCollective.Core.Models
 {
     internal static class SudokuSolverMethods
     {
-        internal static List<int> IsolateIntersectingValues(SudokuMatrix sudokuMatrix, List<int> paramList)
+        internal static List<int> IsolateIntersectingValues(ISudokuMatrix sudokuMatrix, List<int> paramList)
         {
             var MissingFirstColumn = MissingSudokuValues(sudokuMatrix.FirstColumnValues);
             var MissingSecondColumn = MissingSudokuValues(sudokuMatrix.SecondColumnValues);

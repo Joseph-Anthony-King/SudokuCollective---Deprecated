@@ -14,6 +14,9 @@ namespace SudokuCollective.Core.Models
         private string _userName;
         private bool _isSuperUser;
         private bool _isAdmin;
+        private List<Game> _games = new List<Game>();
+        private List<UserRole> _roles = new List<UserRole>();
+        private List<UserApp> _apps = new List<UserApp>();
         #endregion
 
         #region Properties
@@ -110,9 +113,39 @@ namespace SudokuCollective.Core.Models
         }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
-        public virtual List<Game> Games { get; set; }
-        public virtual List<UserRole> Roles { get; set; }
-        public virtual List<UserApp> Apps { get; set; }
+        public virtual List<Game> Games
+        {
+            get
+            {
+                return _games;
+            }
+            set
+            {
+                _games = value;
+            }
+        }
+        public virtual List<UserRole> Roles
+        {
+            get
+            {
+                return _roles;
+            }
+            set
+            {
+                _roles = value;
+            }
+        }
+        public virtual List<UserApp> Apps
+        {
+            get
+            {
+                return _apps;
+            }
+            set
+            {
+                _apps = value;
+            }
+        }
         #endregion
 
         #region Constructors
@@ -206,11 +239,6 @@ namespace SudokuCollective.Core.Models
                     }
                 }
             }
-        }
-
-        public User Convert (IUser user)
-        {
-            return (User)user;
         }
         #endregion
     }

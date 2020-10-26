@@ -8,9 +8,13 @@
         public int Region { get; set; }
         public int Row { get; set; }
 
-        public UpdateSudokuCellEventArgs(int index, int value, int column, int region, int row)
+        public UpdateSudokuCellEventArgs(
+            int index, 
+            int value, 
+            int column, 
+            int region, 
+            int row)
         {
-
             Index = index;
             Value = value;
             Column = column;

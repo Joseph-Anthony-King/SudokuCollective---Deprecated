@@ -9,6 +9,7 @@ using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.Controllers;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -104,7 +105,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Game>>>());
-            Assert.That(((List<Game>)games).Count, Is.EqualTo(2));
+            Assert.That(((List<IGame>)games).Count, Is.EqualTo(2));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -301,7 +302,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Game>>>());
-            Assert.That(((List<Game>)games).Count, Is.EqualTo(1));
+            Assert.That(((List<IGame>)games).Count, Is.EqualTo(1));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 

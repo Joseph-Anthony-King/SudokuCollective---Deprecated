@@ -6,9 +6,9 @@ namespace SudokuCollective.Data.Models.ResultModels
 {
     public class DifficultiesResult : IDifficultiesResult
     {
-        public bool Success { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string Message { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public List<IDifficulty> Difficulties { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public List<IDifficulty> Difficulties { get; set; }
 
         public DifficultiesResult() : base()
         {

@@ -16,7 +16,6 @@ namespace SudokuCollective.Data.Services
 {
     public class SolutionsService : ISolutionsService
     {
-
         private readonly DatabaseContext _context;
 
         public SolutionsService(DatabaseContext context)
@@ -35,7 +34,7 @@ namespace SudokuCollective.Data.Services
 
                 if (fullRecord)
                 {
-                    solution = (SudokuSolution)await _context.SudokuSolutions
+                    solution = await _context.SudokuSolutions
                         .Where(s => s.Id == id)
                         .Include(s => s.Game)
                         .ThenInclude(g => g.User)
@@ -67,7 +66,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    solution = (SudokuSolution)await _context.SudokuSolutions
+                    solution = await _context.SudokuSolutions
                         .Where(s => s.Id == id)
                         .FirstOrDefaultAsync();
 
@@ -273,7 +272,6 @@ namespace SudokuCollective.Data.Services
                 }
 
                 return solutionTaskResult;
-
             }
             catch (Exception e)
             {

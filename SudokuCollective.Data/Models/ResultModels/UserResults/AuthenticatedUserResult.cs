@@ -4,7 +4,6 @@ using SudokuCollective.Data.Models.DTOModels;
 
 namespace SudokuCollective.Data.Models.ResultModels
 {
-
     public class AuthenticatedUserResult : IAuthenticatedUserResult
     {
         public bool Success { get; set; }
