@@ -141,6 +141,7 @@
   width: 215px;
 }
 .nav-drawer-item {
+  font-weight: bold;
   text-decoration: none !important;
   text-transform: uppercase;
   color: #ffffff;
