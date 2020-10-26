@@ -8,13 +8,28 @@ namespace SudokuCollective.Core.Models
 {
     public class Role : IRole
     {
+        #region Fields
+        private List<UserRole> _users = new List<UserRole>();
+        #endregion
+
         #region Properties
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
         public RoleLevel RoleLevel { get; set; }
-        public virtual List<UserRole> Users { get; set; }
+        public virtual List<UserRole> Users {
+
+            get
+            {
+                return _users;
+            }
+
+            set
+            {
+                _users = value;
+            }
+        }
         #endregion
 
         #region Constructors

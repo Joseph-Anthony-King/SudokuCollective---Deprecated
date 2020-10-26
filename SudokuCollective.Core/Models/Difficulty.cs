@@ -8,6 +8,10 @@ namespace SudokuCollective.Core.Models
 {
     public class Difficulty : IDifficulty
     {
+        #region Fields
+        private List<SudokuMatrix> _matrices = new List<SudokuMatrix>();
+        #endregion
+
         #region Properties
         public int Id { get; set; }
         [Required]
@@ -16,7 +20,18 @@ namespace SudokuCollective.Core.Models
         public string DisplayName { get; set; }
         [Required]
         public DifficultyLevel DifficultyLevel { get; set; }
-        public virtual List<SudokuMatrix> Matrices { get; set; }
+        public virtual List<SudokuMatrix> Matrices
+        {
+            get
+            {
+                return _matrices;
+            }
+
+            set
+            {
+                _matrices = value;
+            }
+        }
         #endregion
 
         #region Constructors

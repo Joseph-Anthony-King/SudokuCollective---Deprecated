@@ -9,9 +9,24 @@ namespace SudokuCollective.Core.Models
 {
     public class SudokuSolution : ISudokuSolution
     {
+        #region Fields
+        private List<int> _solutionList = new List<int>();
+        #endregion
+
         #region Properites
         public int Id { get; set; }
-        public List<int> SolutionList { get; set; }
+        public virtual List<int> SolutionList {
+
+            get
+            {
+                return _solutionList;
+            }
+
+            set
+            {
+                _solutionList = value;
+            }
+        }
         public DateTime DateCreated { get; set; }
         public DateTime DateSolved { get; set; }
         public List<int> FirstRow { get => GetValues(0, 9); }

@@ -8,6 +8,10 @@ namespace SudokuCollective.Core.Models
 {
     public class App : IApp
     {
+        #region Fields
+        private List<UserApp> _users = new List<UserApp>();
+        #endregion
+
         #region Properties
         public int Id { get; set; }
         [Required]
@@ -22,7 +26,18 @@ namespace SudokuCollective.Core.Models
         public bool IsActive { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
-        public virtual List<UserApp> Users { get; set; }
+        public virtual List<UserApp> Users {
+
+            get
+            {
+                return _users;
+            }
+
+            set
+            {
+                _users = value;
+            }
+        }
         #endregion
 
         #region Constructors
