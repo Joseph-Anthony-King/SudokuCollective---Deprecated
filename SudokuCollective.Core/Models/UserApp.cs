@@ -23,6 +23,12 @@ namespace SudokuCollective.Core.Models
             App = null;
         }
 
+        public UserApp(int userId, int appId) : base()
+        {
+            UserId = userId;
+            AppId = appId;
+        }
+
         [JsonConstructor]
         public UserApp(
             int id,

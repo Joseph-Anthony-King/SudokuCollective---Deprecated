@@ -3,7 +3,7 @@ using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
-    public class GetMyGameRequest : IGetMyGameRequest
+    public class GetGamesRequest : IGetGamesRequest
     {
         public string License { get; set; }
         public int RequestorId { get; set; }
@@ -11,7 +11,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         public IPageListModel PageListModel { get; set; }
         public int UserId { get; set; }
 
-        public GetMyGameRequest() : base()
+        public GetGamesRequest() : base()
         {
             UserId = 0;
         }

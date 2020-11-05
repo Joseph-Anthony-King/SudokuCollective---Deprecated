@@ -9,11 +9,11 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IGameResult> CreateGame(ICreateGameRequest createGameRequest, bool fullRecord = false);
         Task<IGameResult> UpdateGame(int id, IUpdateGameRequest updateGameRequest);
         Task<IBaseResult> DeleteGame(int id);
-        Task<IGameResult> GetGame(int id, int appId);
-        Task<IGamesResult> GetGames(IBaseRequest baseRequest, bool fullRecord = false);
-        Task<IGameResult> GetMyGame(int userId, int gameId, int appId, bool fullRecord = false);
-        Task<IGamesResult> GetMyGames(int userId, IGetMyGameRequest getMyGameRequest, bool fullRecord = false);
-        Task<IBaseResult> DeleteMyGame(int userId, int gameId);
+        Task<IGameResult> GetGame(int id, int appId, bool fullRecord = false);
+        Task<IGamesResult> GetGames(IGetGamesRequest getGamesRequest, bool fullRecord = false);
+        Task<IGameResult> GetMyGame(int gameid, IGetGamesRequest getMyGameRequest, bool fullRecord = false);
+        Task<IGamesResult> GetMyGames(IGetGamesRequest getMyGameRequest, bool fullRecord = false);
+        Task<IBaseResult> DeleteMyGame(int gameid, IGetGamesRequest getMyGameRequest);
         Task<IGameResult> CheckGame(int id, IUpdateGameRequest updateGameRequest);
     }
 }

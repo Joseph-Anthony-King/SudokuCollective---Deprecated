@@ -6,170 +6,171 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
 
-namespace SudokuCollective.Api.Controllers {
-
+namespace SudokuCollective.Api.Controllers
+{
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class DifficultiesController : ControllerBase {
+    public class DifficultiesController : ControllerBase
+    {
+        private readonly IDifficultiesService difficultiesService;
+        private readonly IAppsService appsService;
 
-        private readonly IDifficultiesService _difficultiesService;
-        private readonly IAppsService _appsService;
-
-        public DifficultiesController(IDifficultiesService difficultiesService,
-            IAppsService appsService) {
-
-            _difficultiesService = difficultiesService;
-            _appsService = appsService;
+        public DifficultiesController(
+            IDifficultiesService difficultiesServ,
+            IAppsService appsServ)
+        {
+            difficultiesService = difficultiesServ;
+            appsService = appsServ;
         }
 
-        // GET: api/Difficulties/5
+        // POST: api/difficulties/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost("{id}")]
         public async Task<ActionResult<Difficulty>> GetDifficulty(
-            int id, 
-            [FromBody] BaseRequest baseRequest, 
-            [FromQuery] bool fullRecord = false) {
-                
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
+            int id,
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await difficultiesService.GetDifficulty(id, fullRecord);
 
-                var result = await _difficultiesService.GetDifficulty(id, fullRecord);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Difficulty);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // GET: api/Difficulties
+        // POST: api/difficulties
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
-            [FromBody] BaseRequest baseRequest, [FromQuery] bool fullRecord = false) {
-                
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
+            [FromBody] BaseRequest request, [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await difficultiesService.GetDifficulties(fullRecord);
 
-                var result = await _difficultiesService.GetDifficulties(fullRecord);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Difficulties);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // PUT: api/Difficulties/5
+        // PUT: api/difficulties/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDifficulty(int id, 
-            [FromBody] UpdateDifficultyRequest updateDifficultyRequest) {
-                
-            if (await _appsService.IsRequestValidOnThisLicense(
-                updateDifficultyRequest.License,
-                updateDifficultyRequest.RequestorId,
-                updateDifficultyRequest.AppId)) {
-
-                if (id != updateDifficultyRequest.Id) {
-
+        public async Task<IActionResult> PutDifficulty(int id,
+            [FromBody] UpdateDifficultyRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                if (id != request.Id)
+                {
                     return BadRequest("Invalid Request: Difficulty Id Incorrect");
                 }
-                
-                var result = await _difficultiesService.UpdateDifficulty(id, updateDifficultyRequest);
 
-                if (result.Success) {
+                var result = await difficultiesService.UpdateDifficulty(id, request);
 
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
-            }         
+            }
         }
 
-        // POST: api/Difficulties
+        // POST: api/difficulties
         [Authorize(Roles = "SUPERUSER")]
         [HttpPost, Route("Create")]
         public async Task<ActionResult<Difficulty>> PostDifficulty(
-            [FromBody] CreateDifficultyRequest createDifficultyRequest) {
-                
-            if (await _appsService.IsRequestValidOnThisLicense(
-                createDifficultyRequest.License,
-                createDifficultyRequest.RequestorId,
-                createDifficultyRequest.AppId)) {  
-            
-                var result = await _difficultiesService
-                    .CreateDifficulty(createDifficultyRequest.Name, createDifficultyRequest.DifficultyLevel);
+            [FromBody] CreateDifficultyRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await difficultiesService
+                    .CreateDifficulty(request.Name, request.DifficultyLevel);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return CreatedAtAction(
-                        "GetDifficulty", 
-                        new { id = result.Difficulty.Id }, 
+                        "GetDifficulty",
+                        new { id = result.Difficulty.Id },
                         result.Difficulty);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // DELETE: api/Difficulties/5
+        // DELETE: api/difficulties/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteDifficulty(int id, 
-            [FromBody] BaseRequest baseRequest) {
-                
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
+        public async Task<ActionResult> DeleteDifficulty(int id,
+            [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await difficultiesService.DeleteDifficulty(id);
 
-                var result = await _difficultiesService.DeleteDifficulty(id);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-                
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }

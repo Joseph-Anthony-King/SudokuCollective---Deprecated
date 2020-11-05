@@ -3,78 +3,83 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.TokenModels;
-using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Enums;
 
 namespace SudokuCollective.Api.Controllers
 {
-
     [Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class AuthenticateController : ControllerBase {
-
-        private readonly IAuthenticateService _authService;
-        private readonly IUserManagementService _userManagementService;
+    public class AuthenticateController : ControllerBase
+    {
+        private readonly IAuthenticateService authService;
+        private readonly IUserManagementService userManagementService;
+        private readonly string userNameMessage;
+        private readonly string passwordMessage;
+        private readonly string emailMessage;
+        private readonly string badRequestMessage;
 
         public AuthenticateController(
-            IAuthenticateService authService, 
-            IUserManagementService userManagementService) {
-
-            _authService = authService;
-            _userManagementService = userManagementService;
+            IAuthenticateService authServ,
+            IUserManagementService userManagementServ)
+        {
+            authService = authServ;
+            userManagementService = userManagementServ;
+            userNameMessage = "Status Code 400: User Name Invalid";
+            passwordMessage = "Status Code 400: Password Invalid";
+            emailMessage = "Status Code 400: No Record Of Email Address";
+            badRequestMessage = "Status Code 400: Bad Request";
         }
-        
+
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> RequestToken([FromBody] TokenRequest request) {
-
-            if (!ModelState.IsValid) {
-
+        public async Task<ActionResult> RequestToken([FromBody] TokenRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
             }
 
-            if (_authService.IsAuthenticated(
-                request, 
-                out string token, 
-                out IAuthenticatedUser user)) {
+            var authenticateResult = await authService.IsAuthenticated(request);
 
+            if (authenticateResult.Success)
+            {
                 var result = new AuthenticatedUserResult()
                 {
                     Success = true,
                     Message = string.Empty,
-                    User = user,
-                    Token = token
+                    User = authenticateResult.User,
+                    Token = authenticateResult.Token
                 };
 
                 return Ok(result);
-
-            } else {
-
-                var result = await _userManagementService
+            }
+            else
+            {
+                var result = await userManagementService
                     .ConfirmAuthenticationIssue(request.UserName, request.Password);
 
                 if (result == UserAuthenticationErrorType.USERNAMEINVALID)
                 {
-                    return BadRequest("Status Code 400: User Name Invalid");
+                    return BadRequest(userNameMessage);
                 }
                 else if (result == UserAuthenticationErrorType.PASSWORDINVALID)
                 {
-                    return BadRequest("Status Code 400: Password Invalid");
+                    return BadRequest(passwordMessage);
                 }
                 else
                 {
-                    return BadRequest("Status Code 400: Bad Request");
+                    return BadRequest(badRequestMessage);
                 }
             }
         }
 
         [AllowAnonymous]
         [HttpGet("ConfirmUserName/{email}")]
-        public async Task<ActionResult> ConfirmUserName(string email) {
-
-            var result = await _userManagementService.ConfirmUserName(email);
+        public async Task<ActionResult> ConfirmUserName(string email)
+        {
+            var result = await userManagementService.ConfirmUserName(email);
 
             if (result.Success)
             {
@@ -82,8 +87,8 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Status Code 400: No Record Of Email Address");
-            }            
+                return BadRequest(emailMessage);
+            }
         }
     }
 }

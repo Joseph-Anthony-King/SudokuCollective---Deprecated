@@ -5,51 +5,51 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
 
-namespace SudokuCollective.Api.Controllers {
-
+namespace SudokuCollective.Api.Controllers
+{
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class LicensesController : ControllerBase {
+    public class LicensesController : ControllerBase
+    {
+        private readonly IAppsService appsService;
 
-        private readonly IAppsService _appsService;
-
-        public LicensesController(IAppsService appsService) {
-
-            _appsService = appsService;
+        public LicensesController(IAppsService appsServ)
+        {
+            appsService = appsServ;
         }
-        
-        // GET: api/Licenses/5
+
+        // GET: api/licenses/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet, Route("{id}")]
-        public async Task<ActionResult> GetLicense(int id) {
-            
-            var result = await _appsService.GetLicense(id);
+        public async Task<ActionResult> GetLicense(int id)
+        {
+            var result = await appsService.GetLicense(id);
 
-            if (result.Success) {
-                
+            if (result.Success)
+            {
                 return Ok(result.License);
-
-            } else {
-
+            }
+            else
+            {
                 return NotFound(result.Message);
             }
         }
-        
-        // POST: api/Licenses
+
+        // POST: api/licenses
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<App>> PostApp(
-            [FromBody] LicenseRequest licenseRequest) {
-            
-            var result = await _appsService.CreateApp(licenseRequest);
+            [FromBody] LicenseRequest request)
+        {
+            var result = await appsService.CreateApp(request);
 
-            if (result.Success) {
-                
+            if (result.Success)
+            {
                 return Ok(result.App);
-
-            } else {
-
+            }
+            else
+            {
                 return NotFound(result.Message);
             }
         }

@@ -1,6 +1,7 @@
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
+using System.ComponentModel;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
@@ -12,13 +13,13 @@ namespace SudokuCollective.Data.Models.RequestModels
         public IPageListModel PageListModel { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
-        public DifficultyLevel DifficultyLevel { get; set; }
+        public string DisplayName { get; set; }
 
         public UpdateDifficultyRequest() : base()
         {
             Id = 0;
             Name = string.Empty;
-            DifficultyLevel = DifficultyLevel.NULL;
+            DisplayName = string.Empty;
         }
     }
 }

@@ -6,298 +6,313 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
 
-namespace SudokuCollective.Api.Controllers {
-
+namespace SudokuCollective.Api.Controllers
+{
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class AppsController : ControllerBase {
+    public class AppsController : ControllerBase
+    {
+        private readonly IAppsService appsService;
 
-        private readonly IAppsService _appsService;
-
-        public AppsController(IAppsService appsService) {
-
-            _appsService = appsService;
+        public AppsController(IAppsService appsServ)
+        {
+            appsService = appsServ;
         }
-        
-        // GET: api/Apps/5
+
+        // POST: api/apps/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("{id}")]
         public async Task<ActionResult<App>> GetApp(
             int id,
-            [FromBody] BaseRequest baseRequest,
-            [FromQuery] bool fullRecord = false) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-                
-                var result = await _appsService.GetApp(id, fullRecord);
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.GetApp(id, fullRecord);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.App);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
-        
-        // GET: api/Apps/GetByLicense
+
+        // POST: api/apps/GetByLicense
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("GetByLicense")]
         public async Task<ActionResult<App>> GetAppByLicense(
-            [FromBody] BaseRequest baseRequest,
-            [FromQuery] bool fullRecord = false) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-                
-                var result = await _appsService
-                    .GetAppByLicense(baseRequest.License, fullRecord);
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService
+                    .GetAppByLicense(request.License, fullRecord);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.App);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // GET: api/Apps
+        // POST: api/apps
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<App>>> GetApps(
-            [FromBody] BaseRequest baseRequest,
-            [FromQuery] bool fullRecord = false) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-                
-                var result = await _appsService
-                    .GetApps(baseRequest.PageListModel, fullRecord);
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService
+                    .GetApps(request.PageListModel, fullRecord);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Apps);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // Put: api/Apps
+        // PUT: api/apps
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut]
         public async Task<IActionResult> UpdateApp(
-            [FromBody] AppRequest appRequest) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
-                appRequest.License,
-                appRequest.RequestorId,
-                appRequest.AppId)) {
-                
-                var result = await _appsService.UpdateApp(appRequest);
+            [FromBody] AppRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.UpdateApp(request);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
-            }            
+            }
         }
 
-        // GET: api/Apps/GetUsers
+        // POST: api/apps/getusers
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost, Route("GetUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
-            [FromBody] BaseRequest baseRequest,
-            [FromQuery] bool fullRecord = false) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-                
-                var result = await _appsService
-                    .GetAppUsers(baseRequest, fullRecord);
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService
+                    .GetAppUsers(
+                        request.AppId,
+                        request.PageListModel, 
+                        fullRecord);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Users);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
-            }  
+            }
         }
 
-        // PUT: api/Apps/AddUser/5
+        // PUT: api/apps/adduser/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut, Route("AddUser/{userId}")]
-        public async Task<IActionResult> AddUser(int userId, BaseRequest baseRequest) {
+        public async Task<IActionResult> AddUser(int userId, [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.AddAppUser(userId, request);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-
-                var result = await _appsService.AddAppUser(userId, baseRequest);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // DELETE: api/Apps/RemoveUser/5
+        // DELETE: api/apps/removeuser/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete, Route("RemoveUser/{userId}")]
-        public async Task<IActionResult> RemoveUser(int userId, BaseRequest baseRequest) {
+        public async Task<IActionResult> RemoveUser(int userId, [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.RemoveAppUser(userId, request);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-
-                var result = await _appsService.RemoveAppUser(userId, baseRequest);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // Put: api/Apps/5/ActivateApp
+        // PUT: api/apps/5/activateapp
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut, Route("{id}/ActivateApp")]
-        public async Task<IActionResult> ActivateApp(int id) {            
-                
-            var result = await _appsService.ActivateApp(id);
+        public async Task<IActionResult> ActivateApp(int id)
+        {
+            var result = await appsService.ActivateApp(id);
 
-            if (result.Success) {
-
+            if (result.Success)
+            {
                 return Ok();
-
-            } else {
-
+            }
+            else
+            {
                 return NotFound(result.Message);
-            }         
+            }
         }
 
-        // Put: api/Apps/5/DeactivateApp
+        // PUT: api/apps/5/deactivateapp
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut, Route("{id}/DeactivateApp")]
-        public async Task<IActionResult> DeactivateApp(int id) {            
-                
-            var result = await _appsService.DeactivateApp(id);
+        public async Task<IActionResult> DeactivateApp(int id)
+        {
+            var result = await appsService.DeactivateApp(id);
 
-            if (result.Success) {
-
+            if (result.Success)
+            {
                 return Ok();
-
-            } else {
-
+            }
+            else
+            {
                 return NotFound(result.Message);
             }
         }
 
-        // GET: api/Apps/5
+        // DELETE: api/apps/5/deleteapp
         [Authorize(Roles = "SUPERUSER")]
         [HttpDelete, Route("{id}/DeleteApp")]
-        public async Task<ActionResult> DeleteApp(int id) {
+        public async Task<ActionResult> DeleteApp(
+            int id,
+            [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsOwnerOfThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.DeleteOrResetApp(id);
 
-            var result = await _appsService.DeleteOrResetApp(id);
-
-            if (result.Success) {
-
-                return Ok(result.Message);
-
-            } else {
-
-                return NotFound(result.Message);
+                if (result.Success)
+                {
+                    return Ok(result.Message);
+                }
+                else
+                {
+                    return NotFound(result.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("You are not the owner of this app");
             }
         }
 
-        // GET: api/Apps/5
+        // DELETE: api/apps/5/resetapp
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete, Route("{id}/ResetApp")]
         public async Task<ActionResult> ResetApp(
             int id,
-            [FromBody] BaseRequest baseRequest) {
+            [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsOwnerOfThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.DeleteOrResetApp(id, true);
 
-            if (await _appsService.IsOwnerOfThisLicense(
-                baseRequest.License,
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-
-                var result = await _appsService.DeleteOrResetApp(id, true);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Message);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("You are not the owner of this app");
             }
         }

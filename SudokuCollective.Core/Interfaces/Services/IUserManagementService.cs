@@ -7,7 +7,7 @@ namespace SudokuCollective.Core.Interfaces.Services
     public interface IUserManagementService
     {
         Task<bool> IsValidUser(string userName, string password);
-        Task<UserAuthenticationErrorType> ConfirmAuthenticationIssue(string userName, string password);
+        Task<UserAuthenticationErrorType> ConfirmAuthenticationIssue(string username, string password);
         Task<IAuthenticationResult> ConfirmUserName(string email);
     }
 }

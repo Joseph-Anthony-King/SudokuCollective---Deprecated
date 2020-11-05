@@ -6,298 +6,298 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
 
-namespace SudokuCollective.Api.Controllers {
-
+namespace SudokuCollective.Api.Controllers
+{
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class GamesController : ControllerBase {
+    public class GamesController : ControllerBase
+    {
+        private readonly IGamesService gamesService;
+        private readonly IAppsService appsService;
 
-        private readonly IGamesService _gamesService;
-        private readonly IAppsService _appsService;
-
-        public GamesController(IGamesService gamesService, 
-            IAppsService appsService) {
-            
-            _gamesService = gamesService;
-            _appsService = appsService;
+        public GamesController(
+            IGamesService gamesServ,
+            IAppsService appsServ)
+        {
+            gamesService = gamesServ;
+            appsService = appsServ;
         }
 
-        // GET: api/Games/5
+        // POST: api/games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id, 
-            [FromBody] BaseRequest baseRequest) {
+        public async Task<ActionResult<Game>> GetGame(int id,
+            [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.GetGame(
+                    id, request.AppId);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-
-                var result = await _gamesService.GetGame(
-                    id, baseRequest.AppId);
-
-                if (result.Success) {
-                    
+                if (result.Success)
+                {
                     return Ok(result.Game);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // GET: api/Games
+        // POST: api/games
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
-            [FromBody] BaseRequest baseRequest, 
-            [FromQuery] bool fullRecord = false) {
+            [FromBody] GetGamesRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.GetGames(request, fullRecord);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-
-                var result = await _gamesService.GetGames(baseRequest, fullRecord);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Games);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // DELETE: api/Games/5
+        // DELETE: api/games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Game>> DeleteGame(
             int id,
-            [FromBody] BaseRequest baseRequest) {
+            [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.DeleteGame(id);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                baseRequest.License, 
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-
-                var result = await _gamesService.DeleteGame(id);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // PUT: api/Games/5
+        // PUT: api/games/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(
-            int id, 
-            [FromBody] UpdateGameRequest updateGameRequest) {
-
-            if (await _appsService.IsRequestValidOnThisLicense(
-                updateGameRequest.License,
-                updateGameRequest.RequestorId,
-                updateGameRequest.AppId)) {
-
-                if (id != updateGameRequest.GameId) {
-
+            int id,
+            [FromBody] UpdateGameRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                if (id != request.GameId)
+                {
                     return BadRequest("Id is incorrect");
                 }
 
-                var result = 
-                    await _gamesService.UpdateGame(id, updateGameRequest);
-                
-                if (result.Success) {
+                var result =
+                    await gamesService.UpdateGame(id, request);
 
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
-            } 
+            }
         }
 
-        // POST: api/Games
+        // POST: api/games
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost, Route("Create")]
         public async Task<ActionResult<Game>> PostGame(
-            [FromBody] CreateGameRequest createGameRequest,
-            [FromQuery] bool fullRecord = false) {
+            [FromBody] CreateGameRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.CreateGame(request, fullRecord);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                createGameRequest.License,
-                createGameRequest.RequestorId,
-                createGameRequest.AppId)) {
-            
-                var result = await _gamesService.CreateGame(createGameRequest, fullRecord);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return CreatedAtAction(
                         "GetUser",
                         "Users",
                         new { id = result.Game.Id },
                         result.Game);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // PUT: api/Games/5/CheckGame
+        // PUT: api/games/5/checkgame
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut, Route("{id}/CheckGame")]
         public async Task<ActionResult<Game>> CheckGame(
             int id,
-            [FromBody] UpdateGameRequest updateGameRequest) {
+            [FromBody] UpdateGameRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.CheckGame(id, request);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                updateGameRequest.License,
-                updateGameRequest.RequestorId,
-                updateGameRequest.AppId)) {
-
-                var result = await _gamesService.CheckGame(id, updateGameRequest);
-
-                if (result.Success) {
-                    
+                if (result.Success)
+                {
                     return Ok(result.Game);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
-        
-        // GET: api/Games/5/GetMyGame
+
+        // POST: api/games/5/getmygame
         [Authorize(Roles = "USER")]
         [HttpPost, Route("{id}/GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame(
             int id,
-            [FromBody] GetMyGameRequest getMyGameRequest, 
-            [FromQuery] bool fullRecord = false) {
-
-            if (await _appsService.IsRequestValidOnThisLicense(
-                getMyGameRequest.License,
-                getMyGameRequest.RequestorId,
-                getMyGameRequest.AppId)) {
-
-                var result = await _gamesService.GetMyGame(
-                    getMyGameRequest.UserId, 
+            [FromBody] GetGamesRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.GetMyGame(
                     id,
-                    getMyGameRequest.AppId,
+                    request,
                     fullRecord);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Game);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // GET: api/Games/GetMyGames
+        // POST: api/games/getmygames
         [Authorize(Roles = "USER")]
         [HttpPost, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            [FromBody] GetMyGameRequest getMyGameRequest,
-            [FromQuery] bool fullRecord = false) {
+            [FromBody] GetGamesRequest request,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService
+                    .GetMyGames(request, fullRecord);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                getMyGameRequest.License,
-                getMyGameRequest.RequestorId,
-                getMyGameRequest.AppId)) {
-
-                var result = await _gamesService
-                    .GetMyGames(getMyGameRequest.UserId, getMyGameRequest, fullRecord);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Games);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // DELETE: api/Games/5/DeleteMyGame
+        // DELETE: api/games/5/deletemygame
         [Authorize(Roles = "USER")]
         [HttpDelete("{id}/DeleteMyGame")]
         public async Task<ActionResult<Game>> DeleteMyGame(
             int id,
-            [FromBody] GetMyGameRequest getMyGameRequest) {
+            [FromBody] GetGamesRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.DeleteMyGame(
+                    id,
+                    request);
 
-            if (await _appsService.IsRequestValidOnThisLicense(
-                getMyGameRequest.License,
-                getMyGameRequest.RequestorId,
-                getMyGameRequest.AppId)) {
-                
-                var result = await _gamesService.DeleteMyGame(
-                    getMyGameRequest.UserId, 
-                    id);
-
-                if (result.Success) {
-                    
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }

@@ -79,7 +79,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.GetMyGames(It.IsAny<int>(), It.IsAny<GetMyGameRequest>(), It.IsAny<bool>()))
+                gamesService.GetMyGames(It.IsAny<int>(), It.IsAny<GetGamesRequest>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
                     Success = true,
@@ -158,7 +158,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.GetMyGames(It.IsAny<int>(), It.IsAny<GetMyGameRequest>(), It.IsAny<bool>()))
+                gamesService.GetMyGames(It.IsAny<int>(), It.IsAny<GetGamesRequest>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
                     Success = false,

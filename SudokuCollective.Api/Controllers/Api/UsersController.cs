@@ -7,260 +7,262 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
 
-namespace SudokuCollective.Api.Controllers {
-
+namespace SudokuCollective.Api.Controllers
+{
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase {
+    public class UsersController : ControllerBase
+    {
+        private readonly IUsersService usersService;
+        private readonly IAppsService appsService;
 
-        private readonly IUsersService _userService;
-        private readonly IAppsService _appsService;
-
-        public UsersController(IUsersService userService,
-            IAppsService appsService) {
-
-            _userService = userService;
-            _appsService = appsService;
+        public UsersController(
+            IUsersService userServ,
+            IAppsService appsServ)
+        {
+            usersService = userServ;
+            appsService = appsServ;
         }
 
-        // GET: api/Users/5
+        // POST: api/users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost("{id}")]
         public async Task<ActionResult<User>> GetUser(
-            int id, 
-            [FromBody] BaseRequest baseRequest, 
-            [FromQuery] bool fullRecord = false) {
-                
-            if (await _appsService.IsRequestValidOnThisLicense(
+            int id,
+            [FromBody] BaseRequest baseRequest,
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                baseRequest.AppId,
                 baseRequest.License,
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
+                baseRequest.RequestorId))
+            {
+                var result = await usersService.GetUser(id, fullRecord);
 
-                var result = await _userService.GetUser(id, fullRecord);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.User);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // GET: api/Users
+        // POST: api/users
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
             [FromBody] BaseRequest baseRequest,
-            [FromQuery] bool fullRecord = false) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
+            [FromQuery] bool fullRecord = false)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                baseRequest.AppId,
                 baseRequest.License,
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
+                baseRequest.RequestorId))
+            {
+                var result = await usersService.GetUsers(baseRequest.PageListModel, fullRecord);
 
-                var result = await _userService.GetUsers(baseRequest.PageListModel, fullRecord);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok(result.Users);
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // PUT: api/Users/5
+        // PUT: api/users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(
-            int id, [FromBody] UpdateUserRequest updateUserRequest) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
+            int id, [FromBody] UpdateUserRequest updateUserRequest)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                updateUserRequest.AppId,
                 updateUserRequest.License,
-                updateUserRequest.RequestorId,
-                updateUserRequest.AppId)) {
-            
-                var result = await _userService.UpdateUser(id, updateUserRequest);
+                updateUserRequest.RequestorId))
+            {
+                var result = await usersService.UpdateUser(id, updateUserRequest);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
 
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // PUT: api/Users/5/UpdatePassword
+        // PUT: api/users/5/updatepassword
         [Authorize(Roles = "USER")]
         [HttpPut("{id}/UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(
-            int id, [FromBody] UpdatePasswordRequest updatePasswordRequest) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
+            int id, [FromBody] UpdatePasswordRequest updatePasswordRequest)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                updatePasswordRequest.AppId,
                 updatePasswordRequest.License,
-                updatePasswordRequest.RequestorId,
-                updatePasswordRequest.AppId)) {
+                updatePasswordRequest.RequestorId))
+            {
+                var result = await usersService.UpdatePassword(id, updatePasswordRequest);
 
-                var result = await _userService.UpdatePassword(id, updatePasswordRequest);
-
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(
-            int id, [FromBody] BaseRequest baseRequest) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
+            int id, [FromBody] BaseRequest baseRequest)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                baseRequest.AppId,
                 baseRequest.License,
-                baseRequest.RequestorId,
-                baseRequest.AppId)) {
-            
-                var result = await _userService.DeleteUser(id);
+                baseRequest.RequestorId))
+            {
+                var result = await usersService.DeleteUser(id);
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // api/Users/AddRoles
+        // POST: api/users/addroles
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("{id}/AddRoles")]
         public async Task<IActionResult> AddRoles(
             int id,
-            [FromBody] UpdateUserRoleRequest updateUserRoleRequest) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
+            [FromBody] UpdateUserRoleRequest updateUserRoleRequest)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                updateUserRoleRequest.AppId,
                 updateUserRoleRequest.License,
-                updateUserRoleRequest.RequestorId,
-                updateUserRoleRequest.AppId)) {
-            
-                var result = await _userService.AddUserRoles(
+                updateUserRoleRequest.RequestorId))
+            {
+                var result = await usersService.AddUserRoles(
                     id,
                     updateUserRoleRequest.RoleIds.ToList());
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // api/Users/AddRoles
+        // DELETE: api/users/addroles
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete, Route("{id}/RemoveRoles")]
         public async Task<IActionResult> RemoveRoles(
             int id,
-            [FromBody] UpdateUserRoleRequest updateUserRoleRequest) {
-            
-            if (await _appsService.IsRequestValidOnThisLicense(
+            [FromBody] UpdateUserRoleRequest updateUserRoleRequest)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                updateUserRoleRequest.AppId,
                 updateUserRoleRequest.License,
-                updateUserRoleRequest.RequestorId,
-                updateUserRoleRequest.AppId)) {
-            
-                var result = await _userService.RemoveUserRoles(
+                updateUserRoleRequest.RequestorId))
+            {
+                var result = await usersService.RemoveUserRoles(
                     id,
                     updateUserRoleRequest.RoleIds.ToList());
 
-                if (result.Success) {
-
+                if (result.Success)
+                {
                     return Ok();
-
-                } else {
-
+                }
+                else
+                {
                     return NotFound(result.Message);
                 }
-
-            } else {
-
+            }
+            else
+            {
                 return BadRequest("Invalid Request on this License");
             }
         }
 
-        // Put: api/Users/5/ActivateUser
+        // PUT: api/users/5/activateuser
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut, Route("{id}/ActivateUser")]
-        public async Task<IActionResult> ActivateUser(int id) {            
-                
-            var result = await _userService.ActivateUser(id);
+        public async Task<IActionResult> ActivateUser(int id)
+        {
+            var result = await usersService.ActivateUser(id);
 
-            if (result.Success) {
-
+            if (result.Success)
+            {
                 return Ok();
-
-            } else {
-
+            }
+            else
+            {
                 return NotFound(result.Message);
-            }         
+            }
         }
 
-        // Put: api/Users/5/DeactivateUser
+        // PUT: api/users/5/deactivateuser
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut, Route("{id}/DeactivateUser")]
-        public async Task<IActionResult> DeactivateUser(int id) {            
-                
-            var result = await _userService.DeactivateUser(id);
+        public async Task<IActionResult> DeactivateUser(int id)
+        {
+            var result = await usersService.DeactivateUser(id);
 
-            if (result.Success) {
-
+            if (result.Success)
+            {
                 return Ok();
-
-            } else {
-
+            }
+            else
+            {
                 return NotFound(result.Message);
-            }         
+            }
         }
     }
 }

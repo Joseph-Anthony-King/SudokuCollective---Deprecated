@@ -7,36 +7,35 @@ using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Api.Controllers
 {
-
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class RegisterController : ControllerBase {
+    public class RegisterController : ControllerBase
+    {
+        private readonly IUsersService usersService;
 
-        private readonly IUsersService _usersService;
-
-        public RegisterController(IUsersService usersService) {
-
-            _usersService = usersService;
+        public RegisterController(IUsersService usersServ)
+        {
+            usersService = usersServ;
         }
-        
+
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<User>> SignUp(
             [FromBody] RegisterRequest registerRO,
-            [FromQuery] bool addAdmin = false) {
-            
-            var result = await _usersService.CreateUser(registerRO, addAdmin);
+            [FromQuery] bool addAdmin = false)
+        {
+            var result = await usersService.CreateUser(registerRO, addAdmin);
 
-            if (result.Success) {
-
+            if (result.Success)
+            {
                 return CreatedAtAction(
-                    "GetUser", 
-                    "Users", 
-                    new { id = result.User.Id }, 
+                    "GetUser",
+                    "Users",
+                    new { id = result.User.Id },
                     result.User);
-
-            } else {
-
+            }
+            else
+            {
                 return NotFound(result.Message);
             }
         }

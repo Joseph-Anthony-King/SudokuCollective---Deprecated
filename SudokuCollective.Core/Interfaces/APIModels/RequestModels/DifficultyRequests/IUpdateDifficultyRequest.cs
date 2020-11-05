@@ -6,6 +6,6 @@ namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
     {
         int Id { get; set; }
         string Name { get; set; }
-        DifficultyLevel DifficultyLevel { get; set; }
+        string DisplayName { get; set; }
     }
 }

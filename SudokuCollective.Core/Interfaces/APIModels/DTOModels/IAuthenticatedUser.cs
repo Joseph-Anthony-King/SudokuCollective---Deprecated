@@ -3,9 +3,8 @@ using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Core.Interfaces.APIModels.DTOModels
 {
-    public interface IAuthenticatedUser
+    public interface IAuthenticatedUser : IEntityBase
     {
-        int Id { get; set; }
         string UserName { get; set; }
         string FirstName { get; set; }
         string LastName { get; set; }

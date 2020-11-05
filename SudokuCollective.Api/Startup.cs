@@ -10,12 +10,15 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using SudokuCollective.Api.Models;
 using VueCliMiddleware;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.TokenModels;
-using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Services;
+using SudokuCollective.Data.Repositories;
+using SudokuCollective.Api.Models;
 
 namespace SudokuCollective.Api {
 
@@ -61,6 +64,12 @@ namespace SudokuCollective.Api {
                 };
             });
 
+            services.AddScoped<IAppsRepository<App>, AppsRepository<App>>();
+            services.AddScoped<IUsersRepository<User>, UsersRepository<User>>();
+            services.AddScoped<IGamesRepository<Game>, GamesRepository<Game>>();
+            services.AddScoped<IDifficultiesRepository<Difficulty>, DifficultiesRepository<Difficulty>>();
+            services.AddScoped<IRolesRepository<Role>, RolesRepository<Role>>();
+            services.AddScoped<ISolutionsRepository<SudokuSolution>, SolutionsRepository<SudokuSolution>>();
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IAppsService, AppsService>();

@@ -1,6 +1,6 @@
 ﻿namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
 {
-    public interface IGetMyGameRequest : IBaseRequest
+    public interface IGetGamesRequest : IBaseRequest
     {
         int UserId { get; set; }
     }

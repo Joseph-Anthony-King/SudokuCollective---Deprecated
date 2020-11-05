@@ -7,7 +7,7 @@ namespace SudokuCollective.Core.Interfaces.Services
     public interface ISolutionsService
     {
         Task<ISolutionResult> GetSolution(int id, bool fullRecord = false);
-        Task<ISolutionsResult> GetSolutions(IBaseRequest baseRequest, bool fullRecord = false, int userId = 0);
+        Task<ISolutionsResult> GetSolutions(IBaseRequest request, bool fullRecord = false);
         Task<ISolutionResult> Solve(ISolveRequest solveRequestsRO);
         Task<ISolutionResult> Generate();
         Task<IBaseResult> AddSolutions(int limit);

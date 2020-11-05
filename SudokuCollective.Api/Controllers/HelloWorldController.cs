@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SudokuCollective.Api.Controllers {
-
+namespace SudokuCollective.Api.Controllers
+{
     [Authorize]
     [Route("api/v1/helloworld")]
     [ApiController]
-    public class HelloWorldController : ControllerBase {
-        
+    public class HelloWorldController : ControllerBase
+    {
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult Get() {
-
+        public ActionResult Get()
+        {
             return Ok("Hello World from Sudoku Collective!");
         }
     }

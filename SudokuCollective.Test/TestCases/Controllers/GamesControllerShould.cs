@@ -23,7 +23,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private BaseRequest baseRequest;
         private CreateGameRequest createGameRequest;
         private UpdateGameRequest updateGameRequest;
-        private GetMyGameRequest getMyGameRequest;
+        private GetGamesRequest getMyGameRequest;
 
         [SetUp]
         public async Task Setup()
@@ -36,7 +36,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             createGameRequest = new CreateGameRequest();
 
-            getMyGameRequest = new GetMyGameRequest()
+            getMyGameRequest = new GetGamesRequest()
             {
                 UserId = 1,
                 License = TestObjects.GetLicense(),

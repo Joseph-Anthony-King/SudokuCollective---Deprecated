@@ -14,8 +14,8 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IUserResult> UpdateUser(int id, IUpdateUserRequest updateUserRequest);
         Task<IBaseResult> UpdatePassword(int id, IUpdatePasswordRequest updatePasswordRequest);
         Task<IBaseResult> DeleteUser(int id);
-        Task<IBaseResult> AddUserRoles(int id, List<int> roleIds);
-        Task<IBaseResult> RemoveUserRoles(int id, List<int> roleIds);
+        Task<IBaseResult> AddUserRoles(int userid, List<int> roleIds);
+        Task<IBaseResult> RemoveUserRoles(int userid, List<int> roleIds);
         Task<IBaseResult> ActivateUser(int id);
         Task<IBaseResult> DeactivateUser(int id);
     }

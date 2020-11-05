@@ -246,7 +246,7 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             // Arrange
             var userId = 1;
-            var getMyGameRequest = new GetMyGameRequest()
+            var getMyGameRequest = new GetGamesRequest()
             {
                 PageListModel = new PageListModel(),
                 UserId = userId

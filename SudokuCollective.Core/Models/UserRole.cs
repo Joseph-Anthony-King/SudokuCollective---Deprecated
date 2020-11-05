@@ -23,6 +23,13 @@ namespace SudokuCollective.Core.Models
             Role = null;
         }
 
+        public UserRole(int userId, int roleId)
+        {
+            Id = 0;
+            UserId = userId;
+            RoleId = roleId;
+        }
+
         [JsonConstructor]
         public UserRole(
             int id,

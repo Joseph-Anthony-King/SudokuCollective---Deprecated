@@ -1,10 +1,11 @@
-﻿using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
+﻿using System.Threading.Tasks;
+using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.APIModels.TokenModels;
 
 namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface IAuthenticateService
     {
-        bool IsAuthenticated(ITokenRequest request, out string token, out IAuthenticatedUser user);
+        Task<IAuthenticatedUserResult> IsAuthenticated(ITokenRequest request);
     }
 }
