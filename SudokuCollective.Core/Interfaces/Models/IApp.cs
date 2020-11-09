@@ -15,6 +15,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
         List<UserApp> Users { get; set; }
+        int GameCount { get; }
         public string GetLicense(int id, int ownerId);
         public void ActivateApp();
         public void DeactivateApp();

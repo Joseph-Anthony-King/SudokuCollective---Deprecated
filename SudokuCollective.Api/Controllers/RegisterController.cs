@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
+using System.Net;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -21,18 +22,15 @@ namespace SudokuCollective.Api.Controllers
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<User>> SignUp(
-            [FromBody] RegisterRequest registerRO,
-            [FromQuery] bool addAdmin = false)
+            [FromBody] RegisterRequest registerRO)
         {
-            var result = await usersService.CreateUser(registerRO, addAdmin);
+            var result = await usersService.CreateUser(registerRO);
 
             if (result.Success)
             {
-                return CreatedAtAction(
-                    "GetUser",
-                    "Users",
-                    new { id = result.User.Id },
-                    result.User);
+                result.Message = "Status Code 201: User Created";
+
+                return StatusCode((int)HttpStatusCode.Created, result);
             }
             else
             {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -42,11 +43,13 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.User);
+                    result.Message = "Status Code 200: User Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    return NotFound(result);
                 }
             }
             else
@@ -56,7 +59,7 @@ namespace SudokuCollective.Api.Controllers
         }
 
         // POST: api/users
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
             [FromBody] BaseRequest baseRequest,
@@ -71,11 +74,13 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Users);
+                    result.Message = "Status Code 200: Users Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    return NotFound(result);
                 }
             }
             else
@@ -99,7 +104,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: User Updated";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -128,7 +135,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: Password Updated";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -156,7 +165,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: User Deleted";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -187,7 +198,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: Roles Added";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -218,7 +231,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: Roles Removed";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -240,7 +255,9 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                return Ok();
+                result.Message = "Status Code 200: User Activated";
+
+                return Ok(result);
             }
             else
             {
@@ -257,7 +274,9 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                return Ok();
+                result.Message = "Status Code 200: User Deactivated";
+
+                return Ok(result);
             }
             else
             {

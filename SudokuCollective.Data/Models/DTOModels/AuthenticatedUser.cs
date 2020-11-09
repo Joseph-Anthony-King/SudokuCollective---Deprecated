@@ -53,6 +53,8 @@ namespace SudokuCollective.Data.Models.DTOModels
             FullName = user.FullName;
             Email = user.Email;
             IsActive = user.IsActive;
+            IsSuperUser = user.IsSuperUser;
+            IsAdmin = user.IsAdmin;
             DateCreated = user.DateCreated;
             DateUpdated = user.DateUpdated;
         }

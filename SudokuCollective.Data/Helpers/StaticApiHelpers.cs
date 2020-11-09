@@ -19,5 +19,12 @@ namespace SudokuCollective.Data.Helpers
 
             matrix.SudokuCells = cells;
         }
+
+        public async static Task<bool> IsGameInActiveApp(this IGame game, DatabaseContext context)
+        {
+            var app = await context.Apps.FirstOrDefaultAsync(predicate: a => a.Id == game.AppId);
+
+            return app.IsActive;
+        }
     }
 }

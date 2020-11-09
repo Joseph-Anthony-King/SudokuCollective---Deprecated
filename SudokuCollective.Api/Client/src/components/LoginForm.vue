@@ -191,7 +191,7 @@ export default {
         );
 
         if (response.status === 200) {
-          this.$data.username = response.data;
+          this.$data.username = response.data.userName;
 
           showToast(
             this,

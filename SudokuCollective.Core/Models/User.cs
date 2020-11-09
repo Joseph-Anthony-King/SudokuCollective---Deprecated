@@ -83,6 +83,7 @@ namespace SudokuCollective.Core.Models
 
             set
             {
+                
                 _isSuperUser = value;
             }
         }

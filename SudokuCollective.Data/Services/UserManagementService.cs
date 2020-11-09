@@ -22,7 +22,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<bool> IsValidUser(string username, string password)
         {
-            var userResponse = await usersRepository.GetByUserName(username);
+            var userResponse = await usersRepository.GetByUserName(username, true);
 
             if (userResponse.Success)
             {

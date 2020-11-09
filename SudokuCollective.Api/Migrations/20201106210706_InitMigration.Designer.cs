@@ -3,63 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SudokuCollective.Data.Models;
 
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200323234200_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20201106210706_InitMigration")]
+    partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.0.0")
+                .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            modelBuilder.Entity("SudokuCollective.Domain.Game", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("AppId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("ContinueGame")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("DateCompleted")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("SudokuMatrixId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SudokuSolutionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SudokuMatrixId")
-                        .IsUnique();
-
-                    b.HasIndex("SudokuSolutionId")
-                        .IsUnique();
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Games");
-                });
 
             modelBuilder.Entity("SudokuCollective.Core.Models.App", b =>
                 {
@@ -120,6 +80,47 @@ namespace SudokuCollective.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Difficulties");
+                });
+
+            modelBuilder.Entity("SudokuCollective.Core.Models.Game", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AppId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("ContinueGame")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("DateCompleted")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("SudokuMatrixId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SudokuSolutionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SudokuMatrixId")
+                        .IsUnique();
+
+                    b.HasIndex("SudokuSolutionId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("SudokuCollective.Core.Models.Role", b =>
@@ -311,17 +312,17 @@ namespace SudokuCollective.Api.Migrations
                     b.ToTable("UsersRoles");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Domain.Game", b =>
+            modelBuilder.Entity("SudokuCollective.Core.Models.Game", b =>
                 {
                     b.HasOne("SudokuCollective.Core.Models.SudokuMatrix", "SudokuMatrix")
                         .WithOne("Game")
-                        .HasForeignKey("SudokuCollective.Domain.Game", "SudokuMatrixId")
+                        .HasForeignKey("SudokuCollective.Core.Models.Game", "SudokuMatrixId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SudokuCollective.Core.Models.SudokuSolution", "SudokuSolution")
                         .WithOne("Game")
-                        .HasForeignKey("SudokuCollective.Domain.Game", "SudokuSolutionId")
+                        .HasForeignKey("SudokuCollective.Core.Models.Game", "SudokuSolutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

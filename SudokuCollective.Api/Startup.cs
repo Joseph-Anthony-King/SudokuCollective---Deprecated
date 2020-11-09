@@ -35,7 +35,9 @@ namespace SudokuCollective.Api {
         public void ConfigureServices(IServiceCollection services) {
 
             services.AddDbContext<DatabaseContext>(options => 
-                options.UseNpgsql(Configuration.GetConnectionString("DatabaseConnection")));
+                options.UseNpgsql(
+                    Configuration.GetConnectionString("DatabaseConnection"),
+                    b => b.MigrationsAssembly("SudokuCollective.Api")));
 
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)

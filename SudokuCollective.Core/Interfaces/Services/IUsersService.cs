@@ -10,7 +10,7 @@ namespace SudokuCollective.Core.Interfaces.Services
     {
         Task<IUserResult> GetUser(int id, bool fullRecord = false);
         Task<IUsersResult> GetUsers(IPageListModel pageListModel, bool fullRecord = false);
-        Task<IUserResult> CreateUser(IRegisterRequest registerRequest, bool addAdmin = false);
+        Task<IUserResult> CreateUser(IRegisterRequest registerRequest);
         Task<IUserResult> UpdateUser(int id, IUpdateUserRequest updateUserRequest);
         Task<IBaseResult> UpdatePassword(int id, IUpdatePasswordRequest updatePasswordRequest);
         Task<IBaseResult> DeleteUser(int id);

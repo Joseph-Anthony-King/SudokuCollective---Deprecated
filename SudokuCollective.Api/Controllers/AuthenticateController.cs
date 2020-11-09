@@ -15,6 +15,8 @@ namespace SudokuCollective.Api.Controllers
     {
         private readonly IAuthenticateService authService;
         private readonly IUserManagementService userManagementService;
+        private readonly string userFoundMessage;
+        private readonly string userNameFoundMessage;
         private readonly string userNameMessage;
         private readonly string passwordMessage;
         private readonly string emailMessage;
@@ -26,6 +28,8 @@ namespace SudokuCollective.Api.Controllers
         {
             authService = authServ;
             userManagementService = userManagementServ;
+            userFoundMessage = "Status Code 200: User Authenticated";
+            userNameFoundMessage = "Status Code 200: User Name Found";
             userNameMessage = "Status Code 400: User Name Invalid";
             passwordMessage = "Status Code 400: Password Invalid";
             emailMessage = "Status Code 400: No Record Of Email Address";
@@ -48,7 +52,7 @@ namespace SudokuCollective.Api.Controllers
                 var result = new AuthenticatedUserResult()
                 {
                     Success = true,
-                    Message = string.Empty,
+                    Message = userFoundMessage,
                     User = authenticateResult.User,
                     Token = authenticateResult.Token
                 };
@@ -83,7 +87,9 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                return Ok(result.UserName);
+                result.Message = userNameFoundMessage;
+
+                return Ok(result);
             }
             else
             {

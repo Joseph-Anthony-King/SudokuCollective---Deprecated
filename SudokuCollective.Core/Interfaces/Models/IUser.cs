@@ -14,6 +14,8 @@ namespace SudokuCollective.Core.Interfaces.Models
         string Email { get; set; }
         string Password { get; set; }
         bool IsActive { get; set; }
+        bool IsSuperUser { get; set; }
+        bool IsAdmin { get; set; }
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
         List<Game> Games { get; set; }

@@ -207,7 +207,7 @@ namespace SudokuCollective.Data.Services
                         {
                             result.Apps = (List<IApp>)response.Objects
                                 .ConvertAll(a => (IApp)a)
-                                .OrderBy(a => a.Users.Select(u => u.User.Games.Count))
+                                .OrderBy(a => a.GameCount)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage);
                         }
@@ -215,7 +215,7 @@ namespace SudokuCollective.Data.Services
                         {
                             result.Apps = (List<IApp>)response.Objects
                                 .ConvertAll(a => (IApp)a)
-                                .OrderByDescending(a => a.Users.Select(u => u.User.Games.Count))
+                                .OrderByDescending(a => a.GameCount)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
                                 .Take(pageListModel.ItemsPerPage);
                         }
@@ -1020,7 +1020,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<bool> IsRequestValidOnThisLicense(int id, string license, int userId)
         {
-            var requestor = await usersRepository.GetById(userId, false);
+            var requestor = (User)(await usersRepository.GetById(userId, true)).Object;
             var validLicense = await appsRepository.IsAppLicenseValid(license);
             var requestorRegisteredToApp = await appsRepository.IsUserRegisteredToApp(id, license, userId);
 
@@ -1028,7 +1028,7 @@ namespace SudokuCollective.Data.Services
             {
                 return true;
             }
-            else if (((User)requestor).IsSuperUser && validLicense)
+            else if (requestor.IsSuperUser && validLicense)
             {
                 return true;
             }

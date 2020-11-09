@@ -27,8 +27,6 @@ namespace SudokuCollective.Data.Services
         private readonly string userNameRequiredMessage;
         private readonly string userNameInvalidMessage;
         private readonly string emailRequiredMessage;
-        private readonly string unableToUpgradeToAdminMessage;
-        private readonly string unableToAddUserToAppMessage;
         private readonly string unableToCreateUserMessage;
         private readonly string addRolesMessage;
         private readonly string unableToAddRolesMessage;
@@ -40,11 +38,12 @@ namespace SudokuCollective.Data.Services
         private readonly string userDeactivatedMessage;
         private readonly string unableToDeactivateUserMessage;
         private readonly string appNotFoundMessage;
+        private readonly string pageNotFoundMessage;
         private readonly string sortValueNotImplementedMessage;
 
         public UsersService(
-            IUsersRepository<User> usersRepo, 
-            IAppsRepository<App> appsRepo, 
+            IUsersRepository<User> usersRepo,
+            IAppsRepository<App> appsRepo,
             IRolesRepository<Role> rolesApp)
         {
             usersRepository = usersRepo;
@@ -57,8 +56,6 @@ namespace SudokuCollective.Data.Services
             userNameRequiredMessage = "User name required";
             userNameInvalidMessage = "User name accepsts alphanumeric and special characters except double and single quotes";
             emailRequiredMessage = "Email required";
-            unableToUpgradeToAdminMessage = "Error upgrading user to admin";
-            unableToAddUserToAppMessage = "Unable to add user to app";
             unableToCreateUserMessage = "Unable to create user";
             addRolesMessage = "Successfully added roles";
             unableToAddRolesMessage = "Unable to add roles";
@@ -70,6 +67,7 @@ namespace SudokuCollective.Data.Services
             userDeactivatedMessage = "User successfully deactivated";
             unableToDeactivateUserMessage = "Unable to deactivate user";
             appNotFoundMessage = "App not found";
+            pageNotFoundMessage = "Page not found";
             sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
 
@@ -135,168 +133,185 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    if (pageListModel.SortBy == SortValue.NULL)
+                    if (pageListModel != null)
                     {
-                        result.Users = response.Objects.ConvertAll(u => (IUser)u);
-                    }
-                    else if (pageListModel.SortBy == SortValue.ID)
-                    {
-                        if (!pageListModel.OrderByDescending)
+                        if (IsPageValid(pageListModel, response.Objects))
                         {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderBy(u => u.Id)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                            if (pageListModel.SortBy == SortValue.NULL)
+                            {
+                                result.Users = response.Objects.ConvertAll(u => (IUser)u);
+                            }
+                            else if (pageListModel.SortBy == SortValue.ID)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderBy(u => u.Id)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                                else
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderByDescending(u => u.Id)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.USERNAME)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderBy(u => u.UserName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                                else
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderByDescending(u => u.UserName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.FIRSTNAME)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderBy(u => u.FirstName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                                else
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderByDescending(u => u.FirstName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.LASTNAME)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderBy(u => u.LastName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                                else
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderByDescending(u => u.LastName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.FULLNAME)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderBy(u => u.FullName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                                else
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderByDescending(u => u.FullName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.NICKNAME)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderBy(u => u.NickName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                                else
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderByDescending(u => u.NickName)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.DATECREATED)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderBy(u => u.DateCreated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                                else
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderByDescending(u => u.DateCreated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.DATEUPDATED)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderBy(u => u.DateUpdated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                                else
+                                {
+                                    result.Users = (List<IUser>)response.Objects
+                                        .ConvertAll(u => (IUser)u)
+                                        .OrderByDescending(u => u.DateUpdated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage);
+                                }
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = sortValueNotImplementedMessage;
+
+                                return result;
+                            }
                         }
                         else
                         {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderByDescending(u => u.Id)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.USERNAME)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderBy(u => u.UserName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                        else
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderByDescending(u => u.UserName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.FIRSTNAME)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderBy(u => u.FirstName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                        else
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderByDescending(u => u.FirstName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.LASTNAME)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderBy(u => u.LastName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                        else
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderByDescending(u => u.LastName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.FULLNAME)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderBy(u => u.FullName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                        else
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderByDescending(u => u.FullName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.NICKNAME)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderBy(u => u.NickName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                        else
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderByDescending(u => u.NickName)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.DATECREATED)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderBy(u => u.DateCreated)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                        else
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderByDescending(u => u.DateCreated)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.DATEUPDATED)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderBy(u => u.DateUpdated)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
-                        }
-                        else
-                        {
-                            result.Users = (List<IUser>)response.Objects
-                                .ConvertAll(u => (IUser)u)
-                                .OrderByDescending(u => u.DateUpdated)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                            result.Success = false;
+                            result.Message = pageNotFoundMessage;
+
+                            return result;
                         }
                     }
                     else
                     {
-                        result.Success = false;
-                        result.Message = sortValueNotImplementedMessage;
-
-                        return result;
+                        result.Users = response.Objects.ConvertAll(u => (IUser)u);
                     }
 
                     result.Success = response.Success;
@@ -328,34 +343,43 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IUserResult> CreateUser(
-            IRegisterRequest registerRequest,
-            bool addAdmin = false)
+            IRegisterRequest registerRequest)
         {
             var result = new UserResult();
+
+            var isUserNameUnique = false;
+            var isEmailUnique = false;
 
             // User name accepsts alphanumeric and special characters except double and single quotes
             var regex = new Regex("^[^-]{1}?[^\"\']*$");
 
-            var isUserNameUnique = await usersRepository.IsUserNameUnique(registerRequest.UserName);
-            var isEmailUnique = await usersRepository.IsEmailUnique(registerRequest.Email);
-
-            if (!isUserNameUnique
-                || !isEmailUnique
-                || !regex.IsMatch(registerRequest.UserName)
-                || string.IsNullOrEmpty(registerRequest.UserName)
-                || string.IsNullOrEmpty(registerRequest.Email))
+            if (!string.IsNullOrEmpty(registerRequest.UserName))
             {
-                if (!isUserNameUnique)
+                isUserNameUnique = await usersRepository.IsUserNameUnique(registerRequest.UserName);
+            }
+
+            if (!string.IsNullOrEmpty(registerRequest.Email))
+            {
+                isEmailUnique = await usersRepository.IsEmailUnique(registerRequest.Email);
+            }
+
+            if (string.IsNullOrEmpty(registerRequest.UserName)
+                || string.IsNullOrEmpty(registerRequest.Email)
+                || !isUserNameUnique
+                || !isEmailUnique
+                || !regex.IsMatch(registerRequest.UserName))
+            {
+                if (string.IsNullOrEmpty(registerRequest.UserName))
                 {
-                    result.Success = isUserNameUnique;
-                    result.Message = userNameUniqueMessage;
+                    result.Success = false;
+                    result.Message = userNameRequiredMessage;
 
                     return result;
                 }
-                else if (!isEmailUnique)
+                else if (string.IsNullOrEmpty(registerRequest.Email))
                 {
-                    result.Success = isEmailUnique;
-                    result.Message = emailUniqueMessage;
+                    result.Success = false;
+                    result.Message = emailRequiredMessage;
 
                     return result;
                 }
@@ -366,17 +390,17 @@ namespace SudokuCollective.Data.Services
 
                     return result;
                 }
-                else if (string.IsNullOrEmpty(registerRequest.UserName))
+                else if (!isUserNameUnique)
                 {
-                    result.Success = false;
-                    result.Message = userNameRequiredMessage;
+                    result.Success = isUserNameUnique;
+                    result.Message = userNameUniqueMessage;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
-                    result.Message = emailRequiredMessage;
+                    result.Success = isEmailUnique;
+                    result.Message = emailUniqueMessage;
 
                     return result;
                 }
@@ -405,55 +429,20 @@ namespace SudokuCollective.Data.Services
                                 DateTime.UtcNow,
                                 DateTime.MinValue);
 
+                            user.Apps.Add(
+                                new UserApp() { 
+                                    User = user, 
+                                    App = (App)appResponse.Object, 
+                                    AppId = ((App)appResponse.Object).Id });
+
                             var userResponse = await usersRepository.Create(user);
 
                             if (userResponse.Success)
                             {
-                                var addUserToAppResponse = await appsRepository.AddAppUser(userResponse.Object.Id, registerRequest.License);
+                                result.Success = userResponse.Success;
+                                result.User = (User)userResponse.Object;
 
-                                if (addUserToAppResponse.Success)
-                                {
-                                    if (appResponse.Object.Id == 1)
-                                    {
-                                        var addAdminResponse = await usersRepository.PromoteUserToAdmin(userResponse.Object.Id);
-
-                                        if (addAdminResponse)
-                                        {
-                                            result.Success = addUserToAppResponse.Success;
-                                            result.User = (User)(await usersRepository.GetById(userResponse.Object.Id)).Object;
-
-                                            return result;
-                                        }
-                                        else
-                                        {
-                                            result.Success = false;
-                                            result.Message = unableToUpgradeToAdminMessage;
-
-                                            return result;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        result.Success = addUserToAppResponse.Success;
-                                        result.User = (User)(await usersRepository.GetById(userResponse.Object.Id)).Object;
-
-                                        return result;
-                                    }
-                                }
-                                else if (!addUserToAppResponse.Success && addUserToAppResponse.Exception != null)
-                                {
-                                    result.Success = addUserToAppResponse.Success;
-                                    result.Message = addUserToAppResponse.Exception.Message;
-
-                                    return result;
-                                }
-                                else
-                                {
-                                    result.Success = false;
-                                    result.Message = unableToAddUserToAppMessage;
-
-                                    return result;
-                                }
+                                return result;
                             }
                             else if (!userResponse.Success && userResponse.Exception != null)
                             {
@@ -562,7 +551,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (await usersRepository.HasEntity(id))
                     {
-                        var userResponse = await usersRepository.GetById(id);
+                        var userResponse = await usersRepository.GetById(id, true);
 
                         if (userResponse.Success)
                         {
@@ -578,7 +567,7 @@ namespace SudokuCollective.Data.Services
                             if (updateUserResponse.Success)
                             {
                                 result.Success = userResponse.Success;
-                                result.User = (User)updateUserResponse.Object;
+                                result.User = (User)userResponse.Object;
 
                                 return result;
                             }
@@ -639,11 +628,11 @@ namespace SudokuCollective.Data.Services
             {
                 if (await usersRepository.HasEntity(id))
                 {
-                    var userResponse = await usersRepository.GetById(id);
+                    var userResponse = await usersRepository.GetById(id, true);
 
                     if (userResponse.Success)
                     {
-                        if (BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, ((User)userResponse.Object).Password))
+                        if (BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, ((IUser)userResponse.Object).Password))
                         {
                             ((User)userResponse.Object).Password = BCrypt.Net.BCrypt
                                     .HashPassword(updatePasswordRO.NewPassword, salt);
@@ -976,6 +965,18 @@ namespace SudokuCollective.Data.Services
                 result.Message = e.Message;
 
                 return result;
+            }
+        }
+
+        private bool IsPageValid(IPageListModel pageListModel, List<IEntityBase> entities)
+        {
+            if (pageListModel.Page == 1)
+            {
+                return pageListModel.ItemsPerPage >= entities.Count;
+            }
+            else
+            {
+                return pageListModel.ItemsPerPage * pageListModel.Page <= entities.Count;
             }
         }
     }

@@ -26,7 +26,8 @@ namespace SudokuCollective.Core.Models
         public bool IsActive { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
-        public virtual List<UserApp> Users {
+        public virtual List<UserApp> Users
+        {
 
             get
             {
@@ -36,6 +37,23 @@ namespace SudokuCollective.Core.Models
             set
             {
                 _users = value;
+            }
+        }
+        public int GameCount
+        {
+            get
+            {
+                var result = 0;
+
+                if (Users != null && Users.Count > 0)
+                {
+                    foreach (var user in Users)
+                    {
+                        result += user.User.Games.Count;
+                    }
+                }
+
+                return result;
             }
         }
         #endregion

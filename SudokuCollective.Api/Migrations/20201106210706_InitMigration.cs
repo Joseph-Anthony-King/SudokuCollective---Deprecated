@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SudokuCollective.Api.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

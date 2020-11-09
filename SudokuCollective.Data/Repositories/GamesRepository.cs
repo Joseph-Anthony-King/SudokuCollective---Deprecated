@@ -76,9 +76,6 @@ namespace SudokuCollective.Data.Repositories
                 else
                 {
                     query = await dbSet
-                        .Include(g => g.User).ThenInclude(u => u.Roles)
-                        .Include(g => g.SudokuMatrix)
-                        .Include(g => g.SudokuSolution)
                         .FirstOrDefaultAsync(predicate: g => g.Id == id);
                 }
 
@@ -270,9 +267,6 @@ namespace SudokuCollective.Data.Repositories
                 else
                 {
                     query = await dbSet
-                        .Include(g => g.User).ThenInclude(u => u.Roles)
-                        .Include(g => g.SudokuMatrix)
-                        .Include(g => g.SudokuSolution)
                         .FirstOrDefaultAsync(predicate: g => g.Id == id && g.AppId == appid);
                 }
 
@@ -317,9 +311,6 @@ namespace SudokuCollective.Data.Repositories
                 else
                 {
                     query = await dbSet
-                        .Include(g => g.User).ThenInclude(u => u.Roles)
-                        .Include(g => g.SudokuMatrix)
-                        .Include(g => g.SudokuSolution)
                         .Where(g => g.AppId == appid)
                         .ToListAsync();
                 }
@@ -363,9 +354,6 @@ namespace SudokuCollective.Data.Repositories
                 else
                 {
                     query = await dbSet
-                        .Include(g => g.User).ThenInclude(u => u.Roles)
-                        .Include(g => g.SudokuMatrix)
-                        .Include(g => g.SudokuSolution)
                         .FirstOrDefaultAsync(predicate:
                             g => g.Id == gameid
                             && g.AppId == appid
@@ -413,9 +401,6 @@ namespace SudokuCollective.Data.Repositories
                 else
                 {
                     query = await dbSet
-                        .Include(g => g.User).ThenInclude(u => u.Roles)
-                        .Include(g => g.SudokuMatrix)
-                        .Include(g => g.SudokuSolution)
                         .Where(g => g.AppId == appid && g.UserId == userid)
                         .ToListAsync();
                 }
