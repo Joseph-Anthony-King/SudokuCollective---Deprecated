@@ -486,7 +486,7 @@ namespace SudokuCollective.Data.Repositories
             try
             {
                 var cellList = new List<int>();
-                var sudokuMatrixList = new List<int>();
+                var matrixList = new List<int>();
                 var gameList = new List<int>();
                 var userRoleList = new List<int>();
                 var userAppList = new List<int>();
@@ -501,7 +501,7 @@ namespace SudokuCollective.Data.Repositories
                         cellDbSet.Attach(cell);
                     }
 
-                    sudokuMatrixList.Add(game.SudokuMatrixId);
+                    matrixList.Add(game.SudokuMatrixId);
                     gameList.Add(game.Id);
                     gameDbSet.Attach(game);
                 }
@@ -535,7 +535,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                     else if (entry.Entity is SudokuMatrix matrix)
                     {
-                        if (sudokuMatrixList.Contains(matrix.Id))
+                        if (matrixList.Contains(matrix.Id))
                         {
                             entry.State = EntityState.Deleted;
                         }
@@ -618,7 +618,7 @@ namespace SudokuCollective.Data.Repositories
                 foreach (var entity in entities)
                 {
                     var cellList = new List<int>();
-                    var sudokuMatrixList = new List<int>();
+                    var matrixList = new List<int>();
                     var gameList = new List<int>();
                     var userRoleList = new List<int>();
                     var userAppList = new List<int>();
@@ -633,7 +633,7 @@ namespace SudokuCollective.Data.Repositories
                             cellDbSet.Attach(cell);
                         }
 
-                        sudokuMatrixList.Add(game.SudokuMatrixId);
+                        matrixList.Add(game.SudokuMatrixId);
                         gameList.Add(game.Id);
                         gameDbSet.Attach(game);
                     }
@@ -667,7 +667,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                         else if (entry.Entity is SudokuMatrix matrix)
                         {
-                            if (sudokuMatrixList.Contains(matrix.Id))
+                            if (matrixList.Contains(matrix.Id))
                             {
                                 entry.State = EntityState.Deleted;
                             }

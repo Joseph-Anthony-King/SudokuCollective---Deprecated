@@ -24,7 +24,7 @@ const appSettingsModule = {
             state.apiURL = confirmedURL;
         },
         [UPDATE_API_MESSAGE](state, updatedAPIMessage) {
-            state.apiMessage = updatedAPIMessage;
+            state.apiMessage = updatedAPIMessage.message.substring(17, updatedAPIMessage.message.length);
         },
         [UPDATE_AUTH_TOKEN](state, token) {
             state.authToken = token;

@@ -186,114 +186,174 @@ namespace SudokuCollective.Data.Services
                     {
                         if (!pageListModel.OrderByDescending)
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderBy(a => a.Id)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderBy(u => u.Id)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                         else
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderByDescending(a => a.Id)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderByDescending(u => u.Id)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                     }
                     else if (pageListModel.SortBy == SortValue.GAMECOUNT)
                     {
                         if (!pageListModel.OrderByDescending)
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderBy(a => a.GameCount)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderBy(u => u.GameCount)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                         else
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderByDescending(a => a.GameCount)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderByDescending(u => u.GameCount)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                     }
                     else if (pageListModel.SortBy == SortValue.NAME)
                     {
                         if (!pageListModel.OrderByDescending)
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderBy(a => a.Name)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderBy(u => u.Name)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                         else
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderByDescending(a => a.Name)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderByDescending(u => u.Name)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                     }
                     else if (pageListModel.SortBy == SortValue.DATECREATED)
                     {
                         if (!pageListModel.OrderByDescending)
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderBy(a => a.DateCreated)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderBy(u => u.DateCreated)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                         else
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderByDescending(a => a.DateCreated)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderByDescending(u => u.DateCreated)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                     }
                     else if (pageListModel.SortBy == SortValue.DATEUPDATED)
                     {
                         if (!pageListModel.OrderByDescending)
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderBy(a => a.DateUpdated)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderBy(u => u.DateUpdated)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                         else
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderByDescending(a => a.DateUpdated)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderByDescending(u => u.DateUpdated)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                     }
                     else if (pageListModel.SortBy == SortValue.USERCOUNT)
                     {
                         if (!pageListModel.OrderByDescending)
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderBy(a => a.Users.Count)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderBy(u => u.UserCount)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                         else
                         {
-                            result.Apps = (List<IApp>)response.Objects
-                                .ConvertAll(a => (IApp)a)
-                                .OrderByDescending(a => a.Users.Count)
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Apps.Add((IApp)obj);
+                            }
+
+                            result.Apps = result.Apps
+                                .OrderByDescending(u => u.UserCount)
                                 .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage);
+                                .Take(pageListModel.ItemsPerPage)
+                                .ToList();
                         }
                     }
                     else
@@ -356,133 +416,203 @@ namespace SudokuCollective.Data.Services
                         {
                             if (!pageListModel.OrderByDescending)
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderBy(u => u.Id)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                             else
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderByDescending(u => u.Id)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                         }
                         else if (pageListModel.SortBy == SortValue.USERNAME)
                         {
                             if (!pageListModel.OrderByDescending)
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderBy(u => u.UserName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                             else
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderByDescending(u => u.UserName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                         }
                         else if (pageListModel.SortBy == SortValue.FIRSTNAME)
                         {
                             if (!pageListModel.OrderByDescending)
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderBy(u => u.FirstName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                             else
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderByDescending(u => u.FirstName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                         }
                         else if (pageListModel.SortBy == SortValue.LASTNAME)
                         {
                             if (!pageListModel.OrderByDescending)
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderBy(u => u.LastName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                             else
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderByDescending(u => u.LastName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                         }
                         else if (pageListModel.SortBy == SortValue.FULLNAME)
                         {
                             if (!pageListModel.OrderByDescending)
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderBy(u => u.FullName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                             else
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderByDescending(u => u.FullName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                         }
                         else if (pageListModel.SortBy == SortValue.NICKNAME)
                         {
                             if (!pageListModel.OrderByDescending)
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderBy(u => u.NickName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                             else
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderByDescending(u => u.NickName)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                         }
                         else if (pageListModel.SortBy == SortValue.GAMECOUNT)
                         {
                             if (!pageListModel.OrderByDescending)
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderBy(u => u.Games.Count)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                             else
                             {
-                                result.Users = (List<IUser>)response.Objects
-                                    .ConvertAll(u => (IUser)u)
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
                                     .OrderByDescending(u => u.Games.Count)
                                     .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                    .Take(pageListModel.ItemsPerPage);
+                                    .Take(pageListModel.ItemsPerPage)
+                                    .ToList();
                             }
                         }
                         else
@@ -640,9 +770,9 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> UpdateApp(IAppRequest appRequest)
+        public async Task<IAppResult> UpdateApp(IAppRequest appRequest)
         {
-            var result = new BaseResult();
+            var result = new AppResult();
 
             try
             {
@@ -655,6 +785,7 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).Name = appRequest.Name;
                         ((IApp)getAppResponse.Object).DevUrl = appRequest.DevUrl;
                         ((IApp)getAppResponse.Object).LiveUrl = appRequest.LiveUrl;
+                        ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
                         var updateAppResponse = await appsRepository
                             .Update((App)getAppResponse.Object);
@@ -663,6 +794,7 @@ namespace SudokuCollective.Data.Services
                         {
                             result.Success = true;
                             result.Message = appUpdatedMessage;
+                            result.App = (App)updateAppResponse.Object;
 
                             return result;
                         }

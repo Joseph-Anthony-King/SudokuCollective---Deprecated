@@ -56,7 +56,7 @@ namespace SudokuCollective.Data.Repositories
 
                 // Add connection between the app and the user
                 var userApp = new UserApp(
-                    ((IApp)entity).OwnerId, 
+                    ((IApp)entity).OwnerId,
                     entity.Id);
 
                 userAppDbSet.Add(userApp);
@@ -90,7 +90,7 @@ namespace SudokuCollective.Data.Repositories
                         .FirstOrDefaultAsync(predicate: r => r.RoleLevel == RoleLevel.ADMIN);
 
                     var newUserAdminRole = new UserRole(
-                        user.Id, 
+                        user.Id,
                         adminRole.Id);
 
                     userRoleDbSet.Add(newUserAdminRole);
@@ -122,16 +122,20 @@ namespace SudokuCollective.Data.Repositories
                 if (fullRecord)
                 {
                     query = await dbSet
-                        .Include(a => a.Users)
-                            .ThenInclude(ua => ua.User)
-                                .ThenInclude(u => u.Roles)
-                            .ThenInclude(ua => ua.User)
-                                .ThenInclude(u => u.Games)
                         .FirstOrDefaultAsync(predicate: a => a.Id == id);
 
-                    foreach (var ua in query.Users)
+                    query.Users = await userAppDbSet
+                        .Where(ua => ua.AppId == query.Id)
+                        .ToListAsync();
+
+                    foreach (var userApp in query.Users)
                     {
-                        foreach (var role in ua.User.Roles)
+                        userApp.User = await userDbSet
+                            .FirstOrDefaultAsync(predicate: u => u.Id == userApp.UserId);
+                        userApp.User.Roles = await userRoleDbSet
+                            .Where(ur => ur.UserId == userApp.User.Id).ToListAsync();
+
+                        foreach (var role in userApp.User.Roles)
                         {
                             role.Role = await roleDbSet
                                 .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
@@ -139,7 +143,7 @@ namespace SudokuCollective.Data.Repositories
                             role.Role.Users = null;
                         }
 
-                        foreach (var game in ua.User.Games)
+                        foreach (var game in userApp.User.Games)
                         {
                             if (await game.IsGameInActiveApp(context))
                             {
@@ -181,17 +185,21 @@ namespace SudokuCollective.Data.Repositories
                 if (fullRecord)
                 {
                     query = await dbSet
-                        .Include(a => a.Users)
-                            .ThenInclude(ua => ua.User)
-                                .ThenInclude(u => u.Roles)
-                            .ThenInclude(ua => ua.User)
-                                .ThenInclude(u => u.Games)
                         .FirstOrDefaultAsync(
                             predicate: a => a.License.ToLower().Equals(license.ToLower()));
 
-                    foreach (var ua in query.Users)
+                    query.Users = await userAppDbSet
+                        .Where(ua => ua.AppId == query.Id)
+                        .ToListAsync();
+
+                    foreach (var userApp in query.Users)
                     {
-                        foreach (var role in ua.User.Roles)
+                        userApp.User = await userDbSet
+                            .FirstOrDefaultAsync(predicate: u => u.Id == userApp.UserId);
+                        userApp.User.Roles = await userRoleDbSet
+                            .Where(ur => ur.UserId == userApp.User.Id).ToListAsync();
+
+                        foreach (var role in userApp.User.Roles)
                         {
                             role.Role = await roleDbSet
                                 .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
@@ -199,7 +207,7 @@ namespace SudokuCollective.Data.Repositories
                             role.Role.Users = null;
                         }
 
-                        foreach (var game in ua.User.Games)
+                        foreach (var game in userApp.User.Games)
                         {
                             if (await game.IsGameInActiveApp(context))
                             {
@@ -242,36 +250,37 @@ namespace SudokuCollective.Data.Repositories
                 if (fullRecord)
                 {
                     query = await dbSet
-                        .Include(a => a.Users)
-                            .ThenInclude(ua => ua.User)
-                                .ThenInclude(u => u.Roles)
-                            .ThenInclude(ua => ua.User)
-                                .ThenInclude(u => u.Games)
                         .ToListAsync();
 
                     foreach (var app in query)
                     {
-                        foreach (var ua in app.Users)
+                        app.Users = await userAppDbSet
+                            .Where(ua => ua.AppId == app.Id)
+                            .ToListAsync();
+
+                        foreach (var userApp in app.Users)
                         {
-                            foreach (var role in ua.User.Roles)
+                            userApp.User = await userDbSet
+                                .FirstOrDefaultAsync(predicate: u => u.Id == userApp.UserId);
+                            userApp.User.Roles = await userRoleDbSet
+                                .Where(ur => ur.UserId == userApp.User.Id).ToListAsync();
+
+                            foreach (var role in userApp.User.Roles)
                             {
                                 role.Role = await roleDbSet
                                     .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
 
-                                foreach (var ur in role.Role.Users)
+                                role.Role.Users = null;
+                            }
+
+                            foreach (var game in userApp.User.Games)
+                            {
+                                if (await game.IsGameInActiveApp(context))
                                 {
-                                    ur.User = await userDbSet.FirstOrDefaultAsync(predicate: u => u.Id == ur.UserId);
+                                    game.SudokuMatrix = await matrixDbSet
+                                        .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
 
-                                    foreach (var game in ur.User.Games)
-                                    {
-                                        if (await game.IsGameInActiveApp(context))
-                                        {
-                                            game.SudokuMatrix = await matrixDbSet
-                                                .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
-
-                                            await game.SudokuMatrix.AttachSudokuCells(context);
-                                        }
-                                    }
+                                    await game.SudokuMatrix.AttachSudokuCells(context);
                                 }
                             }
                         }
@@ -301,23 +310,22 @@ namespace SudokuCollective.Data.Repositories
         async public Task<IRepositoryResponse> GetAppUsers(int id, bool fullRecord = false)
         {
             var result = new RepositoryResponse();
-            var app = new App();
+            var query = new List<User>();
 
             try
             {
                 if (fullRecord)
                 {
-                    app = await context.Apps
-                        .Include(a => a.Users)
-                            .ThenInclude(ua => ua.User)
-                                .ThenInclude(u => u.Roles)
-                            .ThenInclude(ua => ua.User)
-                                .ThenInclude(u => u.Games)
-                        .FirstOrDefaultAsync(predicate: a => a.Id == id);
+                    query = await userDbSet
+                        .Include(u => u.Games)
+                        .Include(u => u.Roles)
+                        .Include(u => u.Apps)
+                        .Where(u => u.Apps.Any(ua => ua.AppId == id))
+                        .ToListAsync();
 
-                    foreach (var userApp in app.Users)
+                    foreach (var user in query)
                     {
-                        foreach (var role in userApp.User.Roles)
+                        foreach (var role in user.Roles)
                         {
                             role.Role = await roleDbSet
                                 .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
@@ -325,7 +333,9 @@ namespace SudokuCollective.Data.Repositories
                             role.Role.Users = null;
                         }
 
-                        foreach (var game in userApp.User.Games)
+                        user.Apps = new List<UserApp>();
+
+                        foreach (var game in user.Games)
                         {
                             if (await game.IsGameInActiveApp(context))
                             {
@@ -339,18 +349,23 @@ namespace SudokuCollective.Data.Repositories
                 }
                 else
                 {
+                    query = await userDbSet
+                        .Where(u => u.Apps.Any(ua => ua.AppId == id))
+                        .ToListAsync();
 
-                    app = await context.Apps
-                        .Include(a => a.Users)
-                            .ThenInclude(ua => ua.User)
-                        .FirstOrDefaultAsync(predicate: a => a.Id == id);
+                    foreach (var user in query)
+                    {
+                        user.Roles = new List<UserRole>();
+                        user.Apps = new List<UserApp>();
+                        user.Games = new List<Game>();
+                    }
                 }
 
                 result.Success = true;
-                result.Objects = app.Users
-                    .Select(ua => ua.User)
-                    .ToList()
-                    .ConvertAll(u => (IEntityBase)u);
+                result.Objects = query
+                    .ConvertAll(u => (IEntityBase)u)
+                    .ToList();
+
 
                 return result;
             }
@@ -369,10 +384,58 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.Update(entity);
+                dbSet.Attach(entity);
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 result.Success = true;
+                result.Object = await dbSet
+                        .FirstOrDefaultAsync(predicate: a => a.Id == entity.Id);
+
+                ((App)result.Object).Users = await userAppDbSet
+                    .Where(ua => ua.AppId == ((App)result.Object).Id)
+                    .ToListAsync();
+
+                foreach (var userApp in ((App)result.Object).Users)
+                {
+                    userApp.User = await userDbSet
+                        .FirstOrDefaultAsync(predicate: u => u.Id == userApp.UserId);
+                    userApp.User.Roles = await userRoleDbSet
+                        .Where(ur => ur.UserId == userApp.User.Id).ToListAsync();
+
+                    foreach (var role in userApp.User.Roles)
+                    {
+                        role.Role = await roleDbSet
+                            .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
+
+                        role.Role.Users = null;
+                    }
+
+                    foreach (var game in userApp.User.Games)
+                    {
+                        if (await game.IsGameInActiveApp(context))
+                        {
+                            game.SudokuMatrix = await matrixDbSet
+                                .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
+
+                            await game.SudokuMatrix.AttachSudokuCells(context);
+                        }
+                    }
+                }
 
                 return result;
             }
@@ -421,6 +484,20 @@ namespace SudokuCollective.Data.Repositories
 
                 userAppDbSet.Add(new UserApp(user.Id, app.Id));
 
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 result.Success = true;
@@ -442,9 +519,27 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
+                var cellList = new List<int>();
+                var matrixList = new List<int>();
+                var gameList = new List<int>();
+                var userAppList = new List<int>();
+
                 var user = await userDbSet
                     .Include(u => u.Games)
                     .FirstOrDefaultAsync(predicate: u => u.Id == userId);
+
+                user.Games = await gameDbSet
+                    .Where(g => g.User.Apps.Any(
+                        ua => ua.App.License.ToLower().Equals(license.ToLower())))
+                    .ToListAsync();
+
+                foreach (var game in user.Games)
+                {
+                    game.SudokuMatrix = await matrixDbSet
+                        .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
+
+                    await game.SudokuMatrix.AttachSudokuCells(context);
+                }
 
                 var app = await dbSet
                     .FirstOrDefaultAsync(predicate: a => a.License.Equals(license));
@@ -454,12 +549,71 @@ namespace SudokuCollective.Data.Repositories
                     foreach (var cell in game.SudokuMatrix.SudokuCells)
                     {
                         cellDbSet.Remove(cell);
+                        cellList.Add(cell.Id);
                     }
 
+                    matrixDbSet.Remove(game.SudokuMatrix);
+                    matrixList.Add(game.SudokuMatrixId);
                     gameDbSet.Remove(game);
+                    gameList.Add(game.Id);
                 }
 
-                userAppDbSet.Remove(new UserApp(user.Id, app.Id));
+                var userApp = await userAppDbSet.FirstOrDefaultAsync(predicate: ua => ua.UserId == userId);
+
+                userAppDbSet.Remove(userApp);
+                userAppList.Add(userApp.Id);
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    if (entry.Entity is SudokuCell cell)
+                    {
+                        if (cellList.Contains(cell.Id))
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else if (entry.Entity is SudokuMatrix matrix)
+                    {
+                        if (matrixList.Contains(matrix.Id))
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else if (entry.Entity is Game game)
+                    {
+                        if (gameList.Contains(game.Id))
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else if (entry.Entity is UserApp entity)
+                    {
+                        if (userAppList.Contains(entity.Id))
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                }
 
                 await context.SaveChangesAsync();
 
@@ -704,9 +858,9 @@ namespace SudokuCollective.Data.Repositories
         async public Task<bool> IsUserRegisteredToApp(int id, string license, int userId)
         {
             var result = await dbSet
-                .AnyAsync(predicate: 
-                    a => a.Users.Any(ua => ua.UserId == userId) 
-                    && a.Id == id 
+                .AnyAsync(predicate:
+                    a => a.Users.Any(ua => ua.UserId == userId)
+                    && a.Id == id
                     && a.License.ToLower().Equals(license.ToLower()));
 
             return result;

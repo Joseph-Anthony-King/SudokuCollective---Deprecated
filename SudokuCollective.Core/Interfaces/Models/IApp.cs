@@ -12,10 +12,11 @@ namespace SudokuCollective.Core.Interfaces.Models
         string DevUrl { get; set; }
         string LiveUrl { get; set; }
         bool IsActive { get; set; }
+        int GameCount { get; }
+        int UserCount { get; }
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
         List<UserApp> Users { get; set; }
-        int GameCount { get; }
         public string GetLicense(int id, int ownerId);
         public void ActivateApp();
         public void DeactivateApp();

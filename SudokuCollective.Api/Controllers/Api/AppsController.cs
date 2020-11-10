@@ -37,7 +37,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.App);
+                    result.Message = "Status Code 200: App Found";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -67,7 +69,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.App);
+                    result.Message = "Status Code 200: App Found";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -97,7 +101,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Apps);
+                    result.Message = "Status Code 200: Apps Found";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -125,7 +131,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: App Updated";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -158,7 +166,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Users);
+                    result.Message = "Status Code 200: Users Updated";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -185,7 +195,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: User Added";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -212,7 +224,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: User Removed";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -234,7 +248,9 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                return Ok();
+                result.Message = "Status Code 200: App Activated";
+
+                return Ok(result);
             }
             else
             {
@@ -251,7 +267,9 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                return Ok();
+                result.Message = "Status Code 200: App Deactivated";
+
+                return Ok(result);
             }
             else
             {
@@ -275,7 +293,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Message);
+                    result.Message = "Status Code 200: App Deleted";
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -304,7 +324,9 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Message);
+                    result.Message = "Status Code 200: App Reset";
+
+                    return Ok(result);
                 }
                 else
                 {
