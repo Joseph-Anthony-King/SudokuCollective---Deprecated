@@ -28,11 +28,13 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                return Ok(result.License);
+                result.Message = "Status Code 200: License Obtained";
+
+                return Ok(result);
             }
             else
             {
-                return NotFound(result.Message);
+                return NotFound(result);
             }
         }
 
@@ -46,11 +48,13 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                return Ok(result.App);
+                result.Message = "Status Code 200: App Created";
+
+                return Ok(result);
             }
             else
             {
-                return NotFound(result.Message);
+                return NotFound(result);
             }
         }
     }

@@ -30,7 +30,7 @@ namespace SudokuCollective.Core.Models
             {
                 var result = 0;
 
-                if (Users != null && Users.Count > 0)
+                if (Users != null)
                 {
                     foreach (var user in Users)
                     {

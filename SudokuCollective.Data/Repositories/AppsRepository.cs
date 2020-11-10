@@ -77,6 +77,9 @@ namespace SudokuCollective.Data.Repositories
 
                 foreach (var userRole in user.Roles)
                 {
+                    userRole.Role = await roleDbSet
+                        .FirstOrDefaultAsync(roleDbSet => roleDbSet.Id == userRole.RoleId);
+
                     if (userRole.Role.RoleLevel == RoleLevel.ADMIN)
                     {
                         addAdminRole = false;
