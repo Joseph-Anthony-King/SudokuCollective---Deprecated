@@ -33,7 +33,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IDifficultyResult> GetDifficulty(
-            int id, bool fullRecord = false)
+            int id, bool fullRecord = true)
         {
             var result = new DifficultyResult();
 
@@ -73,7 +73,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IDifficultiesResult> GetDifficulties(
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new DifficultiesResult();
 

@@ -6,10 +6,10 @@ using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 
 namespace SudokuCollective.Core.Interfaces.Services
 {
-    public interface IUsersService
+    public interface IUsersService : IService
     {
-        Task<IUserResult> GetUser(int id, bool fullRecord = false);
-        Task<IUsersResult> GetUsers(IPageListModel pageListModel, bool fullRecord = false);
+        Task<IUserResult> GetUser(int id, bool fullRecord = true);
+        Task<IUsersResult> GetUsers(IPageListModel pageListModel, bool fullRecord = true);
         Task<IUserResult> CreateUser(IRegisterRequest registerRequest);
         Task<IUserResult> UpdateUser(int id, IUpdateUserRequest updateUserRequest);
         Task<IBaseResult> UpdatePassword(int id, IUpdatePasswordRequest updatePasswordRequest);

@@ -6,8 +6,8 @@ namespace SudokuCollective.Core.Interfaces.Repositories
 {
     public interface IAppsRepository<TEntity> : IRepository<TEntity> where TEntity : IApp
     {
-        Task<IRepositoryResponse> GetByLicense(string license, bool fullRecord = false);
-        Task<IRepositoryResponse> GetAppUsers(int id, bool fullRecord = false);
+        Task<IRepositoryResponse> GetByLicense(string license, bool fullRecord = true);
+        Task<IRepositoryResponse> GetAppUsers(int id, bool fullRecord = true);
         Task<IRepositoryResponse> AddAppUser(int userId, string license);
         Task<IRepositoryResponse> RemoveAppUser(int userId, string license);
         Task<IRepositoryResponse> ResetApp(TEntity entity);

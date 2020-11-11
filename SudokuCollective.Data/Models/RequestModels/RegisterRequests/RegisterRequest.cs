@@ -1,5 +1,6 @@
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
+using SudokuCollective.Data.Models.PageModels;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
@@ -24,6 +25,11 @@ namespace SudokuCollective.Data.Models.RequestModels
             NickName = string.Empty;
             Email = string.Empty;
             Password = string.Empty;
+
+            if (PageListModel == null)
+            {
+                PageListModel = new PageListModel();
+            }
         }
     }
 }

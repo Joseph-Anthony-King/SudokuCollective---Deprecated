@@ -12,6 +12,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Data.Helpers;
 
 namespace SudokuCollective.Data.Services
 {
@@ -71,7 +72,7 @@ namespace SudokuCollective.Data.Services
             sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
 
-        public async Task<IUserResult> GetUser(int id, bool fullRecord = false)
+        public async Task<IUserResult> GetUser(int id, bool fullRecord = true)
         {
             var result = new UserResult();
 
@@ -123,7 +124,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IUsersResult> GetUsers(
             IPageListModel pageListModel,
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new UsersResult();
 
@@ -135,7 +136,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (pageListModel != null)
                     {
-                        if (IsPageValid(pageListModel, response.Objects))
+                        if (StaticApiHelpers.IsPageValid(pageListModel, response.Objects))
                         {
                             if (pageListModel.SortBy == SortValue.NULL)
                             {
@@ -1045,18 +1046,6 @@ namespace SudokuCollective.Data.Services
                 result.Message = e.Message;
 
                 return result;
-            }
-        }
-
-        private bool IsPageValid(IPageListModel pageListModel, List<IEntityBase> entities)
-        {
-            if (pageListModel.Page == 1)
-            {
-                return pageListModel.ItemsPerPage >= entities.Count;
-            }
-            else
-            {
-                return pageListModel.ItemsPerPage * pageListModel.Page <= entities.Count;
             }
         }
     }

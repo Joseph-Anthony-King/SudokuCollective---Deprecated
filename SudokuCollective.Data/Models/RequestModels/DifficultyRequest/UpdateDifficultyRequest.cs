@@ -1,6 +1,7 @@
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
+using SudokuCollective.Data.Models.PageModels;
 using System.ComponentModel;
 
 namespace SudokuCollective.Data.Models.RequestModels
@@ -20,6 +21,11 @@ namespace SudokuCollective.Data.Models.RequestModels
             Id = 0;
             Name = string.Empty;
             DisplayName = string.Empty;
+
+            if (PageListModel == null)
+            {
+                PageListModel = new PageListModel();
+            }
         }
     }
 }

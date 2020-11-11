@@ -33,7 +33,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IRoleResult> GetRole(
-            int id, bool fullRecord = false)
+            int id, bool fullRecord = true)
         {
             var result = new RoleResult();
 
@@ -73,7 +73,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IRolesResult> GetRoles(
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new RolesResult();
 

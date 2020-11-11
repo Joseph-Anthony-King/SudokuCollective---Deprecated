@@ -30,7 +30,7 @@ namespace SudokuCollective.Api.Controllers
         public async Task<ActionResult<Difficulty>> GetDifficulty(
             int id,
             [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -58,7 +58,7 @@ namespace SudokuCollective.Api.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
-            [FromBody] BaseRequest request, [FromQuery] bool fullRecord = false)
+            [FromBody] BaseRequest request, [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,

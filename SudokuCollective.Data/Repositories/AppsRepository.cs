@@ -52,6 +52,20 @@ namespace SudokuCollective.Data.Repositories
             {
                 dbSet.Add(entity);
 
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 // Add connection between the app and the user
@@ -60,13 +74,6 @@ namespace SudokuCollective.Data.Repositories
                     entity.Id);
 
                 userAppDbSet.Add(userApp);
-
-                await context.SaveChangesAsync();
-
-                // Obtain new app Id
-                var newApp = await dbSet
-                    .FirstOrDefaultAsync(predicate: a => a.License.Equals(entity.License));
-                entity.Id = newApp.Id;
 
                 // Ensure that the owner has admin priviledges, if not they will be promoted
                 var addAdminRole = true;
@@ -97,9 +104,23 @@ namespace SudokuCollective.Data.Repositories
                         adminRole.Id);
 
                     userRoleDbSet.Add(newUserAdminRole);
-
-                    await context.SaveChangesAsync();
                 }
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
+                await context.SaveChangesAsync();
 
                 result.Object = entity;
                 result.Success = true;
@@ -115,7 +136,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetById(int id, bool fullRecord = false)
+        async public Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new App();
@@ -178,7 +199,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetByLicense(string license, bool fullRecord = false)
+        async public Task<IRepositoryResponse> GetByLicense(string license, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new App();
@@ -243,7 +264,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetAll(bool fullRecord = false)
+        async public Task<IRepositoryResponse> GetAll(bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new List<App>();
@@ -294,6 +315,17 @@ namespace SudokuCollective.Data.Repositories
                     query = await dbSet.ToListAsync();
                 }
 
+                foreach (var app in query)
+                {
+                    if (app.Users != null)
+                    {
+                        foreach (var userApp in app.Users)
+                        {
+                            userApp.User.Apps = new List<UserApp>();
+                        }
+                    }
+                }
+
                 result.Success = true;
                 result.Objects = query
                     .ConvertAll(a => (IEntityBase)a)
@@ -310,7 +342,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetAppUsers(int id, bool fullRecord = false)
+        async public Task<IRepositoryResponse> GetAppUsers(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new List<User>();

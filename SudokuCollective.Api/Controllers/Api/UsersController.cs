@@ -32,7 +32,7 @@ namespace SudokuCollective.Api.Controllers
         public async Task<ActionResult<User>> GetUser(
             int id,
             [FromBody] BaseRequest baseRequest,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 baseRequest.AppId,
@@ -63,7 +63,7 @@ namespace SudokuCollective.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
             [FromBody] BaseRequest baseRequest,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 baseRequest.AppId,

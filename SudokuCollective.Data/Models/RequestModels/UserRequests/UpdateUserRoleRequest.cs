@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
+using SudokuCollective.Data.Models.PageModels;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
@@ -15,6 +16,11 @@ namespace SudokuCollective.Data.Models.RequestModels
         public UpdateUserRoleRequest() : base()
         {
             RoleIds = new List<int>();
+
+            if (PageListModel == null)
+            {
+                PageListModel = new PageListModel();
+            }
         }
     }
 }

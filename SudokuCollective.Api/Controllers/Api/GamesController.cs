@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
+using System.Net;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -40,11 +41,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Game);
+                    result.Message = "Status Code 200: Game Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Game Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
@@ -58,7 +63,7 @@ namespace SudokuCollective.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
             [FromBody] GetGamesRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -69,11 +74,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Games);
+                    result.Message = "Status Code 200: Games Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Games Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
@@ -98,11 +107,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: Game Deleted";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Game Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
@@ -133,11 +146,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: Game Updated";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Game Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
@@ -151,7 +168,7 @@ namespace SudokuCollective.Api.Controllers
         [HttpPost, Route("Create")]
         public async Task<ActionResult<Game>> PostGame(
             [FromBody] CreateGameRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -162,15 +179,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return CreatedAtAction(
-                        "GetUser",
-                        "Users",
-                        new { id = result.Game.Id },
-                        result.Game);
+                    result.Message = "Status Code 201: Game Created";
+
+                    return StatusCode((int)HttpStatusCode.Created, result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Game Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
@@ -195,11 +212,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Game);
+                    result.Message = "Status Code 200: Game Checked";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Game Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
@@ -214,7 +235,7 @@ namespace SudokuCollective.Api.Controllers
         public async Task<ActionResult<Game>> GetMyGame(
             int id,
             [FromBody] GetGamesRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -228,11 +249,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Game);
+                    result.Message = "Status Code 200: Game Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Game Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
@@ -246,7 +271,7 @@ namespace SudokuCollective.Api.Controllers
         [HttpPost, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
             [FromBody] GetGamesRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -258,11 +283,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Games);
+                    result.Message = "Status Code 200: Games Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Game Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
@@ -289,11 +318,15 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: Game Deleted";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Game Not Found";
+
+                    return NotFound(result);
                 }
             }
             else

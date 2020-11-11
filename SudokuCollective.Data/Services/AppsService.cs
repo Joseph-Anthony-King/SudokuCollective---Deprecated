@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SudokuCollective.Core.Enums;
@@ -8,9 +7,10 @@ using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Helpers;
 
 namespace SudokuCollective.Data.Services
 {
@@ -36,6 +36,7 @@ namespace SudokuCollective.Data.Services
         private readonly string failedAppDeactivatedMessage;
         private readonly string usersNotFoundMessage;
         private readonly string userDoesNotExistMessage;
+        private readonly string pageNotFoundMessage;
         private readonly string sortValueNotImplementedMessage;
         #endregion
 
@@ -61,12 +62,13 @@ namespace SudokuCollective.Data.Services
             failedAppDeactivatedMessage = "Unable to deactivate app";
             usersNotFoundMessage = "Users not found";
             userDoesNotExistMessage = "User does not exist";
+            pageNotFoundMessage = "Page not found";
             sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
         #endregion
 
         #region Methods
-        public async Task<IAppResult> GetApp(int id, bool fullRecord = false)
+        public async Task<IAppResult> GetApp(int id, bool fullRecord = true)
         {
             var result = new AppResult();
 
@@ -116,7 +118,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IAppResult> GetAppByLicense(string license, bool fullRecord = false)
+        public async Task<IAppResult> GetAppByLicense(string license, bool fullRecord = true)
         {
             var result = new AppResult();
 
@@ -168,7 +170,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAppsResult> GetApps(
             IPageListModel pageListModel,
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new AppsResult();
 
@@ -178,190 +180,207 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    if (pageListModel.SortBy == SortValue.NULL)
+                    if (pageListModel != null)
                     {
-                        result.Apps = response.Objects.ConvertAll(a => (IApp)a);
-                    }
-                    else if (pageListModel.SortBy == SortValue.ID)
-                    {
-                        if (!pageListModel.OrderByDescending)
+                        if (StaticApiHelpers.IsPageValid(pageListModel, response.Objects))
                         {
-                            foreach (var obj in response.Objects)
+                            if (pageListModel.SortBy == SortValue.NULL)
                             {
-                                result.Apps.Add((IApp)obj);
+                                result.Apps = response.Objects.ConvertAll(a => (IApp)a);
                             }
+                            else if (pageListModel.SortBy == SortValue.ID)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
 
-                            result.Apps = result.Apps
-                                .OrderBy(u => u.Id)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.Id)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.Id)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.GAMECOUNT)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.GameCount)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.GameCount)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.USERCOUNT)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.UserCount)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.UserCount)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.NAME)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.Name)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.Name)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.DATECREATED)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.DateCreated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.DateCreated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.DATEUPDATED)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.DateUpdated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.DateUpdated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = sortValueNotImplementedMessage;
+
+                                return result;
+                            }
                         }
                         else
                         {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
+                            result.Success = false;
+                            result.Message = pageNotFoundMessage;
 
-                            result.Apps = result.Apps
-                                .OrderByDescending(u => u.Id)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.GAMECOUNT)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderBy(u => u.GameCount)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                        else
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderByDescending(u => u.GameCount)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.NAME)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderBy(u => u.Name)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                        else
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderByDescending(u => u.Name)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.DATECREATED)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderBy(u => u.DateCreated)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                        else
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderByDescending(u => u.DateCreated)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.DATEUPDATED)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderBy(u => u.DateUpdated)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                        else
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderByDescending(u => u.DateUpdated)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                    }
-                    else if (pageListModel.SortBy == SortValue.USERCOUNT)
-                    {
-                        if (!pageListModel.OrderByDescending)
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderBy(u => u.UserCount)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
-                        }
-                        else
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Apps.Add((IApp)obj);
-                            }
-
-                            result.Apps = result.Apps
-                                .OrderByDescending(u => u.UserCount)
-                                .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                .Take(pageListModel.ItemsPerPage)
-                                .ToList();
+                            return result;
                         }
                     }
                     else
                     {
-                        result.Success = false;
-                        result.Message = sortValueNotImplementedMessage;
-
-                        return result;
+                        result.Apps = response.Objects.ConvertAll(a => (IApp)a);
                     }
 
                     result.Success = response.Success;
@@ -395,7 +414,7 @@ namespace SudokuCollective.Data.Services
         public async Task<IUsersResult> GetAppUsers(
             int id,
             IPageListModel pageListModel,
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new UsersResult();
 

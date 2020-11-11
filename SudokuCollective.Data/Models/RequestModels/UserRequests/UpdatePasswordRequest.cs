@@ -1,5 +1,6 @@
 ﻿using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
+using SudokuCollective.Data.Models.PageModels;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
@@ -16,6 +17,11 @@ namespace SudokuCollective.Data.Models.RequestModels
         {
             OldPassword = string.Empty;
             NewPassword = string.Empty;
+
+            if (PageListModel == null)
+            {
+                PageListModel = new PageListModel();
+            }
         }
     }
 }

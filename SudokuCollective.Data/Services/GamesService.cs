@@ -10,6 +10,7 @@ using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Enums;
+using SudokuCollective.Data.Helpers;
 
 namespace SudokuCollective.Data.Services
 {
@@ -27,6 +28,7 @@ namespace SudokuCollective.Data.Services
         private readonly string appNotFoundMessage;
         private readonly string userDoesNotExistMessage;
         private readonly string difficultyDoesNotExistMessage;
+        private readonly string pageNotFoundMessage;
         private readonly string sortValueNotImplementedMessage;
 
         public GamesService(
@@ -47,11 +49,12 @@ namespace SudokuCollective.Data.Services
             appNotFoundMessage = "App not found";
             userDoesNotExistMessage = "User does not exist";
             difficultyDoesNotExistMessage = "Difficulty does not exist";
+            pageNotFoundMessage = "Page not found";
             sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
 
         public async Task<IGameResult> CreateGame(
-            ICreateGameRequest createGameRequest, bool fullRecord = false)
+            ICreateGameRequest createGameRequest, bool fullRecord = true)
         {
             var result = new GameResult();
 
@@ -61,7 +64,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (await difficultiesRepository.HasEntity(createGameRequest.DifficultyId))
                     {
-                        var userResponse = await usersRepository.GetById(createGameRequest.UserId);
+                        var userResponse = await usersRepository.GetById(createGameRequest.UserId, true);
 
                         if (userResponse.Success)
                         {
@@ -69,21 +72,24 @@ namespace SudokuCollective.Data.Services
 
                             if (difficultyResponse.Success)
                             {
-                                var matrix = new SudokuMatrix();
-
-                                matrix.GenerateSolution();
-
                                 var game = new Game(
                                     (User)userResponse.Object,
-                                    matrix,
+                                    new SudokuMatrix(),
                                     (Difficulty)difficultyResponse.Object,
                                     createGameRequest.AppId);
+
+                                game.SudokuMatrix.GenerateSolution();
 
                                 var gameResponse = await gamesRepository.Create(game);
 
                                 if (gameResponse.Success)
                                 {
+                                    ((IGame)gameResponse.Object).User = null;
+                                    ((IGame)gameResponse.Object).SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                    ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
+
                                     result.Success = gameResponse.Success;
+                                    result.Game = (IGame)gameResponse.Object;
 
                                     return result;
                                 }
@@ -165,17 +171,19 @@ namespace SudokuCollective.Data.Services
             {
                 if (await gamesRepository.HasEntity(id))
                 {
-                    var gameResponse = await gamesRepository.GetById(id);
+                    var gameResponse = await gamesRepository.GetById(id, true);
 
                     if (gameResponse.Success)
                     {
-                        ((Game)gameResponse.Object).SudokuMatrix.SudokuCells = updateGameRequest.SudokuCells.ConvertAll(c => (SudokuCell)c);
+                        ((Game)gameResponse.Object).User.Games = null;
+                        ((Game)gameResponse.Object).SudokuMatrix.SudokuCells = updateGameRequest.SudokuCells.ConvertAll(c => c);
 
                         var updateGameResponse = await gamesRepository.Update((Game)gameResponse.Object);
 
                         if (updateGameResponse.Success)
                         {
                             result.Success = updateGameResponse.Success;
+                            result.Game = (Game)updateGameResponse.Object;
 
                             return result;
                         }
@@ -228,7 +236,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IBaseResult> DeleteGame(int id)
         {
-            var result = new GameResult();
+            var result = new BaseResult();
 
             try
             {
@@ -293,7 +301,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IGameResult> GetGame(int id, int appId, bool fullRecord = false)
+        public async Task<IGameResult> GetGame(int id, int appId, bool fullRecord = true)
         {
             var result = new GameResult();
 
@@ -307,8 +315,15 @@ namespace SudokuCollective.Data.Services
 
                         if (gameResponse.Success)
                         {
+                            ((IGame)gameResponse.Object).User = null;
+                            if (((IGame)gameResponse.Object).SudokuMatrix.Difficulty != null)
+                            {
+                                ((IGame)gameResponse.Object).SudokuMatrix.Difficulty.Matrices = null;
+                            }
+                            ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
+
                             result.Success = true;
-                            result.Game = (Game)gameResponse.Object;
+                            result.Game = (IGame)gameResponse.Object;
 
                             return result;
                         }
@@ -354,7 +369,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IGamesResult> GetGames(
             IGetGamesRequest getGamesRequest, 
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new GamesResult();
 
@@ -366,54 +381,120 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
-                        if (getGamesRequest.PageListModel.SortBy == SortValue.NULL)
+                        if (getGamesRequest.PageListModel != null)
                         {
-                            result.Games = response.Objects.ConvertAll(g => (IGame)g);
-                        }
-                        else if (getGamesRequest.PageListModel.SortBy == SortValue.ID)
-                        {
-                            if (!getGamesRequest.PageListModel.OrderByDescending)
+                            if (StaticApiHelpers.IsPageValid(getGamesRequest.PageListModel, response.Objects))
                             {
-                                result.Games = (List<IGame>)response.Objects
-                                    .ConvertAll(g => (IGame)g)
-                                    .OrderBy(g => g.Id)
-                                    .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                    .Take(getGamesRequest.PageListModel.ItemsPerPage);
+                                if (getGamesRequest.PageListModel.SortBy == SortValue.NULL)
+                                {
+                                    result.Games = response.Objects.ConvertAll(g => (IGame)g);
+                                }
+                                else if (getGamesRequest.PageListModel.SortBy == SortValue.ID)
+                                {
+                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderBy(g => g.Id)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderByDescending(g => g.Id)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                }
+                                else if (getGamesRequest.PageListModel.SortBy == SortValue.DATECREATED)
+                                {
+                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderBy(g => g.DateCreated)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderByDescending(g => g.DateCreated)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                }
+                                else if (getGamesRequest.PageListModel.SortBy == SortValue.DATEUPDATED)
+                                {
+                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderBy(g => g.DateUpdated)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderByDescending(g => g.DateUpdated)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                }
+                                else
+                                {
+                                    result.Success = false;
+                                    result.Message = sortValueNotImplementedMessage;
+
+                                    return result;
+                                }
                             }
                             else
                             {
-                                result.Games = (List<IGame>)response.Objects
-                                    .ConvertAll(g => (IGame)g)
-                                    .OrderByDescending(g => g.Id)
-                                    .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                    .Take(getGamesRequest.PageListModel.ItemsPerPage);
-                            }
-                        }
-                        else if (getGamesRequest.PageListModel.SortBy == SortValue.DATECREATED)
-                        {
-                            if (!getGamesRequest.PageListModel.OrderByDescending)
-                            {
-                                result.Games = (List<IGame>)response.Objects
-                                    .ConvertAll(g => (IGame)g)
-                                    .OrderBy(g => g.DateCreated)
-                                    .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                    .Take(getGamesRequest.PageListModel.ItemsPerPage);
-                            }
-                            else
-                            {
-                                result.Games = (List<IGame>)response.Objects
-                                    .ConvertAll(g => (IGame)g)
-                                    .OrderByDescending(g => g.DateCreated)
-                                    .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                    .Take(getGamesRequest.PageListModel.ItemsPerPage);
+                                result.Success = false;
+                                result.Message = pageNotFoundMessage;
+
+                                return result;
                             }
                         }
                         else
                         {
-                            result.Success = false;
-                            result.Message = sortValueNotImplementedMessage;
-
-                            return result;
+                            result.Games = response.Objects.ConvertAll(g => (IGame)g);
                         }
 
                         result.Success = response.Success;
@@ -455,7 +536,7 @@ namespace SudokuCollective.Data.Services
         public async Task<IGameResult> GetMyGame(
             int gameid, 
             IGetGamesRequest getMyGameRequest, 
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new GameResult();
 
@@ -473,8 +554,15 @@ namespace SudokuCollective.Data.Services
 
                         if (gameResponse.Success)
                         {
+                            ((IGame)gameResponse.Object).User = null;
+                            if (((IGame)gameResponse.Object).SudokuMatrix.Difficulty != null)
+                            {
+                                ((IGame)gameResponse.Object).SudokuMatrix.Difficulty.Matrices = null;
+                            }
+                            ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
+
                             result.Success = true;
-                            result.Game = (Game)gameResponse.Object;
+                            result.Game = (IGame)gameResponse.Object;
 
                             return result;
                         }
@@ -520,7 +608,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IGamesResult> GetMyGames(
             IGetGamesRequest getGamesRequest,
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new GamesResult();
 
@@ -535,54 +623,120 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
-                        if (getGamesRequest.PageListModel.SortBy == SortValue.NULL)
+                        if (getGamesRequest.PageListModel != null)
                         {
-                            result.Games = response.Objects.ConvertAll(g => (IGame)g);
-                        }
-                        else if (getGamesRequest.PageListModel.SortBy == SortValue.ID)
-                        {
-                            if (!getGamesRequest.PageListModel.OrderByDescending)
+                            if (StaticApiHelpers.IsPageValid(getGamesRequest.PageListModel, response.Objects))
                             {
-                                result.Games = (List<IGame>)response.Objects
-                                    .ConvertAll(g => (IGame)g)
-                                    .OrderBy(a => a.Id)
-                                    .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                    .Take(getGamesRequest.PageListModel.ItemsPerPage);
+                                if (getGamesRequest.PageListModel.SortBy == SortValue.NULL)
+                                {
+                                    result.Games = response.Objects.ConvertAll(g => (IGame)g);
+                                }
+                                else if (getGamesRequest.PageListModel.SortBy == SortValue.ID)
+                                {
+                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderBy(g => g.Id)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderByDescending(g => g.Id)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                }
+                                else if (getGamesRequest.PageListModel.SortBy == SortValue.DATECREATED)
+                                {
+                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderBy(g => g.DateCreated)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderByDescending(g => g.DateCreated)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                }
+                                else if (getGamesRequest.PageListModel.SortBy == SortValue.DATEUPDATED)
+                                {
+                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderBy(g => g.DateUpdated)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .OrderByDescending(g => g.DateUpdated)
+                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                }
+                                else
+                                {
+                                    result.Success = false;
+                                    result.Message = sortValueNotImplementedMessage;
+
+                                    return result;
+                                }
                             }
                             else
                             {
-                                result.Games = (List<IGame>)response.Objects
-                                    .ConvertAll(g => (IGame)g)
-                                    .OrderByDescending(a => a.Id)
-                                    .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                    .Take(getGamesRequest.PageListModel.ItemsPerPage);
-                            }
-                        }
-                        else if (getGamesRequest.PageListModel.SortBy == SortValue.DATECREATED)
-                        {
-                            if (!getGamesRequest.PageListModel.OrderByDescending)
-                            {
-                                result.Games = (List<IGame>)response.Objects
-                                    .ConvertAll(g => (IGame)g)
-                                    .OrderBy(a => a.DateCreated)
-                                    .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                    .Take(getGamesRequest.PageListModel.ItemsPerPage);
-                            }
-                            else
-                            {
-                                result.Games = (List<IGame>)response.Objects
-                                    .ConvertAll(g => (IGame)g)
-                                    .OrderByDescending(a => a.DateCreated)
-                                    .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                    .Take(getGamesRequest.PageListModel.ItemsPerPage);
+                                result.Success = false;
+                                result.Message = pageNotFoundMessage;
+
+                                return result;
                             }
                         }
                         else
                         {
-                            result.Success = false;
-                            result.Message = sortValueNotImplementedMessage;
-
-                            return result;
+                            result.Games = response.Objects.ConvertAll(g => (IGame)g);
                         }
 
                         result.Success = response.Success;
@@ -623,7 +777,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IBaseResult> DeleteMyGame(int gameid, IGetGamesRequest getMyGameRequest)
         {
-            var result = new GameResult();
+            var result = new BaseResult();
 
             try
             {
@@ -639,7 +793,6 @@ namespace SudokuCollective.Data.Services
                         if (gameResponse.Success)
                         {
                             result.Success = true;
-                            result.Game = (Game)gameResponse.Object;
 
                             return result;
                         }

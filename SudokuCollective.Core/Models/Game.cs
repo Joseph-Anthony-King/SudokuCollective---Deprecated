@@ -17,6 +17,7 @@ namespace SudokuCollective.Core.Models
         public bool ContinueGame { get; set; }
         public int AppId { get; set; }
         public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
         public DateTime DateCompleted { get; set; }
         #endregion
 
@@ -25,6 +26,8 @@ namespace SudokuCollective.Core.Models
         {
             Id = 0;
             DateCreated = DateTime.UtcNow;
+            DateUpdated = DateTime.MinValue;
+            DateCompleted = DateTime.MinValue;
             ContinueGame = true;
             SudokuSolution = new SudokuSolution();
             AppId = 0;
@@ -55,6 +58,7 @@ namespace SudokuCollective.Core.Models
             int appId,
             bool continueGame,
             DateTime dateCreated,
+            DateTime dateUpdated,
             DateTime dateCompleted)
         {
             Id = id;
@@ -64,6 +68,7 @@ namespace SudokuCollective.Core.Models
             AppId = appId;
             ContinueGame = continueGame;
             DateCreated = dateCreated;
+            DateUpdated = dateUpdated;
             DateCompleted = dateCompleted;
         }
         #endregion
@@ -78,6 +83,8 @@ namespace SudokuCollective.Core.Models
                     var solvedDate = DateTime.UtcNow;
 
                     ContinueGame = false;
+                    DateUpdated = solvedDate;
+                    DateCompleted = solvedDate;
                     SudokuSolution.SolutionList = SudokuMatrix.ToInt32List();
                     SudokuSolution.DateSolved = solvedDate;
                 }

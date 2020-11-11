@@ -5,10 +5,10 @@ using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 
 namespace SudokuCollective.Core.Interfaces.Services
 {
-    public interface IRolesService
+    public interface IRolesService : IService
     {
-        Task<IRoleResult> GetRole(int id, bool fullRecord = false);
-        Task<IRolesResult> GetRoles(bool fullRecord = false);
+        Task<IRoleResult> GetRole(int id, bool fullRecord = true);
+        Task<IRolesResult> GetRoles(bool fullRecord = true);
         Task<IRoleResult> CreateRole(string name, RoleLevel roleLevel);
         Task<IBaseResult> UpdateRole(int id, IUpdateRoleRequest updateRoleRO);
         Task<IBaseResult> DeleteRole(int id);

@@ -5,14 +5,14 @@ using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 
 namespace SudokuCollective.Core.Interfaces.Services
 {
-    public interface IAppsService
+    public interface IAppsService : IService
     {
-        Task<IAppResult> GetApp(int id, bool fullRecord = false);
-        Task<IAppsResult> GetApps(IPageListModel pageListModel, bool fullRecord = false);
+        Task<IAppResult> GetApp(int id, bool fullRecord = true);
+        Task<IAppsResult> GetApps(IPageListModel pageListModel, bool fullRecord = true);
         Task<IAppResult> CreateApp(ILicenseRequest licenseRequestRO);
-        Task<IAppResult> GetAppByLicense(string license, bool fullRecord = false);
+        Task<IAppResult> GetAppByLicense(string license, bool fullRecord = true);
         Task<ILicenseResult> GetLicense(int id);
-        Task<IUsersResult> GetAppUsers(int id, IPageListModel pageListModel, bool fullRecord = false);
+        Task<IUsersResult> GetAppUsers(int id, IPageListModel pageListModel, bool fullRecord = true);
         Task<IAppResult> UpdateApp(IAppRequest updateAppRO);
         Task<IBaseResult> AddAppUser(int id, IBaseRequest baseRequestRO);
         Task<IBaseResult> RemoveAppUser(int id, IBaseRequest baseRequestRO);

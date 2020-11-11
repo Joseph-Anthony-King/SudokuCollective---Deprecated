@@ -10,8 +10,8 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201106210706_InitMigration")]
-    partial class InitMigration
+    [Migration("20201110233015_InitializeDatabase")]
+    partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -99,6 +99,9 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateUpdated")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("SudokuMatrixId")

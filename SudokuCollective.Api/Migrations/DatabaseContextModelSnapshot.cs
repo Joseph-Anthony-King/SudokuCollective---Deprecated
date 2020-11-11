@@ -99,6 +99,9 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<int>("SudokuMatrixId")
                         .HasColumnType("integer");
 

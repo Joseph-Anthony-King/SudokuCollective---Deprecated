@@ -4,7 +4,7 @@ using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 
 namespace SudokuCollective.Core.Interfaces.Services
 {
-    public interface IUserManagementService
+    public interface IUserManagementService : IService
     {
         Task<bool> IsValidUser(string userName, string password);
         Task<UserAuthenticationErrorType> ConfirmAuthenticationIssue(string username, string password);

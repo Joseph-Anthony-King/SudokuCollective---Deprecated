@@ -39,7 +39,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<ISolutionResult> GetSolution(
-            int id, bool fullRecord = false)
+            int id, bool fullRecord = true)
         {
             var result = new SolutionResult();
 
@@ -80,7 +80,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<ISolutionsResult> GetSolutions(
             IBaseRequest request,
-            bool fullRecord = false)
+            bool fullRecord = true)
         {
             var result = new SolutionsResult();
 

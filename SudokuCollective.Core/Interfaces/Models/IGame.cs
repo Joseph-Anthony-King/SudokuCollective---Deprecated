@@ -14,6 +14,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         bool ContinueGame { get; set; }
         int AppId { get; set; }
         DateTime DateCreated { get; set; }
+        DateTime DateUpdated { get; set; }
         DateTime DateCompleted { get; set; }
         bool IsSolved();
     }

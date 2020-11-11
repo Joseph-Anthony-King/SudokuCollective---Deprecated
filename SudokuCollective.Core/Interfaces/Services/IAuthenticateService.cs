@@ -4,7 +4,7 @@ using SudokuCollective.Core.Interfaces.APIModels.TokenModels;
 
 namespace SudokuCollective.Core.Interfaces.Services
 {
-    public interface IAuthenticateService
+    public interface IAuthenticateService : IService
     {
         Task<IAuthenticatedUserResult> IsAuthenticated(ITokenRequest request);
     }

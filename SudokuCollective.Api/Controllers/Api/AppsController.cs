@@ -26,7 +26,7 @@ namespace SudokuCollective.Api.Controllers
         public async Task<ActionResult<App>> GetApp(
             int id,
             [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -57,7 +57,7 @@ namespace SudokuCollective.Api.Controllers
         [HttpPost, Route("GetByLicense")]
         public async Task<ActionResult<App>> GetAppByLicense(
             [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -89,7 +89,7 @@ namespace SudokuCollective.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<IEnumerable<App>>> GetApps(
             [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -151,7 +151,7 @@ namespace SudokuCollective.Api.Controllers
         [HttpPost, Route("GetUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
             [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = false)
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -166,7 +166,7 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Users Updated";
+                    result.Message = "Status Code 200: Users Found";
 
                     return Ok(result);
                 }

@@ -1,5 +1,6 @@
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
+using SudokuCollective.Data.Models.PageModels;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
@@ -34,6 +35,11 @@ namespace SudokuCollective.Data.Models.RequestModels
             SeventhRow = new int[9];
             EighthRow = new int[9];
             NinthRow = new int[9];
+
+            if (PageListModel == null)
+            {
+                PageListModel = new PageListModel();
+            }
         }
     }
 }
