@@ -114,10 +114,9 @@ namespace SudokuCollective.Data.Repositories
                         .Include(g => g.User)
                             .ThenInclude(u => u.Roles)
                         .Include(g => g.SudokuMatrix)
+                            .ThenInclude(m => m.SudokuCells)
                         .Include(g => g.SudokuSolution)
                         .FirstOrDefaultAsync(predicate: g => g.Id == id);
-
-                    await query.SudokuMatrix.AttachSudokuCells(context);
 
                     foreach (var app in query.User.Apps)
                     {
@@ -198,7 +197,9 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.Update(entity);
+                entity.DateUpdated = DateTime.UtcNow;
+
+                context.Games.Update(entity);
 
                 context.ChangeTracker.TrackGraph(entity,
                     e => {
@@ -214,6 +215,31 @@ namespace SudokuCollective.Data.Repositories
                             e.Entry.State = EntityState.Added;
                         }
                     });
+
+                var apps = new List<App>();
+                var roles = new List<Role>();
+
+                foreach (var userApp in entity.User.Apps)
+                {
+                    apps.Add(userApp.App);
+                }
+
+                foreach (var userRole in entity.User.Roles)
+                {
+                    roles.Add(userRole.Role);
+                }
+
+                await context.SaveChangesAsync();
+
+                foreach (var app in apps)
+                {
+                    userAppDbSet.Add(new UserApp(entity.UserId, app.Id));
+                }
+
+                foreach (var role in roles)
+                {
+                    userRoleDbSet.Add(new UserRole(entity.UserId, role.Id));
+                }
 
                 await context.SaveChangesAsync();
 

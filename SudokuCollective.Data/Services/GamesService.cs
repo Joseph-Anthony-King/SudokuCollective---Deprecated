@@ -175,14 +175,23 @@ namespace SudokuCollective.Data.Services
 
                     if (gameResponse.Success)
                     {
-                        ((Game)gameResponse.Object).User.Games = null;
-                        ((Game)gameResponse.Object).SudokuMatrix.SudokuCells = updateGameRequest.SudokuCells.ConvertAll(c => c);
+                        foreach (var cell in updateGameRequest.SudokuCells)
+                        {
+                            foreach (var savedCell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
+                            {
+                                if (savedCell.Id == cell.Id && savedCell.Obscured)
+                                {
+                                    savedCell.DisplayValue = cell.DisplayValue;
+                                }
+                            }
+                        }
 
                         var updateGameResponse = await gamesRepository.Update((Game)gameResponse.Object);
 
                         if (updateGameResponse.Success)
                         {
                             result.Success = updateGameResponse.Success;
+                            result.Message = "Game Updated";
                             result.Game = (Game)updateGameResponse.Object;
 
                             return result;
@@ -848,28 +857,27 @@ namespace SudokuCollective.Data.Services
 
                     if (gameResponse.Success)
                     {
-                        int index = 1;
-
-                        foreach (var cell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
+                        foreach (var cell in updateGameRequest.SudokuCells)
                         {
-                            if (cell.DisplayValue
-                                != updateGameRequest.SudokuCells
-                                    .Where(c => c.Index == index)
-                                    .Select(c => c.DisplayValue)
-                                    .FirstOrDefault())
+                            foreach (var savedCell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
                             {
-                                cell.DisplayValue = updateGameRequest.SudokuCells
-                                    .Where(c => c.Index == index)
-                                    .Select(c => c.DisplayValue)
-                                    .FirstOrDefault();
+                                if (savedCell.Id == cell.Id && savedCell.Obscured)
+                                {
+                                    savedCell.DisplayValue = cell.DisplayValue;
+                                }
                             }
-
-                            index++;
                         }
 
-                        ((Game)gameResponse.Object).IsSolved();
+                        if (((Game)gameResponse.Object).IsSolved())
+                        {
+                            result.Message = "Game solved";
+                        }
+                        else
+                        {
+                            result.Message = "Game unsolved";
+                        }
 
-                        var updateGameResponse = await gamesRepository.Update(((Game)gameResponse.Object));
+                        var updateGameResponse = await gamesRepository.Update((Game)gameResponse.Object);
 
                         if (updateGameResponse.Success)
                         {
@@ -878,7 +886,7 @@ namespace SudokuCollective.Data.Services
 
                             return result;
                         }
-                        else if(!updateGameResponse.Success && updateGameResponse.Exception != null)
+                        else if (!updateGameResponse.Success && updateGameResponse.Exception != null)
                         {
                             result.Success = updateGameResponse.Success;
                             result.Message = updateGameResponse.Exception.Message;
@@ -888,7 +896,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToUpdateGameMessage;
+                            result.Message = unableToCreateGameMessage;
 
                             return result;
                         }

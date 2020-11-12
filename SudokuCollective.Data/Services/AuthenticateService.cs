@@ -74,7 +74,7 @@ namespace SudokuCollective.Data.Services
                     tokenManagement.Issuer,
                     tokenManagement.Audience,
                     claim.ToArray(),
-                    expires: DateTime.UtcNow.AddMinutes(tokenManagement.AccessExpiration),
+                    expires: DateTime.UtcNow.AddHours(tokenManagement.AccessExpiration),
                     signingCredentials: credentials
                 );
 
