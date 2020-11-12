@@ -36,11 +36,23 @@ namespace SudokuCollective.Data.Repositories
             {
                 dbSet.Add(entity);
 
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
-                var solution = await dbSet.LastOrDefaultAsync();
-
-                result.Object = solution;
+                result.Object = entity;
                 result.Success = true;
 
                 return result;
@@ -130,6 +142,20 @@ namespace SudokuCollective.Data.Repositories
             try
             {
                 dbSet.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
 
                 await context.SaveChangesAsync();
 

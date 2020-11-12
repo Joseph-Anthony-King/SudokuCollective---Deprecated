@@ -12,6 +12,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         public int AppId { get; set; }
         public IPageListModel PageListModel { get; set; }
         public string Name { get; set; }
+        public string DisplayName { get; set; }
         public DifficultyLevel DifficultyLevel { get; set; }
 
         public CreateDifficultyRequest() : base()

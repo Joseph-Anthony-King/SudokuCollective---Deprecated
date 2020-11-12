@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
+using System.Net;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -41,16 +42,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Role);
+                    result.Message = "Status Code 200: Role Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Role Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -70,16 +75,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Roles);
+                    result.Message = "Status Code 200: Roles Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Roles Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -104,16 +113,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: Role Updated";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Role Not Updated";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -133,19 +146,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return CreatedAtAction(
-                        "GetRole",
-                        new { id = result.Role.Id },
-                        result.Role);
+                    result.Message = "Status Code 201: Role Created";
+
+                    return StatusCode((int)HttpStatusCode.Created, result);
                 }
                 else
                 {
+                    result.Message = "Status Code 404: Role Not Created";
+
                     return NotFound(result.Message);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -164,16 +178,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok();
+                    result.Message = "Status Code 200: Role Deleted";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 200: Role Not Deleted";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
     }

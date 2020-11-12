@@ -54,7 +54,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -85,7 +85,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -116,7 +116,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -146,7 +146,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -176,7 +176,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -204,12 +204,14 @@ namespace SudokuCollective.Api.Controllers
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Roles Not Added";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -237,12 +239,14 @@ namespace SudokuCollective.Api.Controllers
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Roles Not Removed";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -261,7 +265,9 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return NotFound(result.Message);
+                result.Message = "Status Code 404: User Not Activated";
+
+                return NotFound(result);
             }
         }
 
@@ -280,7 +286,9 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return NotFound(result.Message);
+                result.Message = "Status Code 404: User Not Activated";
+
+                return NotFound(result);
             }
         }
     }

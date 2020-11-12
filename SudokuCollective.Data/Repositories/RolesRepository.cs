@@ -36,6 +36,21 @@ namespace SudokuCollective.Data.Repositories
             try
             {
                 dbSet.Add(entity);
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 result.Success = true;
@@ -95,13 +110,18 @@ namespace SudokuCollective.Data.Repositories
                 if (fullRecord)
                 {
                     query = await dbSet
+                        .Where(r =>
+                            r.RoleLevel != RoleLevel.NULL)
                         .Include(r => r.Users)
                             .ThenInclude(ua => ua.User)
                         .ToListAsync();
                 }
                 else
                 {
-                    query = await dbSet.ToListAsync();
+                    query = await dbSet
+                        .Where(r =>
+                            r.RoleLevel != RoleLevel.NULL)
+                        .ToListAsync();
                 }
 
                 result.Success = true;
@@ -127,6 +147,21 @@ namespace SudokuCollective.Data.Repositories
             try
             {
                 dbSet.Update(entity);
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 result.Success = true;
@@ -149,6 +184,21 @@ namespace SudokuCollective.Data.Repositories
             try
             {
                 dbSet.UpdateRange(entities);
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 result.Success = true;
@@ -170,6 +220,26 @@ namespace SudokuCollective.Data.Repositories
             try
             {
                 dbSet.Remove(entity);
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    if (entry.Entity is Difficulty difficulty)
+                    {
+                        if (entity.Id == difficulty.Id)
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 result.Success = true;
@@ -192,6 +262,33 @@ namespace SudokuCollective.Data.Repositories
             try
             {
                 dbSet.RemoveRange(entities);
+
+                var rolesForDeletion = new List<int>();
+
+                foreach (var entity in entities)
+                {
+                    rolesForDeletion.Add(entity.Id);
+                }
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    if (entry.Entity is Role role)
+                    {
+                        if (rolesForDeletion.Contains(role.Id))
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 result.Success = true;

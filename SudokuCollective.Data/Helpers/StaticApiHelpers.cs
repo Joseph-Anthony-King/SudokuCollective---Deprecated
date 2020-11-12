@@ -32,9 +32,13 @@ namespace SudokuCollective.Data.Helpers
 
         public static bool IsPageValid(IPageListModel pageListModel, List<IEntityBase> entities)
         {
-            if (pageListModel.Page == 1)
+            if (pageListModel.ItemsPerPage * pageListModel.Page > entities.Count && pageListModel.Page == 1)
             {
-                return pageListModel.ItemsPerPage >= entities.Count;
+                return true;
+            }
+            else if (pageListModel.ItemsPerPage * pageListModel.Page > entities.Count && pageListModel.Page > 1)
+            {
+                return false;
             }
             else
             {

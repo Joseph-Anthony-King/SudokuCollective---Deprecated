@@ -40,16 +40,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Solution);
+                    result.Message = "Status Code 200: Solution Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Solution Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -70,16 +74,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Solutions);
+                    result.Message = "Status Code 200: Solutions Found";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Solutions Not Found";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -100,21 +108,27 @@ namespace SudokuCollective.Api.Controllers
                 {
                     if (result.Solution != null)
                     {
-                        return Ok(result.Solution);
+                        result.Message = "Status Code 200: Sudoku Solved";
+
+                        return Ok(result);
                     }
                     else
                     {
-                        return Ok("Need more values in order to deduce a solution.");
+                        result.Message = "Status Code 404: Sudoku Not Solved";
+
+                        return Ok(result);
                     }
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 404: Sudoku Not Solved";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -133,16 +147,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    return Ok(result.Solution);
+                    result.Message = "Status Code 200: Sudoku Generated";
+
+                    return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = "Status Code 200: Sudoku Not Generated";
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -163,25 +181,29 @@ namespace SudokuCollective.Api.Controllers
 
                     if (result.Success)
                     {
-                        return Ok();
+                        result.Message = "Status Code 200: Sudoku Solutions Added";
+
+                        return Ok(result);
                     }
                     else
                     {
-                        return NotFound(result.Message);
+                        result.Message = "Status Code 200: Sudoku Solutions Not Added";
+
+                        return NotFound(result);
                     }
                 }
                 else
                 {
                     return BadRequest(
                         string.Format(
-                            "The amount of solutions requested, {0}, exceeds the service's 1,000 solution limit",
+                            "Status Code 400: The amount of solutions requested, {0}, exceeds the service's 1,000 solution limit",
                             request.Limit.ToString())
                         );
                 }
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
     }

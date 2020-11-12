@@ -22,7 +22,6 @@ namespace SudokuCollective.Data.Services
         private readonly IDifficultiesRepository<Difficulty> difficultiesRepository;
         private readonly string gameNotFoundMessage;
         private readonly string unableToCreateGameMessage;
-        private readonly string unableToUpdateGameMessage;
         private readonly string unableToDeleteGameMessage;
         private readonly string unableToGetGamesMessage;
         private readonly string appNotFoundMessage;
@@ -43,7 +42,6 @@ namespace SudokuCollective.Data.Services
             difficultiesRepository = difficultiesRepo;
             gameNotFoundMessage = "Game not found";
             unableToCreateGameMessage = "Unable to create game";
-            unableToUpdateGameMessage = "Unable to update game";
             unableToDeleteGameMessage = "Unable to delete game";
             unableToGetGamesMessage = "Unable to get games";
             appNotFoundMessage = "App not found";

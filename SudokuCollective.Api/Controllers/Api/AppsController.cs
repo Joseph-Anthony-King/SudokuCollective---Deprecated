@@ -48,7 +48,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -80,7 +80,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -112,7 +112,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -142,7 +142,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -177,7 +177,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -206,7 +206,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
@@ -235,7 +235,7 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return BadRequest("Invalid Request on this License");
+                return BadRequest("Status Code 400: Invalid Request on this License");
             }
         }
 
