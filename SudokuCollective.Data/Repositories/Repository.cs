@@ -53,6 +53,14 @@ namespace SudokuCollective.Data.Repositories
                 var query = await dbSet
                     .FirstOrDefaultAsync(predicate: x => x.Id == id);
 
+                if (query == null)
+                {
+                    result.Success = false;
+                    result.Object = query;
+
+                    return result;
+                }
+
                 result.Success = true;
                 result.Object = query;
 

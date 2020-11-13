@@ -148,6 +148,14 @@ namespace SudokuCollective.Data.Repositories
                     query = await dbSet
                         .FirstOrDefaultAsync(predicate: a => a.Id == id);
 
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
+
                     query.Users = await userAppDbSet
                         .Where(ua => ua.AppId == query.Id)
                         .ToListAsync();
@@ -183,6 +191,14 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await dbSet
                         .FirstOrDefaultAsync(predicate: a => a.Id == id);
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
                 }
 
                 result.Success = true;
@@ -211,6 +227,14 @@ namespace SudokuCollective.Data.Repositories
                     query = await dbSet
                         .FirstOrDefaultAsync(
                             predicate: a => a.License.ToLower().Equals(license.ToLower()));
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
 
                     query.Users = await userAppDbSet
                         .Where(ua => ua.AppId == query.Id)
@@ -248,6 +272,14 @@ namespace SudokuCollective.Data.Repositories
                     query = await dbSet
                         .FirstOrDefaultAsync(
                             predicate: a => a.License.ToLower().Equals(license.ToLower()));
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
                 }
 
                 result.Success = true;

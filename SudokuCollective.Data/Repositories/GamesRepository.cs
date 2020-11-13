@@ -118,6 +118,14 @@ namespace SudokuCollective.Data.Repositories
                         .Include(g => g.SudokuSolution)
                         .FirstOrDefaultAsync(predicate: g => g.Id == id);
 
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
+
                     foreach (var app in query.User.Apps)
                     {
                         app.App = await appDbSet.FirstOrDefaultAsync(predicate: a => a.Id == app.AppId);
@@ -133,6 +141,14 @@ namespace SudokuCollective.Data.Repositories
                     query = await dbSet
                         .Include(g => g.SudokuMatrix)
                         .FirstOrDefaultAsync(predicate: g => g.Id == id);
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
                 }
 
                 result.Success = true;

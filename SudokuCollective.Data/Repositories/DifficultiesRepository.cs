@@ -85,6 +85,14 @@ namespace SudokuCollective.Data.Repositories
                         .FirstOrDefaultAsync(predicate: d => d.Id == id);
                 }
 
+                if (query == null)
+                {
+                    result.Success = false;
+                    result.Object = query;
+
+                    return result;
+                }
+
                 result.Success = true;
                 result.Object = query;
 

@@ -136,6 +136,14 @@ namespace SudokuCollective.Data.Repositories
                             .ThenInclude(ua => ua.App)
                         .FirstOrDefaultAsync(predicate: u => u.Id == id);
 
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
+
                     foreach (var role in query.Roles)
                     {
                         role.Role = await roleDbSet
@@ -200,6 +208,14 @@ namespace SudokuCollective.Data.Repositories
                             .ThenInclude(ua => ua.App)
                         .FirstOrDefaultAsync(
                             predicate: u => u.UserName.ToLower().Equals(username.ToLower()));
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
 
                     foreach (var role in query.Roles)
                     {
@@ -266,6 +282,14 @@ namespace SudokuCollective.Data.Repositories
                             .ThenInclude(ua => ua.App)
                         .FirstOrDefaultAsync(
                             predicate: u => u.Email.ToLower().Equals(email.ToLower()));
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+                        result.Object = query;
+
+                        return result;
+                    }
 
                     foreach (var role in query.Roles)
                     {
