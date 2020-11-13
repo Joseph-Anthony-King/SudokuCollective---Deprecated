@@ -1,10 +1,11 @@
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
-using System.Net;
+using SudokuCollective.Data.Messages;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -28,7 +29,7 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                result.Message = "Status Code 201: User Created";
+                result.Message = ControllerMessages.StatusCode201(result.Message);
 
                 return StatusCode((int)HttpStatusCode.Created, result);
             }

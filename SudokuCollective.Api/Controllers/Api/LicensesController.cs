@@ -2,8 +2,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.RequestModels;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -28,12 +29,14 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                result.Message = "Status Code 200: License Obtained";
+                result.Message = ControllerMessages.StatusCode200(result.Message);
 
                 return Ok(result);
             }
             else
             {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
                 return NotFound(result);
             }
         }
@@ -48,12 +51,14 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                result.Message = "Status Code 200: App Created";
+                result.Message = ControllerMessages.StatusCode200(result.Message);
 
                 return Ok(result);
             }
             else
             {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
                 return NotFound(result);
             }
         }

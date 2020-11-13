@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Api.Controllers
@@ -13,11 +14,12 @@ namespace SudokuCollective.Api.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            var result = new BaseResult()
+            var result = new BaseResult
             {
                 Success = true,
-                Message = "Status Code 200: Hello World from Sudoku Collective!"
+                Message = ControllerMessages.StatusCode200("Hello World from Sudoku Collective!")
             };
+
             return Ok(result);
         }
     }

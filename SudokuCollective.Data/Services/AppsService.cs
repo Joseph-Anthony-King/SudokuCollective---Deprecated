@@ -9,8 +9,9 @@ using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
-using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Helpers;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Data.Services
 {
@@ -19,25 +20,6 @@ namespace SudokuCollective.Data.Services
         #region Fields
         private readonly IAppsRepository<App> appsRepository;
         private readonly IUsersRepository<User> usersRepository;
-        private readonly string appNotFoundMessage;
-        private readonly string appsNotFoundMessage;
-        private readonly string errorCreatingAppMessage;
-        private readonly string appUpdatedMessage;
-        private readonly string failedAppUpdatedMessage;
-        private readonly string failedAddUserMessage;
-        private readonly string failedRemoveUserMessage;
-        private readonly string appResetMessage;
-        private readonly string failedAppResetMessage;
-        private readonly string appDeletedMessage;
-        private readonly string failedAppDeletedMessage;
-        private readonly string appActivatedMessage;
-        private readonly string failedAppActivatedMessage;
-        private readonly string appDeactivatedMessage;
-        private readonly string failedAppDeactivatedMessage;
-        private readonly string usersNotFoundMessage;
-        private readonly string userDoesNotExistMessage;
-        private readonly string pageNotFoundMessage;
-        private readonly string sortValueNotImplementedMessage;
         #endregion
 
         #region Constructor
@@ -45,25 +27,6 @@ namespace SudokuCollective.Data.Services
         {
             appsRepository = appRepo;
             usersRepository = userRepo;
-            appNotFoundMessage = "App not found";
-            appsNotFoundMessage = "Apps not found";
-            errorCreatingAppMessage = "Error creating app";
-            appUpdatedMessage = "App successfully updated";
-            failedAppUpdatedMessage = "Unable to update app";
-            failedAddUserMessage = "Unable to add user to app";
-            failedRemoveUserMessage = "Unable to remove user from app";
-            appResetMessage = "App successfully reset";
-            failedAppResetMessage = "Unable to reset app";
-            appDeletedMessage = "App successfully deleted";
-            failedAppDeletedMessage = "Unable to delete app";
-            appActivatedMessage = "App activated";
-            failedAppActivatedMessage = "Unable to activate app";
-            appDeactivatedMessage = "App deactivated";
-            failedAppDeactivatedMessage = "Unable to deactivate app";
-            usersNotFoundMessage = "Users not found";
-            userDoesNotExistMessage = "User does not exist";
-            pageNotFoundMessage = "Page not found";
-            sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
         #endregion
 
@@ -81,6 +44,7 @@ namespace SudokuCollective.Data.Services
                     if (response.Success)
                     {
                         result.Success = response.Success;
+                        result.Message = AppsMessages.AppFoundMessage;
                         result.App = (IApp)response.Object;
 
                         return result;
@@ -95,7 +59,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = appNotFoundMessage;
+                        result.Message = AppsMessages.AppNotFoundMessage;
 
                         return result;
                     }
@@ -103,11 +67,10 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
-
             }
             catch (Exception e)
             {
@@ -131,6 +94,7 @@ namespace SudokuCollective.Data.Services
                     if (response.Success)
                     {
                         result.Success = response.Success;
+                        result.Message = AppsMessages.AppFoundMessage;
                         result.App = (IApp)response.Object;
 
                         return result;
@@ -145,7 +109,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = appNotFoundMessage;
+                        result.Message = AppsMessages.AppNotFoundMessage;
 
                         return result;
                     }
@@ -153,11 +117,10 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
-
             }
             catch (Exception e)
             {
@@ -365,7 +328,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = sortValueNotImplementedMessage;
+                                result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                                 return result;
                             }
@@ -373,7 +336,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = pageNotFoundMessage;
+                            result.Message = ServicesMesages.PageNotFoundMessage;
 
                             return result;
                         }
@@ -384,6 +347,7 @@ namespace SudokuCollective.Data.Services
                     }
 
                     result.Success = response.Success;
+                    result.Message = AppsMessages.AppsFoundMessage;
 
                     return result;
                 }
@@ -397,7 +361,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appsNotFoundMessage;
+                    result.Message = AppsMessages.AppsNotFoundMessage;
 
                     return result;
                 }
@@ -426,7 +390,6 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
-
                         if (pageListModel.SortBy == SortValue.NULL)
                         {
                             result.Users = response.Objects.ConvertAll(u => (IUser)u);
@@ -637,12 +600,13 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = sortValueNotImplementedMessage;
+                            result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                             return result;
                         }
 
                         result.Success = response.Success;
+                        result.Message = UsersMessages.UsersFoundMessage;
 
                         return result;
                     }
@@ -656,7 +620,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = usersNotFoundMessage;
+                        result.Message = UsersMessages.UsersNotFoundMessage;
 
                         return result;
                     }
@@ -664,11 +628,10 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
-
             }
             catch (Exception e)
             {
@@ -679,13 +642,13 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IAppResult> CreateApp(ILicenseRequest licenseRequest)
+        public async Task<IAppResult> CreateApp(ILicenseRequest request)
         {
             var result = new AppResult();
 
             try
             {
-                if (await usersRepository.IsUserRegistered(licenseRequest.OwnerId))
+                if (await usersRepository.IsUserRegistered(request.OwnerId))
                 {
                     var generatingGuid = true;
                     var license = new Guid();
@@ -710,17 +673,18 @@ namespace SudokuCollective.Data.Services
                     } while (generatingGuid);
 
                     var app = new App(
-                        licenseRequest.Name,
+                        request.Name,
                         license.ToString(),
-                        licenseRequest.OwnerId,
-                        licenseRequest.DevUrl,
-                        licenseRequest.LiveUrl);
+                        request.OwnerId,
+                        request.DevUrl,
+                        request.LiveUrl);
 
                     var addAppResponse = await appsRepository.Create(app);
 
                     if (addAppResponse.Success)
                     {
                         result.Success = addAppResponse.Success;
+                        result.Message = AppsMessages.AppCreatedMessage;
                         result.App = (IApp)addAppResponse.Object;
 
                         return result;
@@ -735,20 +699,18 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = errorCreatingAppMessage;
+                        result.Message = AppsMessages.AppNotCreatedMessage;
 
                         return result;
                     }
-
                 }
                 else
                 {
                     result.Success = false;
-                    result.Message = userDoesNotExistMessage;
+                    result.Message = UsersMessages.UserDoesNotExistMessage;
 
                     return result;
                 }
-
             }
             catch (Exception e)
             {
@@ -768,6 +730,7 @@ namespace SudokuCollective.Data.Services
                 if (await appsRepository.HasEntity(id))
                 {
                     result.Success = true;
+                    result.Message = AppsMessages.AppFoundMessage;
                     result.License = await appsRepository.GetLicense(id);
 
                     return result;
@@ -775,7 +738,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -789,21 +752,21 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IAppResult> UpdateApp(IAppRequest appRequest)
+        public async Task<IAppResult> UpdateApp(IAppRequest request)
         {
             var result = new AppResult();
 
             try
             {
-                if (await appsRepository.HasEntity(appRequest.AppId))
+                if (await appsRepository.HasEntity(request.AppId))
                 {
-                    var getAppResponse = await appsRepository.GetById(appRequest.AppId);
+                    var getAppResponse = await appsRepository.GetById(request.AppId);
 
                     if (getAppResponse.Success)
                     {
-                        ((IApp)getAppResponse.Object).Name = appRequest.Name;
-                        ((IApp)getAppResponse.Object).DevUrl = appRequest.DevUrl;
-                        ((IApp)getAppResponse.Object).LiveUrl = appRequest.LiveUrl;
+                        ((IApp)getAppResponse.Object).Name = request.Name;
+                        ((IApp)getAppResponse.Object).DevUrl = request.DevUrl;
+                        ((IApp)getAppResponse.Object).LiveUrl = request.LiveUrl;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
                         var updateAppResponse = await appsRepository
@@ -812,7 +775,7 @@ namespace SudokuCollective.Data.Services
                         if (updateAppResponse.Success)
                         {
                             result.Success = true;
-                            result.Message = appUpdatedMessage;
+                            result.Message = AppsMessages.AppUpdatedMessage;
                             result.App = (App)updateAppResponse.Object;
 
                             return result;
@@ -827,7 +790,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = failedAppUpdatedMessage;
+                            result.Message = AppsMessages.AppNotUpdatedMessage;
 
                             return result;
                         }
@@ -843,7 +806,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -857,21 +820,22 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> AddAppUser(int userId, IBaseRequest baseRequest)
+        public async Task<IBaseResult> AddAppUser(int userId, IBaseRequest request)
         {
             var result = new BaseResult();
 
             try
             {
-                if (await appsRepository.IsAppLicenseValid(baseRequest.License))
+                if (await appsRepository.IsAppLicenseValid(request.License))
                 {
                     var addUserToAppResponse = await appsRepository.AddAppUser(
                         userId,
-                        baseRequest.License);
+                        request.License);
 
                     if (addUserToAppResponse.Success)
                     {
                         result.Success = addUserToAppResponse.Success;
+                        result.Message = AppsMessages.UserAddedToAppMessage;
 
                         return result;
                     }
@@ -885,7 +849,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = failedAddUserMessage;
+                        result.Message = AppsMessages.UserNotAddedToAppMessage;
 
                         return result;
                     }
@@ -893,7 +857,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -906,21 +870,22 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> RemoveAppUser(int userId, IBaseRequest baseRequest)
+        public async Task<IBaseResult> RemoveAppUser(int userId, IBaseRequest request)
         {
             var result = new BaseResult();
 
             try
             {
-                if (await appsRepository.IsAppLicenseValid(baseRequest.License))
+                if (await appsRepository.IsAppLicenseValid(request.License))
                 {
                     var addUserToAppResponse = await appsRepository.RemoveAppUser(
                         userId,
-                        baseRequest.License);
+                        request.License);
 
                     if (addUserToAppResponse.Success)
                     {
                         result.Success = addUserToAppResponse.Success;
+                        result.Message = AppsMessages.UserRemovedFromAppMessage;
 
                         return result;
                     }
@@ -934,7 +899,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = failedRemoveUserMessage;
+                        result.Message = AppsMessages.UserNotRemovedFromAppMessage;
 
                         return result;
                     }
@@ -942,7 +907,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -974,7 +939,7 @@ namespace SudokuCollective.Data.Services
                             if (resetAppResponse.Success)
                             {
                                 result.Success = resetAppResponse.Success;
-                                result.Message = appResetMessage;
+                                result.Message = AppsMessages.AppResetMessage;
 
                                 return result;
                             }
@@ -988,7 +953,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = failedAppResetMessage;
+                                result.Message = AppsMessages.AppNotFoundMessage;
 
                                 return result;
                             }
@@ -1003,14 +968,13 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = appNotFoundMessage;
+                            result.Message = AppsMessages.AppNotFoundMessage;
 
                             return result;
                         }
                     }
                     else
                     {
-
                         if (getAppResponse.Success)
                         {
                             var deleteAppResponse = await appsRepository.Delete((App)getAppResponse.Object);
@@ -1018,7 +982,7 @@ namespace SudokuCollective.Data.Services
                             if (deleteAppResponse.Success)
                             {
                                 result.Success = deleteAppResponse.Success;
-                                result.Message = appDeletedMessage;
+                                result.Message = AppsMessages.AppDeletedMessage;
 
                                 return result;
                             }
@@ -1032,7 +996,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = failedAppDeletedMessage;
+                                result.Message = AppsMessages.AppNotDeletedMessage;
 
                                 return result;
                             }
@@ -1047,7 +1011,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = appNotFoundMessage;
+                            result.Message = AppsMessages.AppNotFoundMessage;
 
                             return result;
                         }
@@ -1056,11 +1020,10 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
-
             }
             catch (Exception e)
             {
@@ -1084,7 +1047,7 @@ namespace SudokuCollective.Data.Services
                     if (activateAppResponse.Success)
                     {
                         result.Success = activateAppResponse.Success;
-                        result.Message = appActivatedMessage;
+                        result.Message = AppsMessages.AppActivatedMessage;
 
                         return result;
                     }
@@ -1098,7 +1061,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = failedAppActivatedMessage;
+                        result.Message = AppsMessages.AppNotActivatedMessage;
 
                         return result;
                     }
@@ -1106,7 +1069,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -1133,7 +1096,7 @@ namespace SudokuCollective.Data.Services
                     if (activateAppResponse.Success)
                     {
                         result.Success = activateAppResponse.Success;
-                        result.Message = appDeactivatedMessage;
+                        result.Message = AppsMessages.AppDeactivatedMessage;
 
                         return result;
                     }
@@ -1147,7 +1110,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = failedAppDeactivatedMessage;
+                        result.Message = AppsMessages.AppNotDeactivatedMessage;
 
                         return result;
                     }
@@ -1155,7 +1118,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }

@@ -6,41 +6,33 @@ using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Helpers;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Data.Services
 {
     public class SolutionsService : ISolutionsService
     {
+        #region Fields
         private readonly ISolutionsRepository<SudokuSolution> solutionsRepository;
         private readonly IUsersRepository<User> usersRepository;
-        private readonly string solutionNotFoundMessage;
-        private readonly string solutionsNotFoundMessage;
-        private readonly string userNotFoundMessage;
-        private readonly string solutionsAddedMessage;
-        private readonly string unableToAddSolutionsMessage;
-        private readonly string pageNotFoundMessage;
-        private readonly string sortValueNotImplementedMessage;
+        #endregion
 
+        #region Constructor
         public SolutionsService(
             ISolutionsRepository<SudokuSolution> solutionsRepo,
             IUsersRepository<User> usersRepo)
         {
             solutionsRepository = solutionsRepo;
             usersRepository = usersRepo;
-            solutionNotFoundMessage = "Solution not found";
-            solutionsNotFoundMessage = "Solutions not found";
-            userNotFoundMessage = "User not found message";
-            solutionsAddedMessage = "Solutions added";
-            unableToAddSolutionsMessage = "Unable to add solutions";
-            pageNotFoundMessage = "Page not found";
-            sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
+        #endregion
 
+        #region Methods
         public async Task<ISolutionResult> GetSolution(
             int id, bool fullRecord = true)
         {
@@ -53,6 +45,7 @@ namespace SudokuCollective.Data.Services
                 if (solutionResponse.Success)
                 {
                     result.Success = solutionResponse.Success;
+                    result.Message = SolutionsMessages.SolutionFoundMessage;
                     result.Solution = (SudokuSolution)solutionResponse.Object;
 
                     return result;
@@ -67,7 +60,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = solutionNotFoundMessage;
+                    result.Message = SolutionsMessages.SolutionsNotFoundMessage;
 
                     return result;
                 }
@@ -191,7 +184,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = sortValueNotImplementedMessage;
+                                result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                                 return result;
                             }
@@ -199,7 +192,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = pageNotFoundMessage;
+                            result.Message = ServicesMesages.PageNotFoundMessage;
 
                             return result;
                         }
@@ -210,6 +203,7 @@ namespace SudokuCollective.Data.Services
                     }
 
                     result.Success = response.Success;
+                    result.Message = SolutionsMessages.SolutionsFoundMessage;
 
                     return result;
                 }
@@ -223,7 +217,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = solutionsNotFoundMessage;
+                    result.Message = SolutionsMessages.SolutionsNotFoundMessage;
 
                     return result;
                 }
@@ -285,6 +279,7 @@ namespace SudokuCollective.Data.Services
                                     solutionInDB = possibleSolution;
                                     result.Success = possibleSolution;
                                     result.Solution = solution;
+                                    result.Message = SolutionsMessages.SolutionSolvedMessage;
                                     break;
                                 }
                             }
@@ -319,12 +314,14 @@ namespace SudokuCollective.Data.Services
 
                                 result.Success = true;
                                 result.Solution = possibleResult;
+                                result.Message = SolutionsMessages.SolutionSolvedMessage;
                             }
                         }
                         else
                         {
-                            result.Solution = null;
                             result.Success = true;
+                            result.Solution = null;
+                            result.Message = SolutionsMessages.SolutionNotSolvedMessage;
                         }
                     }
 
@@ -333,7 +330,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userNotFoundMessage;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
@@ -389,14 +386,14 @@ namespace SudokuCollective.Data.Services
             if (solutionResponse.Success)
             {
                 result.Success = solutionResponse.Success;
-                result.Message = "Soltuion generated";
+                result.Message = SolutionsMessages.SolutionGeneratedMessage;
 
                 return result;
             }
             else
             {
                 result.Success = solutionResponse.Success;
-                result.Message = "Unable to generate solution";
+                result.Message = SolutionsMessages.SolutionNotGeneratedMessage;
 
                 return result;
             }
@@ -473,7 +470,7 @@ namespace SudokuCollective.Data.Services
                 if (solutionsResponse.Success)
                 {
                     result.Success = solutionsResponse.Success;
-                    result.Message = solutionsAddedMessage;
+                    result.Message = SolutionsMessages.SolutionsAddedMessage;
 
                     return result;
                 }
@@ -487,7 +484,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = unableToAddSolutionsMessage;
+                    result.Message = SolutionsMessages.SolutionsNotAddedMessage;
 
                     return result;
                 }
@@ -501,5 +498,6 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
         }
+        #endregion
     }
 }

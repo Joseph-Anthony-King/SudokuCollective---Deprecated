@@ -5,33 +5,27 @@ using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Data.Services
 {
     public class RolesService : IRolesService
     {
+        #region Fields
         private readonly IRolesRepository<Role> rolesRepository;
-        private readonly string roleNotFoundMessage;
-        private readonly string rolesNotFoundMessage;
-        private readonly string unableToAddRoleMessage;
-        private readonly string roleAlreadyExistsMessage;
-        private readonly string unableToUpdateRoleMessage;
-        private readonly string unableToDeleteRoleMessage;
+        #endregion
 
+        #region Constructor
         public RolesService(IRolesRepository<Role> rolesRepo)
         {
             rolesRepository = rolesRepo;
-            roleNotFoundMessage = "Role not found";
-            rolesNotFoundMessage = "Roles not found";
-            unableToAddRoleMessage = "Unable to add role";
-            roleAlreadyExistsMessage = "Role already exists";
-            unableToUpdateRoleMessage = "Unable to update role";
-            unableToDeleteRoleMessage = "Unable to delete role";
         }
+        #endregion
 
+        #region Methods
         public async Task<IRoleResult> GetRole(
             int id, bool fullRecord = true)
         {
@@ -39,26 +33,27 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var roleResponse = await rolesRepository.GetById(id, fullRecord);
+                var response = await rolesRepository.GetById(id, fullRecord);
 
-                if (roleResponse.Success)
+                if (response.Success)
                 {
-                    result.Success = roleResponse.Success;
-                    result.Role = (Role)roleResponse.Object;
+                    result.Success = response.Success;
+                    result.Message = RolesMessages.RoleFoundMessage;
+                    result.Role = (Role)response.Object;
 
                     return result;
                 }
-                else if (!roleResponse.Success && roleResponse.Exception != null)
+                else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = roleResponse.Success;
-                    result.Message = roleResponse.Exception.Message;
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
                     result.Success = false;
-                    result.Message = roleNotFoundMessage;
+                    result.Message = RolesMessages.RoleNotFoundMessage;
 
                     return result;
                 }
@@ -84,6 +79,7 @@ namespace SudokuCollective.Data.Services
                 if (rolesResponse.Success)
                 {
                     result.Success = rolesResponse.Success;
+                    result.Message = RolesMessages.RolesFoundMessage;
                     result.Roles = rolesResponse.Objects.ConvertAll(r => (IRole)r);
 
                     return result;
@@ -98,7 +94,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = rolesNotFoundMessage;
+                    result.Message = RolesMessages.RolesNotFoundMessage;
 
                     return result;
                 }
@@ -128,26 +124,27 @@ namespace SudokuCollective.Data.Services
                         RoleLevel = roleLevel
                     };
 
-                    var roleResponse = await rolesRepository.Create(role);
+                    var response = await rolesRepository.Create(role);
 
-                    if (roleResponse.Success)
+                    if (response.Success)
                     {
-                        result.Success = roleResponse.Success;
-                        result.Role = (IRole)roleResponse.Object;
+                        result.Success = response.Success;
+                        result.Message = RolesMessages.RoleCreatedMessage;
+                        result.Role = (IRole)response.Object;
 
                         return result;
                     }
-                    else if (!roleResponse.Success && roleResponse.Exception != null)
+                    else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = roleResponse.Success;
-                        result.Message = roleResponse.Exception.Message;
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = unableToAddRoleMessage;
+                        result.Message = RolesMessages.RoleNotCreatedMessage;
 
                         return result;
                     }
@@ -155,7 +152,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = roleAlreadyExistsMessage;
+                    result.Message = RolesMessages.RoleAlreadyExistsMessage;
 
                     return result;
                 }
@@ -177,48 +174,49 @@ namespace SudokuCollective.Data.Services
             {
                 if (await rolesRepository.HasEntity(id))
                 {
-                    var roleResponse = await rolesRepository.GetById(id);
+                    var response = await rolesRepository.GetById(id);
 
-                    if (roleResponse.Success)
+                    if (response.Success)
                     {
-                        ((Role)roleResponse.Object).Name = updateRoleRO.Name;
+                        ((Role)response.Object).Name = updateRoleRO.Name;
 
-                        var updateDifficultyResponse = await rolesRepository
-                            .Update((Role)roleResponse.Object);
+                        var updateResponse = await rolesRepository
+                            .Update((Role)response.Object);
 
-                        if (updateDifficultyResponse.Success)
+                        if (updateResponse.Success)
                         {
-                            result.Success = updateDifficultyResponse.Success;
+                            result.Success = updateResponse.Success;
+                            result.Message = RolesMessages.RoleUpdatedMessage;
 
                             return result;
                         }
-                        else if (!updateDifficultyResponse.Success && updateDifficultyResponse.Exception != null)
+                        else if (!updateResponse.Success && updateResponse.Exception != null)
                         {
-                            result.Success = updateDifficultyResponse.Success;
-                            result.Message = updateDifficultyResponse.Exception.Message;
+                            result.Success = updateResponse.Success;
+                            result.Message = updateResponse.Exception.Message;
 
                             return result;
                         }
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToUpdateRoleMessage;
+                            result.Message = RolesMessages.RoleNotUpdatedMessage;
 
                             return result;
                         }
 
                     }
-                    else if (!roleResponse.Success && roleResponse.Exception != null)
+                    else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = roleResponse.Success;
-                        result.Message = roleResponse.Exception.Message;
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = roleNotFoundMessage;
+                        result.Message = RolesMessages.RoleNotFoundMessage;
 
                         return result;
                     }
@@ -226,7 +224,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = roleNotFoundMessage;
+                    result.Message = RolesMessages.RoleNotFoundMessage;
 
                     return result;
                 }
@@ -248,45 +246,46 @@ namespace SudokuCollective.Data.Services
             {
                 if (await rolesRepository.HasEntity(id))
                 {
-                    var roleResponse = await rolesRepository.GetById(id);
+                    var response = await rolesRepository.GetById(id);
 
-                    if (roleResponse.Success)
+                    if (response.Success)
                     {
-                        var deleteRoleResponse = await rolesRepository.Delete((Role)roleResponse.Object);
+                        var deleteResponse = await rolesRepository.Delete((Role)response.Object);
 
-                        if (deleteRoleResponse.Success)
+                        if (deleteResponse.Success)
                         {
-                            result.Success = deleteRoleResponse.Success;
+                            result.Success = deleteResponse.Success;
+                            result.Message = RolesMessages.RoleDeletedMessage;
 
                             return result;
                         }
-                        else if (!deleteRoleResponse.Success && deleteRoleResponse.Exception != null)
+                        else if (!deleteResponse.Success && deleteResponse.Exception != null)
                         {
-                            result.Success = deleteRoleResponse.Success;
-                            result.Message = deleteRoleResponse.Exception.Message;
+                            result.Success = deleteResponse.Success;
+                            result.Message = deleteResponse.Exception.Message;
 
                             return result;
                         }
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToDeleteRoleMessage;
+                            result.Message = RolesMessages.RoleNotDeletedMessage;
 
                             return result;
                         }
 
                     }
-                    else if (!roleResponse.Success && roleResponse.Exception != null)
+                    else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = roleResponse.Success;
-                        result.Message = roleResponse.Exception.Message;
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = roleNotFoundMessage;
+                        result.Message = RolesMessages.RoleNotFoundMessage;
 
                         return result;
                     }
@@ -294,7 +293,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = roleNotFoundMessage;
+                    result.Message = RolesMessages.RoleNotFoundMessage;
 
                     return result;
                 }
@@ -307,5 +306,6 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
         }
+        #endregion
     }
 }

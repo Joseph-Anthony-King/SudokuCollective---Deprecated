@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
-using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Messages;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -43,18 +43,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: User Found";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
                     return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -74,18 +76,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Users Found";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
                     return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -104,19 +108,21 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: User Updated";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
                 }
 
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -135,18 +141,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Password Updated";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -165,18 +173,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: User Deleted";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
-                    return NotFound(result.Message);
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -198,20 +208,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Roles Added";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
-                    result.Message = "Status Code 404: Roles Not Added";
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -233,20 +243,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Roles Removed";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
-                    result.Message = "Status Code 404: Roles Not Removed";
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -259,13 +269,13 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                result.Message = "Status Code 200: User Activated";
+                result.Message = ControllerMessages.StatusCode200(result.Message);
 
                 return Ok(result);
             }
             else
             {
-                result.Message = "Status Code 404: User Not Activated";
+                result.Message = ControllerMessages.StatusCode404(result.Message);
 
                 return NotFound(result);
             }
@@ -280,13 +290,13 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                result.Message = "Status Code 200: User Deactivated";
+                result.Message = ControllerMessages.StatusCode200(result.Message);
 
                 return Ok(result);
             }
             else
             {
-                result.Message = "Status Code 404: User Not Activated";
+                result.Message = ControllerMessages.StatusCode404(result.Message);
 
                 return NotFound(result);
             }

@@ -5,6 +5,7 @@ using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Data.Services
@@ -12,12 +13,10 @@ namespace SudokuCollective.Data.Services
     public class UserManagementService : IUserManagementService
     {
         private readonly IUsersRepository<User> usersRepository;
-        private readonly string emailDoesNotExistMessage;
 
         public UserManagementService(IUsersRepository<User> usersRepo)
         {
             usersRepository = usersRepo;
-            emailDoesNotExistMessage = "Email Does Not Exist";
         }
 
         public async Task<bool> IsValidUser(string username, string password)
@@ -76,6 +75,7 @@ namespace SudokuCollective.Data.Services
             if (userResponse.Success)
             {
                 result.Success = true;
+                result.Message = UsersMessages.UserNameConfirmedMessage;
                 result.UserName = ((User)userResponse.Object).UserName;
 
                 return result;
@@ -83,7 +83,7 @@ namespace SudokuCollective.Data.Services
             else
             {
                 result.Success = false;
-                result.Message = emailDoesNotExistMessage;
+                result.Message = UsersMessages.EmailDoesNotExist;
 
                 return result;
             }

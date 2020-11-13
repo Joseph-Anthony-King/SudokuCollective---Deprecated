@@ -6,30 +6,25 @@ using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Helpers;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Data.Services
 {
     public class GamesService : IGamesService
     {
+        #region Fields
         private readonly IGamesRepository<Game> gamesRepository;
         private readonly IAppsRepository<App> appsRepository;
         private readonly IUsersRepository<User> usersRepository;
         private readonly IDifficultiesRepository<Difficulty> difficultiesRepository;
-        private readonly string gameNotFoundMessage;
-        private readonly string unableToCreateGameMessage;
-        private readonly string unableToDeleteGameMessage;
-        private readonly string unableToGetGamesMessage;
-        private readonly string appNotFoundMessage;
-        private readonly string userDoesNotExistMessage;
-        private readonly string difficultyDoesNotExistMessage;
-        private readonly string pageNotFoundMessage;
-        private readonly string sortValueNotImplementedMessage;
+        #endregion
 
+        #region Constructor
         public GamesService(
             IGamesRepository<Game> gamesRepo,
             IAppsRepository<App> appsRepo,
@@ -40,33 +35,26 @@ namespace SudokuCollective.Data.Services
             appsRepository = appsRepo;
             usersRepository = usersRepo;
             difficultiesRepository = difficultiesRepo;
-            gameNotFoundMessage = "Game not found";
-            unableToCreateGameMessage = "Unable to create game";
-            unableToDeleteGameMessage = "Unable to delete game";
-            unableToGetGamesMessage = "Unable to get games";
-            appNotFoundMessage = "App not found";
-            userDoesNotExistMessage = "User does not exist";
-            difficultyDoesNotExistMessage = "Difficulty does not exist";
-            pageNotFoundMessage = "Page not found";
-            sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
+        #endregion
 
+        #region Methods
         public async Task<IGameResult> CreateGame(
-            ICreateGameRequest createGameRequest, bool fullRecord = true)
+            ICreateGameRequest request, bool fullRecord = true)
         {
             var result = new GameResult();
 
             try
             {
-                if (await usersRepository.HasEntity(createGameRequest.UserId))
+                if (await usersRepository.HasEntity(request.UserId))
                 {
-                    if (await difficultiesRepository.HasEntity(createGameRequest.DifficultyId))
+                    if (await difficultiesRepository.HasEntity(request.DifficultyId))
                     {
-                        var userResponse = await usersRepository.GetById(createGameRequest.UserId, true);
+                        var userResponse = await usersRepository.GetById(request.UserId, true);
 
                         if (userResponse.Success)
                         {
-                            var difficultyResponse = await difficultiesRepository.GetById(createGameRequest.DifficultyId);
+                            var difficultyResponse = await difficultiesRepository.GetById(request.DifficultyId);
 
                             if (difficultyResponse.Success)
                             {
@@ -74,7 +62,7 @@ namespace SudokuCollective.Data.Services
                                     (User)userResponse.Object,
                                     new SudokuMatrix(),
                                     (Difficulty)difficultyResponse.Object,
-                                    createGameRequest.AppId);
+                                    request.AppId);
 
                                 game.SudokuMatrix.GenerateSolution();
 
@@ -87,6 +75,7 @@ namespace SudokuCollective.Data.Services
                                     ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
 
                                     result.Success = gameResponse.Success;
+                                    result.Message = GamesMessages.GameCreatedMessage;
                                     result.Game = (IGame)gameResponse.Object;
 
                                     return result;
@@ -101,7 +90,7 @@ namespace SudokuCollective.Data.Services
                                 else
                                 {
                                     result.Success = false;
-                                    result.Message = unableToCreateGameMessage;
+                                    result.Message = GamesMessages.GameNotCreatedMessage;
 
                                     return result;
                                 }
@@ -116,7 +105,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = difficultyDoesNotExistMessage;
+                                result.Message = DifficultiesMessages.DifficultyDoesNotExistMessage;
 
                                 return result;
                             }
@@ -131,7 +120,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = userDoesNotExistMessage;
+                            result.Message = UsersMessages.UserDoesNotExistMessage;
 
                             return result;
                         }
@@ -139,7 +128,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = difficultyDoesNotExistMessage;
+                        result.Message = DifficultiesMessages.DifficultyDoesNotExistMessage;
 
                         return result;
                     }
@@ -147,7 +136,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userDoesNotExistMessage;
+                    result.Message = UsersMessages.UserDoesNotExistMessage;
 
                     return result;
                 }
@@ -161,7 +150,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IGameResult> UpdateGame(int id, IUpdateGameRequest updateGameRequest)
+        public async Task<IGameResult> UpdateGame(int id, IUpdateGameRequest request)
         {
             var result = new GameResult();
 
@@ -173,7 +162,7 @@ namespace SudokuCollective.Data.Services
 
                     if (gameResponse.Success)
                     {
-                        foreach (var cell in updateGameRequest.SudokuCells)
+                        foreach (var cell in request.SudokuCells)
                         {
                             foreach (var savedCell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
                             {
@@ -189,7 +178,7 @@ namespace SudokuCollective.Data.Services
                         if (updateGameResponse.Success)
                         {
                             result.Success = updateGameResponse.Success;
-                            result.Message = "Game Updated";
+                            result.Message = GamesMessages.GameUpdatedMessage;
                             result.Game = (Game)updateGameResponse.Object;
 
                             return result;
@@ -204,7 +193,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToCreateGameMessage;
+                            result.Message = GamesMessages.GameNotUpdatedMessage;
 
                             return result;
                         }
@@ -219,7 +208,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = gameNotFoundMessage;
+                        result.Message = GamesMessages.GameNotFoundMessage;
 
                         return result;
                     }
@@ -227,7 +216,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = gameNotFoundMessage;
+                    result.Message = GamesMessages.GameNotFoundMessage;
 
                     return result;
                 }
@@ -258,6 +247,7 @@ namespace SudokuCollective.Data.Services
                         if (deleteGameResponse.Success)
                         {
                             result.Success = deleteGameResponse.Success;
+                            result.Message = GamesMessages.GameDeletedMessage;
 
                             return result;
                         }
@@ -271,7 +261,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToDeleteGameMessage;
+                            result.Message = GamesMessages.GameNotDeletedMessage;
 
                             return result;
                         }
@@ -286,7 +276,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = gameNotFoundMessage;
+                        result.Message = GamesMessages.GameNotFoundMessage;
 
                         return result;
                     }
@@ -294,7 +284,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = gameNotFoundMessage;
+                    result.Message = GamesMessages.GameNotFoundMessage;
 
                     return result;
                 }
@@ -314,9 +304,9 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await gamesRepository.HasEntity(id))
+                if (await appsRepository.HasEntity(appId))
                 {
-                    if (await appsRepository.HasEntity(appId))
+                    if (await gamesRepository.HasEntity(id))
                     {
                         var gameResponse = await gamesRepository.GetGame(id, appId, fullRecord);
 
@@ -330,6 +320,7 @@ namespace SudokuCollective.Data.Services
                             ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
 
                             result.Success = true;
+                            result.Message = GamesMessages.GameFoundMessage;
                             result.Game = (IGame)gameResponse.Object;
 
                             return result;
@@ -344,7 +335,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = gameNotFoundMessage;
+                            result.Message = GamesMessages.GameNotFoundMessage;
 
                             return result;
                         }
@@ -352,7 +343,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = appNotFoundMessage;
+                        result.Message = GamesMessages.GameNotFoundMessage;
 
                         return result;
                     }
@@ -360,7 +351,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = gameNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -375,30 +366,30 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IGamesResult> GetGames(
-            IGetGamesRequest getGamesRequest, 
+            IGetGamesRequest request, 
             bool fullRecord = true)
         {
             var result = new GamesResult();
 
             try
             {
-                if (await appsRepository.HasEntity(getGamesRequest.AppId))
+                if (await appsRepository.HasEntity(request.AppId))
                 {
-                    var response = await gamesRepository.GetGames(getGamesRequest.AppId, fullRecord);
+                    var response = await gamesRepository.GetGames(request.AppId, fullRecord);
 
                     if (response.Success)
                     {
-                        if (getGamesRequest.PageListModel != null)
+                        if (request.PageListModel != null)
                         {
-                            if (StaticApiHelpers.IsPageValid(getGamesRequest.PageListModel, response.Objects))
+                            if (StaticApiHelpers.IsPageValid(request.PageListModel, response.Objects))
                             {
-                                if (getGamesRequest.PageListModel.SortBy == SortValue.NULL)
+                                if (request.PageListModel.SortBy == SortValue.NULL)
                                 {
                                     result.Games = response.Objects.ConvertAll(g => (IGame)g);
                                 }
-                                else if (getGamesRequest.PageListModel.SortBy == SortValue.ID)
+                                else if (request.PageListModel.SortBy == SortValue.ID)
                                 {
-                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    if (!request.PageListModel.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -407,8 +398,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.Id)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -420,14 +411,14 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.Id)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (getGamesRequest.PageListModel.SortBy == SortValue.DATECREATED)
+                                else if (request.PageListModel.SortBy == SortValue.DATECREATED)
                                 {
-                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    if (!request.PageListModel.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -436,8 +427,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.DateCreated)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -449,14 +440,14 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.DateCreated)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (getGamesRequest.PageListModel.SortBy == SortValue.DATEUPDATED)
+                                else if (request.PageListModel.SortBy == SortValue.DATEUPDATED)
                                 {
-                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    if (!request.PageListModel.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -465,8 +456,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.DateUpdated)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -478,15 +469,15 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.DateUpdated)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
                                 else
                                 {
                                     result.Success = false;
-                                    result.Message = sortValueNotImplementedMessage;
+                                    result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                                     return result;
                                 }
@@ -494,7 +485,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = pageNotFoundMessage;
+                                result.Message = ServicesMesages.PageNotFoundMessage;
 
                                 return result;
                             }
@@ -505,6 +496,7 @@ namespace SudokuCollective.Data.Services
                         }
 
                         result.Success = response.Success;
+                        result.Message = GamesMessages.GamesFoundMessage;
 
                         return result;
                     }
@@ -518,7 +510,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = unableToGetGamesMessage;
+                        result.Message = GamesMessages.GamesNotFoundMessage;
 
                         return result;
                     }
@@ -526,7 +518,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -542,21 +534,21 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IGameResult> GetMyGame(
             int gameid, 
-            IGetGamesRequest getMyGameRequest, 
+            IGetGamesRequest request, 
             bool fullRecord = true)
         {
             var result = new GameResult();
 
             try
             {
-                if (await gamesRepository.HasEntity(gameid))
+                if (await appsRepository.HasEntity(request.AppId))
                 {
-                    if (await appsRepository.HasEntity(getMyGameRequest.AppId))
+                    if (await gamesRepository.HasEntity(gameid))
                     {
                         var gameResponse = await gamesRepository.GetMyGame(
-                            getMyGameRequest.UserId, 
-                            gameid, 
-                            getMyGameRequest.AppId, 
+                            request.UserId, 
+                            gameid,
+                            request.AppId, 
                             fullRecord);
 
                         if (gameResponse.Success)
@@ -569,6 +561,7 @@ namespace SudokuCollective.Data.Services
                             ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
 
                             result.Success = true;
+                            result.Message = GamesMessages.GameFoundMessage;
                             result.Game = (IGame)gameResponse.Object;
 
                             return result;
@@ -583,7 +576,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = gameNotFoundMessage;
+                            result.Message = GamesMessages.GameNotFoundMessage;
 
                             return result;
                         }
@@ -591,7 +584,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = appNotFoundMessage;
+                        result.Message = GamesMessages.GameNotFoundMessage;
 
                         return result;
                     }
@@ -599,7 +592,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = gameNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -614,33 +607,33 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IGamesResult> GetMyGames(
-            IGetGamesRequest getGamesRequest,
+            IGetGamesRequest request,
             bool fullRecord = true)
         {
             var result = new GamesResult();
 
             try
             {
-                if (await appsRepository.HasEntity(getGamesRequest.AppId))
+                if (await appsRepository.HasEntity(request.AppId))
                 {
                     var response = await gamesRepository.GetMyGames(
-                        getGamesRequest.UserId, 
-                        getGamesRequest.AppId, 
+                        request.UserId,
+                        request.AppId, 
                         fullRecord);
 
                     if (response.Success)
                     {
-                        if (getGamesRequest.PageListModel != null)
+                        if (request.PageListModel != null)
                         {
-                            if (StaticApiHelpers.IsPageValid(getGamesRequest.PageListModel, response.Objects))
+                            if (StaticApiHelpers.IsPageValid(request.PageListModel, response.Objects))
                             {
-                                if (getGamesRequest.PageListModel.SortBy == SortValue.NULL)
+                                if (request.PageListModel.SortBy == SortValue.NULL)
                                 {
                                     result.Games = response.Objects.ConvertAll(g => (IGame)g);
                                 }
-                                else if (getGamesRequest.PageListModel.SortBy == SortValue.ID)
+                                else if (request.PageListModel.SortBy == SortValue.ID)
                                 {
-                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    if (!request.PageListModel.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -649,8 +642,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.Id)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -662,14 +655,14 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.Id)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (getGamesRequest.PageListModel.SortBy == SortValue.DATECREATED)
+                                else if (request.PageListModel.SortBy == SortValue.DATECREATED)
                                 {
-                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    if (!request.PageListModel.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -678,8 +671,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.DateCreated)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -691,14 +684,14 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.DateCreated)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (getGamesRequest.PageListModel.SortBy == SortValue.DATEUPDATED)
+                                else if (request.PageListModel.SortBy == SortValue.DATEUPDATED)
                                 {
-                                    if (!getGamesRequest.PageListModel.OrderByDescending)
+                                    if (!request.PageListModel.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -707,8 +700,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.DateUpdated)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -720,15 +713,15 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.DateUpdated)
-                                            .Skip((getGamesRequest.PageListModel.Page - 1) * getGamesRequest.PageListModel.ItemsPerPage)
-                                            .Take(getGamesRequest.PageListModel.ItemsPerPage)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
                                 else
                                 {
                                     result.Success = false;
-                                    result.Message = sortValueNotImplementedMessage;
+                                    result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                                     return result;
                                 }
@@ -736,7 +729,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = pageNotFoundMessage;
+                                result.Message = ServicesMesages.PageNotFoundMessage;
 
                                 return result;
                             }
@@ -747,6 +740,7 @@ namespace SudokuCollective.Data.Services
                         }
 
                         result.Success = response.Success;
+                        result.Message = GamesMessages.GamesFoundMessage;
 
                         return result;
                     }
@@ -760,7 +754,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = unableToGetGamesMessage;
+                        result.Message = GamesMessages.GamesNotFoundMessage;
 
                         return result;
                     }
@@ -768,7 +762,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = appNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -788,32 +782,33 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await gamesRepository.HasEntity(gameid))
+                if (await appsRepository.HasEntity(getMyGameRequest.AppId))
                 {
-                    if (await appsRepository.HasEntity(getMyGameRequest.AppId))
+                    if (await gamesRepository.HasEntity(gameid))
                     {
-                        var gameResponse = await gamesRepository.DeleteMyGame(
+                        var response = await gamesRepository.DeleteMyGame(
                             getMyGameRequest.UserId, 
                             gameid, 
                             getMyGameRequest.AppId);
 
-                        if (gameResponse.Success)
+                        if (response.Success)
                         {
                             result.Success = true;
+                            result.Message = GamesMessages.GameDeletedMessage;
 
                             return result;
                         }
-                        else if (!gameResponse.Success && gameResponse.Exception != null)
+                        else if (!response.Success && response.Exception != null)
                         {
-                            result.Success = gameResponse.Success;
-                            result.Message = gameResponse.Exception.Message;
+                            result.Success = response.Success;
+                            result.Message = response.Exception.Message;
 
                             return result;
                         }
                         else
                         {
                             result.Success = false;
-                            result.Message = gameNotFoundMessage;
+                            result.Message = GamesMessages.GameNotDeletedMessage;
 
                             return result;
                         }
@@ -821,7 +816,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = appNotFoundMessage;
+                        result.Message = GamesMessages.GameNotFoundMessage;
 
                         return result;
                     }
@@ -829,7 +824,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = gameNotFoundMessage;
+                    result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
@@ -868,11 +863,11 @@ namespace SudokuCollective.Data.Services
 
                         if (((Game)gameResponse.Object).IsSolved())
                         {
-                            result.Message = "Game solved";
+                            result.Message = GamesMessages.GameSolvedMessage;
                         }
                         else
                         {
-                            result.Message = "Game unsolved";
+                            result.Message = GamesMessages.GameNotSolvedMessage;
                         }
 
                         var updateGameResponse = await gamesRepository.Update((Game)gameResponse.Object);
@@ -894,7 +889,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToCreateGameMessage;
+                            result.Message = GamesMessages.GameNotUpdatedMessage;
 
                             return result;
                         }
@@ -909,7 +904,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = gameNotFoundMessage;
+                        result.Message = GamesMessages.GameNotFoundMessage;
 
                         return result;
                     }
@@ -917,7 +912,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = gameNotFoundMessage;
+                    result.Message = GamesMessages.GameNotFoundMessage;
 
                     return result;
                 }
@@ -930,5 +925,6 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
         }
+        #endregion
     }
 }

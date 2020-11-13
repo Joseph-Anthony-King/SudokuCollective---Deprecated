@@ -9,39 +9,23 @@ using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Data.Helpers;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Data.Services
 {
     public class UsersService : IUsersService
     {
+        #region Fields
         private readonly IUsersRepository<User> usersRepository;
         private readonly IAppsRepository<App> appsRepository;
         private readonly IRolesRepository<Role> rolesRepository;
-        private readonly string userNotFoundMessage;
-        private readonly string usersNotFoundMessage;
-        private readonly string userNameUniqueMessage;
-        private readonly string emailUniqueMessage;
-        private readonly string userNameRequiredMessage;
-        private readonly string userNameInvalidMessage;
-        private readonly string emailRequiredMessage;
-        private readonly string unableToCreateUserMessage;
-        private readonly string addRolesMessage;
-        private readonly string unableToAddRolesMessage;
-        private readonly string removeRolesMessage;
-        private readonly string unableToRemoveRolesMessage;
-        private readonly string invalidRolesMessage;
-        private readonly string userActivatedMessage;
-        private readonly string unableToActivateUserMessage;
-        private readonly string userDeactivatedMessage;
-        private readonly string unableToDeactivateUserMessage;
-        private readonly string appNotFoundMessage;
-        private readonly string pageNotFoundMessage;
-        private readonly string sortValueNotImplementedMessage;
+        #endregion
 
+        #region Constructor
         public UsersService(
             IUsersRepository<User> usersRepo,
             IAppsRepository<App> appsRepo,
@@ -50,28 +34,10 @@ namespace SudokuCollective.Data.Services
             usersRepository = usersRepo;
             appsRepository = appsRepo;
             rolesRepository = rolesApp;
-            userNotFoundMessage = "User not found";
-            usersNotFoundMessage = "Users not found";
-            userNameUniqueMessage = "User name not unigue";
-            emailUniqueMessage = "Email not unique";
-            userNameRequiredMessage = "User name required";
-            userNameInvalidMessage = "User name accepsts alphanumeric and special characters except double and single quotes";
-            emailRequiredMessage = "Email required";
-            unableToCreateUserMessage = "Unable to create user";
-            addRolesMessage = "Successfully added roles";
-            unableToAddRolesMessage = "Unable to add roles";
-            removeRolesMessage = "Successfully removed roles";
-            unableToRemoveRolesMessage = "Unable to remove roles";
-            invalidRolesMessage = "Roles are invalid";
-            userActivatedMessage = "User successfully activated";
-            unableToActivateUserMessage = "Unable to activate user";
-            userDeactivatedMessage = "User successfully deactivated";
-            unableToDeactivateUserMessage = "Unable to deactivate user";
-            appNotFoundMessage = "App not found";
-            pageNotFoundMessage = "Page not found";
-            sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
+        #endregion
 
+        #region Methods
         public async Task<IUserResult> GetUser(int id, bool fullRecord = true)
         {
             var result = new UserResult();
@@ -85,6 +51,7 @@ namespace SudokuCollective.Data.Services
                     if (response.Success)
                     {
                         result.Success = response.Success;
+                        result.Message = UsersMessages.UserFoundMessage;
                         result.User = (IUser)response.Object;
 
                         return result;
@@ -99,7 +66,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = userNotFoundMessage;
+                        result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
                     }
@@ -107,11 +74,10 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userNotFoundMessage;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
-
             }
             catch (Exception e)
             {
@@ -377,7 +343,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = sortValueNotImplementedMessage;
+                                result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                                 return result;
                             }
@@ -385,7 +351,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = pageNotFoundMessage;
+                            result.Message = ServicesMesages.PageNotFoundMessage;
 
                             return result;
                         }
@@ -396,6 +362,7 @@ namespace SudokuCollective.Data.Services
                     }
 
                     result.Success = response.Success;
+                    result.Message = UsersMessages.UsersFoundMessage;
 
                     return result;
                 }
@@ -409,7 +376,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = usersNotFoundMessage;
+                    result.Message = UsersMessages.UsersNotFoundMessage;
 
                     return result;
                 }
@@ -424,7 +391,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IUserResult> CreateUser(
-            IRegisterRequest registerRequest)
+            IRegisterRequest request)
         {
             var result = new UserResult();
 
@@ -434,54 +401,54 @@ namespace SudokuCollective.Data.Services
             // User name accepsts alphanumeric and special characters except double and single quotes
             var regex = new Regex("^[^-]{1}?[^\"\']*$");
 
-            if (!string.IsNullOrEmpty(registerRequest.UserName))
+            if (!string.IsNullOrEmpty(request.UserName))
             {
-                isUserNameUnique = await usersRepository.IsUserNameUnique(registerRequest.UserName);
+                isUserNameUnique = await usersRepository.IsUserNameUnique(request.UserName);
             }
 
-            if (!string.IsNullOrEmpty(registerRequest.Email))
+            if (!string.IsNullOrEmpty(request.Email))
             {
-                isEmailUnique = await usersRepository.IsEmailUnique(registerRequest.Email);
+                isEmailUnique = await usersRepository.IsEmailUnique(request.Email);
             }
 
-            if (string.IsNullOrEmpty(registerRequest.UserName)
-                || string.IsNullOrEmpty(registerRequest.Email)
+            if (string.IsNullOrEmpty(request.UserName)
+                || string.IsNullOrEmpty(request.Email)
                 || !isUserNameUnique
                 || !isEmailUnique
-                || !regex.IsMatch(registerRequest.UserName))
+                || !regex.IsMatch(request.UserName))
             {
-                if (string.IsNullOrEmpty(registerRequest.UserName))
+                if (string.IsNullOrEmpty(request.UserName))
                 {
                     result.Success = false;
-                    result.Message = userNameRequiredMessage;
+                    result.Message = UsersMessages.UserNameRequiredMessage;
 
                     return result;
                 }
-                else if (string.IsNullOrEmpty(registerRequest.Email))
+                else if (string.IsNullOrEmpty(request.Email))
                 {
                     result.Success = false;
-                    result.Message = emailRequiredMessage;
+                    result.Message = UsersMessages.EmailRequiredMessage;
 
                     return result;
                 }
-                else if (!regex.IsMatch(registerRequest.UserName))
+                else if (!regex.IsMatch(request.UserName))
                 {
                     result.Success = false;
-                    result.Message = userNameInvalidMessage;
+                    result.Message = UsersMessages.UserNameInvalidMessage;
 
                     return result;
                 }
                 else if (!isUserNameUnique)
                 {
                     result.Success = isUserNameUnique;
-                    result.Message = userNameUniqueMessage;
+                    result.Message = UsersMessages.UserNameUniqueMessage;
 
                     return result;
                 }
                 else
                 {
                     result.Success = isEmailUnique;
-                    result.Message = emailUniqueMessage;
+                    result.Message = UsersMessages.EmailUniqueMessage;
 
                     return result;
                 }
@@ -490,9 +457,9 @@ namespace SudokuCollective.Data.Services
             {
                 try
                 {
-                    if (await appsRepository.IsAppLicenseValid(registerRequest.License))
+                    if (await appsRepository.IsAppLicenseValid(request.License))
                     {
-                        var appResponse = await appsRepository.GetByLicense(registerRequest.License);
+                        var appResponse = await appsRepository.GetByLicense(request.License);
 
                         if (appResponse.Success)
                         {
@@ -500,12 +467,12 @@ namespace SudokuCollective.Data.Services
 
                             var user = new User(
                                 0,
-                                registerRequest.UserName,
-                                registerRequest.FirstName,
-                                registerRequest.LastName,
-                                registerRequest.NickName,
-                                registerRequest.Email,
-                                BCrypt.Net.BCrypt.HashPassword(registerRequest.Password, salt),
+                                request.UserName,
+                                request.FirstName,
+                                request.LastName,
+                                request.NickName,
+                                request.Email,
+                                BCrypt.Net.BCrypt.HashPassword(request.Password, salt),
                                 true,
                                 DateTime.UtcNow,
                                 DateTime.MinValue);
@@ -521,6 +488,7 @@ namespace SudokuCollective.Data.Services
                             if (userResponse.Success)
                             {
                                 result.Success = userResponse.Success;
+                                result.Message = UsersMessages.UserCreatedMessage;
                                 result.User = (User)userResponse.Object;
 
                                 return result;
@@ -535,7 +503,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = userResponse.Success;
-                                result.Message = unableToCreateUserMessage;
+                                result.Message = UsersMessages.UserNotCreatedMessage;
 
                                 return result;
                             }
@@ -550,7 +518,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = appNotFoundMessage;
+                            result.Message = AppsMessages.AppNotFoundMessage;
 
                             return result;
                         }
@@ -558,7 +526,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = appNotFoundMessage;
+                        result.Message = AppsMessages.AppNotFoundMessage;
 
                         return result;
                     }
@@ -574,54 +542,54 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IUserResult> UpdateUser(
-            int id, IUpdateUserRequest updateUserRequest)
+            int id, IUpdateUserRequest request)
         {
             var result = new UserResult();
 
             // User name accepsts alphanumeric and special characters except double and single quotes
             var regex = new Regex("^[^-]{1}?[^\"\']*$");
 
-            var isUserNameUnique = await usersRepository.IsUserNameUnique(updateUserRequest.UserName);
-            var isEmailUnique = await usersRepository.IsEmailUnique(updateUserRequest.Email);
+            var isUserNameUnique = await usersRepository.IsUserNameUnique(request.UserName);
+            var isEmailUnique = await usersRepository.IsEmailUnique(request.Email);
 
-            if (!isUserNameUnique
+            if (string.IsNullOrEmpty(request.UserName)
+                || string.IsNullOrEmpty(request.Email)
+                || !isUserNameUnique
                 || !isEmailUnique
-                || !regex.IsMatch(updateUserRequest.UserName)
-                || string.IsNullOrEmpty(updateUserRequest.UserName)
-                || string.IsNullOrEmpty(updateUserRequest.Email))
+                || !regex.IsMatch(request.UserName))
             {
-                if (!isUserNameUnique)
+                if (string.IsNullOrEmpty(request.UserName))
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNameRequiredMessage;
+
+                    return result;
+                }
+                else if (string.IsNullOrEmpty(request.Email))
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.EmailRequiredMessage;
+
+                    return result;
+                }
+                else if (!regex.IsMatch(request.UserName))
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNameInvalidMessage;
+
+                    return result;
+                }
+                else if (!isUserNameUnique)
                 {
                     result.Success = isUserNameUnique;
-                    result.Message = userNameUniqueMessage;
-
-                    return result;
-                }
-                else if (!isEmailUnique)
-                {
-                    result.Success = isEmailUnique;
-                    result.Message = emailUniqueMessage;
-
-                    return result;
-                }
-                else if (!regex.IsMatch(updateUserRequest.UserName))
-                {
-                    result.Success = false;
-                    result.Message = userNameInvalidMessage;
-
-                    return result;
-                }
-                else if (string.IsNullOrEmpty(updateUserRequest.UserName))
-                {
-                    result.Success = false;
-                    result.Message = userNameRequiredMessage;
+                    result.Message = UsersMessages.UserNameUniqueMessage;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
-                    result.Message = emailRequiredMessage;
+                    result.Success = isEmailUnique;
+                    result.Message = UsersMessages.EmailUniqueMessage;
 
                     return result;
                 }
@@ -636,11 +604,11 @@ namespace SudokuCollective.Data.Services
 
                         if (userResponse.Success)
                         {
-                            ((User)userResponse.Object).UserName = updateUserRequest.UserName;
-                            ((User)userResponse.Object).FirstName = updateUserRequest.FirstName;
-                            ((User)userResponse.Object).LastName = updateUserRequest.LastName;
-                            ((User)userResponse.Object).NickName = updateUserRequest.NickName;
-                            ((User)userResponse.Object).Email = updateUserRequest.Email;
+                            ((User)userResponse.Object).UserName = request.UserName;
+                            ((User)userResponse.Object).FirstName = request.FirstName;
+                            ((User)userResponse.Object).LastName = request.LastName;
+                            ((User)userResponse.Object).NickName = request.NickName;
+                            ((User)userResponse.Object).Email = request.Email;
                             ((User)userResponse.Object).DateUpdated = DateTime.UtcNow;
 
                             var updateUserResponse = await usersRepository.Update((User)userResponse.Object);
@@ -648,6 +616,7 @@ namespace SudokuCollective.Data.Services
                             if (updateUserResponse.Success)
                             {
                                 result.Success = userResponse.Success;
+                                result.Message = UsersMessages.UserUpdatedMessage;
                                 result.User = (User)userResponse.Object;
 
                                 return result;
@@ -662,7 +631,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = "Unable to update user";
+                                result.Message = UsersMessages.UserNotUpdatedMessage;
 
                                 return result;
                             }
@@ -677,7 +646,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = userNotFoundMessage;
+                            result.Message = UsersMessages.UserNotFoundMessage;
 
                             return result;
                         }
@@ -685,7 +654,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = userNotFoundMessage;
+                        result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
                     }
@@ -700,7 +669,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> UpdatePassword(int id, IUpdatePasswordRequest updatePasswordRO)
+        public async Task<IBaseResult> UpdatePassword(int id, IUpdatePasswordRequest request)
         {
             var result = new BaseResult();
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
@@ -713,10 +682,10 @@ namespace SudokuCollective.Data.Services
 
                     if (userResponse.Success)
                     {
-                        if (BCrypt.Net.BCrypt.Verify(updatePasswordRO.OldPassword, ((IUser)userResponse.Object).Password))
+                        if (BCrypt.Net.BCrypt.Verify(request.OldPassword, ((IUser)userResponse.Object).Password))
                         {
                             ((User)userResponse.Object).Password = BCrypt.Net.BCrypt
-                                    .HashPassword(updatePasswordRO.NewPassword, salt);
+                                    .HashPassword(request.NewPassword, salt);
 
 
                             ((User)userResponse.Object).DateUpdated = DateTime.UtcNow;
@@ -726,6 +695,7 @@ namespace SudokuCollective.Data.Services
                             if (updateUserResponse.Success)
                             {
                                 result.Success = userResponse.Success;
+                                result.Message = UsersMessages.PasswordUpdatedMessage;
 
                                 return result;
                             }
@@ -739,7 +709,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = "Unable to update password";
+                                result.Message = UsersMessages.PasswordNotUpdatedMessage;
 
                                 return result;
                             }
@@ -747,7 +717,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = "Old password was incorrect";
+                            result.Message = UsersMessages.OldPasswordIncorrectMessage;
 
                             return result;
                         }
@@ -755,14 +725,14 @@ namespace SudokuCollective.Data.Services
                     else if (!userResponse.Success && userResponse.Exception != null)
                     {
                         result.Success = false;
-                        result.Message = userNotFoundMessage;
+                        result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = userNotFoundMessage;
+                        result.Message = UsersMessages.UsersFoundMessage;
 
                         return result;
                     }
@@ -770,7 +740,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userNotFoundMessage;
+                    result.Message = UsersMessages.UsersNotFoundMessage;
 
                     return result;
                 }
@@ -801,6 +771,7 @@ namespace SudokuCollective.Data.Services
                         if (deletionResponse.Success)
                         {
                             result.Success = true;
+                            result.Message = UsersMessages.UserDeletedMessage;
 
                             return result;
                         }
@@ -814,7 +785,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = "Unable to delete user";
+                            result.Message = UsersMessages.UserNotDeletedMessage;
 
                             return result;
                         }
@@ -829,7 +800,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = userNotFoundMessage;
+                        result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
                     }
@@ -837,7 +808,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userNotFoundMessage;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
@@ -861,26 +832,26 @@ namespace SudokuCollective.Data.Services
                 {
                     if (await rolesRepository.IsListValid(roleIds))
                     {
-                        var addRolesResponse = await usersRepository.AddRoles(userid, roleIds);
+                        var response = await usersRepository.AddRoles(userid, roleIds);
 
-                        if (addRolesResponse.Success)
+                        if (response.Success)
                         {
-                            result.Success = addRolesResponse.Success;
-                            result.Message = addRolesMessage;
+                            result.Success = response.Success;
+                            result.Message = UsersMessages.RolesAddedMessage;
 
                             return result;
                         }
-                        else if (!addRolesResponse.Success && addRolesResponse.Exception != null)
+                        else if (!response.Success && response.Exception != null)
                         {
-                            result.Success = addRolesResponse.Success;
-                            result.Message = addRolesResponse.Exception.Message;
+                            result.Success = response.Success;
+                            result.Message = response.Exception.Message;
 
                             return result;
                         }
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToAddRolesMessage;
+                            result.Message = UsersMessages.UnableToAddRoles;
 
                             return result;
                         }
@@ -888,7 +859,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = invalidRolesMessage;
+                        result.Message = UsersMessages.RoleInvalidMessage;
 
                         return result;
                     }
@@ -896,7 +867,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userNotFoundMessage;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
@@ -920,26 +891,26 @@ namespace SudokuCollective.Data.Services
                 {
                     if (await rolesRepository.IsListValid(roleIds))
                     {
-                        var addRolesResponse = await usersRepository.RemoveRoles(userid, roleIds);
+                        var response = await usersRepository.RemoveRoles(userid, roleIds);
 
-                        if (addRolesResponse.Success)
+                        if (response.Success)
                         {
-                            result.Success = addRolesResponse.Success;
-                            result.Message = removeRolesMessage;
+                            result.Success = response.Success;
+                            result.Message = UsersMessages.RolesRemovedMessage;
 
                             return result;
                         }
-                        else if (!addRolesResponse.Success && addRolesResponse.Exception != null)
+                        else if (!response.Success && response.Exception != null)
                         {
-                            result.Success = addRolesResponse.Success;
-                            result.Message = addRolesResponse.Exception.Message;
+                            result.Success = response.Success;
+                            result.Message = response.Exception.Message;
 
                             return result;
                         }
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToRemoveRolesMessage;
+                            result.Message = UsersMessages.UnableToRemoveRoles;
 
                             return result;
                         }
@@ -947,7 +918,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = invalidRolesMessage;
+                        result.Message = UsersMessages.RoleInvalidMessage;
 
                         return result;
                     }
@@ -955,7 +926,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userNotFoundMessage;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
@@ -980,14 +951,14 @@ namespace SudokuCollective.Data.Services
                     if (await usersRepository.ActivateUser(id))
                     {
                         result.Success = true;
-                        result.Message = userActivatedMessage;
+                        result.Message = UsersMessages.UserActivatedMessage;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = unableToActivateUserMessage;
+                        result.Message = UsersMessages.UserNotActivatedMessage;
 
                         return result;
                     }
@@ -995,7 +966,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userNotFoundMessage;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
@@ -1020,14 +991,14 @@ namespace SudokuCollective.Data.Services
                     if (await usersRepository.DeactivateUser(id))
                     {
                         result.Success = true;
-                        result.Message = userDeactivatedMessage;
+                        result.Message = UsersMessages.UserDeactivatedMessage;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = unableToDeactivateUserMessage;
+                        result.Message = UsersMessages.UserNotDeactivatedMessage;
 
                         return result;
                     }
@@ -1035,7 +1006,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = userNotFoundMessage;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
@@ -1048,5 +1019,6 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
         }
+        #endregion
     }
 }

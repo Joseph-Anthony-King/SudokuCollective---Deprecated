@@ -1,11 +1,12 @@
+using System.Net;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
-using System.Net;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.RequestModels;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -42,20 +43,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Difficulty Found";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
-                    result.Message = "Status Code 404: Difficulty Not Found";
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -75,20 +76,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Difficulties Found";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
-                    result.Message = "Status Code 404: Difficulties Not Found";
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -105,27 +106,27 @@ namespace SudokuCollective.Api.Controllers
             {
                 if (id != request.Id)
                 {
-                    return BadRequest("Invalid Request: Difficulty Id Incorrect");
+                    return BadRequest(ControllerMessages.IdIncorrectMessage);
                 }
 
                 var result = await difficultiesService.UpdateDifficulty(id, request);
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Difficulty Updated";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                    return Ok();
+                    return Ok(result);
                 }
                 else
                 {
-                    result.Message = "Status Code 404: Difficulty Not Updated";
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
 
-                    return NotFound(result.Message);
+                    return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -145,20 +146,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 201: Difficulty Created";
+                    result.Message = ControllerMessages.StatusCode201(result.Message);
 
                     return StatusCode((int)HttpStatusCode.Created, result);
                 }
                 else
                 {
-                    result.Message = "Status Code 404: Difficulty Not Created";
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -177,20 +178,20 @@ namespace SudokuCollective.Api.Controllers
 
                 if (result.Success)
                 {
-                    result.Message = "Status Code 200: Difficulty Deleted";
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
                 }
                 else
                 {
-                    result.Message = "Status Code 404: Difficulty Not Deleted";
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result.Message);
                 }
             }
             else
             {
-                return BadRequest("Status Code 400: Invalid Request on this License");
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
     }

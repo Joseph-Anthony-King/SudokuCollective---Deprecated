@@ -1,43 +1,33 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
-using System.Linq;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Data.Services
 {
     public class DifficultiesService : IDifficultiesService
     {
+        #region Fields
         private readonly IDifficultiesRepository<Difficulty> difficultiesRepository;
-        private readonly string difficultiesFoundMessage;
-        private readonly string difficultyNotFoundMessage;
-        private readonly string difficultiesNotFoundMessage;
-        private readonly string unableToAddDifficultyMessage;
-        private readonly string difficultyAlreadyExistsMessage;
-        private readonly string unableToUpdateDifficultyMessage;
-        private readonly string unableToDeleteDifficultyMessage;
-        private readonly string sortValueNotImplementedMessage;
+        #endregion
 
+        #region Constructor
         public DifficultiesService(IDifficultiesRepository<Difficulty> difficultiesRepo)
         {
             difficultiesRepository = difficultiesRepo;
-            difficultiesFoundMessage = "Difficulties found";
-            difficultyNotFoundMessage = "Difficulty not found";
-            difficultiesNotFoundMessage = "Difficulties not found";
-            unableToAddDifficultyMessage = "Unable to add difficulty";
-            difficultyAlreadyExistsMessage = "Difficulty already exists";
-            unableToUpdateDifficultyMessage = "Unable to update difficulty";
-            unableToDeleteDifficultyMessage = "Unable to delete difficulty";
-            sortValueNotImplementedMessage = "Sorting not implemented for this sort value";
         }
+        #endregion
 
+        #region Methods
         public async Task<IDifficultyResult> GetDifficulty(
             int id, bool fullRecord = true)
         {
@@ -45,26 +35,27 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var difficutlyResponse = await difficultiesRepository.GetById(id, fullRecord);
+                var response = await difficultiesRepository.GetById(id, fullRecord);
 
-                if (difficutlyResponse.Success)
+                if (response.Success)
                 {
-                    result.Success = difficutlyResponse.Success;
-                    result.Difficulty = (Difficulty)difficutlyResponse.Object;
+                    result.Success = response.Success;
+                    result.Message = DifficultiesMessages.DifficultyFoundMessage;
+                    result.Difficulty = (Difficulty)response.Object;
 
                     return result;
                 }
-                else if (!difficutlyResponse.Success && difficutlyResponse.Exception != null)
+                else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = difficutlyResponse.Success;
-                    result.Message = difficutlyResponse.Exception.Message;
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
                     result.Success = false;
-                    result.Message = difficultyNotFoundMessage;
+                    result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
 
                     return result;
                 }
@@ -174,13 +165,13 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = sortValueNotImplementedMessage;
+                            result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                             return result;
                         }
 
                         result.Success = response.Success;
-                        result.Message = difficultiesFoundMessage;
+                        result.Message = DifficultiesMessages.DifficultiesFoundMessage;
 
                         return result;
                     }
@@ -196,7 +187,7 @@ namespace SudokuCollective.Data.Services
                             .ToList();
 
                         result.Success = response.Success;
-                        result.Message = difficultiesFoundMessage;
+                        result.Message = DifficultiesMessages.DifficultiesFoundMessage;
 
                         return result;
                     }
@@ -211,7 +202,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = difficultiesNotFoundMessage;
+                    result.Message = DifficultiesMessages.DifficultiesNotFoundMessage;
 
                     return result;
                 }
@@ -244,26 +235,27 @@ namespace SudokuCollective.Data.Services
                         DifficultyLevel = difficultyLevel
                     };
 
-                    var difficultyResponse = await difficultiesRepository.Create(difficulty);
+                    var response = await difficultiesRepository.Create(difficulty);
 
-                    if (difficultyResponse.Success)
+                    if (response.Success)
                     {
-                        result.Success = difficultyResponse.Success;
-                        result.Difficulty = (IDifficulty)difficultyResponse.Object;
+                        result.Success = response.Success;
+                        result.Message = DifficultiesMessages.DifficultyCreatedMessage;
+                        result.Difficulty = (IDifficulty)response.Object;
 
                         return result;
                     }
-                    else if (!difficultyResponse.Success && difficultyResponse.Exception != null)
+                    else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = difficultyResponse.Success;
-                        result.Message = difficultyResponse.Exception.Message;
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = unableToAddDifficultyMessage;
+                        result.Message = DifficultiesMessages.DifficultyNotCreatedMessage;
 
                         return result;
                     }
@@ -271,7 +263,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = difficultyAlreadyExistsMessage;
+                    result.Message = DifficultiesMessages.DifficultyAlreadyExistsMessage;
 
                     return result;
                 }
@@ -294,19 +286,20 @@ namespace SudokuCollective.Data.Services
             {
                 if (await difficultiesRepository.HasEntity(id))
                 {
-                    var difficultyResponse = await difficultiesRepository.GetById(id);
+                    var response = await difficultiesRepository.GetById(id);
 
-                    if (difficultyResponse.Success)
+                    if (response.Success)
                     {
-                        ((Difficulty)difficultyResponse.Object).Name = updateDifficultyRequest.Name;
-                        ((Difficulty)difficultyResponse.Object).DisplayName = updateDifficultyRequest.DisplayName;
+                        ((Difficulty)response.Object).Name = updateDifficultyRequest.Name;
+                        ((Difficulty)response.Object).DisplayName = updateDifficultyRequest.DisplayName;
 
                         var updateDifficultyResponse = await difficultiesRepository
-                            .Update((Difficulty)difficultyResponse.Object);
+                            .Update((Difficulty)response.Object);
 
                         if (updateDifficultyResponse.Success)
                         {
                             result.Success = updateDifficultyResponse.Success;
+                            result.Message = DifficultiesMessages.DifficultyUpdatedMessage;
 
                             return result;
                         }
@@ -320,23 +313,23 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToUpdateDifficultyMessage;
+                            result.Message = DifficultiesMessages.DifficultyNotUpdatedMessage;
 
                             return result;
                         }
 
                     }
-                    else if (!difficultyResponse.Success && difficultyResponse.Exception != null)
+                    else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = difficultyResponse.Success;
-                        result.Message = difficultyResponse.Exception.Message;
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = difficultyNotFoundMessage;
+                        result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
 
                         return result;
                     }
@@ -344,7 +337,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = difficultyNotFoundMessage;
+                    result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
 
                     return result;
                 }
@@ -366,15 +359,16 @@ namespace SudokuCollective.Data.Services
             {
                 if (await difficultiesRepository.HasEntity(id))
                 {
-                    var difficultyResponse = await difficultiesRepository.GetById(id, true);
+                    var response = await difficultiesRepository.GetById(id, true);
 
-                    if (difficultyResponse.Success)
+                    if (response.Success)
                     {
-                        var updateDeleteResponse = await difficultiesRepository.Delete((Difficulty)difficultyResponse.Object);
+                        var updateDeleteResponse = await difficultiesRepository.Delete((Difficulty)response.Object);
 
                         if (updateDeleteResponse.Success)
                         {
                             result.Success = updateDeleteResponse.Success;
+                            result.Message = DifficultiesMessages.DifficultyDeletedMessage;
 
                             return result;
                         }
@@ -388,23 +382,23 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = unableToDeleteDifficultyMessage;
+                            result.Message = DifficultiesMessages.DifficultyNotDeletedMessage;
 
                             return result;
                         }
 
                     }
-                    else if (!difficultyResponse.Success && difficultyResponse.Exception != null)
+                    else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = difficultyResponse.Success;
-                        result.Message = difficultyResponse.Exception.Message;
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = difficultyNotFoundMessage;
+                        result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
 
                         return result;
                     }
@@ -412,7 +406,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = difficultyNotFoundMessage;
+                    result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
 
                     return result;
                 }
@@ -425,5 +419,6 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
         }
+        #endregion
     }
 }

@@ -13,6 +13,7 @@ using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Messages;
 
 namespace SudokuCollective.Data.Services
 {
@@ -80,6 +81,7 @@ namespace SudokuCollective.Data.Services
 
             result.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
             result.Success = true;
+            result.Message = UsersMessages.UserFoundMessage;
 
             return result;
         }
