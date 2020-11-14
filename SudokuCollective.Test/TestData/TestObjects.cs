@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
@@ -17,7 +16,6 @@ namespace SudokuCollective.Test.TestData
         {
             return new BaseRequest()
             {
-
                 License = GetLicense(),
                 RequestorId = 1,
                 AppId = 1
@@ -36,9 +34,9 @@ namespace SudokuCollective.Test.TestData
             };
         }
 
-        public static List<ISudokuCell> GetUpdateSudokuCells(int updatedValue)
+        public static List<SudokuCell> GetUpdateSudokuCells(int updatedValue)
         {
-            var cells = new List<ISudokuCell>()
+            var cells = new List<SudokuCell>()
             {
                 new SudokuCell(81,1,1,1,1,4,4,false,1),
                 new SudokuCell(58,2,2,1,1,2,updatedValue,true,1),
@@ -126,9 +124,9 @@ namespace SudokuCollective.Test.TestData
             return cells;
         }
 
-        public static List<ISudokuCell> GetUpdateInvalidSudokuCells(int updatedValue)
+        public static List<SudokuCell> GetUpdateInvalidSudokuCells(int updatedValue)
         {
-            var cells = new List<ISudokuCell>()
+            var cells = new List<SudokuCell>()
             {
                 new SudokuCell(81,1,1,1,1,4,4,false,2),
                 new SudokuCell(58,2,2,1,1,2,updatedValue,true,1),
@@ -306,9 +304,9 @@ namespace SudokuCollective.Test.TestData
             return cells;
         }
 
-        public static List<ISudokuCell> GetSolvedSudokuCells()
+        public static List<SudokuCell> GetSolvedSudokuCells()
         {
-            var cells = new List<ISudokuCell>()
+            var cells = new List<SudokuCell>()
             {
                 new SudokuCell(81,1,1,1,1,4,4,false,1),
                 new SudokuCell(58,2,2,1,1,2,2,true,1),

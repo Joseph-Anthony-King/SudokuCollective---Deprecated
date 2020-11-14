@@ -127,10 +127,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -206,10 +206,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -287,10 +287,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -365,10 +365,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -436,10 +436,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -506,10 +506,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -522,16 +522,31 @@ namespace SudokuCollective.Data.Repositories
             try
             {
                 dbSet.UpdateRange(entities);
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry.Id != 0)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Added;
+                    }
+                }
+
                 await context.SaveChangesAsync();
 
                 result.Success = true;
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -571,10 +586,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -688,10 +703,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -725,10 +740,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -766,10 +781,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -814,10 +829,10 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -851,10 +866,10 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
@@ -888,10 +903,10 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Exception = e;
+                result.Exception = exp;
 
                 return result;
             }
