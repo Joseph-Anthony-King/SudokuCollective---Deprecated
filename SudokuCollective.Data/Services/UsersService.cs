@@ -740,7 +740,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = UsersMessages.UsersNotFoundMessage;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
@@ -851,7 +851,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = UsersMessages.UnableToAddRoles;
+                            result.Message = UsersMessages.RolesNotAddedMessage;
 
                             return result;
                         }
@@ -910,7 +910,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = UsersMessages.UnableToRemoveRoles;
+                            result.Message = UsersMessages.RolesNotRemovedMessage;
 
                             return result;
                         }

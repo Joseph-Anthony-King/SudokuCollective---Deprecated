@@ -8,6 +8,7 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.Controllers;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -50,11 +51,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.SignUp(registerRequest, true);
-            var user = ((CreatedAtActionResult)result.Result.Result).Value;
+            var result = sutSuccess.SignUp(registerRequest);
+            var message = ((UserResult)((ObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result.Result).StatusCode;
+            var user = ((UserResult)((ObjectResult)result.Result.Result).Value).User;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
+            Assert.That(message, Is.EqualTo("Status Code 201: User Created"));
+            Assert.That(statusCode, Is.EqualTo(201));
             Assert.That(user, Is.InstanceOf<User>());
         }
 
@@ -65,13 +70,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.SignUp(registerRequest, true);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var result = sutFailure.SignUp(registerRequest);
+            var errorMessage = ((UserResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error creating user"));
+            Assert.That(errorMessage, Is.EqualTo("Status Code 404: User Not Created"));
+            Assert.That(statusCode, Is.EqualTo(404));
         }
     }
 }

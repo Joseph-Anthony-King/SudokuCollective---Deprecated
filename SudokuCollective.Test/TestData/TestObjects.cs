@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using SudokuCollective.Core.Models;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
-using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.TestData
 {
@@ -22,12 +23,49 @@ namespace SudokuCollective.Test.TestData
             };
         }
 
+        public static PageListModel GetPageListModel()
+        {
+            return new PageListModel()
+            {
+                Page = 1,
+                ItemsPerPage = 10,
+                SortBy = SortValue.NULL,
+                OrderByDescending = false,
+                IncludeCompletedGames = false
+            };
+        }
+
+        public static AppRequest GetAppRequest()
+        {
+            return new AppRequest()
+            {
+                Name = "New Test App 3",
+                DevUrl = "https://localhost:8080",
+                LiveUrl = "https://TestApp3.com",
+                License = TestObjects.GetLicense(),
+                RequestorId = 1,
+                PageListModel = new PageListModel()
+            };
+        }
+
         public static UpdateGameRequest GetUpdateGameRequest()
         {
             return new UpdateGameRequest()
             {
                 GameId = 1,
                 SudokuCells = GetUpdateSudokuCells(6),
+                License = GetLicense(),
+                RequestorId = 1,
+                PageListModel = new PageListModel()
+            };
+        }
+
+        public static GetGamesRequest GetGamesRequest() 
+        {
+            return new GetGamesRequest()
+            {
+                UserId = 1,
+                AppId = 1,
                 License = GetLicense(),
                 RequestorId = 1,
                 PageListModel = new PageListModel()

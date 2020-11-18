@@ -1134,17 +1134,31 @@ namespace SudokuCollective.Data.Services
 
         public async Task<bool> IsRequestValidOnThisLicense(int id, string license, int userId)
         {
-            var requestor = (User)(await usersRepository.GetById(userId, true)).Object;
-            var validLicense = await appsRepository.IsAppLicenseValid(license);
-            var requestorRegisteredToApp = await appsRepository.IsUserRegisteredToApp(id, license, userId);
+            if (await usersRepository.HasEntity(userId))
+            {
+                if (await appsRepository.IsAppLicenseValid(license))
+                {
+                    var requestor = (User)(await usersRepository.GetById(userId, true)).Object;
+                    var validLicense = await appsRepository.IsAppLicenseValid(license);
+                    var requestorRegisteredToApp = await appsRepository.IsUserRegisteredToApp(id, license, userId);
 
-            if (requestorRegisteredToApp && validLicense)
-            {
-                return true;
-            }
-            else if (requestor.IsSuperUser && validLicense)
-            {
-                return true;
+                    if (requestorRegisteredToApp && validLicense)
+                    {
+                        return true;
+                    }
+                    else if (requestor.IsSuperUser && validLicense)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
@@ -1154,17 +1168,31 @@ namespace SudokuCollective.Data.Services
 
         public async Task<bool> IsOwnerOfThisLicense(int id, string license, int userId)
         {
-            var requestor = await usersRepository.GetById(userId, false);
-            var validLicense = await appsRepository.IsAppLicenseValid(license);
-            var requestorOwnerOfThisApp = await appsRepository.IsUserOwnerOfApp(id, license, userId);
+            if (await usersRepository.HasEntity(userId))
+            {
+                if (await appsRepository.IsAppLicenseValid(license))
+                {
+                    var requestor = (User)(await usersRepository.GetById(userId, false)).Object;
+                    var validLicense = await appsRepository.IsAppLicenseValid(license);
+                    var requestorOwnerOfThisApp = await appsRepository.IsUserOwnerOfApp(id, license, userId);
 
-            if (requestorOwnerOfThisApp && validLicense)
-            {
-                return true;
-            }
-            else if (((User)requestor).IsSuperUser && validLicense)
-            {
-                return true;
+                    if (requestorOwnerOfThisApp && validLicense)
+                    {
+                        return true;
+                    }
+                    else if (requestor.IsSuperUser && validLicense)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {

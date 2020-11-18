@@ -1,24 +1,25 @@
 ﻿using System.Threading.Tasks;
-using Moq;
 using NUnit.Framework;
-using SudokuCollective.Test.TestData;
 using Microsoft.Extensions.Options;
-using SudokuCollective.Data.Models;
 using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.TokenModels;
 using SudokuCollective.Data.Services;
-using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
+using SudokuCollective.Test.MockRepositories;
+using SudokuCollective.Test.MockServices;
+using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Services
 {
     public class AuthenticateServiceShould
     {
-        private DatabaseContext _context;
+        private DatabaseContext context;
+        private MockUsersRepository MockUsersRepository;
+        private MockRolesRepository MockRolesRepository;
+        private MockUserManagementService MockUserManagementService;
+        private TokenManagement tokenManagement;
         private IAuthenticateService sutValid;
         private IAuthenticateService sutInvalid;
-        private Mock<IUserManagementService> mockUserManagementServiceValid;
-        private Mock<IUserManagementService> mockUserManagementServiceInvalid;
-        private TokenManagement tokenManagement;
         private string userName;
         private string password;
 
@@ -28,17 +29,12 @@ namespace SudokuCollective.Test.TestCases.Services
             userName = "TestSuperUser";
             password = "password1";
 
-            _context = await TestDatabase.GetDatabaseContext();
+            context = await TestDatabase.GetDatabaseContext();
 
-            mockUserManagementServiceValid = new Mock<IUserManagementService>();
-            mockUserManagementServiceValid
-                .Setup(service => service.IsValidUser(userName, password))
-                .Returns(Task.FromResult(true));
+            MockUsersRepository = new MockUsersRepository(context);
+            MockRolesRepository = new MockRolesRepository(context);
 
-            mockUserManagementServiceInvalid = new Mock<IUserManagementService>();
-            mockUserManagementServiceInvalid
-                .Setup(service => service.IsValidUser(userName, password))
-                .Returns(Task.FromResult(false));
+            MockUserManagementService = new MockUserManagementService();
 
             tokenManagement = new TokenManagement()
             {
@@ -51,8 +47,16 @@ namespace SudokuCollective.Test.TestCases.Services
 
             IOptions<TokenManagement> options = Options.Create<TokenManagement>(tokenManagement);
 
-            sutValid = new AuthenticateService(_context, mockUserManagementServiceValid.Object, options);
-            sutInvalid = new AuthenticateService(_context, mockUserManagementServiceInvalid.Object, options);
+            sutValid = new AuthenticateService(
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object, 
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object, 
+                MockUserManagementService.UserManagementServiceSuccssfulRequest.Object,
+                options);
+            sutInvalid = new AuthenticateService(
+                MockUsersRepository.UsersRepositoryFailedRequest.Object,
+                MockRolesRepository.RolesRepositoryFailedRequest.Object,
+                MockUserManagementService.UserManagementServiceFailedRequest.Object, 
+                options);
         }
 
         [Test]
@@ -67,15 +71,13 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             // Act
-            var result = sutValid.IsAuthenticated(
-                tokenRequest,
-                out string token,
-                out IAuthenticatedUser user);
+            var result = (sutValid.IsAuthenticated(tokenRequest)).Result;
 
             // Assert
-            Assert.That(result, Is.True);
-            Assert.IsNotNull(token);
-            Assert.AreEqual(userName, user.UserName);
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("User Found"));
+            Assert.IsNotNull(result.Token);
+            Assert.AreEqual(userName, result.User.UserName);
         }
 
         [Test]
@@ -90,14 +92,13 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             // Act
-            var result = sutInvalid.IsAuthenticated(tokenRequest,
-                out string token,
-                out IAuthenticatedUser user);
+            var result = (sutInvalid.IsAuthenticated(tokenRequest)).Result;
 
             // Assert
-            Assert.That(result, Is.False);
-            Assert.IsEmpty(token);
-            Assert.AreNotEqual(userName, user.UserName);
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.IsEmpty(result.Token);
+            Assert.AreNotEqual(userName, result.User.UserName);
         }
     }
 }

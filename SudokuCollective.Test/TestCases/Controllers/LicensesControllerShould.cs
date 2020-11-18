@@ -7,6 +7,7 @@ using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.Controllers;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -50,13 +51,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetLicense(appId);
-            var license = ((OkObjectResult)result.Result).Value;
+            var message = ((LicenseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
+            var license = ((LicenseResult)((OkObjectResult)result.Result).Value).License;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(license, Is.InstanceOf<string>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Found"));
             Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(license, Is.InstanceOf<string>());
         }
 
         [Test]
@@ -68,13 +71,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetLicense(appId);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((LicenseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("App not found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

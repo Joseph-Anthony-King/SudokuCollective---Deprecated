@@ -18,6 +18,7 @@ namespace SudokuCollective.Test.MockRepositories
         private readonly DatabaseContext context;
         internal Mock<IGamesRepository<Game>> GamesRepositorySuccessfulRequest { get; set; }
         internal Mock<IGamesRepository<Game>> GamesRepositoryFailedRequest { get; set; }
+        internal Mock<IGamesRepository<Game>> GamesRepositoryUpdateFailedRequest { get; set; }
 
         public MockGamesRepository(DatabaseContext ctxt)
         {
@@ -26,6 +27,7 @@ namespace SudokuCollective.Test.MockRepositories
 
             GamesRepositorySuccessfulRequest = new Mock<IGamesRepository<Game>>();
             GamesRepositoryFailedRequest = new Mock<IGamesRepository<Game>>();
+            GamesRepositoryUpdateFailedRequest = new Mock<IGamesRepository<Game>>();
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
                 gamesRepo.Create(It.IsAny<Game>()))
@@ -214,6 +216,106 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.Create(It.IsAny<Game>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = new Game(
+                            context.Users.FirstOrDefault(predicate: u => u.Id == 1),
+                            new SudokuMatrix(),
+                            context.Difficulties.FirstOrDefault(predicate: d => d.DifficultyLevel == DifficultyLevel.TEST),
+                            context.Apps.Where(a => a.Id == 1).Select(a => a.Id).FirstOrDefault())
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.GetAll(It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context.Games.ToList().ConvertAll(g => (IEntityBase)g)
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.Update(It.IsAny<Game>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.UpdateRange(It.IsAny<List<Game>>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context.Games.ToList().ConvertAll(g => (IEntityBase)g)
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.Delete(It.IsAny<Game>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.DeleteRange(It.IsAny<List<Game>>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.HasEntity(It.IsAny<int>()))
+                    .Returns(Task.FromResult(true));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.GetGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.GetGames(It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context.Games.ToList().ConvertAll(g => (IEntityBase)g)
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.GetMyGames(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context.Games.ToList().ConvertAll(g => (IEntityBase)g)
+                    } as IRepositoryResponse));
+
+            GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
+                gamesRepo.DeleteMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
                     } as IRepositoryResponse));
         }
     }

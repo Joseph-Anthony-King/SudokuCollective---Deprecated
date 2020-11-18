@@ -47,11 +47,7 @@ namespace SudokuCollective.Data.Services
 
             if (userResponse.Success)
             {
-                if ((IUser)userResponse.Object == null)
-                {
-                    return UserAuthenticationErrorType.USERNAMEINVALID;
-                }
-                else if (!BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
+                if (!BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
                 {
                     return UserAuthenticationErrorType.PASSWORDINVALID;
                 }
@@ -59,6 +55,10 @@ namespace SudokuCollective.Data.Services
                 {
                     return UserAuthenticationErrorType.NULL;
                 }
+            }
+            else if (!userResponse.Success && userResponse.Object == null)
+            {
+                return UserAuthenticationErrorType.USERNAMEINVALID;
             }
             else
             {

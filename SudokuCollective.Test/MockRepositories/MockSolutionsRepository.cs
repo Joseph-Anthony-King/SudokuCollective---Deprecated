@@ -8,7 +8,6 @@ using SudokuCollective.Data.Models.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SudokuCollective.Test.MockRepositories
@@ -22,6 +21,9 @@ namespace SudokuCollective.Test.MockRepositories
         public MockSolutionsRepository(DatabaseContext ctxt)
         {
             context = ctxt;
+
+            SolutionsRepositorySuccessfulRequest = new Mock<ISolutionsRepository<SudokuSolution>>();
+            SolutionsRepositoryFailedRequest = new Mock<ISolutionsRepository<SudokuSolution>>();
 
             SolutionsRepositorySuccessfulRequest.Setup(solutionsRepo =>
                 solutionsRepo.Create(It.IsAny<SudokuSolution>()))

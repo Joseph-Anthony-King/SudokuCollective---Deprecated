@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using SudokuCollective.Data.Models;
-using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.Controllers;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -31,15 +31,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             baseRequest = new BaseRequest();
 
-            appRequest = new AppRequest()
-            {
-                Name = "New Test App 3",
-                DevUrl = "https://localhost:8080",
-                LiveUrl = "https://TestApp3.com",
-                License = TestObjects.GetLicense(),
-                RequestorId = 1,
-                PageListModel = new PageListModel()
-            };
+            appRequest = TestObjects.GetAppRequest();
 
             sutSuccess = new AppsController(mockAppsService.AppsServiceSuccessfulRequest.Object);
             sutFailure = new AppsController(mockAppsService.AppsServiceFailedRequest.Object);
@@ -55,14 +47,16 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetApp(appId, baseRequest);
-            var app = ((OkObjectResult)result.Result.Result).Value;
+            var app = ((AppResult)((OkObjectResult)result.Result.Result).Value).App;
+            var message = ((AppResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Found"));
+            Assert.That(statusCode, Is.EqualTo(200));
             Assert.That(app, Is.InstanceOf<App>());
             Assert.That(((App)app).Id, Is.EqualTo(1));
-            Assert.That(statusCode, Is.EqualTo(200));
         }
 
         [Test]
@@ -74,13 +68,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetApp(appId, baseRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((AppResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving app"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -92,11 +85,13 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetAppByLicense(baseRequest, true);
-            var app = ((OkObjectResult)result.Result.Result).Value;
+            var app = ((AppResult)((OkObjectResult)result.Result.Result).Value).App;
+            var message = ((AppResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Found"));
             Assert.That(app, Is.InstanceOf<App>());
             Assert.That(statusCode, Is.EqualTo(200));
         }
@@ -109,13 +104,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetAppByLicense(baseRequest, true);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((AppResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving app"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -127,13 +121,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetApps(baseRequest, true);
-            var apps = ((OkObjectResult)result.Result.Result).Value;
+            var apps = ((AppsResult)((OkObjectResult)result.Result.Result).Value).Apps;
+            var message = ((AppsResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
-            Assert.That(apps, Is.InstanceOf<List<IApp>>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Apps Found"));
             Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(apps, Is.InstanceOf<List<IApp>>());
         }
 
         [Test]
@@ -144,13 +140,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetApps(baseRequest, true);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((AppsResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving apps"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Apps Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -162,10 +157,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.UpdateApp(appRequest);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((AppResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Updated"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -177,13 +174,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.UpdateApp(appRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((AppResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error updating app"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App Not Updated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -195,11 +191,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetUsers(baseRequest, true);
-            var users = ((OkObjectResult)result.Result.Result).Value;
+            var message = ((UsersResult)((OkObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+            var users = ((UsersResult)((OkObjectResult)result.Result.Result).Value).Users;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
-            Assert.That(((List<IUser>)users).Count, Is.EqualTo(2));
+            Assert.That(message, Is.EqualTo("Status Code 200: Users Found"));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(users.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -210,13 +210,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetUsers(baseRequest, true);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((UsersResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving app users"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Users Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -228,10 +227,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.AddUser(3, baseRequest);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Added To App"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -243,13 +244,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.AddUser(3, baseRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error adding user to app"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User Not Added To App"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -261,11 +261,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.RemoveUser(3, baseRequest);
-            var processResult = result.Result;
-            var statusCode = ((OkResult)processResult).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Removed From App"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -277,13 +278,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.RemoveUser(3, baseRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error removing user from app"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User Not Removed From App"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -295,10 +295,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.ActivateApp(1);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Activated"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -310,13 +312,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.ActivateApp(1);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error activating app"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App Not Activated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -328,10 +329,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.DeactivateApp(1);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Deactivated"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -343,13 +346,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.DeactivateApp(1);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error deactivating app"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App Not Deactivated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -362,38 +364,54 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var resultOne = sutInvalid.GetApp(appId, baseRequest);
+            var messageOne = ((BadRequestObjectResult)resultOne.Result.Result).Value;
             var statusCodeOne = ((BadRequestObjectResult)resultOne.Result.Result).StatusCode;
 
             var resultTwo = sutInvalid.GetAppByLicense(baseRequest, true);
+            var messageTwo = ((BadRequestObjectResult)resultTwo.Result.Result).Value;
             var statusCodeTwo = ((BadRequestObjectResult)resultTwo.Result.Result).StatusCode;
 
             var resultThree = sutInvalid.GetApps(baseRequest, true);
+            var messageThree = ((BadRequestObjectResult)resultThree.Result.Result).Value;
             var statusCodeThree = ((BadRequestObjectResult)resultThree.Result.Result).StatusCode;
 
             var resultFour = sutInvalid.UpdateApp(appRequest);
+            var messageFour = ((BadRequestObjectResult)resultFour.Result).Value;
             var statusCodeFour = ((BadRequestObjectResult)resultFour.Result).StatusCode;
 
             var resultFive = sutInvalid.GetUsers(baseRequest, true);
+            var messageFive = ((BadRequestObjectResult)resultFive.Result.Result).Value;
             var statusCodeFive = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
 
             var resultSix = sutInvalid.AddUser(3, baseRequest);
+            var messageSix = ((BadRequestObjectResult)resultSix.Result).Value;
             var statusCodeSix = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
 
             var resultSeven = sutInvalid.RemoveUser(3, baseRequest);
+            var messageSeven = ((BadRequestObjectResult)resultSeven.Result).Value;
             var statusCodeSeven = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
 
             // Assert
             Assert.That(resultOne.Result, Is.InstanceOf<ActionResult<App>>());
+            Assert.That(messageOne, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeOne, Is.EqualTo(400));
             Assert.That(resultTwo.Result, Is.InstanceOf<ActionResult<App>>());
+            Assert.That(messageTwo, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeTwo, Is.EqualTo(400));
+            Assert.That(resultThree.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
+            Assert.That(messageThree, Is.EqualTo("Status Code 400: Invalid Request On This License"));
+            Assert.That(statusCodeThree, Is.EqualTo(400));
             Assert.That(resultFour.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(messageFour, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeFour, Is.EqualTo(400));
             Assert.That(resultFive.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
+            Assert.That(messageFive, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeFive, Is.EqualTo(400));
             Assert.That(resultSix.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(messageSix, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeSix, Is.EqualTo(400));
             Assert.That(resultSeven.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(messageSeven, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeSeven, Is.EqualTo(400));
 
         }
@@ -405,11 +423,13 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.DeleteApp(2);
+            var result = sutSuccess.DeleteApp(2, baseRequest);
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Deleted"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -420,14 +440,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.DeleteApp(2);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
-            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+            var result = sutFailure.DeleteApp(2, baseRequest);
+            var errorMessage = ((BadRequestObjectResult)result.Result).Value;
+            var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.EqualTo("Error deleting app"));
-            Assert.That(statusCode, Is.EqualTo(404));
+            Assert.That(errorMessage, Is.EqualTo("Status Code 400: You Are Not The Owner Of This App"));
+            Assert.That(statusCode, Is.EqualTo(400));
         }
 
         [Test]
@@ -438,10 +458,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.ResetApp(2, baseRequest);
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Deleted"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -453,12 +475,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.ResetApp(2, baseRequest);
-            var errorMessage = ((BadRequestObjectResult)result.Result).Value;
+            var message = ((BadRequestObjectResult)result.Result).Value;
             var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.EqualTo("You are not the owner of this app"));
+            Assert.That(message, Is.EqualTo("Status Code 400: You Are Not The Owner Of This App"));
             Assert.That(statusCode, Is.EqualTo(400));
         }
     }

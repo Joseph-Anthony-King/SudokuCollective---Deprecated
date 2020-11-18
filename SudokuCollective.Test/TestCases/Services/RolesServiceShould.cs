@@ -1,28 +1,36 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
-using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Services;
-using SudokuCollective.Core.Models;
+using SudokuCollective.Test.MockRepositories;
 using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Services
 {
     public class RolesServiceShould
     {
-        private DatabaseContext _context;
+        private DatabaseContext context;
+        private MockRolesRepository MockRolesRepository;
         private RolesService sut;
+        private RolesService sutFailue;
         private string license;
 
         [SetUp]
         public async Task Setup()
         {
-            _context = await TestDatabase.GetDatabaseContext();
-            sut = new RolesService(_context);
+            context = await TestDatabase.GetDatabaseContext();
+            MockRolesRepository = new MockRolesRepository(context);
+            sut = new RolesService(
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+            sutFailue = new RolesService(
+                MockRolesRepository.RolesRepositoryFailedRequest.Object);
             license = TestObjects.GetLicense();
         }
 
@@ -37,7 +45,22 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Role Found"));
             Assert.That(result.Role, Is.TypeOf<Role>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task IssueMessageIfRoleNotFound()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailue.GetRole(1);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Role Not Found"));
         }
 
         [Test]
@@ -51,7 +74,22 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Roles.Count, Is.EqualTo(2));
+            Assert.That(result.Message, Is.EqualTo("Roles Found"));
+            Assert.That(result.Roles, Is.TypeOf<List<IRole>>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task IssueMessageIfRolesNotFound()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailue.GetRoles();
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Roles Not Found"));
         }
 
         [Test]
@@ -69,23 +107,8 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Roles.Count, Is.EqualTo(2));
+            Assert.That(result.Message, Is.EqualTo("Roles Found"));
             Assert.That(nullAndSuperUserRoleLevelsBlocked, Is.False);
-        }
-
-        [Test]
-        [Category("Services")]
-        public async Task CreateARole()
-        {
-            // Arrange
-
-            // Act
-            var result = await sut.CreateRole(
-                "testRole", RoleLevel.NULL);
-
-            // Assert
-            Assert.That(result.Success, Is.True);
-            Assert.That(result.Role, Is.TypeOf<Role>());
         }
 
         [Test]
@@ -106,12 +129,36 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.UpdateRole(1, updateRoleRequest);
-            var updatedDifficulty = _context.Roles
+            var updatedDifficulty = context.Roles
                 .FirstOrDefault(predicate: role => role.Id == 1);
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(updatedDifficulty.Name, Is.EqualTo("Null UPDATED!"));
+            Assert.That(result.Message, Is.EqualTo("Role Updated"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task IssueMessageIfUpdateFails()
+        {
+            // Arrange
+            var updateRoleRequest = new UpdateRoleRequest()
+            {
+
+                Id = 10,
+                Name = "Null UPDATED!",
+                RoleLevel = RoleLevel.NULL,
+                License = license,
+                RequestorId = 1,
+                PageListModel = new PageListModel()
+            };
+
+            // Act
+            var result = await sutFailue.UpdateRole(1, updateRoleRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Role Not Found"));
         }
 
         [Test]
@@ -122,11 +169,24 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.DeleteRole(1);
-            var roles = _context.Roles.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(roles.Count, Is.EqualTo(3));
+            Assert.That(result.Message, Is.EqualTo("Role Deleted"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task IssueMessageIfRoleNotDeleted()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailue.DeleteRole(10);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Role Not Found"));
         }
     }
 }

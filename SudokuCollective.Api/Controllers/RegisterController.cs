@@ -35,7 +35,9 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                return NotFound(result.Message);
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
             }
         }
     }

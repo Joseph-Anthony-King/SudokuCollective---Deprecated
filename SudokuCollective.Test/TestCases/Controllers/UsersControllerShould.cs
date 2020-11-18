@@ -9,7 +9,7 @@ using SudokuCollective.Api.Controllers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.PageModels;
-using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -81,13 +81,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetUser(userId, baseRequest, true);
-            var user = ((OkObjectResult)result.Result.Result).Value;
+            var message = ((UserResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+            var user = ((UserResult)((OkObjectResult)result.Result.Result).Value).User;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
-            Assert.That(user, Is.InstanceOf<User>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Found"));
             Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(user, Is.InstanceOf<User>());
         }
 
         [Test]
@@ -99,13 +101,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetUser(userId, baseRequest, true);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((UserResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving user"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -117,12 +118,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetUsers(baseRequest);
-            var users = ((OkObjectResult)result.Result.Result).Value;
+            var message = ((UsersResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
-            Assert.That(((List<IUser>)users).Count, Is.EqualTo(3));
+            Assert.That(message, Is.EqualTo("Status Code 200: Users Found"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -134,13 +135,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetUsers(baseRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((UsersResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving users"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Users Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -153,29 +153,30 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.PutUser(userId, updateUserRequest);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<OkResult>());
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Updated"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldUpdateUsersFail()
+        public void IssueErrorAndMessageShouldUpdateUserFail()
         {
             // Arrange
             int userId = 1;
 
             // Act
             var result = sutFailure.PutUser(userId, updateUserRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error updating user"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User Not Updated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -188,10 +189,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.UpdatePassword(userId, updatePasswordRequest);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<OkResult>());
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Password Updated"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -204,13 +207,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.UpdatePassword(userId, updatePasswordRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error updating user password"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Password Not Updated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -223,10 +225,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.DeleteUser(userId, baseRequest);
-            var statusCode = ((OkResult)result.Result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Deleted"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -239,13 +243,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.DeleteUser(userId, baseRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error deleting user"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User Not Deleted"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -258,10 +261,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.AddRoles(userId, updateUserRoleRequest);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<OkResult>());
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Roles Added"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -274,13 +279,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.AddRoles(userId, updateUserRoleRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error adding role to user"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Roles Not Added"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -293,10 +297,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.RemoveRoles(userId, updateUserRoleRequest);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<OkResult>());
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Roles Removed"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -309,13 +315,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.RemoveRoles(userId, updateUserRoleRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error removing role from user"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Roles Not Removed"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -328,10 +333,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.ActivateUser(userId);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<OkResult>());
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Activated"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -344,13 +351,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.ActivateUser(userId);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error activating user"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User Not Activated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -363,10 +369,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.DeactivateUser(userId);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<OkResult>());
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Deactivated"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -379,13 +387,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.DeactivateUser(userId);
-            var errorMessage = ((NotFoundObjectResult)result.Result).Value;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error deactivating user"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User Not Deactivated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

@@ -5,14 +5,17 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Services;
+using SudokuCollective.Test.MockRepositories;
 using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Services
 {
     public class UserManagementServiceShould
     {
-        private DatabaseContext _context;
+        private DatabaseContext context;
+        private MockUsersRepository MockUsersRepository;
         private IUserManagementService sut;
+        private IUserManagementService sutFailure;
         private string userName;
         private string password;
         private string email;
@@ -20,8 +23,14 @@ namespace SudokuCollective.Test.TestCases.Services
         [SetUp]
         public async Task Setup()
         {
-            _context = await TestDatabase.GetDatabaseContext();
-            sut = new UserManagementService(_context);
+            context = await TestDatabase.GetDatabaseContext();
+            MockUsersRepository = new MockUsersRepository(context);
+
+            sut = new UserManagementService(
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object);
+            sutFailure = new UserManagementService(
+                MockUsersRepository.UsersRepositoryFailedRequest.Object);
+
             userName = "TestSuperUser";
             password = "password1";
             email = "TestSuperUser@example.com";
@@ -48,7 +57,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var invalidUserName = "invalidUser";
 
             // Act
-            var result = await sut.IsValidUser(invalidUserName, password);
+            var result = await sutFailure.IsValidUser(invalidUserName, password);
 
             // Assert
             Assert.That(result, Is.False);
@@ -76,7 +85,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var invalidUserName = "invalidUser";
 
             // Act
-            var result = await sut.ConfirmAuthenticationIssue(invalidUserName, password);
+            var result = await sutFailure.ConfirmAuthenticationIssue(invalidUserName, password);
 
             // Assert
             Assert.That(result, Is.EqualTo(UserAuthenticationErrorType.USERNAMEINVALID));
@@ -121,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var invalidEmail = "invalidEmail@example.com";
 
             // Act
-            var result = await sut.ConfirmUserName(invalidEmail);
+            var result = await sutFailure.ConfirmUserName(invalidEmail);
             var success = result.Success;
             var message = result.Message;
 

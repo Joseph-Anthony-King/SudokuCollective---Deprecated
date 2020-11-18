@@ -9,7 +9,7 @@ using SudokuCollective.Api.Controllers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.PageModels;
-using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -85,13 +85,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetSolution(solutionId, baseRequest);
-            var solution = ((OkObjectResult)result.Result.Result).Value;
+            var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+            var solution = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Solution;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(solution, Is.InstanceOf<SudokuSolution>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Solution Found"));
             Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(solution, Is.InstanceOf<SudokuSolution>());
         }
 
         [Test]
@@ -103,13 +105,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetSolution(solutionId, baseRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((SolutionResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving solution"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Solution Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -121,12 +122,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.GetSolutions(baseRequest, true);
-            var difficulties = ((OkObjectResult)result.Result.Result).Value;
+            var message = ((SolutionsResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<SudokuSolution>>>());
-            Assert.That(((List<ISudokuSolution>)difficulties).Count, Is.EqualTo(3));
+            Assert.That(message, Is.EqualTo("Status Code 200: Solutions Found"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -138,13 +139,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.GetSolutions(baseRequest, true);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((SolutionsResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<SudokuSolution>>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error retrieving solutions"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Solutions Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -156,12 +156,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.Solve(solveRequest);
-            var solution = ((OkObjectResult)result.Result.Result).Value;
+            var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(solution, Is.InstanceOf<SudokuSolution>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Solution Solved"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -173,13 +173,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.Solve(solveRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((SolutionResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error solving sudoku matrix"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Solution Not Solved"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -191,12 +190,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.Generate(solveRequest);
-            var solution = ((OkObjectResult)result.Result.Result).Value;
+            var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(solution, Is.InstanceOf<SudokuSolution>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Solution Generated"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -208,13 +207,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.Generate(solveRequest);
-            var errorMessage = ((NotFoundObjectResult)result.Result.Result).Value;
+            var message = ((SolutionResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(errorMessage, Is.InstanceOf<string>());
-            Assert.That(errorMessage, Is.EqualTo("Error generating solution"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Solution Not Generated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -226,12 +224,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSolvedFailure.Solve(solveRequest);
-            var solution = ((OkObjectResult)result.Result.Result).Value;
+            var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(solution, Is.EqualTo("Need more values in order to deduce a solution."));
+            Assert.That(message, Is.EqualTo("Status Code 200: Solution Not Solved"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -243,10 +241,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.AddSolutions(addSolutionRequest);
-            var statusCode = ((OkResult)result.Result).StatusCode;
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Solutions Added"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -259,13 +259,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Act
             var result = sutSuccess.AddSolutions(invalidAddSolutionRequest);
             var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
-            var statusMessage = ((BadRequestObjectResult)result.Result).Value;
-            var errorMessage = "The amount of solutions requested, 1001, exceeds the service's 1,000 solution limit";
+            var message = ((BadRequestObjectResult)result.Result).Value;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 400: The Amount Of Solutions Requested, 1001, Exceeds The Service's 1,000 Limit"));
             Assert.That(statusCode, Is.EqualTo(400));
-            Assert.That(statusMessage, Is.EqualTo(errorMessage));
         }
 
         [Test]
@@ -276,10 +275,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.AddSolutions(addSolutionRequest);
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Solutions Not Added"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

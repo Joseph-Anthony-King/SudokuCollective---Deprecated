@@ -22,6 +22,9 @@ namespace SudokuCollective.Test.MockRepositories
         {
             context = ctxt;
 
+            DifficultiesRepositorySuccessfulRequest = new Mock<IDifficultiesRepository<Difficulty>>();
+            DifficultiesRepositoryFailedRequest = new Mock<IDifficultiesRepository<Difficulty>>();
+
             DifficultiesRepositorySuccessfulRequest.Setup(difficultiesRepo =>
                 difficultiesRepo.Create(It.IsAny<Difficulty>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
@@ -43,7 +46,11 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
-                        Objects = context.Difficulties.ToList().ConvertAll(d => (IEntityBase)d)
+                        Objects = context.Difficulties
+                            .Where(d => 
+                                d.DifficultyLevel != DifficultyLevel.NULL && d.DifficultyLevel != DifficultyLevel.TEST)
+                            .ToList()
+                            .ConvertAll(d => (IEntityBase)d)
                     } as IRepositoryResponse));
 
             DifficultiesRepositorySuccessfulRequest.Setup(difficultiesRepo =>

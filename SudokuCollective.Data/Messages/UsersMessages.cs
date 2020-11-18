@@ -26,9 +26,9 @@
         public static string EmailRequiredMessage = "Email Required";
         public static string EmailDoesNotExist = "Email Does Not Exist";
         public static string RolesAddedMessage = "Roles Added";
-        public static string UnableToAddRoles = "Unable To Add Roles";
+        public static string RolesNotAddedMessage = "Roles Not Added";
         public static string RolesRemovedMessage = "Roles Removed";
-        public static string UnableToRemoveRoles = "Unable To Remove Roles";
+        public static string RolesNotRemovedMessage = "Roles Not Removed";
         public static string RoleInvalidMessage = "Role Invalid";
         public static string PasswordUpdatedMessage = "Password Updated";
         public static string PasswordNotUpdatedMessage = "Password Not Updated";

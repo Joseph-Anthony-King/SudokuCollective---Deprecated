@@ -3,27 +3,33 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Services;
-using SudokuCollective.Core.Models;
 using SudokuCollective.Test.TestData;
+using SudokuCollective.Test.MockRepositories;
 
 namespace SudokuCollective.Test.TestCases.Services
 {
     public class DifficultiesServiceShould
     {
-        private DatabaseContext _context;
+        private DatabaseContext context;
+        private MockDifficultiesRepository MockDifficultiesRepository;
         private IDifficultiesService sut;
         private string license;
+        private PageListModel pageListModel;
 
         [SetUp]
         public async Task Setup()
         {
-            _context = await TestDatabase.GetDatabaseContext();
-            sut = new DifficultiesService(_context);
+            context = await TestDatabase.GetDatabaseContext();
+            MockDifficultiesRepository = new MockDifficultiesRepository(context);
+            sut = new DifficultiesService(
+                MockDifficultiesRepository.DifficultiesRepositorySuccessfulRequest.Object);
             license = TestObjects.GetLicense();
+            pageListModel = TestObjects.GetPageListModel();
         }
 
         [Test]
@@ -37,6 +43,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Difficulty Found"));
             Assert.That(result.Difficulty, Is.TypeOf<Difficulty>());
         }
 
@@ -47,11 +54,11 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulties();
+            var result = await sut.GetDifficulties(pageListModel);
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Difficulties.Count, Is.EqualTo(4));
+            Assert.That(result.Message, Is.EqualTo("Difficulties Found"));
         }
 
         [Test]
@@ -61,7 +68,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulties();
+            var result = await sut.GetDifficulties(pageListModel);
             var nullAndTestDifficultyLevelsBlocked = result.Difficulties
                 .Any(difficulty =>
                     difficulty.DifficultyLevel.Equals(DifficultyLevel.NULL)
@@ -69,23 +76,8 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Difficulties.Count, Is.EqualTo(4));
+            Assert.That(result.Message, Is.EqualTo("Difficulties Found"));
             Assert.That(nullAndTestDifficultyLevelsBlocked, Is.False);
-        }
-
-        [Test]
-        [Category("Services")]
-        public async Task CreateADifficulty()
-        {
-            // Arrange
-
-            // Act
-            var result = await sut.CreateDifficulty(
-                "testDifficulty", DifficultyLevel.NULL);
-
-            // Assert
-            Assert.That(result.Success, Is.True);
-            Assert.That(result.Difficulty, Is.TypeOf<Difficulty>());
         }
 
         [Test]
@@ -97,7 +89,6 @@ namespace SudokuCollective.Test.TestCases.Services
             {
                 Id = 1,
                 Name = "Null UPDATED!",
-                DifficultyLevel = DifficultyLevel.NULL,
                 License = license,
                 RequestorId = 1,
                 PageListModel = new PageListModel()
@@ -105,12 +96,13 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.UpdateDifficulty(1, updateDifficultyRequest);
-            var updatedDifficulty = _context.Difficulties
+            var updatedDifficulty = context.Difficulties
                 .FirstOrDefault(predicate: difficulty => difficulty.Id == 1);
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(updatedDifficulty.Name, Is.EqualTo("Null UPDATED!"));
+            Assert.That(result.Message, Is.EqualTo("Difficulty Updated"));
+            Assert.That(updatedDifficulty.Name, Is.EqualTo("Null"));
         }
 
         [Test]
@@ -121,11 +113,10 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.DeleteDifficulty(1);
-            var difficulties = _context.Difficulties.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(difficulties.Count, Is.EqualTo(5));
+            Assert.That(result.Message, Is.EqualTo("Difficulty Deleted"));
         }
     }
 }

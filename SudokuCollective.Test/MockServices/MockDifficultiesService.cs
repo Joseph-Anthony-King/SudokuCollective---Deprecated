@@ -1,27 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Moq;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Test.MockRepositories;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.PageModels;
+using SudokuCollective.Core.Interfaces.Services;
 
 namespace SudokuCollective.Test.MockServices
 {
     public class MockDifficultiesService
     {
-        private DatabaseContext _context;
+        private MockDifficultiesRepository MockDifficultiesRepository { get; set; }
+
         internal Mock<IDifficultiesService> DifficultiesServiceSuccessfulRequest { get; set; }
         internal Mock<IDifficultiesService> DifficultiesServiceFailedRequest { get; set; }
 
         public MockDifficultiesService(DatabaseContext context)
         {
-            _context = context;
+            MockDifficultiesRepository = new MockDifficultiesRepository(context);
+
             DifficultiesServiceSuccessfulRequest = new Mock<IDifficultiesService>();
             DifficultiesServiceFailedRequest = new Mock<IDifficultiesService>();
 
@@ -29,92 +32,162 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.GetDifficulty(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
-                    Success = true,
-                    Message = string.Empty,
-                    Difficulty = _context.Difficulties.FirstOrDefault(predicate: difficulty => difficulty.Id == 1)
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultyFoundMessage,
+                    Difficulty = (Difficulty)MockDifficultiesRepository
+                        .DifficultiesRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Result
+                        .Object
                 } as IDifficultyResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.GetDifficulties(It.IsAny<bool>()))
+                difficultiesService.GetDifficulties(It.IsAny<PageListModel>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new DifficultiesResult()
                 {
-                    Success = true,
-                    Message = string.Empty,
-                    Difficulties = (_context.Difficulties.ToList()).ConvertAll(d => d as IDifficulty)
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositorySuccessfulRequest
+                        .Object
+                        .GetAll(It.IsAny<bool>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultiesFoundMessage,
+                    Difficulties = MockDifficultiesRepository
+                        .DifficultiesRepositorySuccessfulRequest
+                        .Object
+                        .GetAll(It.IsAny<bool>())
+                        .Result
+                        .Objects
+                        .ConvertAll(d => (IDifficulty)d)
                 } as IDifficultiesResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.CreateDifficulty(It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
+                difficultiesService.CreateDifficulty(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
-                    Success = true,
-                    Message = string.Empty,
-                    Difficulty = new Difficulty(
-                        7,
-                        "New Difficulty",
-                        "New Difficulty",
-                        DifficultyLevel.TEST)
-
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositorySuccessfulRequest
+                        .Object
+                        .Create(It.IsAny<Difficulty>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultyCreatedMessage,
+                    Difficulty = (Difficulty)MockDifficultiesRepository
+                        .DifficultiesRepositorySuccessfulRequest
+                        .Object
+                        .Create(It.IsAny<Difficulty>())
+                        .Result
+                        .Object
                 } as IDifficultyResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
                 difficultiesService.UpdateDifficulty(It.IsAny<int>(), It.IsAny<UpdateDifficultyRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = true,
-                    Message = string.Empty
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositorySuccessfulRequest
+                        .Object
+                        .Update(It.IsAny<Difficulty>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultyUpdatedMessage
                 } as IBaseResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
                 difficultiesService.DeleteDifficulty(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = true,
-                    Message = string.Empty
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositorySuccessfulRequest
+                        .Object
+                        .Delete(It.IsAny<Difficulty>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultyDeletedMessage
                 } as IBaseResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
                 difficultiesService.GetDifficulty(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
-                    Success = false,
-                    Message = "Error retrieving difficulty",
-                    Difficulty = new Difficulty()
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositoryFailedRequest
+                        .Object
+                        .Create(It.IsAny<Difficulty>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultyNotFoundMessage,
+                    Difficulty = (Difficulty)MockDifficultiesRepository
+                        .DifficultiesRepositoryFailedRequest
+                        .Object
+                        .Create(It.IsAny<Difficulty>())
+                        .Result
+                        .Object
                 } as IDifficultyResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.GetDifficulties(It.IsAny<bool>()))
+                difficultiesService.GetDifficulties(It.IsAny<PageListModel>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new DifficultiesResult()
                 {
-                    Success = false,
-                    Message = "Error retrieving difficulties",
-                    Difficulties = new List<IDifficulty>()
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositoryFailedRequest
+                        .Object
+                        .GetAll(It.IsAny<bool>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultiesNotFoundMessage,
+                    Difficulties = null
                 } as IDifficultiesResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.CreateDifficulty(It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
+                difficultiesService.CreateDifficulty(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
-                    Success = false,
-                    Message = "Error creating difficulty",
-                    Difficulty = new Difficulty()
-
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositoryFailedRequest
+                        .Object
+                        .Create(It.IsAny<Difficulty>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultyNotCreatedMessage,
+                    Difficulty = (Difficulty)MockDifficultiesRepository
+                        .DifficultiesRepositoryFailedRequest
+                        .Object
+                        .Create(It.IsAny<Difficulty>())
+                        .Result
+                        .Object
                 } as IDifficultyResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
                 difficultiesService.UpdateDifficulty(It.IsAny<int>(), It.IsAny<UpdateDifficultyRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = false,
-                    Message = "Error updating difficulty"
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositoryFailedRequest
+                        .Object
+                        .Update(It.IsAny<Difficulty>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultyNotUpdatedMessage
                 } as IBaseResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
                 difficultiesService.DeleteDifficulty(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = false,
-                    Message = "Error deleting difficulty"
+                    Success = MockDifficultiesRepository
+                        .DifficultiesRepositoryFailedRequest
+                        .Object
+                        .Delete(It.IsAny<Difficulty>())
+                        .Result
+                        .Success,
+                    Message = DifficultiesMessages.DifficultyNotDeletedMessage
                 } as IBaseResult));
         }
     }

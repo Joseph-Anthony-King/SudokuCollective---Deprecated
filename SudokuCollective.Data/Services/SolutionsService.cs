@@ -60,7 +60,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = SolutionsMessages.SolutionsNotFoundMessage;
+                    result.Message = SolutionsMessages.SolutionNotFoundMessage;
 
                     return result;
                 }
@@ -414,12 +414,22 @@ namespace SudokuCollective.Data.Services
 
             var solutionsInDB = new List<List<int>>();
 
-            var solutions = (await solutionsRepository.GetSolvedSolutions())
-                .Objects.ConvertAll(s => (SudokuSolution)s);
-
-            foreach (var solution in solutions)
+            try
             {
-                solutionsInDB.Add(solution.SolutionList);
+                var solutions = (await solutionsRepository.GetSolvedSolutions())
+                    .Objects.ConvertAll(s => (SudokuSolution)s);
+
+                foreach (var solution in solutions)
+                {
+                    solutionsInDB.Add(solution.SolutionList);
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
             }
 
             var matrix = new SudokuMatrix();
@@ -490,10 +500,10 @@ namespace SudokuCollective.Data.Services
                 }
 
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }

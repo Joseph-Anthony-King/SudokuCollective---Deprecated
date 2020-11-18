@@ -22,6 +22,9 @@ namespace SudokuCollective.Test.MockRepositories
         {
             context = ctxt;
 
+            RolesRepositorySuccessfulRequest = new Mock<IRolesRepository<Role>>();
+            RolesRepositoryFailedRequest = new Mock<IRolesRepository<Role>>();
+
             RolesRepositorySuccessfulRequest.Setup(rolesRepo =>
                 rolesRepo.Create(It.IsAny<Role>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
@@ -43,7 +46,10 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
-                        Objects = context.Roles.ToList().ConvertAll(r => (IEntityBase)r)
+                        Objects = context.Roles
+                            .Where(r => r.RoleLevel != RoleLevel.NULL && r.RoleLevel != RoleLevel.SUPERUSER)
+                            .ToList()
+                            .ConvertAll(r => (IEntityBase)r)
                     } as IRepositoryResponse));
 
             RolesRepositorySuccessfulRequest.Setup(rolesRepo =>

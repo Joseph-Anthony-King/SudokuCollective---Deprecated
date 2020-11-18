@@ -17,6 +17,7 @@ namespace SudokuCollective.Test.MockRepositories
         private readonly DatabaseContext context;
         internal Mock<IUsersRepository<User>> UsersRepositorySuccessfulRequest { get; set; }
         internal Mock<IUsersRepository<User>> UsersRepositoryFailedRequest { get; set; }
+        internal Mock<IUsersRepository<User>> UsersRepositoryEmailFailedRequest { get; set; }
 
         public MockUsersRepository(DatabaseContext ctxt)
         {
@@ -25,6 +26,7 @@ namespace SudokuCollective.Test.MockRepositories
 
             UsersRepositorySuccessfulRequest = new Mock<IUsersRepository<User>>();
             UsersRepositoryFailedRequest = new Mock<IUsersRepository<User>>();
+            UsersRepositoryEmailFailedRequest = new Mock<IUsersRepository<User>>();
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
                 usersRepo.Create(It.IsAny<User>()))
@@ -71,6 +73,17 @@ namespace SudokuCollective.Test.MockRepositories
                             .Users
                             .FirstOrDefault(predicate: u => u.Email.Equals("TestSuperUser@example.com"))
                     } as IRepositoryResponse));
+
+            UsersRepositorySuccessfulRequest.Setup(usersRepo =>
+                usersRepo.GetAll(It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context
+                            .Users
+                            .ToList()
+                            .ConvertAll(u => (IEntityBase)u)
+                    } as IRepositoryResponse)) ;
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
                 usersRepo.Update(It.IsAny<User>()))
@@ -173,6 +186,13 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
+                usersRepo.GetAll(It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+                    } as IRepositoryResponse));
+
+            UsersRepositoryFailedRequest.Setup(usersRepo =>
                 usersRepo.Update(It.IsAny<User>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
@@ -239,6 +259,135 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(false));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
+                usersRepo.IsEmailUnique(It.IsAny<string>()))
+                    .Returns(Task.FromResult(false));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.Create(It.IsAny<User>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = new User(
+                            4,
+                            "TestUser3",
+                            "Test",
+                            "User 3",
+                            "Test User 3",
+                            "TestUser3@example.com",
+                            "password",
+                            true,
+                            todaysDate,
+                            DateTime.MinValue)
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.GetByUserName(It.IsAny<string>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context
+                            .Users
+                            .FirstOrDefault(predicate: u => u.UserName.Equals("TestSuperUser"))
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.GetByEmail(It.IsAny<string>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context
+                            .Users
+                            .FirstOrDefault(predicate: u => u.Email.Equals("TestSuperUser@example.com"))
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.GetAll(It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context
+                            .Users
+                            .ToList()
+                            .ConvertAll(u => (IEntityBase)u)
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.Update(It.IsAny<User>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.UpdateRange(It.IsAny<List<User>>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context.Users.ToList().ConvertAll(u => (IEntityBase)u)
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.Delete(It.IsAny<User>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.DeleteRange(It.IsAny<List<User>>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.HasEntity(It.IsAny<int>()))
+                    .Returns(Task.FromResult(true));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.AddRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.RemoveRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.ActivateUser(It.IsAny<int>()))
+                    .Returns(Task.FromResult(true));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.DeactivateUser(It.IsAny<int>()))
+                    .Returns(Task.FromResult(true));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.PromoteUserToAdmin(It.IsAny<int>()))
+                    .Returns(Task.FromResult(true));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.IsUserRegistered(It.IsAny<int>()))
+                    .Returns(Task.FromResult(true));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.IsUserNameUnique(It.IsAny<string>()))
+                    .Returns(Task.FromResult(true));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
                 usersRepo.IsEmailUnique(It.IsAny<string>()))
                     .Returns(Task.FromResult(false));
         }

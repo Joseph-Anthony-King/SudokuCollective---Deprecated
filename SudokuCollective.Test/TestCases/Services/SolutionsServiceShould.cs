@@ -1,27 +1,43 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Services;
-using SudokuCollective.Core.Models;
+using SudokuCollective.Test.MockRepositories;
 using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Services
 {
     public class SolutionsServiceShould
     {
-        private DatabaseContext _context;
+        private DatabaseContext context;
+        private MockSolutionsRepository MockSolutionsRepository;
+        private MockUsersRepository MockUsersRepository;
         private ISolutionsService sut;
+        private ISolutionsService sutFailure;
         private string license;
         private BaseRequest baseRequest;
 
         [SetUp]
         public async Task Setup()
         {
-            _context = await TestDatabase.GetDatabaseContext();
-            sut = new SolutionsService(_context);
+            context = await TestDatabase.GetDatabaseContext();
+            MockSolutionsRepository = new MockSolutionsRepository(context);
+            MockUsersRepository = new MockUsersRepository(context);
+
+            sut = new SolutionsService(
+                MockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object,
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object);
+
+            sutFailure = new SolutionsService(
+                MockSolutionsRepository.SolutionsRepositoryFailedRequest.Object,
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object);
+
             license = TestObjects.GetLicense();
             baseRequest = TestObjects.GetBaseRequest();
         }
@@ -37,6 +53,22 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Solution Found"));
+            Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task IssueMessageIfGetSolutionFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailure.GetSolution(1);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Solution Not Found"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
         }
 
@@ -51,7 +83,23 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Solutions.Count, Is.EqualTo(0));
+            Assert.That(result.Message, Is.EqualTo("Solutions Found"));
+            Assert.That(result.Solutions, Is.TypeOf<List<ISudokuSolution>>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task IssueMessageIfGetSolutionsFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailure.GetSolutions(baseRequest);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Solutions Not Found"));
+            Assert.That(result.Solutions, Is.TypeOf<List<ISudokuSolution>>());
         }
 
         [Test]
@@ -78,12 +126,11 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.Solve(solveRequest);
-            var solutionsResult = _context.SudokuSolutions.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Solution Solved"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
-            Assert.That(solutionsResult.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -94,12 +141,11 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.Generate();
-            var solutionsResult = _context.SudokuSolutions.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Solution Generated"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
-            Assert.That(solutionsResult.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -107,15 +153,27 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task AddSolutions()
         {
             // Arrange
-            var limit = 10;
 
             // Act
-            var result = await sut.AddSolutions(limit);
-            var solutionsResult = _context.SudokuSolutions.ToList();
+            var result = await sut.AddSolutions(10);
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(solutionsResult.Count, Is.EqualTo(limit + 3));
+            Assert.That(result.Message, Is.EqualTo("Solutions Added"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task IssueMessageIfAddSolutionsFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailure.AddSolutions(10);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Object reference not set to an instance of an object."));
         }
     }
 }

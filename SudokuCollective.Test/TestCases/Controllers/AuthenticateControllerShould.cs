@@ -1,14 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NUnit.Framework;
-using SudokuCollective.Core.Enums;
-using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Core.Interfaces.APIModels.DTOModels;
-using SudokuCollective.Data.Models.DTOModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Models.TokenModels;
 using SudokuCollective.Api.Controllers;
+using SudokuCollective.Test.MockServices;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -18,36 +14,27 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private AuthenticateController sutInvalid;
         private AuthenticateController sutInvalidUserName;
         private AuthenticateController sutInvalidPassword;
-        private AuthenticateController sutUserNameFound;
         private AuthenticateController sutUserNameNotFound;
-        private Mock<IAuthenticateService> mockAuthenticateService;
-        private Mock<IAuthenticateService> mockValidAuthenticateService;
-        private Mock<IAuthenticateService> mockInvalidAuthenticateService;
-        private Mock<IUserManagementService> mockUserManagementService;
-        private Mock<IUserManagementService> mockUserManagementInvalidUserNameService;
-        private Mock<IUserManagementService> mockUserManagementInvalidPasswordService;
-        private Mock<IUserManagementService> mockUserManagementUserNameFoundService;
-        private Mock<IUserManagementService> mockUserManagementUserNameNotFoundService;
+        private MockAuthenticateService mockAuthenticateService;
+        private MockUserManagementService mockUserManagementService;
+        private MockUserManagementService mockUserManagementInvalidUserNameService;
+        private MockUserManagementService mockUserManagementInvalidPasswordService;
         private TokenRequest tokenRequest;
         private string userName;
         private string password;
         private string email;
 
         [SetUp]
-        public void Setup()
+        public async Task Setup()
         {
             userName = "TestSuperUser";
             password = "password1";
             email = "TestSuperUser@example.com";
 
-            mockAuthenticateService = new Mock<IAuthenticateService>();
-            mockValidAuthenticateService = new Mock<IAuthenticateService>();
-            mockInvalidAuthenticateService = new Mock<IAuthenticateService>();
-            mockUserManagementService = new Mock<IUserManagementService>();
-            mockUserManagementInvalidUserNameService = new Mock<IUserManagementService>();
-            mockUserManagementInvalidPasswordService = new Mock<IUserManagementService>();
-            mockUserManagementUserNameFoundService = new Mock<IUserManagementService>();
-            mockUserManagementUserNameNotFoundService = new Mock<IUserManagementService>();
+            mockAuthenticateService = new MockAuthenticateService();
+            mockUserManagementService = new MockUserManagementService();
+            mockUserManagementInvalidUserNameService = new MockUserManagementService();
+            mockUserManagementInvalidPasswordService = new MockUserManagementService();
 
             tokenRequest = new TokenRequest()
             {
@@ -55,48 +42,21 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 Password = password
             };
 
-            var token = string.Empty;
-            var user = new AuthenticatedUser() as IAuthenticatedUser;
-
-            mockValidAuthenticateService
-                .Setup(authService => authService.IsAuthenticated(tokenRequest, out token, out user))
-                .Returns(true);
-            mockInvalidAuthenticateService
-                .Setup(authService => authService.IsAuthenticated(tokenRequest, out token, out user))
-                .Returns(false);
-            mockUserManagementInvalidUserNameService
-                .Setup(userManagementService => userManagementService
-                    .ConfirmAuthenticationIssue(tokenRequest.UserName, tokenRequest.Password))
-                .ReturnsAsync(UserAuthenticationErrorType.USERNAMEINVALID);
-            mockUserManagementInvalidPasswordService
-                .Setup(userManagementService => userManagementService
-                    .ConfirmAuthenticationIssue(tokenRequest.UserName, tokenRequest.Password))
-                .ReturnsAsync(UserAuthenticationErrorType.PASSWORDINVALID);
-            mockUserManagementUserNameFoundService
-                .Setup(userManagementService => userManagementService.ConfirmUserName(email))
-                .ReturnsAsync(new AuthenticationResult() { Success = true, UserName = userName });
-            mockUserManagementUserNameNotFoundService
-                .Setup(userManagementService => userManagementService.ConfirmUserName(email))
-                .ReturnsAsync(new AuthenticationResult() { Success = false, Message = "Email Does Not Exist" });
-
             sut = new AuthenticateController(
-                mockValidAuthenticateService.Object,
-                mockUserManagementService.Object);
+                mockAuthenticateService.AuthenticateServiceSuccessfulRequest.Object,
+                mockUserManagementService.UserManagementServiceSuccssfulRequest.Object);
             sutInvalid = new AuthenticateController(
-                mockInvalidAuthenticateService.Object,
-                mockUserManagementService.Object);
+                mockAuthenticateService.AuthenticateServiceFailedRequest.Object,
+                mockUserManagementService.UserManagementServiceFailedRequest.Object);
             sutInvalidUserName = new AuthenticateController(
-                mockAuthenticateService.Object,
-                mockUserManagementInvalidUserNameService.Object);
+                mockAuthenticateService.AuthenticateServiceFailedRequest.Object,
+                mockUserManagementInvalidUserNameService.UserManagementServiceUserNameFailedRequest.Object);
             sutInvalidPassword = new AuthenticateController(
-                mockAuthenticateService.Object,
-                mockUserManagementInvalidPasswordService.Object);
-            sutUserNameFound = new AuthenticateController(
-                mockAuthenticateService.Object,
-                mockUserManagementUserNameFoundService.Object);
+                mockAuthenticateService.AuthenticateServiceFailedRequest.Object,
+                mockUserManagementInvalidPasswordService.UserManagementServicePasswordFailedRequest.Object);
             sutUserNameNotFound = new AuthenticateController(
-                mockAuthenticateService.Object,
-                mockUserManagementUserNameNotFoundService.Object);
+                mockAuthenticateService.AuthenticateServiceFailedRequest.Object,
+                mockUserManagementService.UserManagementServiceFailedRequest.Object);
         }
 
         [Test]
@@ -108,11 +68,13 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Act
             var result = sut.RequestToken(tokenRequest);
             var returnedValue = ((OkObjectResult)result.Result).Value;
+            var message = ((AuthenticatedUserResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result, Is.TypeOf<Task<ActionResult>>());
             Assert.That(returnedValue, Is.TypeOf<AuthenticatedUserResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Found"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -174,11 +136,13 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutUserNameFound.ConfirmUserName(email);
-            var username = ((OkObjectResult)result.Result).Value;
+            var result = sut.ConfirmUserName(email);
+            var message = ((AuthenticationResult)((OkObjectResult)result.Result).Value).Message;
+            var username = ((AuthenticationResult)((OkObjectResult)result.Result).Value).UserName;
 
             // Assert
             Assert.That(result, Is.TypeOf<Task<ActionResult>>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Name Confirmed"));
             Assert.That(username, Is.EqualTo(userName));
         }
 
@@ -190,11 +154,11 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutUserNameNotFound.ConfirmUserName(email);
-            var message = ((BadRequestObjectResult)result.Result).Value;
+            var message =((AuthenticationResult)((NotFoundObjectResult)result.Result).Value).Message;
 
             // Assert
             Assert.That(result, Is.TypeOf<Task<ActionResult>>());
-            Assert.That(message, Is.EqualTo("Status Code 400: No Record Of Email Address"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Email Does Not Exist"));
         }
     }
 }

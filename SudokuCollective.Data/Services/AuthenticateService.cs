@@ -47,6 +47,7 @@ namespace SudokuCollective.Data.Services
             if (!validateUserTask.Result)
             {
                 result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
 
                 return result;
             }

@@ -1,27 +1,29 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Moq;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Test.MockRepositories;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Core.Interfaces.Services;
 
 namespace SudokuCollective.Test.MockServices
 {
     public class MockRolesService
     {
-        private DatabaseContext _context;
+        private MockRolesRepository MockRolesRepository { get; set; }
+
         internal Mock<IRolesService> RolesServiceSuccessfulRequest { get; set; }
         internal Mock<IRolesService> RolesServiceFailedRequest { get; set; }
 
         public MockRolesService(DatabaseContext context)
         {
-            _context = context;
+            MockRolesRepository = new MockRolesRepository(context);
+
             RolesServiceSuccessfulRequest = new Mock<IRolesService>();
             RolesServiceFailedRequest = new Mock<IRolesService>();
 
@@ -29,86 +31,162 @@ namespace SudokuCollective.Test.MockServices
                 rolesService.GetRole(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
-                    Success = true,
-                    Message = string.Empty,
-                    Role = _context.Roles.FirstOrDefault(predicate: role => role.Id == 1)
+                    Success = MockRolesRepository
+                        .RolesRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RoleFoundMessage,
+                    Role = (Role)MockRolesRepository
+                        .RolesRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Result
+                        .Object
                 } as IRoleResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.GetRoles(It.IsAny<bool>()))
                 .Returns(Task.FromResult(new RolesResult()
                 {
-                    Success = true,
-                    Message = string.Empty,
-                    Roles = (_context.Roles.ToList()).ConvertAll(r => r as IRole)
+                    Success = MockRolesRepository
+                        .RolesRepositorySuccessfulRequest
+                        .Object
+                        .GetAll(It.IsAny<bool>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RolesFoundMessage,
+                    Roles = MockRolesRepository
+                        .RolesRepositorySuccessfulRequest
+                        .Object
+                        .GetAll(It.IsAny<bool>())
+                        .Result
+                        .Objects
+                        .ConvertAll(r => (IRole)r)
                 } as IRolesResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.CreateRole(It.IsAny<string>(), It.IsAny<RoleLevel>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
-                    Success = true,
-                    Message = string.Empty,
-                    Role = new Role(5, "New Role", RoleLevel.NULL)
+                    Success = MockRolesRepository
+                        .RolesRepositorySuccessfulRequest
+                        .Object
+                        .Create(It.IsAny<Role>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RoleCreatedMessage,
+                    Role = (Role)MockRolesRepository
+                        .RolesRepositorySuccessfulRequest
+                        .Object
+                        .Create(It.IsAny<Role>())
+                        .Result
+                        .Object
                 } as IRoleResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.UpdateRole(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = true,
-                    Message = string.Empty
+                    Success = MockRolesRepository
+                        .RolesRepositorySuccessfulRequest
+                        .Object
+                        .Update(It.IsAny<Role>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RoleUpdatedMessage
                 } as IBaseResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
                 rolesService.DeleteRole(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = true,
-                    Message = string.Empty
+                    Success = MockRolesRepository
+                        .RolesRepositorySuccessfulRequest
+                        .Object
+                        .Delete(It.IsAny<Role>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RoleDeletedMessage
                 } as IBaseResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
                 rolesService.GetRole(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
-                    Success = false,
-                    Message = "Error retrieving role",
-                    Role = new Role()
+                    Success = MockRolesRepository
+                        .RolesRepositoryFailedRequest
+                        .Object
+                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RoleNotFoundMessage,
+                    Role = (Role)MockRolesRepository
+                        .RolesRepositoryFailedRequest
+                        .Object
+                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Result
+                        .Object
                 } as IRoleResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
                 rolesService.GetRoles(It.IsAny<bool>()))
                 .Returns(Task.FromResult(new RolesResult()
                 {
-                    Success = false,
-                    Message = "Error retrieving roles",
-                    Roles = new List<IRole>()
+                    Success = MockRolesRepository
+                        .RolesRepositoryFailedRequest
+                        .Object
+                        .GetAll(It.IsAny<bool>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RolesNotFoundMessage,
+                    Roles = null
                 } as IRolesResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
                 rolesService.CreateRole(It.IsAny<string>(), It.IsAny<RoleLevel>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
-                    Success = false,
-                    Message = "Error creating role",
-                    Role = new Role()
+                    Success = MockRolesRepository
+                        .RolesRepositoryFailedRequest
+                        .Object
+                        .Create(It.IsAny<Role>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RoleNotCreatedMessage,
+                    Role = (Role)MockRolesRepository
+                        .RolesRepositoryFailedRequest
+                        .Object
+                        .Create(It.IsAny<Role>())
+                        .Result
+                        .Object
                 } as IRoleResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
                 rolesService.UpdateRole(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = false,
-                    Message = "Error updating role"
+                    Success = MockRolesRepository
+                        .RolesRepositoryFailedRequest
+                        .Object
+                        .Update(It.IsAny<Role>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RoleNotUpdatedMessage
                 } as IBaseResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
                 rolesService.DeleteRole(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = false,
-                    Message = "Error deleting role"
+                    Success = MockRolesRepository
+                        .RolesRepositoryFailedRequest
+                        .Object
+                        .Delete(It.IsAny<Role>())
+                        .Result
+                        .Success,
+                    Message = RolesMessages.RoleNotDeletedMessage
                 } as IBaseResult));
         }
     }
