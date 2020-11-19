@@ -11,6 +11,7 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<IRepositoryResponse> GetByEmail(string email, bool fullRecord = true);
         Task<IRepositoryResponse> AddRoles(int userid, List<int> roles);
         Task<IRepositoryResponse> RemoveRoles(int userid, List<int> roles);
+        Task<IRepositoryResponse> ConfirmEmail(string code);
         Task<bool> ActivateUser(int id);
         Task<bool> DeactivateUser(int id);
         Task<bool> PromoteUserToAdmin(int id);

@@ -18,5 +18,6 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IBaseResult> RemoveUserRoles(int userid, List<int> roleIds);
         Task<IBaseResult> ActivateUser(int id);
         Task<IBaseResult> DeactivateUser(int id);
+        Task<IBaseResult> ConfirmEmail(string code);
     }
 }

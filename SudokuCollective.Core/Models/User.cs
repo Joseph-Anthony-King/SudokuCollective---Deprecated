@@ -12,6 +12,7 @@ namespace SudokuCollective.Core.Models
     {
         #region Fields
         private string _userName;
+        private string _email;
         private bool _isSuperUser;
         private bool _isAdmin;
         private List<Game> _games = new List<Game>();
@@ -33,7 +34,7 @@ namespace SudokuCollective.Core.Models
             {
                 if (!string.IsNullOrEmpty(value))
                 {
-                    var regex = new Regex("^[a-zA-Z0-9-._]*$");
+                    var regex = new Regex("^[^-]{1}?[^\"\']*$");
 
                     if (regex.IsMatch(value))
                     {
@@ -56,7 +57,19 @@ namespace SudokuCollective.Core.Models
             get => string.Format("{0} {1}", FirstName, LastName);
         }
         [Required]
-        public string Email { get; set; }
+        public string Email
+        {
+            get
+            {
+                return _email;
+            }
+
+            set
+            {
+                _email = value;
+                EmailConfirmed = false;
+            }
+        }
         [JsonIgnore]
         [Required]
         public string Password { get; set; }
@@ -112,6 +125,7 @@ namespace SudokuCollective.Core.Models
                 _isAdmin = value;
             }
         }
+        public bool EmailConfirmed { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public virtual List<Game> Games
@@ -164,6 +178,7 @@ namespace SudokuCollective.Core.Models
             IsActive = true;
             IsSuperUser = false;
             IsAdmin = false;
+            EmailConfirmed = false;
         }
 
         public User()
@@ -178,6 +193,7 @@ namespace SudokuCollective.Core.Models
             DateCreated = DateTime.MinValue;
             DateUpdated = DateTime.MinValue;
             IsActive = false;
+            EmailConfirmed = false;
             Games = new List<Game>();
             Roles = new List<UserRole>();
             Apps = new List<UserApp>();
@@ -193,6 +209,7 @@ namespace SudokuCollective.Core.Models
             string email,
             string password,
             bool isActive,
+            bool emailConfirmed,
             DateTime dateCreated,
             DateTime dateUpdated)
         {
@@ -204,6 +221,7 @@ namespace SudokuCollective.Core.Models
             Email = email;
             Password = password;
             IsActive = isActive;
+            EmailConfirmed = emailConfirmed;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
         }

@@ -181,6 +181,19 @@ namespace SudokuCollective.Test.MockServices
                     Message = UsersMessages.UserDeactivatedMessage
                 } as IBaseResult));
 
+            UsersServiceSuccessfulRequest.Setup(usersService =>
+                usersService.ConfirmEmail(It.IsAny<string>()))
+                .Returns(Task.FromResult(new BaseResult()
+                {
+                    Success = MockUsersRespository
+                        .UsersRepositorySuccessfulRequest
+                        .Object
+                        .ConfirmEmail(It.IsAny<string>())
+                        .Result
+                        .Success,
+                    Message = UsersMessages.EmailConfirmedMessage
+                } as IBaseResult));
+
             UsersServiceFailedRequest.Setup(userService =>
                 userService.CreateUser(It.IsAny<RegisterRequest>()))
                 .Returns(Task.FromResult(new UserResult()
@@ -326,6 +339,19 @@ namespace SudokuCollective.Test.MockServices
                         .DeactivateUser(It.IsAny<int>())
                         .Result,
                     Message = UsersMessages.UserNotDeactivatedMessage
+                } as IBaseResult));
+
+            UsersServiceFailedRequest.Setup(usersService =>
+                usersService.ConfirmEmail(It.IsAny<string>()))
+                .Returns(Task.FromResult(new BaseResult()
+                {
+                    Success = MockUsersRespository
+                        .UsersRepositoryFailedRequest
+                        .Object
+                        .ConfirmEmail(It.IsAny<string>())
+                        .Result
+                        .Success,
+                    Message = UsersMessages.EmailNotConfirmedMessage
                 } as IBaseResult));
         }
     }

@@ -44,6 +44,20 @@ namespace SudokuCollective.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmailConfirmations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(nullable: false),
+                    Code = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailConfirmations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -85,6 +99,7 @@ namespace SudokuCollective.Api.Migrations
                     Email = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false)
                 },
@@ -290,6 +305,9 @@ namespace SudokuCollective.Api.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EmailConfirmations");
+
             migrationBuilder.DropTable(
                 name: "Games");
 

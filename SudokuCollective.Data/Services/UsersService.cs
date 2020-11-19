@@ -474,6 +474,7 @@ namespace SudokuCollective.Data.Services
                                 request.Email,
                                 BCrypt.Net.BCrypt.HashPassword(request.Password, salt),
                                 true,
+                                false,
                                 DateTime.UtcNow,
                                 DateTime.MinValue);
 
@@ -490,6 +491,7 @@ namespace SudokuCollective.Data.Services
                                 result.Success = userResponse.Success;
                                 result.Message = UsersMessages.UserCreatedMessage;
                                 result.User = (User)userResponse.Object;
+                                result.EmailConfirmationCode = userResponse.Code;
 
                                 return result;
                             }
@@ -1007,6 +1009,45 @@ namespace SudokuCollective.Data.Services
                 {
                     result.Success = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                result.Success = false;
+                result.Message = e.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IBaseResult> ConfirmEmail(string code)
+        {
+            var result = new BaseResult();
+
+            try
+            {
+                var response = await usersRepository.ConfirmEmail(code);
+
+                if (response.Success)
+                {
+                    result.Success = response.Success;
+                    result.Message = UsersMessages.EmailConfirmedMessage;
+
+                    return result;
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.EmailNotConfirmedMessage;
 
                     return result;
                 }

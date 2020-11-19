@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -123,6 +124,34 @@ namespace SudokuCollective.Test.TestCases.Services
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("User Created"));
             Assert.That(result.User, Is.TypeOf<User>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ConfirmUserEmail()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.ConfirmEmail(Guid.NewGuid().ToString());
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Email Confirmed"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task NotifyIfConfirmUserEmailFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailure.ConfirmEmail(Guid.NewGuid().ToString());
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Email Not Confirmed"));
         }
 
         [Test]

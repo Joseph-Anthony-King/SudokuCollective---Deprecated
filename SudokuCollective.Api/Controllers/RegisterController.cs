@@ -23,15 +23,35 @@ namespace SudokuCollective.Api.Controllers
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<User>> SignUp(
-            [FromBody] RegisterRequest registerRO)
+            [FromBody] RegisterRequest request)
         {
-            var result = await usersService.CreateUser(registerRO);
+            var result = await usersService.CreateUser(request);
 
             if (result.Success)
             {
                 result.Message = ControllerMessages.StatusCode201(result.Message);
 
                 return StatusCode((int)HttpStatusCode.Created, result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("confirmEmail/{code}")]
+        public async Task<ActionResult> ConfirmEmail(string code)
+        {
+            var result = await usersService.ConfirmEmail(code);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
             }
             else
             {

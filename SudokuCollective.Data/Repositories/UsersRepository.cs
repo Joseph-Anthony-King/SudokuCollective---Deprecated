@@ -26,6 +26,7 @@ namespace SudokuCollective.Data.Repositories
         private readonly DbSet<Game> gameDbSet;
         private readonly DbSet<SudokuMatrix> matrixDbSet;
         private readonly DbSet<SudokuCell> cellDbSet;
+        private readonly DbSet<EmailConfirmation> emailConfirmationDbSet;
         #endregion
 
         #region Constructors
@@ -40,6 +41,7 @@ namespace SudokuCollective.Data.Repositories
             gameDbSet = context.Set<Game>();
             matrixDbSet = context.Set<SudokuMatrix>();
             cellDbSet = context.Set<SudokuCell>();
+            emailConfirmationDbSet = context.Set<EmailConfirmation>();
         }
         #endregion
 
@@ -90,8 +92,9 @@ namespace SudokuCollective.Data.Repositories
                         });
                 }
 
-                entity.Roles.AddRange(userRoles);
+                var allUserRoles = await userRoleDbSet.ToListAsync();
 
+                entity.Roles.AddRange(userRoles);
                 userRoleDbSet.AddRange(userRoles);
 
                 context.ChangeTracker.TrackGraph(entity,
@@ -111,10 +114,35 @@ namespace SudokuCollective.Data.Repositories
 
                 await context.SaveChangesAsync();
 
-                entity.Apps = new List<UserApp>();
+                var emailConfirmation = new EmailConfirmation(entity.Id);
+
+                emailConfirmationDbSet.Add(emailConfirmation);
+
+                foreach (var ur in allUserRoles)
+                {
+                    userRoleDbSet.Add(new UserRole(ur.UserId, ur.RoleId));
+                }
+
+                context.ChangeTracker.TrackGraph(entity,
+                    e => {
+
+                        var dbEntry = (IEntityBase)e.Entry.Entity;
+
+                        if (dbEntry.Id != 0)
+                        {
+                            e.Entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            e.Entry.State = EntityState.Added;
+                        }
+                    });
+
+                await context.SaveChangesAsync();
 
                 result.Object = entity;
                 result.Success = true;
+                result.Code = emailConfirmation.Code;
 
                 return result;
             }
@@ -929,6 +957,98 @@ namespace SudokuCollective.Data.Repositories
                     result.Success = true;
 
                     return result;
+                }
+                else
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
+        async public Task<IRepositoryResponse> ConfirmEmail(string code)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                if (await emailConfirmationDbSet.AnyAsync(ec => ec.Code.ToLower().Equals(code.ToLower())))
+                {
+                    var userId = (await emailConfirmationDbSet
+                        .FirstOrDefaultAsync(predicate: ec => ec.Code.ToLower().Equals(code.ToLower()))).UserId;
+
+                    if (await dbSet.AnyAsync(u => u.Id == userId))
+                    {
+                        var user = await dbSet
+                            .Include(u => u.Apps)
+                            .Include(u => u.Roles)
+                            .Include(u => u.Games)
+                            .Include(u => u.Games)
+                                .ThenInclude(g => g.SudokuMatrix)
+                            .Include(u => u.Games)
+                                .ThenInclude(g => g.SudokuSolution)
+                            .FirstOrDefaultAsync(predicate: u => u.Id == userId);
+
+                        foreach (var userApp in user.Apps)
+                        {
+                            userApp.App = await appDbSet.FirstOrDefaultAsync(predicate: a => a.Id == userApp.AppId);
+                        }
+
+                        foreach (var userRole in user.Roles)
+                        {
+                            userRole.Role = await roleDbSet.FirstOrDefaultAsync(predicate: r => r.Id == userRole.RoleId);
+                        }
+
+                        foreach (var game in user.Games)
+                        {
+                            await game.SudokuMatrix.AttachSudokuCells(context);
+                        }
+
+                        user.DateUpdated = DateTime.UtcNow;
+                        user.EmailConfirmed = true;
+
+                        context.Attach(user);
+
+                        context.ChangeTracker.TrackGraph(user,
+                            e => {
+
+                                var dbEntry = (IEntityBase)e.Entry.Entity;
+
+                                if (dbEntry.Id != 0)
+                                {
+                                    e.Entry.State = EntityState.Modified;
+                                }
+                                else
+                                {
+                                    e.Entry.State = EntityState.Added;
+                                }
+                            });
+
+                        var emailConfirmation = await emailConfirmationDbSet
+                            .FirstOrDefaultAsync(ec => ec.Code.ToLower().Equals(code.ToLower()));
+
+                        emailConfirmationDbSet.Remove(emailConfirmation);
+
+                        await context.SaveChangesAsync();
+
+                        result.Success = true;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
                 }
                 else
                 {

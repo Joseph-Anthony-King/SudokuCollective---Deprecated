@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -54,6 +55,47 @@ namespace SudokuCollective.Test.TestCases.Repositories
             var result = await sut.Create(newUser);
 
             // Assert
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task RequireEmailConfirmationForNewUsers()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.Create(newUser);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(((User)result.Object).EmailConfirmed, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ConfirmUserEmails()
+        {
+            // Arrange
+            var user = await sut.Create(newUser);
+            var emailInitiallyUnconfirmed = ((User)user.Object).EmailConfirmed;
+
+            // Act
+            var result = await sut.ConfirmEmail(user.Code);
+
+            Assert.That(emailInitiallyUnconfirmed, Is.False);
+            Assert.That(result.Success, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfConfirmUserEmailsFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.ConfirmEmail(Guid.NewGuid().ToString());
+
             Assert.That(result.Success, Is.False);
         }
 

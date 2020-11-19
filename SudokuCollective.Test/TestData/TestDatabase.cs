@@ -69,6 +69,7 @@ namespace SudokuCollective.Test.TestData
                         "TestSuperUser@example.com",
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
                         true,
+                        true,
                         dateCreated,
                         DateTime.MinValue),
 
@@ -81,6 +82,7 @@ namespace SudokuCollective.Test.TestData
                         "TestUser@example.com",
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
                         true,
+                        true,
                         dateCreated,
                         DateTime.MinValue),
 
@@ -92,6 +94,7 @@ namespace SudokuCollective.Test.TestData
                         "Test User 2",
                         "TestUser2@example.com",
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
+                        true,
                         true,
                         dateCreated,
                         DateTime.MinValue)

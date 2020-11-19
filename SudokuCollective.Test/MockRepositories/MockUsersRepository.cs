@@ -42,6 +42,7 @@ namespace SudokuCollective.Test.MockRepositories
                             "TestUser3@example.com",
                             "password",
                             true,
+                            true,
                             todaysDate,
                             DateTime.MinValue)
                     } as IRepositoryResponse));
@@ -134,6 +135,13 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
+                usersRepo.ConfirmEmail(It.IsAny<string>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            UsersRepositorySuccessfulRequest.Setup(usersRepo =>
                 usersRepo.ActivateUser(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
@@ -239,6 +247,13 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
+                usersRepo.ConfirmEmail(It.IsAny<string>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+                    } as IRepositoryResponse));
+
+            UsersRepositoryFailedRequest.Setup(usersRepo =>
                 usersRepo.ActivateUser(It.IsAny<int>()))
                     .Returns(Task.FromResult(false));
 
@@ -276,6 +291,7 @@ namespace SudokuCollective.Test.MockRepositories
                             "TestUser3@example.com",
                             "password",
                             true,
+                            false,
                             todaysDate,
                             DateTime.MinValue)
                     } as IRepositoryResponse));
@@ -362,6 +378,13 @@ namespace SudokuCollective.Test.MockRepositories
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
                 usersRepo.RemoveRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.ConfirmEmail(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true

@@ -177,16 +177,16 @@ namespace SudokuCollective.Test.TestCases.Models
 
         [Test]
         [Category("Models")]
-        public void HaveAUserNameThatRejectsSpecialCharacters()
+        public void HaveAUserNameThatAcceptsSpecialCharacters()
         {
             // Arrange
             var sut = new User();
 
             // Act
-            sut.UserName = "B@dUs3rN$m#";
+            sut.UserName = "G@@dUs3rN$m#";
 
             // Assert
-            Assert.That(sut.UserName, Is.Empty);
+            Assert.That(sut.UserName, Is.EqualTo("G@@dUs3rN$m#"));
         }
 
         [Test]
@@ -207,12 +207,57 @@ namespace SudokuCollective.Test.TestCases.Models
         public void ProvideAdminStatus()
         {
             // Arrange
-            var sut = new User();
 
             // Act
+            var sut = new User();
 
             // Assert
             Assert.That(sut.IsAdmin, Is.False);
+        }
+
+        [Test]
+        [Category("Models")]
+        public void TrackEmailConfirmation()
+        {
+            // Arrange
+
+            // Act
+            var sut = new User();
+
+            // Assert
+            Assert.That(sut.EmailConfirmed, Is.InstanceOf<bool>());
+        }
+
+        [Test]
+        [Category("Models")]
+        public void DefaultEmailTrackingConfirmationToFalse()
+        {
+            // Arrange
+
+            // Act
+            var sut = new User();
+
+            // Assert
+            Assert.That(sut.EmailConfirmed, Is.False);
+        }
+
+        [Test]
+        [Category("Models")]
+        public void ResetEmailTrackingValueIfEmailChanges()
+        {
+            // Arrange
+            var sut = new User();
+            sut.Email = "test@example.com";
+            sut.EmailConfirmed = true;
+
+            var emailTrackingStatePriorToUpdate = sut.EmailConfirmed;
+
+            // Act
+            sut.Email = "test.UPDATED@example.com";
+
+            // Assert
+            Assert.That(emailTrackingStatePriorToUpdate, Is.True);
+            Assert.That(sut.EmailConfirmed, Is.False);
         }
     }
 }

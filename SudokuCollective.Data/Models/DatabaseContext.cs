@@ -30,6 +30,7 @@ namespace SudokuCollective.Data.Models
         public DbSet<SudokuSolution> SudokuSolutions { get; set; }
         public DbSet<App> Apps { get; set; }
         public DbSet<UserApp> UsersApps { get; set; }
+        public DbSet<EmailConfirmation> EmailConfirmations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -232,6 +233,9 @@ namespace SudokuCollective.Data.Models
                 .HasOne(ua => ua.App)
                 .WithMany(app => app.Users)
                 .HasForeignKey(ua => ua.AppId);
+
+            modelBuilder.Entity<EmailConfirmation>()
+                .HasKey(ec => ec.Id);
         }
     }
 }

@@ -10,5 +10,6 @@ namespace SudokuCollective.Core.Interfaces.DataModels
         Exception Exception { get; set; }
         IEntityBase Object { get; set; }
         List<IEntityBase> Objects { get; set; }
+        string Code { get; set; }
     }
 }

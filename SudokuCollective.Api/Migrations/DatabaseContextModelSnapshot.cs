@@ -80,6 +80,24 @@ namespace SudokuCollective.Api.Migrations
                     b.ToTable("Difficulties");
                 });
 
+            modelBuilder.Entity("SudokuCollective.Core.Models.EmailConfirmation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailConfirmations");
+                });
+
             modelBuilder.Entity("SudokuCollective.Core.Models.Game", b =>
                 {
                     b.Property<int>("Id")
@@ -235,6 +253,9 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
