@@ -6,7 +6,7 @@ using SudokuCollective.Data.Models.ResultModels;
 namespace SudokuCollective.Api.Controllers
 {
     [Authorize]
-    [Route("api/v1/helloworld")]
+    [Route("api/helloworld")]
     [ApiController]
     public class HelloWorldController : ControllerBase
     {
