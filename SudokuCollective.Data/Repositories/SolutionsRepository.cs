@@ -34,21 +34,29 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
+                if (entity.Id != 0)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
                 dbSet.Add(entity);
 
-                foreach (var entry in context.ChangeTracker.Entries())
-                {
-                    var dbEntry = (IEntityBase)entry.Entity;
+                context.ChangeTracker.TrackGraph(entity,
+                    e => {
 
-                    if (dbEntry.Id != 0)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        entry.State = EntityState.Added;
-                    }
-                }
+                        var dbEntry = (IEntityBase)e.Entry.Entity;
+
+                        if (dbEntry.Id != 0)
+                        {
+                            e.Entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            e.Entry.State = EntityState.Added;
+                        }
+                    });
 
                 await context.SaveChangesAsync();
 
@@ -151,18 +159,22 @@ namespace SudokuCollective.Data.Repositories
             {
                 dbSet.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var solution in solutions)
                 {
-                    var dbEntry = (IEntityBase)entry.Entity;
+                    context.ChangeTracker.TrackGraph(solution,
+                        e => {
 
-                    if (dbEntry.Id != 0)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        entry.State = EntityState.Added;
-                    }
+                            var dbEntry = (IEntityBase)e.Entry.Entity;
+
+                            if (dbEntry.Id != 0)
+                            {
+                                e.Entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                e.Entry.State = EntityState.Added;
+                            }
+                        });
                 }
 
                 await context.SaveChangesAsync();

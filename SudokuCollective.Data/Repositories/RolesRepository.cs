@@ -35,25 +35,47 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
+                if (await dbSet.AnyAsync(r => r.RoleLevel == entity.RoleLevel))
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
                 dbSet.Add(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
-                    var dbEntry = (IEntityBase)entry.Entity;
-
-                    if (dbEntry.Id != 0)
+                    if (entry.Entity is Role role)
                     {
-                        entry.State = EntityState.Modified;
+                        if (entity.Id == role.Id)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
                     }
                     else
                     {
-                        entry.State = EntityState.Added;
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry.Id != 0)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Added;
+                        }
                     }
                 }
 
                 await context.SaveChangesAsync();
 
                 result.Success = true;
+                result.Object = entity;
 
                 return result;
             }
@@ -173,6 +195,7 @@ namespace SudokuCollective.Data.Repositories
                 await context.SaveChangesAsync();
 
                 result.Success = true;
+                result.Object = entity;
 
                 return result;
             }

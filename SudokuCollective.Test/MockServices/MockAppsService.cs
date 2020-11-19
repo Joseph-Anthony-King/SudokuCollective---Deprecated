@@ -188,7 +188,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .ActivateApp(It.IsAny<int>())
+                        .Activate(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppActivatedMessage
@@ -201,7 +201,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .DeactivateApp(It.IsAny<int>())
+                        .Deactivate(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppDeactivatedMessage
@@ -365,7 +365,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .ActivateApp(It.IsAny<int>())
+                        .Activate(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppNotActivatedMessage
@@ -378,7 +378,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .DeactivateApp(It.IsAny<int>())
+                        .Deactivate(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppNotDeactivatedMessage

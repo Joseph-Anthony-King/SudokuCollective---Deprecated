@@ -36,5 +36,16 @@ namespace SudokuCollective.Core.Extensions
 
             return result;
         }
+        public static void RemoveSubList<T>(this IEnumerable<T> list, IEnumerable<T> subList)
+        {
+            foreach (var element in subList)
+            {
+                if (list.Contains(element))
+                {
+                    list.ToList().Remove(element);
+                }
+            }
+        }
+
     }
 }

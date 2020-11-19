@@ -25,7 +25,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private string email;
 
         [SetUp]
-        public async Task Setup()
+        public void Setup()
         {
             userName = "TestSuperUser";
             password = "password1";

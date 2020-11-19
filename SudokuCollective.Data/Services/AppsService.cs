@@ -145,7 +145,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (pageListModel != null)
                     {
-                        if (StaticApiHelpers.IsPageValid(pageListModel, response.Objects))
+                        if (StaticDataHelpers.IsPageValid(pageListModel, response.Objects))
                         {
                             if (pageListModel.SortBy == SortValue.NULL)
                             {
@@ -934,7 +934,7 @@ namespace SudokuCollective.Data.Services
                     {
                         if (getAppResponse.Success)
                         {
-                            var resetAppResponse = await appsRepository.ResetApp((App)getAppResponse.Object);
+                            var resetAppResponse = await appsRepository.Reset((App)getAppResponse.Object);
 
                             if (resetAppResponse.Success)
                             {
@@ -1042,7 +1042,7 @@ namespace SudokuCollective.Data.Services
             {
                 if (await appsRepository.HasEntity(id))
                 {
-                    var activateAppResponse = await appsRepository.ActivateApp(id);
+                    var activateAppResponse = await appsRepository.Activate(id);
 
                     if (activateAppResponse.Success)
                     {
@@ -1091,7 +1091,7 @@ namespace SudokuCollective.Data.Services
             {
                 if (await appsRepository.HasEntity(id))
                 {
-                    var activateAppResponse = await appsRepository.DeactivateApp(id);
+                    var activateAppResponse = await appsRepository.Deactivate(id);
 
                     if (activateAppResponse.Success)
                     {

@@ -413,7 +413,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(resultSeven.Result, Is.InstanceOf<ActionResult>());
             Assert.That(messageSeven, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeSeven, Is.EqualTo(400));
-
         }
 
         [Test]

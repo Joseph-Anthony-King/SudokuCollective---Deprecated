@@ -50,6 +50,13 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
+                if (entity.Id != 0)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
                 dbSet.Add(entity);
 
                 var role = await roleDbSet
@@ -87,19 +94,20 @@ namespace SudokuCollective.Data.Repositories
 
                 userRoleDbSet.AddRange(userRoles);
 
-                foreach (var entry in context.ChangeTracker.Entries())
-                {
-                    var dbEntry = (IEntityBase)entry.Entity;
+                context.ChangeTracker.TrackGraph(entity,
+                    e => {
 
-                    if (dbEntry.Id != 0)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        entry.State = EntityState.Added;
-                    }
-                }
+                        var dbEntry = (IEntityBase)e.Entry.Entity;
+
+                        if (dbEntry.Id != 0)
+                        {
+                            e.Entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            e.Entry.State = EntityState.Added;
+                        }
+                    });
 
                 await context.SaveChangesAsync();
 
@@ -835,32 +843,39 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                foreach (var roleId in roles)
+                if (await dbSet.AnyAsync(u => u.Id == userId))
                 {
-                    var userRole = new UserRole(userId, roleId);
-
-                    userRoleDbSet.Add(userRole);
-                }
-
-                foreach (var entry in context.ChangeTracker.Entries())
-                {
-                    var dbEntry = (IEntityBase)entry.Entity;
-
-                    if (dbEntry.Id != 0)
+                    if (await dbSet.AnyAsync(u => u.Id == userId))
                     {
-                        entry.State = EntityState.Modified;
+                        foreach (var roleId in roles)
+                        {
+                            if (await roleDbSet.AnyAsync(r => r.Id == roleId))
+                            {
+                                var userRole = new UserRole(userId, roleId);
+
+                                userRoleDbSet.Add(userRole);
+                            }
+                        }
+
+                        await context.SaveChangesAsync();
+
+                        result.Success = true;
+
+                        return result;
                     }
                     else
                     {
-                        entry.State = EntityState.Added;
+                        result.Success = false;
+
+                        return result;
                     }
                 }
+                else
+                {
+                    result.Success = false;
 
-                await context.SaveChangesAsync();
-
-                result.Success = true;
-
-                return result;
+                    return result;
+                }
             }
             catch (Exception exp)
             {
@@ -871,42 +886,56 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> RemoveRoles(int userid, List<int> roles)
+        async public Task<IRepositoryResponse> RemoveRoles(int userId, List<int> roles)
         {
             var result = new RepositoryResponse();
 
             try
             {
-                var userRoles = await userRoleDbSet
-                    .Where(ur => ur.UserId == userid && roles.Contains(ur.RoleId))
-                    .ToListAsync();
-
-                userRoleDbSet.AttachRange(userRoles);
-
-                foreach (var entry in context.ChangeTracker.Entries())
+                if (await dbSet.AnyAsync(u => u.Id == userId))
                 {
-                    if (entry.Entity is UserRole dbEntry)
+                    foreach (var roleId in roles)
                     {
-                        if (dbEntry.UserId == userid && roles.Contains(dbEntry.RoleId))
+                        if (await roleDbSet.AnyAsync(r => r.Id == roleId))
                         {
-                            entry.State = EntityState.Deleted;
+                            var userRole = await userRoleDbSet
+                                .FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId);
+
+                            userRoleDbSet.Attach(userRole);
+                        }
+                    }
+
+                    foreach (var entry in context.ChangeTracker.Entries())
+                    {
+                        if (entry.Entity is UserRole dbEntry)
+                        {
+                            if (dbEntry.UserId == userId && roles.Contains(dbEntry.RoleId))
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
                         }
                         else
                         {
                             entry.State = EntityState.Modified;
                         }
                     }
-                    else
-                    {
-                        entry.State = EntityState.Modified;
-                    }
+
+                    await context.SaveChangesAsync();
+
+                    result.Success = true;
+
+                    return result;
                 }
+                else
+                {
+                    result.Success = false;
 
-                await context.SaveChangesAsync();
-
-                result.Success = true;
-
-                return result;
+                    return result;
+                }
             }
             catch (Exception exp)
             {
@@ -921,15 +950,22 @@ namespace SudokuCollective.Data.Repositories
         {
             try
             {
-                var user = await dbSet.FirstOrDefaultAsync(predicate: u => u.Id == id);
+                if (await dbSet.AnyAsync(u => u.Id == id))
+                {
+                    var user = await dbSet.FirstOrDefaultAsync(predicate: u => u.Id == id);
 
-                user.ActivateUser();
+                    user.ActivateUser();
 
-                dbSet.Update(user);
+                    dbSet.Update(user);
 
-                await context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
 
-                return true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {
@@ -941,15 +977,22 @@ namespace SudokuCollective.Data.Repositories
         {
             try
             {
-                var user = await dbSet.FirstOrDefaultAsync(predicate: u => u.Id == id);
+                if (await dbSet.AnyAsync(u => u.Id == id))
+                {
+                    var user = await dbSet.FirstOrDefaultAsync(predicate: u => u.Id == id);
 
-                user.DeactiveUser();
+                    user.DeactiveUser();
 
-                dbSet.Update(user);
+                    dbSet.Update(user);
 
-                await context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
 
-                return true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {
@@ -984,19 +1027,48 @@ namespace SudokuCollective.Data.Repositories
 
         async public Task<bool> IsUserRegistered(int id)
         {
-            return await dbSet.AnyAsync(predicate: u => u.Id == id);
+            if (id == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return await dbSet.AnyAsync(predicate: u => u.Id == id);
+            }
         }
 
         async public Task<bool> IsUserNameUnique(string username)
         {
-            return await dbSet.AnyAsync(
-                predicate: u => !u.UserName.ToLower().Equals(username.ToLower()));
+            var names = await dbSet.Select(u => u.UserName).ToListAsync();
+
+            var result = true;
+
+            foreach (var name in names)
+            {
+                if (name.ToLower().Equals(username.ToLower()))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
         }
 
         async public Task<bool> IsEmailUnique(string email)
         {
-            return await dbSet.AnyAsync(
-                predicate: u => !u.Email.ToLower().Equals(email.ToLower()));
+            var emails = await dbSet.Select(u => u.Email).ToListAsync();
+
+            var result = true;
+
+            foreach (var e in emails)
+            {
+                if (e.ToLower().Equals(email.ToLower()))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
         }
         #endregion
     }

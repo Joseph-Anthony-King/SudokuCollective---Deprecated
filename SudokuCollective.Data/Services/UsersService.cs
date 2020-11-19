@@ -102,7 +102,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (pageListModel != null)
                     {
-                        if (StaticApiHelpers.IsPageValid(pageListModel, response.Objects))
+                        if (StaticDataHelpers.IsPageValid(pageListModel, response.Objects))
                         {
                             if (pageListModel.SortBy == SortValue.NULL)
                             {

@@ -35,25 +35,47 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
+                if (await dbSet.AnyAsync(d => d.DifficultyLevel == entity.DifficultyLevel))
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
                 dbSet.Add(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
-                    var dbEntry = (IEntityBase)entry.Entity;
-
-                    if (dbEntry.Id != 0)
+                    if (entry.Entity is Difficulty difficulty)
                     {
-                        entry.State = EntityState.Modified;
+                        if (entity.Id == difficulty.Id)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
                     }
                     else
                     {
-                        entry.State = EntityState.Added;
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry.Id != 0)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Added;
+                        }
                     }
                 }
 
                 await context.SaveChangesAsync();
 
                 result.Success = true;
+                result.Object = entity;
 
                 return result;
             }
@@ -173,6 +195,7 @@ namespace SudokuCollective.Data.Repositories
                 await context.SaveChangesAsync();
 
                 result.Success = true;
+                result.Object = entity;
 
                 return result;
             }
@@ -228,32 +251,41 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.Remove(entity);
-
-                foreach (var entry in context.ChangeTracker.Entries())
+                if (await dbSet.AnyAsync(u => u.Id == entity.Id))
                 {
-                    if (entry.Entity is Difficulty difficulty)
+                    dbSet.Remove(entity);
+
+                    foreach (var entry in context.ChangeTracker.Entries())
                     {
-                        if (entity.Id == difficulty.Id)
+                        if (entry.Entity is Difficulty difficulty)
                         {
-                            entry.State = EntityState.Deleted;
+                            if (entity.Id == difficulty.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
                         }
                         else
                         {
                             entry.State = EntityState.Modified;
                         }
                     }
-                    else
-                    {
-                        entry.State = EntityState.Modified;
-                    }
+
+                    await context.SaveChangesAsync();
+
+                    result.Success = true;
+
+                    return result;
                 }
+                else
+                {
+                    result.Success = false;
 
-                await context.SaveChangesAsync();
-
-                result.Success = true;
-
-                return result;
+                    return result;
+                }
             }
             catch (Exception exp)
             {

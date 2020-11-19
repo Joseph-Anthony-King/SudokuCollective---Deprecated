@@ -381,7 +381,7 @@ namespace SudokuCollective.Data.Services
                     {
                         if (request.PageListModel != null)
                         {
-                            if (StaticApiHelpers.IsPageValid(request.PageListModel, response.Objects))
+                            if (StaticDataHelpers.IsPageValid(request.PageListModel, response.Objects))
                             {
                                 if (request.PageListModel.SortBy == SortValue.NULL)
                                 {
@@ -625,7 +625,7 @@ namespace SudokuCollective.Data.Services
                     {
                         if (request.PageListModel != null)
                         {
-                            if (StaticApiHelpers.IsPageValid(request.PageListModel, response.Objects))
+                            if (StaticDataHelpers.IsPageValid(request.PageListModel, response.Objects))
                             {
                                 if (request.PageListModel.SortBy == SortValue.NULL)
                                 {

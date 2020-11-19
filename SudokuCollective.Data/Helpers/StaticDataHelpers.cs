@@ -8,7 +8,7 @@ using SudokuCollective.Data.Models;
 
 namespace SudokuCollective.Data.Helpers
 {
-    public static class StaticApiHelpers
+    public static class StaticDataHelpers
     {
         public async static Task AttachSudokuCells(
             this ISudokuMatrix matrix,

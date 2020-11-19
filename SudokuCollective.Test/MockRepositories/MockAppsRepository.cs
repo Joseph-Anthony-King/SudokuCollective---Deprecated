@@ -123,21 +123,21 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.ResetApp(It.IsAny<App>()))
+                appsRepo.Reset(It.IsAny<App>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.ActivateApp(It.IsAny<int>()))
+                appsRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.DeactivateApp(It.IsAny<int>()))
+                appsRepo.Deactivate(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true
@@ -248,21 +248,21 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.ResetApp(It.IsAny<App>()))
+                appsRepo.Reset(It.IsAny<App>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.ActivateApp(It.IsAny<int>()))
+                appsRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.DeactivateApp(It.IsAny<int>()))
+                appsRepo.Deactivate(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
