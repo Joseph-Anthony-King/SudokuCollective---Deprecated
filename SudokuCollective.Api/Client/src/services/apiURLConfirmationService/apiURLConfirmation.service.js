@@ -14,7 +14,7 @@ const confirm = async function() {
 
         try {
             
-            const response = await axios.get(`${kestralAPI}/api/v1/helloworld`, configRequest );
+            const response = await axios.get(`${kestralAPI}/api/helloworld`, configRequest );
             
             console.log(`The api is using kestral: ${kestralAPI}`);
 
@@ -24,7 +24,7 @@ const confirm = async function() {
             
             console.error(error);
             
-            const response = await axios.get(`${iisAPI}/api/v1/helloworld`, configRequest);
+            const response = await axios.get(`${iisAPI}/api/helloworld`, configRequest);
             
             console.log(`The api is using IIS Express: ${iisAPI}`);
             
@@ -33,7 +33,7 @@ const confirm = async function() {
 
     } else {
             
-        const response = await axios.get(`${prodAPI}/api/v1/helloworld`, configRequest);
+        const response = await axios.get(`${prodAPI}/api/helloworld`, configRequest);
         
         return { "url" : prodAPI, "message" : response.data};
     }
