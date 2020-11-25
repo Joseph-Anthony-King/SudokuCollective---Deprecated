@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
+using SudokuCollective.Core.Interfaces.APIModels.ResultModels.UserResults;
 
 namespace SudokuCollective.Core.Interfaces.Services
 {
@@ -10,7 +11,10 @@ namespace SudokuCollective.Core.Interfaces.Services
     {
         Task<IUserResult> GetUser(int id, bool fullRecord = true);
         Task<IUsersResult> GetUsers(IPageListModel pageListModel, bool fullRecord = true);
-        Task<IUserResult> CreateUser(IRegisterRequest registerRequest);
+        Task<IUserResult> CreateUser(
+            IRegisterRequest registerRequest,
+            string baseUrl,
+            string emailtTemplatePath);
         Task<IUserResult> UpdateUser(int id, IUpdateUserRequest updateUserRequest);
         Task<IBaseResult> UpdatePassword(int id, IUpdatePasswordRequest updatePasswordRequest);
         Task<IBaseResult> DeleteUser(int id);
@@ -18,6 +22,6 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IBaseResult> RemoveUserRoles(int userid, List<int> roleIds);
         Task<IBaseResult> ActivateUser(int id);
         Task<IBaseResult> DeactivateUser(int id);
-        Task<IBaseResult> ConfirmEmail(string code);
+        Task<IConfirmEmailResult> ConfirmEmail(string code);
     }
 }

@@ -9,7 +9,8 @@ namespace SudokuCollective.Core.Models
         #region Properties
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string Code { get; set; }
+        public int AppId { get; set; }
+        public string Token { get; set; }
         #endregion
 
         #region Constructors
@@ -17,21 +18,28 @@ namespace SudokuCollective.Core.Models
         {
             Id = 0;
             UserId = 0;
-            Code = string.Empty;
+            AppId = 0;
+            Token = string.Empty;
         }
 
-        public EmailConfirmation(int userId) : base()
+        public EmailConfirmation(int userId, int appId) : base()
         {
             UserId = userId;
-            Code = Guid.NewGuid().ToString();
+            AppId = appId;
+            Token = Guid.NewGuid().ToString();
         }
 
         [JsonConstructor]
-        public EmailConfirmation(int id, int userId, string code)
+        public EmailConfirmation(
+            int id, 
+            int userId,
+            int appId,
+            string code)
         {
             Id = id;
             UserId = userId;
-            Code = code;
+            AppId = appId;
+            Token = code;
         }
         #endregion
     }

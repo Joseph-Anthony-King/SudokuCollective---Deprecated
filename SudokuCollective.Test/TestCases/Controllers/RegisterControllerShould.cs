@@ -1,6 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NUnit.Framework;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.PageModels;
@@ -10,27 +11,32 @@ using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.Controllers;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
     public class RegisterControllerShould
     {
-        private DatabaseContext _context;
+        private DatabaseContext context;
         private RegisterController sutSuccess;
         private RegisterController sutFailure;
         private MockUsersService mockUsersService;
         private RegisterRequest registerRequest;
-        private string emailConfirmationCode;
+        private EmailMetaData emailMetaData;
+        private Mock<IWebHostEnvironment> mockWebHostEnvironment;
 
         [SetUp]
         public async Task Setup()
         {
-            _context = await TestDatabase.GetDatabaseContext();
+            context = await TestDatabase.GetDatabaseContext();
 
-            mockUsersService = new MockUsersService(_context);
+            mockUsersService = new MockUsersService(context);
 
-            sutSuccess = new RegisterController(mockUsersService.UsersServiceSuccessfulRequest.Object);
-            sutFailure = new RegisterController(mockUsersService.UsersServiceFailedRequest.Object);
+            emailMetaData = new EmailMetaData();
+            mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
+
+            sutSuccess = new RegisterController(mockUsersService.UsersServiceSuccessfulRequest.Object, emailMetaData, mockWebHostEnvironment.Object);
+            sutFailure = new RegisterController(mockUsersService.UsersServiceFailedRequest.Object, emailMetaData, mockWebHostEnvironment.Object);
 
             registerRequest = new RegisterRequest()
             {
@@ -44,8 +50,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 RequestorId = 1,
                 PageListModel = new PageListModel()
             };
-
-            emailConfirmationCode = Guid.NewGuid().ToString();
         }
 
         [Test]
@@ -81,40 +85,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
             Assert.That(errorMessage, Is.EqualTo("Status Code 404: User Not Created"));
-            Assert.That(statusCode, Is.EqualTo(404));
-        }
-
-        [Test]
-        [Category("Controllers")]
-        public void SuccessfullyConfirmUserEmails()
-        {
-            // Arrange
-
-            // Act
-            var result = sutSuccess.ConfirmEmail(emailConfirmationCode);
-            var message = ((BaseResult)((ObjectResult)result.Result).Value).Message;
-            var statusCode = ((ObjectResult)result.Result).StatusCode;
-
-            // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Email Confirmed"));
-            Assert.That(statusCode, Is.EqualTo(200));
-        }
-
-        [Test]
-        [Category("Controllers")]
-        public void IssueErrorAndMessageSuccessfullyConfirmUserEmailsFail()
-        {
-            // Arrange
-
-            // Act
-            var result = sutFailure.ConfirmEmail(emailConfirmationCode);
-            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
-            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
-
-            // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Email Not Confirmed"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

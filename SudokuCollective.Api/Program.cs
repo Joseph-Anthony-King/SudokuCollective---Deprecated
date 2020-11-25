@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace SudokuCollective.Api {
-
-    public class Program {
-
-        public static void Main(string[] args) {
-
+namespace SudokuCollective.Api
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
             CreateWebHostBuilder(args).Build().Run();
         }
 

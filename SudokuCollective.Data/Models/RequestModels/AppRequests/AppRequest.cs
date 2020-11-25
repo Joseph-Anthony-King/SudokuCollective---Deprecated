@@ -13,12 +13,14 @@ namespace SudokuCollective.Data.Models.RequestModels
         public string Name { get; set; }
         public string DevUrl { get; set; }
         public string LiveUrl { get; set; }
+        public bool InProduction { get; set; }
 
         public AppRequest() : base()
         {
             Name = string.Empty;
             DevUrl = string.Empty;
             LiveUrl = string.Empty;
+            InProduction = false;
 
             if (PageListModel == null)
             {

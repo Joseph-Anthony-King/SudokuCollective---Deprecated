@@ -3,6 +3,7 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Test.TestData
 {
@@ -430,6 +431,30 @@ namespace SudokuCollective.Test.TestData
             };
 
             return cells;
+        }
+
+        public static EmailMetaData GetEmailMetaData()
+        {
+            return new EmailMetaData()
+            {
+                SmtpServer = "smtp.gmail.com",
+                Port = 465,
+                UserName = "sudokucollectivetesting@gmail.com",
+                Password = "testing@123",
+                FromEmail = "SudokuCollectivetesting@gmail.com"
+            };
+        }
+
+        public static EmailMetaData GetIncorrectEmailMetaData()
+        {
+            return new EmailMetaData()
+            {
+                SmtpServer = "smtp.gmail.com",
+                Port = 465,
+                UserName = "sudokucollectivetesting@gmail.com",
+                Password = "password",
+                FromEmail = "SudokuCollectivetesting@gmail.com"
+            };
         }
     }
 }

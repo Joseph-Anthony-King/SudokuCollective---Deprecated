@@ -3,20 +3,22 @@ using System.Threading.Tasks;
 using Moq;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Core.Models;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Interfaces.APIModels.ResultModels.UserResults;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Core.Models;
 using SudokuCollective.Test.MockRepositories;
-using SudokuCollective.Core.Interfaces.Services;
 
 namespace SudokuCollective.Test.MockServices
 {
     public class MockUsersService
     {
         private MockUsersRepository MockUsersRespository { get; set; }
+        private MockEmailService MockEmailService { get; set; }
 
         internal Mock<IUsersService> UsersServiceSuccessfulRequest { get; set; }
         internal Mock<IUsersService> UsersServiceFailedRequest { get; set; }
@@ -29,7 +31,7 @@ namespace SudokuCollective.Test.MockServices
             UsersServiceFailedRequest = new Mock<IUsersService>();
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.CreateUser(It.IsAny<RegisterRequest>()))
+                userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRespository
@@ -183,7 +185,7 @@ namespace SudokuCollective.Test.MockServices
 
             UsersServiceSuccessfulRequest.Setup(usersService =>
                 usersService.ConfirmEmail(It.IsAny<string>()))
-                .Returns(Task.FromResult(new BaseResult()
+                .Returns(Task.FromResult(new ConfirmEmailResult()
                 {
                     Success = MockUsersRespository
                         .UsersRepositorySuccessfulRequest
@@ -192,10 +194,10 @@ namespace SudokuCollective.Test.MockServices
                         .Result
                         .Success,
                     Message = UsersMessages.EmailConfirmedMessage
-                } as IBaseResult));
+                } as IConfirmEmailResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.CreateUser(It.IsAny<RegisterRequest>()))
+                userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRespository
@@ -343,7 +345,7 @@ namespace SudokuCollective.Test.MockServices
 
             UsersServiceFailedRequest.Setup(usersService =>
                 usersService.ConfirmEmail(It.IsAny<string>()))
-                .Returns(Task.FromResult(new BaseResult()
+                .Returns(Task.FromResult(new ConfirmEmailResult()
                 {
                     Success = MockUsersRespository
                         .UsersRepositoryFailedRequest
@@ -352,7 +354,7 @@ namespace SudokuCollective.Test.MockServices
                         .Result
                         .Success,
                     Message = UsersMessages.EmailNotConfirmedMessage
-                } as IBaseResult));
+                } as IConfirmEmailResult));
         }
     }
 }

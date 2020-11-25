@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -14,6 +15,7 @@ using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Interfaces.APIModels.ResultModels.UserResults;
 
 namespace SudokuCollective.Data.Services
 {
@@ -23,17 +25,20 @@ namespace SudokuCollective.Data.Services
         private readonly IUsersRepository<User> usersRepository;
         private readonly IAppsRepository<App> appsRepository;
         private readonly IRolesRepository<Role> rolesRepository;
+        private readonly IEmailService emailService;
         #endregion
 
         #region Constructor
         public UsersService(
             IUsersRepository<User> usersRepo,
             IAppsRepository<App> appsRepo,
-            IRolesRepository<Role> rolesApp)
+            IRolesRepository<Role> rolesApp,
+            IEmailService emailServ)
         {
             usersRepository = usersRepo;
             appsRepository = appsRepo;
             rolesRepository = rolesApp;
+            emailService = emailServ;
         }
         #endregion
 
@@ -79,10 +84,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -381,17 +386,19 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
         }
 
         public async Task<IUserResult> CreateUser(
-            IRegisterRequest request)
+            IRegisterRequest request,
+            string baseUrl,
+            string emailtTemplatePath)
         {
             var result = new UserResult();
 
@@ -488,10 +495,42 @@ namespace SudokuCollective.Data.Services
 
                             if (userResponse.Success)
                             {
+                                var html = File.ReadAllText(emailtTemplatePath);
+                                var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}", 
+                                    baseUrl, 
+                                    userResponse.Token);
+                                var appTitle = string.Empty;
+                                var url = string.Empty;
+
+                                if (((User)userResponse.Object).Apps[0].AppId == 1)
+                                {
+                                    appTitle = "SudokuCollective.com";
+                                }
+                                else
+                                {
+                                    appTitle = ((User)userResponse.Object).Apps[0].App.Name;
+                                }
+
+                                if (((User)userResponse.Object).Apps[0].App.InProduction)
+                                {
+                                    url = ((User)userResponse.Object).Apps[0].App.LiveUrl;
+                                }
+                                else
+                                {
+                                    url = ((User)userResponse.Object).Apps[0].App.DevUrl;
+                                }
+
+                                html = html.Replace("{{USER_NAME}}", ((User)userResponse.Object).UserName);
+                                html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
+                                html = html.Replace("{{APP_TITLE}}", appTitle);
+                                html = html.Replace("{{URL}}", url);
+
+                                result.ConfirmationEmailSuccessfullySent = emailService
+                                    .Send(((User)userResponse.Object).Email, "Please confirm email address", html);
+
                                 result.Success = userResponse.Success;
                                 result.Message = UsersMessages.UserCreatedMessage;
                                 result.User = (User)userResponse.Object;
-                                result.EmailConfirmationCode = userResponse.Code;
 
                                 return result;
                             }
@@ -533,10 +572,10 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
                 }
-                catch (Exception e)
+                catch (Exception exp)
                 {
                     result.Success = false;
-                    result.Message = e.Message;
+                    result.Message = exp.Message;
 
                     return result;
                 }
@@ -661,10 +700,10 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
                 }
-                catch (Exception e)
+                catch (Exception exp)
                 {
                     result.Success = false;
-                    result.Message = e.Message;
+                    result.Message = exp.Message;
 
                     return result;
                 }
@@ -747,10 +786,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -815,10 +854,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -874,10 +913,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -933,10 +972,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -973,10 +1012,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -1013,18 +1052,18 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
         }
 
-        public async Task<IBaseResult> ConfirmEmail(string code)
+        public async Task<IConfirmEmailResult> ConfirmEmail(string code)
         {
-            var result = new BaseResult();
+            var result = new ConfirmEmailResult();
 
             try
             {
@@ -1033,6 +1072,26 @@ namespace SudokuCollective.Data.Services
                 if (response.Success)
                 {
                     result.Success = response.Success;
+                    result.FirstName = ((User)response.Object).FirstName;
+
+                    if (((User)response.Object).Apps[0].AppId == 1)
+                    {
+                        result.AppTitle = "SudokuCollective.com";
+                    }
+                    else
+                    {
+                        result.AppTitle = ((User)response.Object).Apps[0].App.Name;
+                    }
+
+                    if (((User)response.Object).Apps[0].App.InProduction)
+                    {
+                        result.Url = ((User)response.Object).Apps[0].App.LiveUrl;
+                    }
+                    else
+                    {
+                        result.Url = ((User)response.Object).Apps[0].App.DevUrl;
+                    }
+
                     result.Message = UsersMessages.EmailConfirmedMessage;
 
                     return result;
@@ -1052,10 +1111,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }

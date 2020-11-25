@@ -81,7 +81,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             var emailInitiallyUnconfirmed = ((User)user.Object).EmailConfirmed;
 
             // Act
-            var result = await sut.ConfirmEmail(user.Code);
+            var result = await sut.ConfirmEmail(user.Token);
 
             Assert.That(emailInitiallyUnconfirmed, Is.False);
             Assert.That(result.Success, Is.True);

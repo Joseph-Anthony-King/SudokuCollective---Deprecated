@@ -24,6 +24,7 @@ namespace SudokuCollective.Core.Models
         public string DevUrl { get; set; }
         public string LiveUrl { get; set; }
         public bool IsActive { get; set; }
+        public bool InProduction { get; set; }
         public int GameCount
         {
             get
@@ -83,6 +84,7 @@ namespace SudokuCollective.Core.Models
             DevUrl = string.Empty;
             LiveUrl = string.Empty;
             IsActive = false;
+            InProduction = false;
             Users = new List<UserApp>();
         }
 
@@ -96,6 +98,7 @@ namespace SudokuCollective.Core.Models
             DevUrl = devUrl;
             LiveUrl = liveUrl;
             IsActive = true;
+            InProduction = false;
         }
 
         [JsonConstructor]
@@ -107,6 +110,7 @@ namespace SudokuCollective.Core.Models
             string devUrl,
             string liveUrl,
             bool isActive,
+            bool inProduction,
             DateTime dateCreated,
             DateTime dateUpdated)
         {
@@ -117,6 +121,7 @@ namespace SudokuCollective.Core.Models
             DevUrl = devUrl;
             LiveUrl = liveUrl;
             IsActive = isActive;
+            InProduction = inProduction;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
         }

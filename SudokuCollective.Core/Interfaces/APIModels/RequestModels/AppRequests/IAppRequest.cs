@@ -5,5 +5,6 @@
         string Name { get; set; }
         string DevUrl { get; set; }
         string LiveUrl { get; set; }
+        bool InProduction { get; set; }
     }
 }

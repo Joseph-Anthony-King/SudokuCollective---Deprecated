@@ -40,6 +40,7 @@ namespace SudokuCollective.Test.MockRepositories
                             "https://localhost:8080",
                             "https://testapp3.com",
                             true,
+                            true,
                             todaysDate,
                             DateTime.MinValue)
                     } as IRepositoryResponse));

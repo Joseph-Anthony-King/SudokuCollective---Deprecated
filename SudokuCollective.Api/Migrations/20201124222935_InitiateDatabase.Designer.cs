@@ -10,8 +10,8 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201119205709_InitializeDatabase")]
-    partial class InitializeDatabase
+    [Migration("20201124222935_InitiateDatabase")]
+    partial class InitiateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,6 +36,9 @@ namespace SudokuCollective.Api.Migrations
 
                     b.Property<string>("DevUrl")
                         .HasColumnType("text");
+
+                    b.Property<bool>("InProduction")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -89,7 +92,10 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Code")
+                    b.Property<int>("AppId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Token")
                         .HasColumnType("text");
 
                     b.Property<int>("UserId")

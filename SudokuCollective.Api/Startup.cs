@@ -19,29 +19,31 @@ using SudokuCollective.Data.Models.TokenModels;
 using SudokuCollective.Data.Services;
 using SudokuCollective.Data.Repositories;
 using SudokuCollective.Api.Models;
+using SudokuCollective.Data.Models.DataModels;
 
-namespace SudokuCollective.Api {
-
-    public class Startup {
-
-        public Startup(IConfiguration configuration) {
-
+namespace SudokuCollective.Api
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services) {
-
-            services.AddDbContext<DatabaseContext>(options => 
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddDbContext<DatabaseContext>(options =>
                 options.UseNpgsql(
                     Configuration.GetConnectionString("DatabaseConnection"),
                     b => b.MigrationsAssembly("SudokuCollective.Api")));
 
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
-                .AddNewtonsoftJson(options => {
+                .AddNewtonsoftJson(options =>
+                {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
@@ -50,13 +52,16 @@ namespace SudokuCollective.Api {
             var token = Configuration.GetSection("tokenManagement").Get<TokenManagement>();
             var secret = Encoding.ASCII.GetBytes(token.Secret);
 
-            services.AddAuthentication(x => {
+            services.AddAuthentication(x =>
+            {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x => {
+            }).AddJwtBearer(x =>
+            {
                 x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters {
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(token.Secret)),
                     ValidIssuer = token.Issuer,
@@ -65,6 +70,10 @@ namespace SudokuCollective.Api {
                     ValidateAudience = false
                 };
             });
+
+            var emailMetaData = Configuration.GetSection("emailMetaData").Get<EmailMetaData>();
+
+            services.AddSingleton(emailMetaData);
 
             services.AddScoped<IAppsRepository<App>, AppsRepository<App>>();
             services.AddScoped<IUsersRepository<User>, UsersRepository<User>>();
@@ -80,6 +89,7 @@ namespace SudokuCollective.Api {
             services.AddScoped<IDifficultiesService, DifficultiesService>();
             services.AddScoped<IRolesService, RolesService>();
             services.AddScoped<ISolutionsService, SolutionsService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -89,12 +99,11 @@ namespace SudokuCollective.Api {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-
-            if (env.IsDevelopment()) {
-
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
-
             }
 
             app.UseCors(x => x.AllowAnyOrigin()
@@ -111,8 +120,8 @@ namespace SudokuCollective.Api {
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => {
-
+            app.UseSwaggerUI(c =>
+            {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sudoku Collective API V1");
             });
 
@@ -138,7 +147,6 @@ namespace SudokuCollective.Api {
                 {
                     spa.UseVueCli(npmScript: "serve");
                 }
-
             });
 
             SeedData.EnsurePopulated(app, Configuration);

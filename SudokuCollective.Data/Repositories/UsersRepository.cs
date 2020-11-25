@@ -114,7 +114,9 @@ namespace SudokuCollective.Data.Repositories
 
                 await context.SaveChangesAsync();
 
-                var emailConfirmation = new EmailConfirmation(entity.Id);
+                var emailConfirmation = new EmailConfirmation(
+                    entity.Id, 
+                    entity.Apps[0].App.Id);
 
                 emailConfirmationDbSet.Add(emailConfirmation);
 
@@ -142,7 +144,7 @@ namespace SudokuCollective.Data.Repositories
 
                 result.Object = entity;
                 result.Success = true;
-                result.Code = emailConfirmation.Code;
+                result.Token = emailConfirmation.Token;
 
                 return result;
             }
@@ -980,12 +982,12 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await emailConfirmationDbSet.AnyAsync(ec => ec.Code.ToLower().Equals(code.ToLower())))
+                if (await emailConfirmationDbSet.AnyAsync(ec => ec.Token.ToLower().Equals(code.ToLower())))
                 {
-                    var userId = (await emailConfirmationDbSet
-                        .FirstOrDefaultAsync(predicate: ec => ec.Code.ToLower().Equals(code.ToLower()))).UserId;
+                    var emailConfirmed = await emailConfirmationDbSet
+                        .FirstOrDefaultAsync(predicate: ec => ec.Token.ToLower().Equals(code.ToLower()));
 
-                    if (await dbSet.AnyAsync(u => u.Id == userId))
+                    if (await dbSet.AnyAsync(u => u.Id == emailConfirmed.UserId))
                     {
                         var user = await dbSet
                             .Include(u => u.Apps)
@@ -995,7 +997,7 @@ namespace SudokuCollective.Data.Repositories
                                 .ThenInclude(g => g.SudokuMatrix)
                             .Include(u => u.Games)
                                 .ThenInclude(g => g.SudokuSolution)
-                            .FirstOrDefaultAsync(predicate: u => u.Id == userId);
+                            .FirstOrDefaultAsync(predicate: u => u.Id == emailConfirmed.UserId);
 
                         foreach (var userApp in user.Apps)
                         {
@@ -1033,13 +1035,18 @@ namespace SudokuCollective.Data.Repositories
                             });
 
                         var emailConfirmation = await emailConfirmationDbSet
-                            .FirstOrDefaultAsync(ec => ec.Code.ToLower().Equals(code.ToLower()));
+                            .FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(code.ToLower()));
 
                         emailConfirmationDbSet.Remove(emailConfirmation);
 
                         await context.SaveChangesAsync();
 
+                        user.Apps = user.Apps
+                            .Where(ua => ua.App.Id == emailConfirmation.AppId)
+                            .ToList();
+
                         result.Success = true;
+                        result.Object = user;
 
                         return result;
                     }

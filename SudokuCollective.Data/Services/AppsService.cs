@@ -72,10 +72,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -122,10 +122,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -366,10 +366,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -633,10 +633,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -712,10 +712,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -743,10 +743,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -767,6 +767,7 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).Name = request.Name;
                         ((IApp)getAppResponse.Object).DevUrl = request.DevUrl;
                         ((IApp)getAppResponse.Object).LiveUrl = request.LiveUrl;
+                        ((IApp)getAppResponse.Object).InProduction = request.InProduction;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
                         var updateAppResponse = await appsRepository
@@ -811,10 +812,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -862,9 +863,9 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -912,9 +913,9 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -1025,10 +1026,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -1074,10 +1075,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }
@@ -1123,10 +1124,10 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 result.Success = false;
-                result.Message = e.Message;
+                result.Message = exp.Message;
 
                 return result;
             }

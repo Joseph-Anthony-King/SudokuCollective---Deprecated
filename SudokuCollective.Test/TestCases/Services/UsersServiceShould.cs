@@ -8,9 +8,11 @@ using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.DataModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Services;
 using SudokuCollective.Test.MockRepositories;
+using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Services
@@ -18,6 +20,7 @@ namespace SudokuCollective.Test.TestCases.Services
     public class UsersServiceShould
     {
         private DatabaseContext context;
+        private MockEmailService MockEmailService; 
         private MockUsersRepository MockUsersRepository;
         private MockAppsRepository MockAppsRepository;
         private MockRolesRepository MockRolesRepository;
@@ -31,6 +34,7 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             context = await TestDatabase.GetDatabaseContext();
 
+            MockEmailService = new MockEmailService();
             MockUsersRepository = new MockUsersRepository(context);
             MockAppsRepository = new MockAppsRepository(context);
             MockRolesRepository = new MockRolesRepository(context);
@@ -38,17 +42,20 @@ namespace SudokuCollective.Test.TestCases.Services
             sut = new UsersService(
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             sutFailure = new UsersService(
                 MockUsersRepository.UsersRepositoryFailedRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             sutEmailFailure = new UsersService(
                 MockUsersRepository.UsersRepositoryEmailFailedRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             baseRequest = TestObjects.GetBaseRequest();
         }
@@ -117,8 +124,11 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/email-inlined.html";
+
             // Act
-            var result = await sut.CreateUser(registerRequest);
+            var result = await sut.CreateUser(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -171,8 +181,11 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+            var html = "c:/path/to/html";
+
             // Act
-            var result = await sutFailure.CreateUser(registerRequest);
+            var result = await sutFailure.CreateUser(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -196,8 +209,11 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+            var html = "c:/path/to/html";
+
             // Act
-            var result = await sutEmailFailure.CreateUser(registerRequest);
+            var result = await sutEmailFailure.CreateUser(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -221,8 +237,12 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+            var emailMetaData = new EmailMetaData();
+            var html = "c:/path/to/html";
+
             // Act
-            var result = await sutEmailFailure.CreateUser(registerRequest);
+            var result = await sutEmailFailure.CreateUser(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -246,8 +266,11 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+            var html = "c:/path/to/html";
+
             // Act
-            var result = await sut.CreateUser(registerRequest);
+            var result = await sut.CreateUser(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);

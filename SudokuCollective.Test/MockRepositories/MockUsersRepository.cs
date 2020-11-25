@@ -45,6 +45,15 @@ namespace SudokuCollective.Test.MockRepositories
                             true,
                             todaysDate,
                             DateTime.MinValue)
+                        {
+                            Apps = new List<UserApp>() 
+                            { 
+                                new UserApp() 
+                                { 
+                                    App = new App()
+                                } 
+                            }
+                        }
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
@@ -138,7 +147,8 @@ namespace SudokuCollective.Test.MockRepositories
                 usersRepo.ConfirmEmail(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
-                        Success = true
+                        Success = true,
+                        Object = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>

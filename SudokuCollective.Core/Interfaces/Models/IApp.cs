@@ -12,6 +12,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         string DevUrl { get; set; }
         string LiveUrl { get; set; }
         bool IsActive { get; set; }
+        bool InProduction { get; set; }
         int GameCount { get; }
         int UserCount { get; }
         DateTime DateCreated { get; set; }

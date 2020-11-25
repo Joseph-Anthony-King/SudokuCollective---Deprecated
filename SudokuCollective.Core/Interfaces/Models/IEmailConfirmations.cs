@@ -3,6 +3,7 @@
     public interface IEmailConfirmation : IEntityBase
     {
         int UserId { get; set; }
-        string Code { get; set; }
+        int AppId { get; set; }
+        string Token { get; set; }
     }
 }
