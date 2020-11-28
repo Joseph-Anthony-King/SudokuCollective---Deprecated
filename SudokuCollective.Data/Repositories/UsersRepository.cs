@@ -94,64 +94,11 @@ namespace SudokuCollective.Data.Repositories
                         }
                     });
 
-                //foreach (var userRole in userRoles)
-                //{
-
-                //    context.ChangeTracker.TrackGraph(userRole,
-                //        e => {
-
-                //            var dbEntry = (IEntityBase)e.Entry.Entity;
-
-                //            if (dbEntry.Id != 0)
-                //            {
-                //                e.Entry.State = EntityState.Added;
-                //            }
-                //            else
-                //            {
-                //                e.Entry.State = EntityState.Modified;
-                //            }
-                //        });
-                //}
-
-                //foreach (var userApp in entity.Apps)
-                //{
-
-                //    context.ChangeTracker.TrackGraph(userApp,
-                //        e => {
-
-                //            var dbEntry = (IEntityBase)e.Entry.Entity;
-
-                //            if (dbEntry.Id != 0)
-                //            {
-                //                e.Entry.State = EntityState.Added;
-                //            }
-                //            else
-                //            {
-                //                e.Entry.State = EntityState.Modified;
-                //            }
-                //        });
-                //}
-
                 var emailConfirmation = new EmailConfirmation(
                     entity.Id,
                     entity.Apps[0].App.Id);
 
                 context.Entry(emailConfirmation).State = EntityState.Added;
-
-                //context.ChangeTracker.TrackGraph(entity,
-                //    e => {
-
-                //        var dbEntry = (IEntityBase)e.Entry.Entity;
-
-                //        if (dbEntry.Id != 0)
-                //        {
-                //            e.Entry.State = EntityState.Modified;
-                //        }
-                //        else
-                //        {
-                //            e.Entry.State = EntityState.Added;
-                //        }
-                //    });
 
                 await context.SaveChangesAsync();
 
