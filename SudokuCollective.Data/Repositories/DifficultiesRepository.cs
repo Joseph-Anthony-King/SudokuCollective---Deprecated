@@ -17,14 +17,12 @@ namespace SudokuCollective.Data.Repositories
     {
         #region Fields
         private readonly DatabaseContext context;
-        private readonly DbSet<Difficulty> dbSet;
         #endregion
 
         #region Constructor
         public DifficultiesRepository(DatabaseContext databaseContext)
         {
             context = databaseContext;
-            dbSet = context.Set<Difficulty>();
         }
         #endregion
 
@@ -35,14 +33,14 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await dbSet.AnyAsync(d => d.DifficultyLevel == entity.DifficultyLevel))
+                if (await context.Difficulties.AnyAsync(d => d.DifficultyLevel == entity.DifficultyLevel))
                 {
                     result.Success = false;
 
                     return result;
                 }
 
-                dbSet.Add(entity);
+                context.Difficulties.Add(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
@@ -97,13 +95,15 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Difficulties
                         .Include(d => d.Matrices)
                         .FirstOrDefaultAsync(predicate: d => d.Id == id);
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context
+                        .Difficulties
                         .FirstOrDefaultAsync(predicate: d => d.Id == id);
                 }
 
@@ -138,7 +138,8 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Difficulties
                         .Where(d => 
                             d.DifficultyLevel != DifficultyLevel.NULL 
                             && d.DifficultyLevel != DifficultyLevel.TEST)
@@ -147,7 +148,8 @@ namespace SudokuCollective.Data.Repositories
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context
+                        .Difficulties
                         .Where(d =>
                             d.DifficultyLevel != DifficultyLevel.NULL
                             && d.DifficultyLevel != DifficultyLevel.TEST)
@@ -176,7 +178,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.Update(entity);
+                context.Difficulties.Update(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
@@ -214,7 +216,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.UpdateRange(entities);
+                context.Difficulties.UpdateRange(entities);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
@@ -251,9 +253,9 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await dbSet.AnyAsync(u => u.Id == entity.Id))
+                if (await context.Difficulties.AnyAsync(u => u.Id == entity.Id))
                 {
-                    dbSet.Remove(entity);
+                    context.Difficulties.Remove(entity);
 
                     foreach (var entry in context.ChangeTracker.Entries())
                     {
@@ -302,7 +304,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.RemoveRange(entities);
+                context.Difficulties.RemoveRange(entities);
 
                 var difficultiesForDeletion = new List<int>();
 
@@ -347,14 +349,14 @@ namespace SudokuCollective.Data.Repositories
 
         async public Task<bool> HasEntity(int id)
         {
-            var result = await dbSet.AnyAsync(predicate: d => d.Id == id);
+            var result = await context.Difficulties.AnyAsync(predicate: d => d.Id == id);
 
             return result;
         }
 
         async public Task<bool> HasDifficultyLevel(DifficultyLevel level)
         {
-            var result = await dbSet.AnyAsync(predicate: d => d.DifficultyLevel == level);
+            var result = await context.Difficulties.AnyAsync(predicate: d => d.DifficultyLevel == level);
 
             return result;
         }

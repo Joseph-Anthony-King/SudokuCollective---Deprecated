@@ -18,30 +18,12 @@ namespace SudokuCollective.Data.Repositories
     {
         #region Fields
         private readonly DatabaseContext context;
-        private readonly DbSet<Game> dbSet;
-        private readonly DbSet<SudokuMatrix> matrixDbSet;
-        private readonly DbSet<SudokuCell> cellDbSet;
-        private readonly DbSet<SudokuSolution> solutionDbSet;
-        private readonly DbSet<App> appDbSet;
-        private readonly DbSet<Role> roleDbSet;
-        private readonly DbSet<User> userDbSet;
-        private readonly DbSet<UserApp> userAppDbSet;
-        private readonly DbSet<UserRole> userRoleDbSet;
         #endregion
 
         #region Constructor
         public GamesRepository(DatabaseContext databaseContext)
         {
             context = databaseContext;
-            dbSet = context.Set<Game>();
-            matrixDbSet = context.Set<SudokuMatrix>();
-            cellDbSet = context.Set<SudokuCell>();
-            solutionDbSet = context.Set<SudokuSolution>();
-            appDbSet = context.Set<App>();
-            roleDbSet = context.Set<Role>();
-            userDbSet = context.Set<User>();
-            userAppDbSet = context.Set<UserApp>();
-            userRoleDbSet = context.Set<UserRole>();
         }
         #endregion
 
@@ -54,7 +36,7 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (entity.Id == 0)
                 {
-                    dbSet.Add(entity);
+                    context.Games.Add(entity);
 
                     var apps = new List<App>();
                     var roles = new List<Role>();
@@ -88,12 +70,12 @@ namespace SudokuCollective.Data.Repositories
 
                     foreach (var app in apps)
                     {
-                        userAppDbSet.Add(new UserApp(entity.UserId, app.Id));
+                        context.UsersApps.Add(new UserApp(entity.UserId, app.Id));
                     }
 
                     foreach (var role in roles)
                     {
-                        userRoleDbSet.Add(new UserRole(entity.UserId, role.Id));
+                        context.UsersRoles.Add(new UserRole(entity.UserId, role.Id));
                     }
 
                     await context.SaveChangesAsync();
@@ -128,7 +110,8 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .Include(g => g.User)
                             .ThenInclude(u => u.Apps)
                         .Include(g => g.User)
@@ -148,17 +131,18 @@ namespace SudokuCollective.Data.Repositories
 
                     foreach (var app in query.User.Apps)
                     {
-                        app.App = await appDbSet.FirstOrDefaultAsync(predicate: a => a.Id == app.AppId);
+                        app.App = await context.Apps.FirstOrDefaultAsync(predicate: a => a.Id == app.AppId);
                     }
 
                     foreach (var role in query.User.Roles)
                     {
-                        role.Role = await roleDbSet.FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
+                        role.Role = await context.Roles.FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
                     }
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .Include(g => g.SudokuMatrix)
                         .FirstOrDefaultAsync(predicate: g => g.Id == id);
 
@@ -194,7 +178,8 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .Include(g => g.User)
                             .ThenInclude(u => u.Roles)
                         .Include(g => g.SudokuMatrix)
@@ -208,7 +193,7 @@ namespace SudokuCollective.Data.Repositories
                 }
                 else
                 {
-                    query = await dbSet.ToListAsync();
+                    query = await context.Games.ToListAsync();
                 }
 
                 result.Success = true;
@@ -233,7 +218,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await dbSet.AnyAsync(predicate: g => g.Id == entity.Id))
+                if (await context.Games.AnyAsync(predicate: g => g.Id == entity.Id))
                 {
                     entity.DateUpdated = DateTime.UtcNow;
 
@@ -271,12 +256,12 @@ namespace SudokuCollective.Data.Repositories
 
                     foreach (var app in apps)
                     {
-                        userAppDbSet.Add(new UserApp(entity.UserId, app.Id));
+                        context.UsersApps.Add(new UserApp(entity.UserId, app.Id));
                     }
 
                     foreach (var role in roles)
                     {
-                        userRoleDbSet.Add(new UserRole(entity.UserId, role.Id));
+                        context.UsersRoles.Add(new UserRole(entity.UserId, role.Id));
                     }
 
                     await context.SaveChangesAsync();
@@ -310,7 +295,7 @@ namespace SudokuCollective.Data.Repositories
             {
                 foreach (var entity in entities)
                 {
-                    if (await dbSet.AnyAsync(predicate: g => g.Id == entity.Id))
+                    if (await context.Games.AnyAsync(predicate: g => g.Id == entity.Id))
                     {
                         entity.DateUpdated = DateTime.UtcNow;
 
@@ -348,12 +333,12 @@ namespace SudokuCollective.Data.Repositories
 
                         foreach (var app in apps)
                         {
-                            userAppDbSet.Add(new UserApp(entity.UserId, app.Id));
+                            context.UsersApps.Add(new UserApp(entity.UserId, app.Id));
                         }
 
                         foreach (var role in roles)
                         {
-                            userRoleDbSet.Add(new UserRole(entity.UserId, role.Id));
+                            context.UsersRoles.Add(new UserRole(entity.UserId, role.Id));
                         }
 
                         await context.SaveChangesAsync();
@@ -384,18 +369,18 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await dbSet.AnyAsync(predicate: g => g.Id == entity.Id))
+                if (await context.Games.AnyAsync(predicate: g => g.Id == entity.Id))
                 {
                     foreach (var cell in entity.SudokuMatrix.SudokuCells)
                     {
-                        cellDbSet.Remove(cell);
+                        context.SudokuCells.Remove(cell);
                     }
 
-                    matrixDbSet.Remove(entity.SudokuMatrix);
+                    context.SudokuMatrices.Remove(entity.SudokuMatrix);
 
-                    solutionDbSet.Remove(entity.SudokuSolution);
+                    context.SudokuSolutions.Remove(entity.SudokuSolution);
 
-                    dbSet.Remove(entity);
+                    context.Games.Remove(entity);
 
                     var apps = new List<App>();
                     var roles = new List<Role>();
@@ -414,12 +399,12 @@ namespace SudokuCollective.Data.Repositories
 
                     foreach (var app in apps)
                     {
-                        userAppDbSet.Add(new UserApp(entity.UserId, app.Id));
+                        context.UsersApps.Add(new UserApp(entity.UserId, app.Id));
                     }
 
                     foreach (var role in roles)
                     {
-                        userRoleDbSet.Add(new UserRole(entity.UserId, role.Id));
+                        context.UsersRoles.Add(new UserRole(entity.UserId, role.Id));
                     }
 
                     await context.SaveChangesAsync();
@@ -452,18 +437,18 @@ namespace SudokuCollective.Data.Repositories
             {
                 foreach (var entity in entities)
                 {
-                    if (await dbSet.AnyAsync(predicate: g => g.Id == entity.Id))
+                    if (await context.Games.AnyAsync(predicate: g => g.Id == entity.Id))
                     {
                         foreach (var cell in entity.SudokuMatrix.SudokuCells)
                         {
-                            cellDbSet.Remove(cell);
+                            context.SudokuCells.Remove(cell);
                         }
 
-                        matrixDbSet.Remove(entity.SudokuMatrix);
+                        context.SudokuMatrices.Remove(entity.SudokuMatrix);
 
-                        solutionDbSet.Remove(entity.SudokuSolution);
+                        context.SudokuSolutions.Remove(entity.SudokuSolution);
 
-                        dbSet.Remove(entity);
+                        context.Games.Remove(entity);
 
                         var apps = new List<App>();
                         var roles = new List<Role>();
@@ -482,12 +467,12 @@ namespace SudokuCollective.Data.Repositories
 
                         foreach (var app in apps)
                         {
-                            userAppDbSet.Add(new UserApp(entity.UserId, app.Id));
+                            context.UsersApps.Add(new UserApp(entity.UserId, app.Id));
                         }
 
                         foreach (var role in roles)
                         {
-                            userRoleDbSet.Add(new UserRole(entity.UserId, role.Id));
+                            context.UsersRoles.Add(new UserRole(entity.UserId, role.Id));
                         }
 
                         await context.SaveChangesAsync();
@@ -513,7 +498,7 @@ namespace SudokuCollective.Data.Repositories
 
         async public Task<bool> HasEntity(int id)
         {
-            var result = await dbSet.AnyAsync(predicate: g => g.Id == id);
+            var result = await context.Games.AnyAsync(predicate: g => g.Id == id);
 
             return result;
         }
@@ -528,7 +513,8 @@ namespace SudokuCollective.Data.Repositories
 
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .Include(g => g.User)
                             .ThenInclude(u => u.Roles)
                         .Include(g => g.SudokuMatrix)
@@ -539,7 +525,8 @@ namespace SudokuCollective.Data.Repositories
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .FirstOrDefaultAsync(predicate: g => g.Id == id && g.AppId == appid);
                 }
 
@@ -567,7 +554,8 @@ namespace SudokuCollective.Data.Repositories
 
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .Include(g => g.User)
                             .ThenInclude(u => u.Roles)
                         .Include(g => g.SudokuMatrix)
@@ -583,7 +571,8 @@ namespace SudokuCollective.Data.Repositories
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .Where(g => g.AppId == appid)
                         .ToListAsync();
                 }
@@ -612,7 +601,8 @@ namespace SudokuCollective.Data.Repositories
 
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .Include(g => g.User)
                             .ThenInclude(u => u.Roles)
                         .Include(g => g.SudokuMatrix)
@@ -627,7 +617,8 @@ namespace SudokuCollective.Data.Repositories
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .FirstOrDefaultAsync(predicate:
                             g => g.Id == gameid
                             && g.AppId == appid
@@ -654,15 +645,16 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await userDbSet.AnyAsync(predicate: u => u.Id == userid))
+                if (await context.Users.AnyAsync(predicate: u => u.Id == userid))
                 {
-                    if (await appDbSet.AnyAsync(predicate: a => a.Id == appid))
+                    if (await context.Apps.AnyAsync(predicate: a => a.Id == appid))
                     {
                         var query = new List<Game>();
 
                         if (fullRecord)
                         {
-                            query = await dbSet
+                            query = await context
+                                .Games
                                 .Include(g => g.User)
                                     .ThenInclude(u => u.Roles)
                                 .Include(g => g.SudokuMatrix)
@@ -679,7 +671,8 @@ namespace SudokuCollective.Data.Repositories
                         }
                         else
                         {
-                            query = await dbSet
+                            query = await context
+                                .Games
                                 .Where(g => g.AppId == appid && g.UserId == userid)
                                 .ToListAsync();
                         }
@@ -718,13 +711,14 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await userDbSet.AnyAsync(predicate: u => u.Id == userid) && 
-                    await dbSet.AnyAsync(predicate: g => g.Id == gameid) &&
-                    await appDbSet.AnyAsync(predicate: a => a.Id == appid))
+                if (await context.Users.AnyAsync(predicate: u => u.Id == userid) && 
+                    await context.Games.AnyAsync(predicate: g => g.Id == gameid) &&
+                    await context.Apps.AnyAsync(predicate: a => a.Id == appid))
                 {
                     var query = new Game();
 
-                    query = await dbSet
+                    query = await context
+                        .Games
                         .Include(g => g.SudokuMatrix)
                         .Include(g => g.SudokuSolution)
                         .Include(g => g.User)
@@ -741,25 +735,25 @@ namespace SudokuCollective.Data.Repositories
 
                     foreach (var userApp in query.User.Apps)
                     {
-                        userApp.App = await appDbSet
+                        userApp.App = await context.Apps
                             .FirstOrDefaultAsync(predicate: a => a.Id == userApp.AppId);
                     }
 
                     foreach (var userRole in query.User.Roles)
                     {
-                        userRole.Role = await roleDbSet
+                        userRole.Role = await context.Roles
                             .FirstOrDefaultAsync(predicate: r => r.Id == userRole.RoleId);
                     }
                     foreach (var cell in query.SudokuMatrix.SudokuCells)
                     {
-                        cellDbSet.Remove(cell);
+                        context.SudokuCells.Remove(cell);
                     }
 
-                    matrixDbSet.Remove(query.SudokuMatrix);
+                    context.SudokuMatrices.Remove(query.SudokuMatrix);
 
-                    solutionDbSet.Remove(query.SudokuSolution);
+                    context.SudokuSolutions.Remove(query.SudokuSolution);
 
-                    dbSet.Remove(query);
+                    context.Games.Remove(query);
 
                     var apps = new List<App>();
                     var roles = new List<Role>();
@@ -778,12 +772,12 @@ namespace SudokuCollective.Data.Repositories
 
                     foreach (var app in apps)
                     {
-                        userAppDbSet.Add(new UserApp(query.UserId, app.Id));
+                        context.UsersApps.Add(new UserApp(query.UserId, app.Id));
                     }
 
                     foreach (var role in roles)
                     {
-                        userRoleDbSet.Add(new UserRole(query.UserId, role.Id));
+                        context.UsersRoles.Add(new UserRole(query.UserId, role.Id));
                     }
 
                     await context.SaveChangesAsync();

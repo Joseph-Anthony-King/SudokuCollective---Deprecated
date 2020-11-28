@@ -17,14 +17,12 @@ namespace SudokuCollective.Data.Repositories
     {
         #region Fields
         private readonly DatabaseContext context;
-        private readonly DbSet<Role> dbSet;
         #endregion
 
         #region Constructor
         public RolesRepository(DatabaseContext databaseContext)
         {
             context = databaseContext;
-            dbSet = context.Set<Role>();
         }
         #endregion
 
@@ -35,14 +33,14 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await dbSet.AnyAsync(r => r.RoleLevel == entity.RoleLevel))
+                if (await context.Roles.AnyAsync(r => r.RoleLevel == entity.RoleLevel))
                 {
                     result.Success = false;
 
                     return result;
                 }
 
-                dbSet.Add(entity);
+                context.Roles.Add(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
@@ -97,14 +95,16 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Roles
                         .Include(r => r.Users)
                             .ThenInclude(ua => ua.User)
                         .FirstOrDefaultAsync(predicate: r => r.Id == id);
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context
+                        .Roles
                         .FirstOrDefaultAsync(predicate: r => r.Id == id);
                 }
 
@@ -139,7 +139,8 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .Roles
                         .Where(r =>
                             r.RoleLevel != RoleLevel.NULL)
                         .Include(r => r.Users)
@@ -148,7 +149,8 @@ namespace SudokuCollective.Data.Repositories
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context
+                        .Roles
                         .Where(r =>
                             r.RoleLevel != RoleLevel.NULL)
                         .ToListAsync();
@@ -176,7 +178,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.Update(entity);
+                context.Roles.Update(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
@@ -214,7 +216,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.UpdateRange(entities);
+                context.Roles.UpdateRange(entities);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
@@ -250,7 +252,7 @@ namespace SudokuCollective.Data.Repositories
             var result = new RepositoryResponse();
             try
             {
-                dbSet.Remove(entity);
+                context.Roles.Remove(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
@@ -292,7 +294,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.RemoveRange(entities);
+                context.Roles.RemoveRange(entities);
 
                 var rolesForDeletion = new List<int>();
 
@@ -337,14 +339,14 @@ namespace SudokuCollective.Data.Repositories
 
         async public Task<bool> HasEntity(int id)
         {
-            var result = await dbSet.AnyAsync(predicate: r => r.Id == id);
+            var result = await context.Roles.AnyAsync(predicate: r => r.Id == id);
 
             return result;
         }
 
         async public Task<bool> HasRoleLevel(RoleLevel level)
         {
-            var result = await dbSet.AnyAsync(predicate: r => r.RoleLevel == level);
+            var result = await context.Roles.AnyAsync(predicate: r => r.RoleLevel == level);
 
             return result;
         }
@@ -355,7 +357,7 @@ namespace SudokuCollective.Data.Repositories
 
             foreach (var id in ids)
             {
-                var isIdValid = await dbSet.AnyAsync(predicate: r => r.Id == id);
+                var isIdValid = await context.Roles.AnyAsync(predicate: r => r.Id == id);
 
                 if (!isIdValid)
                 {

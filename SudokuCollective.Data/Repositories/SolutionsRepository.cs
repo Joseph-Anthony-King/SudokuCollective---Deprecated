@@ -16,14 +16,12 @@ namespace SudokuCollective.Data.Repositories
     {
         #region Fields
         private readonly DatabaseContext context;
-        private readonly DbSet<SudokuSolution> dbSet;
         #endregion
 
         #region Constructor
         public SolutionsRepository(DatabaseContext databaseContext)
         {
             context = databaseContext;
-            dbSet = context.Set<SudokuSolution>();
         }
         #endregion
 
@@ -41,7 +39,7 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
 
-                dbSet.Add(entity);
+                context.SudokuSolutions.Add(entity);
 
                 context.ChangeTracker.TrackGraph(entity,
                     e => {
@@ -83,14 +81,15 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .SudokuSolutions
                         .Include(s => s.Game)
                         .ThenInclude(g => g.User)
                         .FirstOrDefaultAsync(predicate: s => s.Id == id);
                 }
                 else
                 {
-                    query = await dbSet
+                    query = await context.SudokuSolutions
                         .FirstOrDefaultAsync(predicate: s => s.Id == id);
                 }
 
@@ -125,14 +124,15 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (fullRecord)
                 {
-                    query = await dbSet
+                    query = await context
+                        .SudokuSolutions
                         .Include(s => s.Game)
                         .ThenInclude(g => g.User)
                         .ToListAsync();
                 }
                 else
                 {
-                    query = await dbSet.ToListAsync();
+                    query = await context.SudokuSolutions.ToListAsync();
                 }
 
                 result.Success = true;
@@ -157,7 +157,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                dbSet.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
+                context.SudokuSolutions.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
 
                 foreach (var solution in solutions)
                 {
@@ -199,7 +199,8 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                query = await dbSet
+                query = await context
+                    .SudokuSolutions
                     .Where(s => s.DateSolved > DateTime.MinValue)
                     .ToListAsync();
 
