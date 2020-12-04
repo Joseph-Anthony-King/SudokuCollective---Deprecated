@@ -280,6 +280,8 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
+                var dateUpdated = DateTime.UtcNow;
+
                 foreach (var entity in entities)
                 {
                     if (entity.Id == 0)
@@ -291,6 +293,8 @@ namespace SudokuCollective.Data.Repositories
 
                     if (await context.Games.AnyAsync(g => g.Id == entity.Id))
                     {
+                        entity.DateUpdated = dateUpdated;
+
                         context.Attach(entity);
                     }
                     else

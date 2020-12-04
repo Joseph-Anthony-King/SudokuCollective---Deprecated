@@ -478,6 +478,8 @@ namespace SudokuCollective.Data.Repositories
         {
             var result = new RepositoryResponse();
 
+            var dateUpdated = DateTime.UtcNow;
+
             try
             {
                 foreach (var entity in entities)
@@ -491,6 +493,8 @@ namespace SudokuCollective.Data.Repositories
 
                     if (await context.Users.AnyAsync(u => u.Id == entity.Id))
                     {
+                        entity.DateUpdated = dateUpdated;
+
                         context.Attach(entity);
                     }
                     else
