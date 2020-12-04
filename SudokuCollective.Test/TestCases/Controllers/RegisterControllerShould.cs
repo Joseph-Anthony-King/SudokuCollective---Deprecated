@@ -21,8 +21,8 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private RegisterController sutSuccess;
         private RegisterController sutFailure;
         private MockUsersService mockUsersService;
+        private MockAuthenticateService mockAuthenticateService;
         private RegisterRequest registerRequest;
-        private EmailMetaData emailMetaData;
         private Mock<IWebHostEnvironment> mockWebHostEnvironment;
 
         [SetUp]
@@ -31,12 +31,17 @@ namespace SudokuCollective.Test.TestCases.Controllers
             context = await TestDatabase.GetDatabaseContext();
 
             mockUsersService = new MockUsersService(context);
-
-            emailMetaData = new EmailMetaData();
+            mockAuthenticateService = new MockAuthenticateService();
             mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
-            sutSuccess = new RegisterController(mockUsersService.UsersServiceSuccessfulRequest.Object, emailMetaData, mockWebHostEnvironment.Object);
-            sutFailure = new RegisterController(mockUsersService.UsersServiceFailedRequest.Object, emailMetaData, mockWebHostEnvironment.Object);
+            sutSuccess = new RegisterController(
+                mockUsersService.UsersServiceSuccessfulRequest.Object, 
+                mockAuthenticateService.AuthenticateServiceSuccessfulRequest.Object, 
+                mockWebHostEnvironment.Object);
+            sutFailure = new RegisterController(
+                mockUsersService.UsersServiceFailedRequest.Object, 
+                mockAuthenticateService.AuthenticateServiceFailedRequest.Object,
+                mockWebHostEnvironment.Object);
 
             registerRequest = new RegisterRequest()
             {

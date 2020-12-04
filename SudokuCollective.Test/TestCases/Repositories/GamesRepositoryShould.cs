@@ -31,13 +31,13 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             user = context
                 .Users
-                .FirstOrDefault(predicate: u => u.Id == 1);
+                .FirstOrDefault(u => u.Id == 1);
 
             matrix = new SudokuMatrix();
 
             difficulty = context
                 .Difficulties
-                .FirstOrDefault(predicate: d => d.DifficultyLevel == DifficultyLevel.MEDIUM);
+                .FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.MEDIUM);
 
             newGame = new Game(user, matrix, difficulty, 1);
         }
@@ -117,7 +117,12 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task UpdateGames()
         {
             // Arrange
-            var game = context.Games.FirstOrDefault(predicate: g => g.Id == 1);
+            var game = context
+                .Games
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(m => m.SudokuCells)
+                    .Include(g => g.SudokuSolution)
+                .FirstOrDefault(g => g.Id == 1);
 
             // Act
             var result = await sut.Update(game);
@@ -149,29 +154,27 @@ namespace SudokuCollective.Test.TestCases.Repositories
         {
             // Arrange
             var game = context.Games
-                .Include(g => g.SudokuMatrix)
-                .Include(g => g.SudokuSolution)
-                .Include(g => g.User)
                 .Include(g => g.User)
                     .ThenInclude(u => u.Apps)
                 .Include(g => g.User)
                     .ThenInclude(u => u.Roles)
-                .FirstOrDefault(predicate: g => g.Id == 1);
-
-            await game.SudokuMatrix.AttachSudokuCells(context);
+                .Include(g => g.SudokuMatrix)
+                    .ThenInclude(m => m.SudokuCells)
+                .Include(g => g.SudokuSolution)
+                .FirstOrDefault(g => g.Id == 1);
 
             foreach (var userApp in game.User.Apps)
             {
                 userApp.App = context
                     .Apps
-                    .FirstOrDefault(predicate: a => a.Id == userApp.AppId);
+                    .FirstOrDefault(a => a.Id == userApp.AppId);
             }
 
             foreach (var userRole in game.User.Roles)
             {
                 userRole.Role = context
                     .Roles
-                    .FirstOrDefault(predicate: r => r.Id == userRole.RoleId);
+                    .FirstOrDefault(r => r.Id == userRole.RoleId);
             }
 
             // Act
@@ -303,6 +306,59 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Act
             var result = await sut.DeleteMyGame(1, 3, 1);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetGameByApp()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAppGame(1, 1);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That((Game)result.Object, Is.InstanceOf<Game>());
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfGetGameByAppFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAppGame(1, 5);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetGamesByApp()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAppGames(1);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfGetGamesByAppFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAppGames(5);
 
             // Assert
             Assert.That(result.Success, Is.False);

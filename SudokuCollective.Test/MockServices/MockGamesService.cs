@@ -247,14 +247,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
                         .Result
                         .Success,
                     Message = GamesMessages.GameNotFoundMessage,
                     Game = (Game)MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
                         .Result
                         .Object,
                 } as IGameResult));
@@ -266,7 +266,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetGames(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppGames(It.IsAny<int>(), It.IsAny<bool>())
                         .Result
                         .Success,
                     Message = GamesMessages.GamesNotFoundMessage,

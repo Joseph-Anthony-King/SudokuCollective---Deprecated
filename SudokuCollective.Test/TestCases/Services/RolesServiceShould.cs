@@ -130,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Act
             var result = await sut.UpdateRole(1, updateRoleRequest);
             var updatedDifficulty = context.Roles
-                .FirstOrDefault(predicate: role => role.Id == 1);
+                .FirstOrDefault(role => role.Id == 1);
 
             // Assert
             Assert.That(result.Success, Is.True);

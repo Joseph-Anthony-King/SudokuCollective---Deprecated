@@ -17,17 +17,12 @@ namespace SudokuCollective.Test.TestCases.Repositories
     {
         private DatabaseContext context;
         private IUsersRepository<User> sut;
-        private User newUser;
 
         [SetUp]
         public async Task Setup()
         {
             context = await TestDatabase.GetDatabaseContext();
             sut = new UsersRepository<User>(context);
-
-            newUser = new User("John", "Doe", "password1");
-
-            newUser.Apps.Add(new UserApp(0, 2));
         }
 
         [Test]
@@ -35,6 +30,17 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task CreateUsers()
         {
             // Arrange
+            var newUser = TestObjects.GetNewUser();
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+            var userApp = new UserApp
+            {
+                UserId = newUser.Id,
+                User = newUser,
+                AppId = app.Id,
+                App = app
+            };
+
+            newUser.Apps.Add(userApp);
 
             // Act
             var result = await sut.Create(newUser);
@@ -49,6 +55,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ThrowExceptionIfCreateUsersFails()
         {
             // Arrange
+            var newUser = TestObjects.GetNewUser();
             newUser.Id = 1;
 
             // Act
@@ -63,6 +70,17 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task RequireEmailConfirmationForNewUsers()
         {
             // Arrange
+            var newUser = TestObjects.GetNewUser();
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+            var userApp = new UserApp
+            {
+                UserId = newUser.Id,
+                User = newUser,
+                AppId = app.Id,
+                App = app
+            };
+
+            newUser.Apps.Add(userApp);
 
             // Act
             var result = await sut.Create(newUser);
@@ -77,11 +95,23 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ConfirmUserEmails()
         {
             // Arrange
-            var user = await sut.Create(newUser);
-            var emailInitiallyUnconfirmed = ((User)user.Object).EmailConfirmed;
+            var newUser = TestObjects.GetNewUser();
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+            var userApp = new UserApp
+            {
+                User = newUser,
+                UserId = newUser.Id,
+                App = app,
+                AppId = app.Id
+            };
+
+            newUser.Apps.Add(userApp);
+
+            var response = await sut.Create(newUser);
+            var emailInitiallyUnconfirmed = ((User)response.Object).EmailConfirmed;
 
             // Act
-            var result = await sut.ConfirmEmail(user.Token);
+            var result = await sut.ConfirmEmail(response.Token);
 
             Assert.That(emailInitiallyUnconfirmed, Is.False);
             Assert.That(result.Success, Is.True);
@@ -202,7 +232,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
             var user = context
                 .Users
-                .FirstOrDefault(predicate: u => u.Id == 1);
+                .FirstOrDefault(u => u.Id == 1);
 
             user.UserName = string.Format("{0} UPDATED!", user.UserName);
 
@@ -220,6 +250,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfUpdateUsersFails()
         {
             // Arrange
+            var newUser = TestObjects.GetNewUser();
 
             // Act
             var result = await sut.Update(newUser);
@@ -231,12 +262,56 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
+        public async Task UpdateRangeOfUsers()
+        {
+            // Arrange
+            var users = context
+                .Users
+                .ToList();
+
+            foreach (var user in users)
+            {
+                user.UserName = string.Format("{0} UPDATED!", user.UserName);
+            }
+
+            // Act
+            var result = await sut.UpdateRange(users);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfUpdateRangeOfUsersFails()
+        {
+            // Arrange
+            var users = context
+                .Users
+                .ToList();
+
+            users.Add(TestObjects.GetNewUser());
+
+            foreach (var user in users)
+            {
+                user.UserName = string.Format("{0} UPDATED!", user.UserName);
+            }
+
+            // Act
+            var result = await sut.UpdateRange(users);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
         public async Task DeleteUsers()
         {
             // Arrange
             var user = context
                 .Users
-                .FirstOrDefault(predicate: u => u.Id == 1);
+                .FirstOrDefault(u => u.Id == 1);
 
             // Act
             var result = await sut.Delete(user);
@@ -250,9 +325,44 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfDeleteUsersFails()
         {
             // Arrange
+            var newUser = TestObjects.GetNewUser();
 
             // Act
             var result = await sut.Delete(newUser);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task DeleteRangeOfUsers()
+        {
+            // Arrange
+            var users = context
+                .Users
+                .ToList();
+
+            // Act
+            var result = await sut.DeleteRange(users);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfDeleteRangeOfUsersFails()
+        {
+            // Arrange
+            var users = context
+                .Users
+                .ToList();
+
+            users.Add(TestObjects.GetNewUser());
+
+            // Act
+            var result = await sut.DeleteRange(users);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -291,6 +401,46 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
+        public async Task AddRoleToUsers()
+        {
+            // Arrange
+            var userId = 3;
+
+            var roleId = context
+                .Roles
+                .Where(r => r.RoleLevel == RoleLevel.ADMIN)
+                .Select(r => r.Id)
+                .FirstOrDefault();
+
+            // Act
+            var result = await sut.AddRole(userId, roleId);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfAddRoleToUsersFails()
+        {
+            // Arrange
+            var userId = 3;
+
+            var roleId = context
+                .Roles
+                .Where(r => r.RoleLevel == RoleLevel.USER)
+                .Select(r => r.Id)
+                .FirstOrDefault();
+
+            // Act
+            var result = await sut.AddRole(userId, roleId);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
         public async Task AddRolesToUsers()
         {
             // Arrange
@@ -310,7 +460,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 .Select(r => r.Id)
                 .ToList();
 
-            ids.RemoveSubList(userRoleIds);
+            ids = ids.RemoveSubList(userRoleIds).ToList();
 
             // Act
             var result = await sut.AddRoles(userId, ids);
@@ -346,7 +496,47 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task RemoveRolesToUsers()
+        public async Task RemoveRoleFromUsers()
+        {
+            // Arrange
+            var userId = 1;
+
+            var roleId = context
+                .Roles
+                .Where(r => r.RoleLevel == RoleLevel.USER)
+                .Select(r => r.Id)
+                .FirstOrDefault();
+
+            // Act
+            var result = await sut.RemoveRole(userId, roleId);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfRemoveRoleFromUsersFails()
+        {
+            // Arrange
+            var userId = 1;
+
+            var roleId = context
+                .Roles
+                .Where(r => r.RoleLevel == RoleLevel.NULL)
+                .Select(r => r.Id)
+                .FirstOrDefault();
+
+            // Act
+            var result = await sut.RemoveRole(userId, roleId);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task RemoveRolesFromUsers()
         {
             // Arrange
             var userId = 1;
@@ -397,7 +587,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ActivateUsers()
         {
             // Arrange
-            var user = context.Users.FirstOrDefault(predicate: u => u.Id == 1);
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
 
             // Act
             var result = await sut.ActivateUser(user.Id);
@@ -429,7 +619,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task DeactivateUsers()
         {
             // Arrange
-            var user = context.Users.FirstOrDefault(predicate: u => u.Id == 1);
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
 
             // Act
             var result = await sut.DeactivateUser(user.Id);
@@ -461,7 +651,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task PromoteUserToAdmin()
         {
             // Arrange
-            var user = context.Users.FirstOrDefault(predicate: u => u.Id == 3);
+            var user = context.Users.FirstOrDefault(u => u.Id == 3);
 
             // Act
             var result = await sut.PromoteUserToAdmin(user.Id);
@@ -493,7 +683,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ConfirmUserIsRegistered()
         {
             // Arrange
-            var user = context.Users.FirstOrDefault(predicate: u => u.Id == 3);
+            var user = context.Users.FirstOrDefault(u => u.Id == 3);
 
             // Act
             var result = await sut.IsUserRegistered(user.Id);
@@ -536,7 +726,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ConfirmIfUserNameUnique()
         {
             // Arrange
-            var userName = context.Users.FirstOrDefault(predicate: u => u.Id == 1).UserName;
+            var userName = context.Users.FirstOrDefault(u => u.Id == 1).UserName;
             userName = string.Format("{0}UPDATED!", userName);
 
             // Act
@@ -551,7 +741,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfConfirmIfUserNameUniqueFails()
         {
             // Arrange
-            var userName = context.Users.FirstOrDefault(predicate: u => u.Id == 1).UserName;
+            var userName = context.Users.FirstOrDefault(u => u.Id == 1).UserName;
 
             // Act
             var result = await sut.IsUserNameUnique(userName);
@@ -565,7 +755,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ConfirmIfEmailUnique()
         {
             // Arrange
-            var email = context.Users.FirstOrDefault(predicate: u => u.Id == 1).UserName;
+            var email = context.Users.FirstOrDefault(u => u.Id == 1).Email;
             email = string.Format("UPDATED{0}", email);
 
             // Act
@@ -580,7 +770,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfConfirmIfEmailUniqueFails()
         {
             // Arrange
-            var email = context.Users.FirstOrDefault(predicate: u => u.Id == 1).Email;
+            var email = context.Users.FirstOrDefault(u => u.Id == 1).Email;
 
             // Act
             var result = await sut.IsEmailUnique(email);

@@ -38,7 +38,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
-                        Object = context.SudokuSolutions.FirstOrDefault(predicate: s => s.Id == 1)
+                        Object = context.SudokuSolutions.FirstOrDefault(s => s.Id == 1)
                     } as IRepositoryResponse));
 
             SolutionsRepositorySuccessfulRequest.Setup(solutionsRepo =>

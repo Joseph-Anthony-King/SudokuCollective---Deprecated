@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
@@ -92,7 +93,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task GetAppsByLicense()
         {
             // Arrange
-            var license = context.Apps.FirstOrDefault(predicate: a => a.Id == 1).License;
+            var license = context.Apps.FirstOrDefault(a => a.Id == 1).License;
 
             // Act
             var result = await sut.GetByLicense(license);
@@ -164,7 +165,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task UpdateApps()
         {
             // Arrange
-            var app = context.Apps.FirstOrDefault(predicate: a => a.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
             app.Name = string.Format("{0} UPDATED!", app.Name);
 
             // Act
@@ -195,7 +196,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task AddUsersToApps()
         {
             // Arrange
-            var license = context.Apps.FirstOrDefault(predicate: a => a.Id == 1).License;
+            var license = context.Apps.FirstOrDefault(a => a.Id == 1).License;
 
             // Act
             var result = await sut.AddAppUser(3, license);
@@ -223,10 +224,20 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task RemoveUsersFromApps()
         {
             // Arrange
-            var license = context.Apps.FirstOrDefault(predicate: a => a.Id == 1).License;
+            var user = context
+                .Users
+                .Include(u => u.Roles)
+                .Include(u => u.Roles)
+                    .ThenInclude(ur => ur.Role)
+                .ToList()
+                .FirstOrDefault(u => u.Apps.Any(ua => ua.AppId == 1) && u.IsSuperUser == false);
+
+            var license = context
+                .Apps
+                .FirstOrDefault(a => a.Id == 1).License;
 
             // Act
-            var result = await sut.RemoveAppUser(2, license);
+            var result = await sut.RemoveAppUser(user.Id, license);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -251,7 +262,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task DeleteApps()
         {
             // Arrange
-            var app = context.Apps.FirstOrDefault(predicate: a => a.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Act
             var result = await sut.Delete(app);
@@ -278,7 +289,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ResetApps()
         {
             // Arrange
-            var app = context.Apps.FirstOrDefault(predicate: a => a.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Act
             var result = await sut.Reset(app);
@@ -389,7 +400,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ConfirmAppLicenseIsValid()
         {
             // Arrange
-            var license = context.Apps.FirstOrDefault(predicate: a => a.Id == 1).License;
+            var license = context.Apps.FirstOrDefault(a => a.Id == 1).License;
 
             // Act
             var result = await sut.IsAppLicenseValid(license);
@@ -416,7 +427,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ConfirmIfUserIsRegisteredToApp()
         {
             // Arrange
-            var license = context.Apps.FirstOrDefault(predicate: a => a.Id == 1).License;
+            var license = context.Apps.FirstOrDefault(a => a.Id == 1).License;
 
             // Act
             var result = await sut.IsUserRegisteredToApp(1, license, 1);
@@ -430,7 +441,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfConfirmIfUserIsRegisteredToAppFails()
         {
             // Arrange
-            var license = context.Apps.FirstOrDefault(predicate: a => a.Id == 1).License;
+            var license = context.Apps.FirstOrDefault(a => a.Id == 1).License;
 
             // Act
             var result = await sut.IsUserRegisteredToApp(1, license, 5);
@@ -444,7 +455,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ConfirmIfUserIsOwnerToApp()
         {
             // Arrange
-            var license = context.Apps.FirstOrDefault(predicate: a => a.Id == 1).License;
+            var license = context.Apps.FirstOrDefault(a => a.Id == 1).License;
 
             // Act
             var result = await sut.IsUserOwnerOfApp(1, license, 1);
@@ -458,7 +469,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfConfirmIfUserIsOwnerToAppFails()
         {
             // Arrange
-            var license = context.Apps.FirstOrDefault(predicate: a => a.Id == 1).License;
+            var license = context.Apps.FirstOrDefault(a => a.Id == 1).License;
 
             // Act
             var result = await sut.IsUserOwnerOfApp(1, license, 2);

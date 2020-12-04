@@ -97,7 +97,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Act
             var result = await sut.UpdateDifficulty(1, updateDifficultyRequest);
             var updatedDifficulty = context.Difficulties
-                .FirstOrDefault(predicate: difficulty => difficulty.Id == 1);
+                .FirstOrDefault(difficulty => difficulty.Id == 1);
 
             // Assert
             Assert.That(result.Success, Is.True);

@@ -9,8 +9,10 @@ namespace SudokuCollective.Core.Interfaces.Repositories
     {
         Task<IRepositoryResponse> GetByUserName(string username, bool fullRecord = true);
         Task<IRepositoryResponse> GetByEmail(string email, bool fullRecord = true);
-        Task<IRepositoryResponse> AddRoles(int userid, List<int> roles);
-        Task<IRepositoryResponse> RemoveRoles(int userid, List<int> roles);
+        Task<IRepositoryResponse> AddRole(int userId, int roleId);
+        Task<IRepositoryResponse> AddRoles(int userId, List<int> roleIds);
+        Task<IRepositoryResponse> RemoveRole(int userId, int roleId);
+        Task<IRepositoryResponse> RemoveRoles(int userId, List<int> roleIds);
         Task<IRepositoryResponse> ConfirmEmail(string code);
         Task<bool> ActivateUser(int id);
         Task<bool> DeactivateUser(int id);

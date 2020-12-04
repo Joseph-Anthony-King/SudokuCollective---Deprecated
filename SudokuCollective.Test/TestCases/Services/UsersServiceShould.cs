@@ -516,7 +516,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             var user = context.Users
                 .Include(u => u.Roles)
-                .FirstOrDefault(predicate: u => u.Id == userId);
+                .FirstOrDefault(u => u.Id == userId);
 
             var updateUserRoleRequest = new UpdateUserRoleRequest();
             updateUserRoleRequest.RoleIds.Add(3);
@@ -538,7 +538,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             var user = context.Users
                 .Include(u => u.Roles)
-                .FirstOrDefault(predicate: u => u.Id == userId);
+                .FirstOrDefault(u => u.Id == userId);
 
             var updateUserRoleRequest = new UpdateUserRoleRequest();
             updateUserRoleRequest.RoleIds.Add(3);

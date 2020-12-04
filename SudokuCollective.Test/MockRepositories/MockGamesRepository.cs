@@ -35,9 +35,9 @@ namespace SudokuCollective.Test.MockRepositories
                     {
                         Success = true,
                         Object = new Game(
-                            context.Users.FirstOrDefault(predicate: u => u.Id == 1),
+                            context.Users.FirstOrDefault(u => u.Id == 1),
                             new SudokuMatrix(),
-                            context.Difficulties.FirstOrDefault(predicate: d => d.DifficultyLevel == DifficultyLevel.TEST),
+                            context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST),
                             context.Apps.Where(a => a.Id == 1).Select(a => a.Id).FirstOrDefault())
                     } as IRepositoryResponse));
 
@@ -46,7 +46,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
-                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
@@ -62,7 +62,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
@@ -92,15 +92,15 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.GetGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.GetGames(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGames(It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -112,7 +112,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
@@ -184,14 +184,14 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(false));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetGames(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGames(It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -224,9 +224,9 @@ namespace SudokuCollective.Test.MockRepositories
                     {
                         Success = true,
                         Object = new Game(
-                            context.Users.FirstOrDefault(predicate: u => u.Id == 1),
+                            context.Users.FirstOrDefault(u => u.Id == 1),
                             new SudokuMatrix(),
-                            context.Difficulties.FirstOrDefault(predicate: d => d.DifficultyLevel == DifficultyLevel.TEST),
+                            context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST),
                             context.Apps.Where(a => a.Id == 1).Select(a => a.Id).FirstOrDefault())
                     } as IRepositoryResponse));
 
@@ -235,7 +235,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
@@ -280,15 +280,15 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetGames(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGames(It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -300,7 +300,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Games.FirstOrDefault(predicate: g => g.Id == 1)
+                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>

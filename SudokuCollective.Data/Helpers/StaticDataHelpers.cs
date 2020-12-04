@@ -24,7 +24,7 @@ namespace SudokuCollective.Data.Helpers
 
         public async static Task<bool> IsGameInActiveApp(this IGame game, DatabaseContext context)
         {
-            var app = await context.Apps.FirstOrDefaultAsync(predicate: a => a.Id == game.AppId);
+            var app = await context.Apps.FirstOrDefaultAsync(a => a.Id == game.AppId);
 
             return app.IsActive;
         }

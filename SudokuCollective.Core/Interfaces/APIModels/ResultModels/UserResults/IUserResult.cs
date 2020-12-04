@@ -6,5 +6,6 @@ namespace SudokuCollective.Core.Interfaces.APIModels.ResultModels
     {
         IUser User { get; set; }
         bool ConfirmationEmailSuccessfullySent { get; set; }
+        string Token { get; set; }
     }
 }

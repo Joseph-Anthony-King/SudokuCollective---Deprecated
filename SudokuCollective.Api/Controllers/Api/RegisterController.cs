@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
-using SudokuCollective.Core.Interfaces.DataModels;
 using SudokuCollective.Data.Messages;
-using SudokuCollective.Data.Models.DataModels;
 using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Models.TokenModels;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -18,15 +17,15 @@ namespace SudokuCollective.Api.Controllers
     public class RegisterController : ControllerBase
     {
         private readonly IUsersService usersService;
-        private readonly IEmailMetaData emailMetaData;
+        private readonly IAuthenticateService authService;
         private readonly IWebHostEnvironment hostEnvironment;
 
         public RegisterController(IUsersService usersServ,
-            EmailMetaData metaData,
+            IAuthenticateService authServ,
             IWebHostEnvironment environment)
         {
             usersService = usersServ;
-            emailMetaData = metaData;
+            authService = authServ;
             hostEnvironment = environment;
         }
 
@@ -66,9 +65,28 @@ namespace SudokuCollective.Api.Controllers
 
             if (result.Success)
             {
-                result.Message = ControllerMessages.StatusCode201(result.Message);
+                var tokenRequest = new TokenRequest
+                {
+                    UserName = request.UserName,
+                    Password = request.Password
+                };
 
-                return StatusCode((int)HttpStatusCode.Created, result);
+                var authenticateResult = await authService.IsAuthenticated(tokenRequest);
+
+                if (authenticateResult.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode201(result.Message);
+                    result.Token = authenticateResult.Token;
+
+                    return StatusCode((int)HttpStatusCode.Created, result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(authenticateResult.Message);
+                    result.User = new User();
+
+                    return NotFound(result);
+                }
             }
             else
             {

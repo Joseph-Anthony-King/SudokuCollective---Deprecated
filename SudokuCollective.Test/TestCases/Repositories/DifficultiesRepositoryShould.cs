@@ -36,7 +36,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task CreateDifficulties()
         {
             // Arrange
-            var testDifficulty = context.Difficulties.FirstOrDefault(predicate: d => d.DifficultyLevel == DifficultyLevel.TEST);
+            var testDifficulty = context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST);
             context.Difficulties.Remove(testDifficulty);
             context.SaveChanges();
 
@@ -108,7 +108,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task UpdateDifficulties()
         {
             // Arrange
-            var difficulty = context.Difficulties.FirstOrDefault(predicate: d => d.Id == 1);
+            var difficulty = context.Difficulties.FirstOrDefault(d => d.Id == 1);
             difficulty.Name = string.Format("{0} UPDATED!", difficulty.Name);
 
             // Act
@@ -139,7 +139,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task DeleteDifficulties()
         {
             // Arrange
-            var difficulty = context.Difficulties.FirstOrDefault(predicate: d => d.Id == 1);
+            var difficulty = context.Difficulties.FirstOrDefault(d => d.Id == 1);
 
             // Act
             var result = await sut.Delete(difficulty);
@@ -211,7 +211,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfConfirmItHasAnDifficultyLevelFails()
         {
             // Arrange
-            var testDifficulty = context.Difficulties.FirstOrDefault(predicate: d => d.DifficultyLevel == DifficultyLevel.TEST);
+            var testDifficulty = context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST);
             context.Difficulties.Remove(testDifficulty);
             context.SaveChanges();
 

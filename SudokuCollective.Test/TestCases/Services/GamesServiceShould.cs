@@ -154,7 +154,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutUpdateFailure.UpdateGame(gameId, updateGameRequest);
 
             var updatedGame = await context.Games
-                .FirstOrDefaultAsync(predicate: game => game.Id == gameId);
+                .FirstOrDefaultAsync(game => game.Id == gameId);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -317,7 +317,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.CheckGame(gameId, updateGameRequest);
 
             var updatedGame = await context.Games
-                .FirstOrDefaultAsync(predicate: game => game.Id == gameId);
+                .FirstOrDefaultAsync(game => game.Id == gameId);
 
             var checkValue = updatedGame.SudokuMatrix.SudokuCells
                 .Where(cell => cell.Id == 58)
@@ -350,9 +350,9 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.CheckGame(gameId, updateGameRequest);
 
             var updatedGame = await context.Games
-                .FirstOrDefaultAsync(predicate: game => game.Id == gameId);
+                .FirstOrDefaultAsync(game => game.Id == gameId);
 
-            var game = context.Games.FirstOrDefault(predicate: g => g.Id == gameId);
+            var game = context.Games.FirstOrDefault(g => g.Id == gameId);
 
             // Assert
             Assert.That(result.Success, Is.True);

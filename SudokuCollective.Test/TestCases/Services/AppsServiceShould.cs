@@ -305,7 +305,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.ActivateApp(1);
-            var app = context.Apps.FirstOrDefault(predicate: a => a.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -321,7 +321,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.DeactivateApp(1);
-            var app = context.Apps.FirstOrDefault(predicate: a => a.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Assert
             Assert.That(result.Success, Is.True);

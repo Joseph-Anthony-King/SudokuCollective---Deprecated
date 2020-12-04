@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Enums;
@@ -454,6 +455,19 @@ namespace SudokuCollective.Test.TestData
                 UserName = "sudokucollectivetesting@gmail.com",
                 Password = "password",
                 FromEmail = "SudokuCollectivetesting@gmail.com"
+            };
+        }
+
+        public static User GetNewUser()
+        {
+            return new User
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                UserName = "Johnny",
+                Email = "john.doe@example.com",
+                Password = "password1",
+                DateCreated = DateTime.UtcNow
             };
         }
     }

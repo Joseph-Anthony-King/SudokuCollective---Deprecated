@@ -38,7 +38,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
-                        Object = context.Roles.FirstOrDefault(predicate: r => r.Id == 3)
+                        Object = context.Roles.FirstOrDefault(r => r.Id == 3)
                     } as IRepositoryResponse));
 
             RolesRepositorySuccessfulRequest.Setup(rolesRepo =>
@@ -57,7 +57,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Roles.FirstOrDefault(predicate: r => r.Id == 3)
+                        Object = context.Roles.FirstOrDefault(r => r.Id == 3)
                     } as IRepositoryResponse));
 
             RolesRepositorySuccessfulRequest.Setup(rolesRepo =>

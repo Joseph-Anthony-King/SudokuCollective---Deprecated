@@ -39,22 +39,25 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
 
-                context.SudokuSolutions.Add(entity);
+                context.Attach(entity);
 
-                context.ChangeTracker.TrackGraph(entity,
-                    e => {
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
 
-                        var dbEntry = (IEntityBase)e.Entry.Entity;
-
-                        if (dbEntry.Id != 0)
-                        {
-                            e.Entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            e.Entry.State = EntityState.Added;
-                        }
-                    });
+                    if (dbEntry is UserApp)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is UserRole)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        // Otherwise do nothing...
+                    }
+                }
 
                 await context.SaveChangesAsync();
 
@@ -83,22 +86,29 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .SudokuSolutions
-                        .Include(s => s.Game)
-                        .ThenInclude(g => g.User)
-                        .FirstOrDefaultAsync(predicate: s => s.Id == id);
+                        .FirstOrDefaultAsync(s => s.Id == id);
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
                 }
                 else
                 {
-                    query = await context.SudokuSolutions
-                        .FirstOrDefaultAsync(predicate: s => s.Id == id);
-                }
+                    query = await context
+                        .SudokuSolutions
+                        .FirstOrDefaultAsync(s => s.Id == id);
 
-                if (query == null)
-                {
-                    result.Success = false;
-                    result.Object = query;
+                    if (query == null)
+                    {
+                        result.Success = false;
 
-                    return result;
+                        return result;
+                    }
+
+                    query.Game = null;
                 }
 
                 result.Success = true;
@@ -126,13 +136,32 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .SudokuSolutions
-                        .Include(s => s.Game)
-                        .ThenInclude(g => g.User)
                         .ToListAsync();
+
+                    if (query.Count == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
                 }
                 else
                 {
-                    query = await context.SudokuSolutions.ToListAsync();
+                    query = await context
+                        .SudokuSolutions
+                        .ToListAsync();
+
+                    if (query.Count == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    foreach (var solution in query)
+                    {
+                        solution.Game = null;
+                    }
                 }
 
                 result.Success = true;
@@ -157,24 +186,24 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.SudokuSolutions.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
+                context.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
 
-                foreach (var solution in solutions)
+                foreach (var entry in context.ChangeTracker.Entries())
                 {
-                    context.ChangeTracker.TrackGraph(solution,
-                        e => {
+                    var dbEntry = (IEntityBase)entry.Entity;
 
-                            var dbEntry = (IEntityBase)e.Entry.Entity;
-
-                            if (dbEntry.Id != 0)
-                            {
-                                e.Entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                e.Entry.State = EntityState.Added;
-                            }
-                        });
+                    if (dbEntry is UserApp)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is UserRole)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        // Otherwise do nothing...
+                    }
                 }
 
                 await context.SaveChangesAsync();

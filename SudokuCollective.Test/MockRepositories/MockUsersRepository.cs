@@ -61,7 +61,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
+                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
@@ -71,7 +71,7 @@ namespace SudokuCollective.Test.MockRepositories
                         Success = true,
                         Object = context
                             .Users
-                            .FirstOrDefault(predicate: u => u.UserName.Equals("TestSuperUser"))
+                            .FirstOrDefault(u => u.UserName.Equals("TestSuperUser"))
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
@@ -81,7 +81,7 @@ namespace SudokuCollective.Test.MockRepositories
                         Success = true,
                         Object = context
                             .Users
-                            .FirstOrDefault(predicate: u => u.Email.Equals("TestSuperUser@example.com"))
+                            .FirstOrDefault(u => u.Email.Equals("TestSuperUser@example.com"))
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
@@ -100,7 +100,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
+                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
@@ -148,7 +148,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
+                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
@@ -311,7 +311,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
+                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
@@ -321,7 +321,7 @@ namespace SudokuCollective.Test.MockRepositories
                         Success = true,
                         Object = context
                             .Users
-                            .FirstOrDefault(predicate: u => u.UserName.Equals("TestSuperUser"))
+                            .FirstOrDefault(u => u.UserName.Equals("TestSuperUser"))
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
@@ -331,7 +331,7 @@ namespace SudokuCollective.Test.MockRepositories
                         Success = true,
                         Object = context
                             .Users
-                            .FirstOrDefault(predicate: u => u.Email.Equals("TestSuperUser@example.com"))
+                            .FirstOrDefault(u => u.Email.Equals("TestSuperUser@example.com"))
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
@@ -350,7 +350,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Users.FirstOrDefault(predicate: u => u.Id == 1)
+                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>

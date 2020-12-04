@@ -8,7 +8,6 @@ using SudokuCollective.Core.Interfaces.DataModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
-using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.DataModels;
 
@@ -45,8 +44,7 @@ namespace SudokuCollective.Data.Repositories
 
                 var role = await context                    
                     .Roles
-                    .FirstOrDefaultAsync(
-                        predicate: r => r.RoleLevel == RoleLevel.USER);
+                    .FirstOrDefaultAsync(r => r.RoleLevel == RoleLevel.USER);
 
                 var userRoles = new List<UserRole> 
                 {
@@ -63,8 +61,7 @@ namespace SudokuCollective.Data.Repositories
                 {
                     var adminRole = await context
                         .Roles
-                        .FirstOrDefaultAsync(
-                            predicate: r => r.RoleLevel == RoleLevel.ADMIN);
+                        .FirstOrDefaultAsync(r => r.RoleLevel == RoleLevel.ADMIN);
 
                     userRoles.Add(
                         new UserRole
@@ -76,23 +73,52 @@ namespace SudokuCollective.Data.Repositories
                         });
                 }
 
-                entity.Roles = userRoles;
+                entity.Roles = userRoles
+                    .OrderBy(ur => ur.RoleId)
+                    .ToList();
 
-                context.ChangeTracker.TrackGraph(entity,
-                    e =>
+                context.AddRange(entity.Roles);
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry is UserApp userApp)
                     {
-
-                        var dbEntry = (IEntityBase)e.Entry.Entity;
-
-                        if (dbEntry.Id != 0)
+                        if (entity.Apps.Any(ua => ua.Id == userApp.Id))
                         {
-                            e.Entry.State = EntityState.Added;
+                            entry.State = EntityState.Added;
                         }
                         else
                         {
-                            e.Entry.State = EntityState.Modified;
+                            entry.State = EntityState.Modified;
                         }
-                    });
+                    }
+                    else if (dbEntry is UserRole userRole)
+                    {
+                        if (userRole.Role == null)
+                        {
+                            userRole.Role = await context
+                                .Roles
+                                .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
+                        }
+
+                        if (entity.Roles.Any(ur => ur.Id == userRole.Id))
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else
+                    {
+                        // Otherwise do nothing...
+                    }
+                }
+
+                await context.SaveChangesAsync();
 
                 var emailConfirmation = new EmailConfirmation(
                     entity.Id,
@@ -102,8 +128,18 @@ namespace SudokuCollective.Data.Repositories
 
                 await context.SaveChangesAsync();
 
-                result.Object = entity;
+                foreach (var userRole in entity.Roles)
+                {
+                    userRole.Role.Users = new List<UserRole>();
+                }
+
+                foreach (var userApps in entity.Apps)
+                {
+                    userApps.App.Users = new List<UserApp>();
+                }
+
                 result.Success = true;
+                result.Object = entity;
                 result.Token = emailConfirmation.Token;
 
                 return result;
@@ -128,56 +164,41 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
-                        .Include(u => u.Games)
-                        .Include(u => u.Roles)
-                            .ThenInclude(ur => ur.Role)
-                        .Include(u => u.Apps)
-                            .ThenInclude(ua => ua.App)
-                        .FirstOrDefaultAsync(predicate: u => u.Id == id);
+                        .FirstOrDefaultAsync(u => u.Id == id);
 
                     if (query == null)
                     {
                         result.Success = false;
-                        result.Object = query;
 
                         return result;
                     }
 
                     foreach (var role in query.Roles)
                     {
-                        role.Role = await context
-                            .Roles
-                            .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
-
                         role.Role.Users = new List<UserRole>();
                     }
 
                     foreach (var app in query.Apps)
                     {
-                        app.App = await context
-                            .Apps
-                            .FirstOrDefaultAsync(predicate: a => a.Id == app.AppId && a.IsActive);
-
                         app.App.Users = new List<UserApp>();
-                    }
-
-                    foreach (var game in query.Games)
-                    {
-                        if (await game.IsGameInActiveApp(context))
-                        {
-                            game.SudokuMatrix = await context
-                                .SudokuMatrices
-                                .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
-
-                            await game.SudokuMatrix.AttachSudokuCells(context);
-                        }
                     }
                 }
                 else
                 {
                     query = await context
                         .Users
-                        .FirstOrDefaultAsync(predicate: u => u.Id == id);
+                        .FirstOrDefaultAsync(u => u.Id == id);
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    query.Apps = new List<UserApp>();
+                    query.Roles = new List<UserRole>();
+                    query.Games = new List<Game>();
                 }
 
                 result.Success = true;
@@ -205,50 +226,24 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
-                        .Include(u => u.Games)
-                        .Include(u => u.Roles)
-                            .ThenInclude(ur => ur.Role)
-                        .Include(u => u.Apps)
-                            .ThenInclude(ua => ua.App)
                         .FirstOrDefaultAsync(
-                            predicate: u => u.UserName.ToLower().Equals(username.ToLower()));
+                            u => u.UserName.ToLower().Equals(username.ToLower()));
 
                     if (query == null)
                     {
                         result.Success = false;
-                        result.Object = query;
 
                         return result;
                     }
 
                     foreach (var role in query.Roles)
                     {
-                        role.Role = await context
-                            .Roles
-                            .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
-
                         role.Role.Users = new List<UserRole>();
                     }
 
                     foreach (var app in query.Apps)
                     {
-                        app.App = await context
-                            .Apps
-                            .FirstOrDefaultAsync(predicate: a => a.Id == app.AppId && a.IsActive);
-
                         app.App.Users = new List<UserApp>();
-                    }
-
-                    foreach (var game in query.Games)
-                    {
-                        if (await game.IsGameInActiveApp(context))
-                        {
-                            game.SudokuMatrix = await context
-                                .SudokuMatrices
-                                .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
-
-                            await game.SudokuMatrix.AttachSudokuCells(context);
-                        }
                     }
                 }
                 else
@@ -256,7 +251,18 @@ namespace SudokuCollective.Data.Repositories
                     query = await context
                         .Users
                         .FirstOrDefaultAsync(
-                            predicate: u => u.UserName.ToLower().Equals(username.ToLower()));
+                            u => u.UserName.ToLower().Equals(username.ToLower()));
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    query.Apps = new List<UserApp>();
+                    query.Roles = new List<UserRole>();
+                    query.Games = new List<Game>();
                 }
 
                 result.Success = true;
@@ -284,57 +290,42 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
-                        .Include(u => u.Games)
-                        .Include(u => u.Roles)
-                            .ThenInclude(ur => ur.Role)
-                        .Include(u => u.Apps)
-                            .ThenInclude(ua => ua.App)
                         .FirstOrDefaultAsync(
-                            predicate: u => u.Email.ToLower().Equals(email.ToLower()));
+                            u => u.Email.ToLower().Equals(email.ToLower()));
 
                     if (query == null)
                     {
                         result.Success = false;
-                        result.Object = query;
 
                         return result;
                     }
 
                     foreach (var role in query.Roles)
                     {
-                        role.Role = await context
-                            .Roles
-                            .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
-
                         role.Role.Users = new List<UserRole>();
                     }
 
                     foreach (var app in query.Apps)
                     {
-                        app.App = await context
-                            .Apps
-                            .FirstOrDefaultAsync(predicate: a => a.Id == app.AppId && a.IsActive);
-
                         app.App.Users = new List<UserApp>();
-                    }
-
-                    foreach (var game in query.Games)
-                    {
-                        if (await game.IsGameInActiveApp(context))
-                        {
-                            game.SudokuMatrix = await context
-                                .SudokuMatrices
-                                .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
-
-                            await game.SudokuMatrix.AttachSudokuCells(context);
-                        }
                     }
                 }
                 else
                 {
                     query = await context
                         .Users
-                        .FirstOrDefaultAsync(predicate: u => u.Email.ToLower().Equals(email.ToLower()));
+                        .FirstOrDefaultAsync(u => u.Email.ToLower().Equals(email.ToLower()));
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    query.Apps = new List<UserApp>();
+                    query.Roles = new List<UserRole>();
+                    query.Games = new List<Game>();
                 }
 
                 result.Success = true;
@@ -362,49 +353,49 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
-                        .Include(u => u.Games)
-                        .Include(u => u.Roles)
-                            .ThenInclude(ur => ur.Role)
-                        .Include(u => u.Apps)
-                            .ThenInclude(ua => ua.App)
+                        .OrderBy(u => u.Id)
                         .ToListAsync();
+
+                    if (query.Count == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
 
                     foreach (var user in query)
                     {
                         foreach (var role in user.Roles)
                         {
-                            role.Role = await context
-                                .Roles
-                                .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
-
-                            role.Role.Users = null;
+                            role.Role.Users = new List<UserRole>();
                         }
 
                         foreach (var app in user.Apps)
                         {
-                            app.App = await context
-                                .Apps
-                                .FirstOrDefaultAsync(predicate: a => a.Id == app.AppId && a.IsActive);
-
-                            app.App.Users = null;
-                        }
-
-                        foreach (var game in user.Games)
-                        {
-                            if (await game.IsGameInActiveApp(context))
-                            {
-                                game.SudokuMatrix = await context
-                                    .SudokuMatrices
-                                    .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
-
-                                await game.SudokuMatrix.AttachSudokuCells(context);
-                            }
+                            app.App.Users = new List<UserApp>();
                         }
                     }
                 }
                 else
                 {
-                    query = await context.Users.ToListAsync();
+                    query = await context
+                        .Users
+                        .OrderBy(u => u.Id)
+                        .ToListAsync();
+
+                    if (query.Count == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    foreach (var user in query)
+                    {
+                        user.Apps = new List<UserApp>();
+                        user.Roles = new List<UserRole>();
+                        user.Games = new List<Game>();
+                    }
                 }
 
                 result.Success = true;
@@ -429,64 +420,50 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.Attach(entity);
-
-                foreach (var entry in context.ChangeTracker.Entries())
+                if (entity.Id == 0)
                 {
-                    var dbEntry = (IEntityBase)entry.Entity;
+                    result.Success = false;
 
-                    if (dbEntry.Id != 0)
+                    return result;
+                }
+
+                if (await context.Users.AnyAsync(u => u.Id == entity.Id))
+                {
+                    entity.DateUpdated = DateTime.UtcNow;
+
+                    context.Attach(entity);
+
+                    foreach (var entry in context.ChangeTracker.Entries())
                     {
-                        entry.State = EntityState.Modified;
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserApp)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else if (dbEntry is UserRole)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            // Otherwise do nothing...
+                        }
                     }
-                    else
-                    {
-                        entry.State = EntityState.Added;
-                    }
+
+                    await context.SaveChangesAsync();
+
+                    result.Success = true;
+                    result.Object = entity;
+
+                    return result;
                 }
-
-                await context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Object = await context
-                    .Users
-                    .Include(u => u.Games)
-                    .Include(u => u.Roles)
-                    .Include(u => u.Apps)
-                    .FirstOrDefaultAsync(
-                        predicate: u => u.Id == entity.Id);
-
-                foreach (var role in ((User)result.Object).Roles)
+                else
                 {
-                    role.Role = await context
-                        .Roles
-                        .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
+                    result.Success = false;
 
-                    role.Role.Users = null;
+                    return result;
                 }
-
-                foreach (var app in ((User)result.Object).Apps)
-                {
-                    app.App = await context
-                        .Apps
-                        .FirstOrDefaultAsync(predicate: a => a.Id == app.AppId && a.IsActive);
-
-                    app.App.Users = null;
-                }
-
-                foreach (var game in ((User)result.Object).Games)
-                {
-                    if (await game.IsGameInActiveApp(context))
-                    {
-                        game.SudokuMatrix = await context
-                            .SudokuMatrices
-                            .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
-
-                        await game.SudokuMatrix.AttachSudokuCells(context);
-                    }
-                }
-
-                return result;
             }
             catch (Exception exp)
             {
@@ -505,72 +482,47 @@ namespace SudokuCollective.Data.Repositories
             {
                 foreach (var entity in entities)
                 {
-                    context.Attach(entity);
+                    if (entity.Id == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    if (await context.Users.AnyAsync(u => u.Id == entity.Id))
+                    {
+                        context.Attach(entity);
+                    }
+                    else
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
                 }
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
-                    if (dbEntry.Id != 0)
+                    if (dbEntry is UserApp)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is UserRole)
                     {
                         entry.State = EntityState.Modified;
                     }
                     else
                     {
-                        entry.State = EntityState.Added;
+                        // Otherwise do nothing...
                     }
                 }
 
                 await context.SaveChangesAsync();
 
-                var entityIds = new List<int>();
-
-                foreach (var entity in entities)
-                {
-                    entityIds.Add(entity.Id);
-                }
-
-                var users = await context
-                    .Users
-                    .Where(u => entityIds.Contains(u.Id))
-                    .Include(u => u.Games)
-                    .Include(u => u.Roles)
-                    .Include(u => u.Apps)
-                    .ToListAsync();
-
                 result.Success = true;
-                result.Objects = users.ConvertAll(u => (IEntityBase)u);
-
-                foreach (var role in ((User)result.Object).Roles)
-                {
-                    role.Role = await context
-                        .Roles
-                        .FirstOrDefaultAsync(predicate: r => r.Id == role.RoleId);
-
-                    role.Role.Users = null;
-                }
-
-                foreach (var app in ((User)result.Object).Apps)
-                {
-                    app.App = await context
-                        .Apps
-                        .FirstOrDefaultAsync(predicate: a => a.Id == app.AppId && a.IsActive);
-
-                    app.App.Users = null;
-                }
-
-                foreach (var game in ((User)result.Object).Games)
-                {
-                    if (await game.IsGameInActiveApp(context))
-                    {
-                        game.SudokuMatrix = await context
-                            .SudokuMatrices
-                            .FirstOrDefaultAsync(predicate: m => m.Id == game.SudokuMatrixId);
-
-                        await game.SudokuMatrix.AttachSudokuCells(context);
-                    }
-                }
+                result.Objects = entities.ConvertAll(a => (IEntityBase)a);
 
                 return result;
             }
@@ -589,120 +541,72 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var cellList = new List<int>();
-                var matrixList = new List<int>();
-                var gameList = new List<int>();
-                var userRoleList = new List<int>();
-                var userAppList = new List<int>();
-
-                foreach (var game in entity.Games)
+                if (entity.Id == 0)
                 {
-                    await game.SudokuMatrix.AttachSudokuCells(context);
+                    result.Success = false;
 
-                    foreach (var cell in game.SudokuMatrix.SudokuCells)
-                    {
-                        cellList.Add(cell.Id);
-                        context.SudokuCells.Attach(cell);
-                    }
-
-                    matrixList.Add(game.SudokuMatrixId);
-                    gameList.Add(game.Id);
-                    context.Games.Attach(game);
+                    return result;
                 }
 
-                foreach (var role in entity.Roles)
+                if (await context.Users.AnyAsync(u => u.Id == entity.Id))
                 {
-                    userRoleList.Add(role.Id);
-                    context.UsersRoles.Attach(role);
-                }
+                    context.Remove(entity);
 
-                foreach (var app in entity.Apps)
+                    var games = await context
+                        .Games
+                        .Where(g => g.UserId == entity.Id)
+                        .ToListAsync();
+
+                    context.RemoveRange(games);
+
+                    foreach (var entry in context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserApp userApp)
+                        {
+                            if (userApp.AppId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                        }
+                        else if (dbEntry is UserRole userRole)
+                        {
+                            if (userRole.UserId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                        }
+                        else if (dbEntry is SudokuSolution)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            // Otherwise do nothing...
+                        }
+                    }
+
+                    await context.SaveChangesAsync();
+
+                    result.Success = true;
+
+                    return result;
+                }
+                else
                 {
-                    userAppList.Add(app.Id);
-                    context.UsersApps.Attach(app);
+                    result.Success = false;
+
+                    return result;
                 }
-
-                context.Users.Attach(entity);
-
-                foreach (var entry in context.ChangeTracker.Entries())
-                {
-                    if (entry.Entity is SudokuCell cell)
-                    {
-                        if (cellList.Contains(cell.Id))
-                        {
-                            entry.State = EntityState.Deleted;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                    }
-                    else if (entry.Entity is SudokuMatrix matrix)
-                    {
-                        if (matrixList.Contains(matrix.Id))
-                        {
-                            entry.State = EntityState.Deleted;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                    }
-                    else if (entry.Entity is Game game)
-                    {
-                        if (gameList.Contains(game.Id))
-                        {
-                            entry.State = EntityState.Deleted;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                    }
-                    else if (entry.Entity is UserRole userRole)
-                    {
-                        if (userRoleList.Contains(userRole.Id))
-                        {
-                            entry.State = EntityState.Deleted;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                    }
-                    else if (entry.Entity is UserApp userApp)
-                    {
-                        if (userAppList.Contains(userApp.Id))
-                        {
-                            entry.State = EntityState.Deleted;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                    }
-                    else if (entry.Entity is User user)
-                    {
-                        if (user.Id == entity.Id)
-                        {
-                            entry.State = EntityState.Deleted;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                    }
-                    else
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                }
-
-                await context.SaveChangesAsync();
-
-                result.Success = true;
-
-                return result;
             }
             catch (Exception exp)
             {
@@ -721,46 +625,41 @@ namespace SudokuCollective.Data.Repositories
             {
                 foreach (var entity in entities)
                 {
-                    var cellList = new List<int>();
-                    var matrixList = new List<int>();
-                    var gameList = new List<int>();
-                    var userRoleList = new List<int>();
-                    var userAppList = new List<int>();
-
-                    foreach (var game in entity.Games)
+                    if (entity.Id == 0)
                     {
-                        await game.SudokuMatrix.AttachSudokuCells(context);
+                        result.Success = false;
 
-                        foreach (var cell in game.SudokuMatrix.SudokuCells)
-                        {
-                            cellList.Add(cell.Id);
-                            context.SudokuCells.Attach(cell);
-                        }
-
-                        matrixList.Add(game.SudokuMatrixId);
-                        gameList.Add(game.Id);
-                        context.Games.Attach(game);
+                        return result;
                     }
 
-                    foreach (var role in entity.Roles)
+                    if (await context.Users.AnyAsync(u => u.Id == entity.Id))
                     {
-                        userRoleList.Add(role.Id);
-                        context.UsersRoles.Attach(role);
-                    }
+                        context.Remove(entity);
 
-                    foreach (var app in entity.Apps)
+                        var games = await context
+                            .Games
+                            .Where(g => g.UserId == entity.Id)
+                            .ToListAsync();
+
+                        context.RemoveRange(games);
+                    }
+                    else
                     {
-                        userAppList.Add(app.Id);
-                        context.UsersApps.Attach(app);
+                        result.Success = false;
+
+                        return result;
                     }
+                }
 
-                    context.Users.Attach(entity);
-
+                foreach (var entity in entities)
+                {
                     foreach (var entry in context.ChangeTracker.Entries())
                     {
-                        if (entry.Entity is SudokuCell cell)
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserApp userApp)
                         {
-                            if (cellList.Contains(cell.Id))
+                            if (userApp.AppId == entity.Id)
                             {
                                 entry.State = EntityState.Deleted;
                             }
@@ -769,9 +668,9 @@ namespace SudokuCollective.Data.Repositories
                                 entry.State = EntityState.Modified;
                             }
                         }
-                        else if (entry.Entity is SudokuMatrix matrix)
+                        else if (dbEntry is UserRole userRole)
                         {
-                            if (matrixList.Contains(matrix.Id))
+                            if (userRole.UserId == entity.Id)
                             {
                                 entry.State = EntityState.Deleted;
                             }
@@ -780,59 +679,18 @@ namespace SudokuCollective.Data.Repositories
                                 entry.State = EntityState.Modified;
                             }
                         }
-                        else if (entry.Entity is Game game)
+                        else if (dbEntry is SudokuSolution)
                         {
-                            if (gameList.Contains(game.Id))
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                        }
-                        else if (entry.Entity is UserRole userRole)
-                        {
-                            if (userRoleList.Contains(userRole.Id))
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                        }
-                        else if (entry.Entity is UserApp userApp)
-                        {
-                            if (userAppList.Contains(userApp.Id))
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                        }
-                        else if (entry.Entity is User user)
-                        {
-                            if (user.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Modified;
-                            }
+                            entry.State = EntityState.Modified;
                         }
                         else
                         {
-                            entry.State = EntityState.Modified;
+                            // Otherwise do nothing...
                         }
                     }
 
                     await context.SaveChangesAsync();
                 }
-                await context.SaveChangesAsync();
 
                 result.Success = true;
 
@@ -849,28 +707,55 @@ namespace SudokuCollective.Data.Repositories
 
         async public Task<bool> HasEntity(int id)
         {
-            var result = await context.Users.AnyAsync(predicate: u => u.Id == id);
-
-            return result;
+            return await context.Users.AnyAsync(u => u.Id == id);
         }
 
-        async public Task<IRepositoryResponse> AddRoles(int userId, List<int> roles)
+        async public Task<IRepositoryResponse> AddRole(int userId, int roleId)
         {
             var result = new RepositoryResponse();
 
             try
             {
-                if (await context.Users.AnyAsync(u => u.Id == userId))
+                if (await context.Users.AnyAsync(u => u.Id == userId) && await context.Roles.AnyAsync(r => r.Id == roleId))
                 {
-                    if (await context.Users.AnyAsync(u => u.Id == userId))
+                    if (await context.Users.AnyAsync(u => u.Id == userId && !u.Roles.Any(ur => ur.RoleId == roleId)))
                     {
-                        foreach (var roleId in roles)
-                        {
-                            if (await context.Roles.AnyAsync(r => r.Id == roleId))
-                            {
-                                var userRole = new UserRole(userId, roleId);
+                        var user = await context
+                            .Users
+                            .FirstOrDefaultAsync(u => u.Id == userId);
 
-                                context.UsersRoles.Add(userRole);
+                        var role = await context
+                            .Roles
+                            .FirstOrDefaultAsync(r => r.Id == roleId);
+
+                        var userRole = new UserRole
+                        {
+                            User = user,
+                            UserId = user.Id,
+                            Role = role,
+                            RoleId = role.Id
+                        };
+
+                        context.Attach(userRole);
+
+                        foreach (var entry in context.ChangeTracker.Entries())
+                        {
+                            var dbEntry = (IEntityBase)entry.Entity;
+
+                            if (dbEntry is UserRole ur)
+                            {
+                                if (ur.Id == userRole.Id)
+                                {
+                                    entry.State = EntityState.Added;
+                                }
+                                else
+                                {
+                                    entry.State = EntityState.Modified;
+                                }
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
                             }
                         }
 
@@ -903,7 +788,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> RemoveRoles(int userId, List<int> roles)
+        async public Task<IRepositoryResponse> AddRoles(int userId, List<int> roleIds)
         {
             var result = new RepositoryResponse();
 
@@ -911,23 +796,100 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (await context.Users.AnyAsync(u => u.Id == userId))
                 {
-                    foreach (var roleId in roles)
+                    var user = await context
+                        .Users
+                        .FirstOrDefaultAsync(u => u.Id == userId);
+
+                    var newUserRoleIds = new List<int>();
+
+                    foreach (var roleId in roleIds)
                     {
                         if (await context.Roles.AnyAsync(r => r.Id == roleId))
                         {
-                            var userRole = await context
-                                .UsersRoles
-                                .FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId);
+                            var role = await context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
 
-                            context.UsersRoles.Attach(userRole);
+                            var userRole = new UserRole
+                            {
+                                UserId = user.Id,
+                                User = user,
+                                RoleId = role.Id,
+                                Role = role
+                            };
+
+                            context.Attach(userRole);
+                            newUserRoleIds.Add(userRole.Id);
+                        }
+                        else
+                        {
+                            result.Success = false;
+
+                            return result;
                         }
                     }
 
                     foreach (var entry in context.ChangeTracker.Entries())
                     {
-                        if (entry.Entity is UserRole dbEntry)
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserRole ur)
                         {
-                            if (dbEntry.UserId == userId && roles.Contains(dbEntry.RoleId))
+                            if (newUserRoleIds.Contains(ur.Id))
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+
+                    await context.SaveChangesAsync();
+
+                    result.Success = true;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
+        async public Task<IRepositoryResponse> RemoveRole(int userId, int roleId)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                if (await context.Users
+                    .AnyAsync(u => u.Id == userId && u.Roles.Any(ur => ur.RoleId == roleId)))
+                {
+                    var userRole = await context
+                        .UsersRoles
+                        .FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId);
+
+                    foreach (var entry in context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserRole ur)
+                        {
+                            if (ur.Id == userRole.Id)
                             {
                                 entry.State = EntityState.Deleted;
                             }
@@ -964,48 +926,100 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> ConfirmEmail(string code)
+        async public Task<IRepositoryResponse> RemoveRoles(int userId, List<int> roleIds)
         {
             var result = new RepositoryResponse();
 
             try
             {
-                if (await context.EmailConfirmations.AnyAsync(ec => ec.Token.ToLower().Equals(code.ToLower())))
+                if (await context.Users.AnyAsync(u => u.Id == userId))
+                {
+                    foreach (var roleId in roleIds)
+                    {
+                        if (await context
+                            .UsersRoles
+                            .AnyAsync(ur => ur.UserId == userId && ur.RoleId == roleId))
+                        {
+                            // Role exists so we continue...
+                        }
+                        else
+                        {
+                            result.Success = false;
+
+                            return result;
+                        }
+                    }
+
+                    foreach (var entry in context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserRole userRole)
+                        {
+                            if (userRole.UserId == userId 
+                                && roleIds.Contains(userRole.RoleId))
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+
+                    await context.SaveChangesAsync();
+
+                    result.Success = true;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
+        async public Task<IRepositoryResponse> ConfirmEmail(string token)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                if (await context.EmailConfirmations.AnyAsync(ec => ec.Token.ToLower().Equals(token.ToLower())))
                 {
                     var emailConfirmed = await context
                         .EmailConfirmations
-                        .FirstOrDefaultAsync(predicate: ec => ec.Token.ToLower().Equals(code.ToLower()));
+                        .FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
 
                     if (await context.Users.AnyAsync(u => u.Id == emailConfirmed.UserId))
                     {
                         var user = await context
                             .Users
-                            .Include(u => u.Apps)
-                            .Include(u => u.Roles)
-                            .Include(u => u.Games)
-                            .Include(u => u.Games)
-                                .ThenInclude(g => g.SudokuMatrix)
-                            .Include(u => u.Games)
-                                .ThenInclude(g => g.SudokuSolution)
-                            .FirstOrDefaultAsync(predicate: u => u.Id == emailConfirmed.UserId);
+                            .FirstOrDefaultAsync(u => u.Id == emailConfirmed.UserId);
 
                         foreach (var userApp in user.Apps)
                         {
-                            userApp.App = await context
-                                .Apps
-                                .FirstOrDefaultAsync(predicate: a => a.Id == userApp.AppId);
+                            userApp.App.Users = new List<UserApp>();
                         }
 
                         foreach (var userRole in user.Roles)
                         {
-                            userRole.Role = await context
-                                .Roles
-                                .FirstOrDefaultAsync(predicate: r => r.Id == userRole.RoleId);
-                        }
-
-                        foreach (var game in user.Games)
-                        {
-                            await game.SudokuMatrix.AttachSudokuCells(context);
+                            userRole.Role.Users = new List<UserRole>();
                         }
 
                         user.DateUpdated = DateTime.UtcNow;
@@ -1013,33 +1027,32 @@ namespace SudokuCollective.Data.Repositories
 
                         context.Attach(user);
 
-                        context.ChangeTracker.TrackGraph(user,
-                            e => {
+                        foreach (var entry in context.ChangeTracker.Entries())
+                        {
+                            var dbEntry = (IEntityBase)entry.Entity;
 
-                                var dbEntry = (IEntityBase)e.Entry.Entity;
+                            if (dbEntry is UserApp)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
 
-                                if (dbEntry.Id != 0)
-                                {
-                                    e.Entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    e.Entry.State = EntityState.Added;
-                                }
-                            });
+                            if (dbEntry is UserRole)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                // Otherwise do nothing...
+                            }
+                        }
 
                         var emailConfirmation = await context
                             .EmailConfirmations
-                            .FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(code.ToLower()));
+                            .FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
 
                         context.EmailConfirmations.Remove(emailConfirmation);
 
                         await context.SaveChangesAsync();
-
-                        user.Apps = user
-                            .Apps
-                            .Where(ua => ua.App.Id == emailConfirmation.AppId)
-                            .ToList();
 
                         result.Success = true;
                         result.Object = user;
@@ -1075,11 +1088,25 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (await context.Users.AnyAsync(u => u.Id == id))
                 {
-                    var user = await context.Users.FirstOrDefaultAsync(predicate: u => u.Id == id);
+                    var user = await context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
                     user.ActivateUser();
 
-                    context.Users.Update(user);
+                    context.Attach(user);
+
+                    foreach (var entry in context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
 
                     await context.SaveChangesAsync();
 
@@ -1102,11 +1129,25 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (await context.Users.AnyAsync(u => u.Id == id))
                 {
-                    var user = await context.Users.FirstOrDefaultAsync(predicate: u => u.Id == id);
+                    var user = await context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
                     user.DeactiveUser();
 
-                    context.Users.Update(user);
+                    context.Attach(user);
+
+                    foreach (var entry in context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
 
                     await context.SaveChangesAsync();
 
@@ -1129,11 +1170,11 @@ namespace SudokuCollective.Data.Repositories
             {
                 var user = await context
                     .Users
-                    .FirstOrDefaultAsync(predicate: u => u.Id == id);
+                    .FirstOrDefaultAsync(u => u.Id == id);
 
                 var role = await context
                     .Roles
-                    .FirstOrDefaultAsync(predicate: r => r.RoleLevel == RoleLevel.ADMIN);
+                    .FirstOrDefaultAsync(r => r.RoleLevel == RoleLevel.ADMIN);
 
                 var userRole = new UserRole { 
                     UserId = user.Id, 
@@ -1141,8 +1182,29 @@ namespace SudokuCollective.Data.Repositories
                     RoleId = role.Id, 
                     Role = role };
 
-                context.UsersRoles.Add(userRole);
+                context.Attach(userRole);
 
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry is UserRole ur)
+                    {
+                        if (ur.Id == userRole.Id)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                }
+                
                 await context.SaveChangesAsync();
 
                 return true;
@@ -1161,7 +1223,7 @@ namespace SudokuCollective.Data.Repositories
             }
             else
             {
-                return await context.Users.AnyAsync(predicate: u => u.Id == id);
+                return await context.Users.AnyAsync(u => u.Id == id);
             }
         }
 

@@ -40,33 +40,23 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
 
-                context.Difficulties.Add(entity);
+                context.Attach(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
-                    if (entry.Entity is Difficulty difficulty)
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry is UserApp)
                     {
-                        if (entity.Id == difficulty.Id)
-                        {
-                            entry.State = EntityState.Added;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Modified;
-                        }
+                        entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is UserRole)
+                    {
+                        entry.State = EntityState.Modified;
                     }
                     else
                     {
-                        var dbEntry = (IEntityBase)entry.Entity;
-
-                        if (dbEntry.Id != 0)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Added;
-                        }
+                        // Otherwise do nothing...
                     }
                 }
 
@@ -97,22 +87,29 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Difficulties
-                        .Include(d => d.Matrices)
-                        .FirstOrDefaultAsync(predicate: d => d.Id == id);
+                        .FirstOrDefaultAsync(d => d.Id == id);
+
+                    if (query == null)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
                 }
                 else
                 {
                     query = await context
                         .Difficulties
-                        .FirstOrDefaultAsync(predicate: d => d.Id == id);
-                }
+                        .FirstOrDefaultAsync(d => d.Id == id);
 
-                if (query == null)
-                {
-                    result.Success = false;
-                    result.Object = query;
+                    if (query == null)
+                    {
+                        result.Success = false;
 
-                    return result;
+                        return result;
+                    }
+
+                    query.Matrices = new List<SudokuMatrix>();
                 }
 
                 result.Success = true;
@@ -143,8 +140,15 @@ namespace SudokuCollective.Data.Repositories
                         .Where(d => 
                             d.DifficultyLevel != DifficultyLevel.NULL 
                             && d.DifficultyLevel != DifficultyLevel.TEST)
-                        .Include(d => d.Matrices)
+                        .OrderBy(d => d.Id)
                         .ToListAsync();
+
+                    if (query.Count == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
                 }
                 else
                 {
@@ -153,7 +157,20 @@ namespace SudokuCollective.Data.Repositories
                         .Where(d =>
                             d.DifficultyLevel != DifficultyLevel.NULL
                             && d.DifficultyLevel != DifficultyLevel.TEST)
+                        .OrderBy(d => d.Id)
                         .ToListAsync();
+
+                    if (query.Count == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    foreach (var difficulty in query)
+                    {
+                        difficulty.Matrices = new List<SudokuMatrix>();
+                    }
                 }
 
                 result.Success = true;
@@ -178,28 +195,41 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.Difficulties.Update(entity);
-
-                foreach (var entry in context.ChangeTracker.Entries())
+                if (await context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                 {
-                    var dbEntry = (IEntityBase)entry.Entity;
+                    context.Attach(entity);
 
-                    if (dbEntry.Id != 0)
+                    foreach (var entry in context.ChangeTracker.Entries())
                     {
-                        entry.State = EntityState.Modified;
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserApp)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else if (dbEntry is UserRole)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            // Otherwise do nothing...
+                        }
                     }
-                    else
-                    {
-                        entry.State = EntityState.Added;
-                    }
+
+                    await context.SaveChangesAsync();
+
+                    result.Success = true;
+                    result.Object = entity;
+
+                    return result;
                 }
+                else
+                {
+                    result.Success = false;
 
-                await context.SaveChangesAsync();
-
-                result.Success = true;
-                result.Object = entity;
-
-                return result;
+                    return result;
+                }
             }
             catch (Exception exp)
             {
@@ -216,19 +246,42 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.Difficulties.UpdateRange(entities);
+                foreach (var entity in entities)
+                {
+                    if (entity.Id == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    if (await context.Difficulties.AnyAsync(d => d.Id == entity.Id))
+                    {
+                        context.Attach(entity);
+                    }
+                    else
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+                }
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
-                    if (dbEntry.Id != 0)
+                    if (dbEntry is UserApp)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is UserRole)
                     {
                         entry.State = EntityState.Modified;
                     }
                     else
                     {
-                        entry.State = EntityState.Added;
+                        // Otherwise do nothing...
                     }
                 }
 
@@ -253,32 +306,42 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.Difficulties.AnyAsync(u => u.Id == entity.Id))
+                if (await context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                 {
-                    context.Difficulties.Remove(entity);
+                    context.Remove(entity);
+
+                    var games = await context.Games.ToListAsync();
+
+                    foreach (var game in games)
+                    {
+                        if (game.SudokuMatrix.DifficultyId == entity.Id)
+                        {
+                            context.Remove(game);
+                        }
+                    }
 
                     foreach (var entry in context.ChangeTracker.Entries())
                     {
-                        if (entry.Entity is Difficulty difficulty)
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserApp)
                         {
-                            if (entity.Id == difficulty.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Modified;
-                            }
+                            entry.State = EntityState.Modified;
+                        }
+                        else if (dbEntry is UserRole)
+                        {
+                            entry.State = EntityState.Modified;
                         }
                         else
                         {
-                            entry.State = EntityState.Modified;
+                            // Otherwise do nothing...
                         }
                     }
 
                     await context.SaveChangesAsync();
 
                     result.Success = true;
+                    result.Object = entity;
 
                     return result;
                 }
@@ -304,31 +367,52 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.Difficulties.RemoveRange(entities);
-
-                var difficultiesForDeletion = new List<int>();
+                var games = await context.Games.ToListAsync();
 
                 foreach (var entity in entities)
                 {
-                    difficultiesForDeletion.Add(entity.Id);
-                }
-
-                foreach (var entry in context.ChangeTracker.Entries())
-                {
-                    if (entry.Entity is Difficulty difficulty)
+                    if (entity.Id == 0)
                     {
-                        if (difficultiesForDeletion.Contains(difficulty.Id))
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    if (await context.Difficulties.AnyAsync(d => d.Id == entity.Id))
+                    {
+                        context.Remove(entity);
+
+                        foreach (var game in games)
                         {
-                            entry.State = EntityState.Deleted;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Modified;
+                            if (game.SudokuMatrix.DifficultyId == entity.Id)
+                            {
+                                context.Remove(game);
+                            }
                         }
                     }
                     else
                     {
+                        result.Success = false;
+
+                        return result;
+                    }
+                }
+
+                foreach (var entry in context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry is UserApp)
+                    {
                         entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is UserRole)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        // Otherwise do nothing...
                     }
                 }
 
@@ -349,14 +433,14 @@ namespace SudokuCollective.Data.Repositories
 
         async public Task<bool> HasEntity(int id)
         {
-            var result = await context.Difficulties.AnyAsync(predicate: d => d.Id == id);
+            var result = await context.Difficulties.AnyAsync(d => d.Id == id);
 
             return result;
         }
 
         async public Task<bool> HasDifficultyLevel(DifficultyLevel level)
         {
-            var result = await context.Difficulties.AnyAsync(predicate: d => d.DifficultyLevel == level);
+            var result = await context.Difficulties.AnyAsync(d => d.DifficultyLevel == level);
 
             return result;
         }

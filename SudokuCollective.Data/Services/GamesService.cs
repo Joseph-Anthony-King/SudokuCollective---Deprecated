@@ -308,7 +308,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (await gamesRepository.HasEntity(id))
                     {
-                        var gameResponse = await gamesRepository.GetGame(id, appId, fullRecord);
+                        var gameResponse = await gamesRepository.GetAppGame(id, appId, fullRecord);
 
                         if (gameResponse.Success)
                         {
@@ -375,7 +375,7 @@ namespace SudokuCollective.Data.Services
             {
                 if (await appsRepository.HasEntity(request.AppId))
                 {
-                    var response = await gamesRepository.GetGames(request.AppId, fullRecord);
+                    var response = await gamesRepository.GetAppGames(request.AppId, fullRecord);
 
                     if (response.Success)
                     {

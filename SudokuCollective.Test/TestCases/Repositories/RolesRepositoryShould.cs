@@ -35,7 +35,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task CreateRoles()
         {
             // Arrange
-            var testRole = context.Roles.FirstOrDefault(predicate: r => r.RoleLevel == RoleLevel.NULL);
+            var testRole = context.Roles.FirstOrDefault(r => r.RoleLevel == RoleLevel.NULL);
             context.Roles.Remove(testRole);
             context.SaveChanges();
 
@@ -107,7 +107,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task UpdateRoles()
         {
             // Arrange
-            var role = context.Roles.FirstOrDefault(predicate: r => r.Id == 1);
+            var role = context.Roles.FirstOrDefault(r => r.Id == 1);
             role.Name = string.Format("{0} UPDATED!", role.Name);
 
             // Act
@@ -138,7 +138,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task DeleteRoles()
         {
             // Arrange
-            var role = context.Roles.FirstOrDefault(predicate: r => r.Id == 1);
+            var role = context.Roles.FirstOrDefault(r => r.Id == 1);
 
             // Act
             var result = await sut.Delete(role);
@@ -210,7 +210,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfConfirmItHasARoleLevelFails()
         {
             // Arrange
-            var testRole = context.Roles.FirstOrDefault(predicate: r => r.RoleLevel == RoleLevel.NULL);
+            var testRole = context.Roles.FirstOrDefault(r => r.RoleLevel == RoleLevel.NULL);
             context.Roles.Remove(testRole);
             context.SaveChanges();
 
