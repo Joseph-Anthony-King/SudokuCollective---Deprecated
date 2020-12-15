@@ -778,5 +778,36 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result, Is.False);
         }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ConfirmUpdateIfUserNameUnique()
+        {
+            // Arrange
+            var userId = 1;
+            var userName = context.Users.FirstOrDefault(u => u.Id == userId).UserName;
+
+            // Act
+            var result = await sut.IsUpdatedUserNameUnique(userId, userName);
+
+            // Assert
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfConfirmIfUpdateUserNameUniqueFails()
+        {
+            // Arrange
+            var userIdOne = 1;
+            var userIdTwo = 2;
+            var userName = context.Users.FirstOrDefault(u => u.Id == userIdTwo).UserName;
+
+            // Act
+            var result = await sut.IsUpdatedUserNameUnique(userIdOne, userName);
+
+            // Assert
+            Assert.That(result, Is.False);
+        }
     }
 }

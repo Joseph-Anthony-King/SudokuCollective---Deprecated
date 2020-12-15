@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
@@ -39,9 +40,21 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
+                    var difficulty = (Difficulty)response.Object;
+
+                    if (fullRecord)
+                    {
+                        foreach (var matrix in difficulty.Matrices)
+                        {
+                            matrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                            matrix.Game.User.Apps = new List<UserApp>();
+                            matrix.Game.User.Roles = new List<UserRole>();
+                        }
+                    }
+
                     result.Success = response.Success;
                     result.Message = DifficultiesMessages.DifficultyFoundMessage;
-                    result.Difficulty = (Difficulty)response.Object;
+                    result.Difficulty = difficulty;
 
                     return result;
                 }
@@ -182,9 +195,18 @@ namespace SudokuCollective.Data.Services
                             result.Difficulties.Add((IDifficulty)obj);
                         }
 
-                        result.Difficulties = result.Difficulties
-                            .OrderBy(d => d.DifficultyLevel)
-                            .ToList();
+                        if (fullRecord)
+                        {
+                            foreach (var difficulty in result.Difficulties)
+                            {
+                                foreach (var matrix in difficulty.Matrices)
+                                {
+                                    matrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                    matrix.Game.User.Apps = new List<UserApp>();
+                                    matrix.Game.User.Roles = new List<UserRole>();
+                                }
+                            }
+                        }
 
                         result.Success = response.Success;
                         result.Message = DifficultiesMessages.DifficultiesFoundMessage;
@@ -277,7 +299,8 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> UpdateDifficulty(int id,
+        public async Task<IBaseResult> UpdateDifficulty(
+            int id,
             IUpdateDifficultyRequest updateDifficultyRequest)
         {
             var result = new BaseResult();

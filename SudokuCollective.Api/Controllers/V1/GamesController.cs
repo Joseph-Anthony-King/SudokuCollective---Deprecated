@@ -168,15 +168,14 @@ namespace SudokuCollective.Api.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost, Route("Create")]
         public async Task<ActionResult<Game>> PostGame(
-            [FromBody] CreateGameRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] CreateGameRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await gamesService.CreateGame(request, fullRecord);
+                var result = await gamesService.CreateGame(request);
 
                 if (result.Success)
                 {

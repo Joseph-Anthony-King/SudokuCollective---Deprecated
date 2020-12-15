@@ -9,14 +9,14 @@ namespace SudokuCollective.Data.Models.ResultModels
         public bool Success { get; set; }
         public string Message { get; set; }
         public IUser User { get; set; }
-        public bool ConfirmationEmailSuccessfullySent { get; set; }
+        public bool? ConfirmationEmailSuccessfullySent { get; set; }
         public string Token { get; set; }
 
         public UserResult() : base()
         {
             User = new User();
-            ConfirmationEmailSuccessfullySent = false;
-            Token = string.Empty;
+            ConfirmationEmailSuccessfullySent = null;
+            Token = null;
 
         }
     }

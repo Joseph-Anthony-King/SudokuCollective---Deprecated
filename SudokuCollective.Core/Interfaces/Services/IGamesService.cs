@@ -6,7 +6,7 @@ namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface IGamesService : IService
     {
-        Task<IGameResult> CreateGame(ICreateGameRequest createGameRequest, bool fullRecord = true);
+        Task<IGameResult> CreateGame(ICreateGameRequest createGameRequest);
         Task<IGameResult> UpdateGame(int id, IUpdateGameRequest updateGameRequest);
         Task<IBaseResult> DeleteGame(int id);
         Task<IGameResult> GetGame(int id, int appId, bool fullRecord = true);

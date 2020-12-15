@@ -20,5 +20,7 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<bool> IsUserRegistered(int id);
         Task<bool> IsUserNameUnique(string username);
         Task<bool> IsEmailUnique(string email);
+        Task<bool> IsUpdatedUserNameUnique(int userId, string username);
+        Task<bool> IsUpdatedEmailUnique(int userId, string email);
     }
 }

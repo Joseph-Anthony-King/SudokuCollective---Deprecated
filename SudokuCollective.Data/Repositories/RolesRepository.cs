@@ -87,30 +87,22 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Roles
+                        .Include(r => r.Users)
+                            .ThenInclude(ur => ur.User)
                         .FirstOrDefaultAsync(r => r.Id == id);
-
-                    if (query == null)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
                 }
                 else
                 {
                     query = await context
                         .Roles
                         .FirstOrDefaultAsync(r => r.Id == id);
+                }
 
-                    if (query == null)
-                    {
-                        result.Success = false;
-                        result.Object = query;
+                if (query == null)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    query.Users = new List<UserRole>();
+                    return result;
                 }
 
                 result.Success = true;
@@ -138,17 +130,12 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Roles
+                        .Include(r => r.Users)
+                            .ThenInclude(ur => ur.User)
                         .Where(r =>
                             r.RoleLevel != RoleLevel.NULL)
-                        .OrderBy(r => r.Id)
+                        .OrderBy(r => r.RoleLevel)
                         .ToListAsync();
-
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
                 }
                 else
                 {
@@ -156,20 +143,15 @@ namespace SudokuCollective.Data.Repositories
                         .Roles
                         .Where(r =>
                             r.RoleLevel != RoleLevel.NULL)
-                        .OrderBy(r => r.Id)
+                        .OrderBy(r => r.RoleLevel)
                         .ToListAsync();
+                }
 
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
+                if (query.Count == 0)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    foreach (var role in query)
-                    {
-                        role.Users = new List<UserRole>();
-                    }
+                    return result;
                 }
 
                 result.Success = true;

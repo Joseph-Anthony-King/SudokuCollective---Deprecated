@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
@@ -43,9 +44,20 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
+                        var app = (App)response.Object;
+
+                        if (fullRecord)
+                        {
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.App = null;
+                                userApp.User.Apps = new List<UserApp>();
+                            }
+                        }
+
                         result.Success = response.Success;
                         result.Message = AppsMessages.AppFoundMessage;
-                        result.App = (IApp)response.Object;
+                        result.App = app;
 
                         return result;
                     }
@@ -93,9 +105,19 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
+                        var app = (IApp)response.Object;
+
+                        if (fullRecord)
+                        {
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.App = null;
+                            }
+                        }
+
                         result.Success = response.Success;
                         result.Message = AppsMessages.AppFoundMessage;
-                        result.App = (IApp)response.Object;
+                        result.App = app;
 
                         return result;
                     }
@@ -344,6 +366,17 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Apps = response.Objects.ConvertAll(a => (IApp)a);
+                    }
+
+                    if (fullRecord)
+                    {
+                        foreach (var app in result.Apps)
+                        {
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.App = null;
+                            }
+                        }
                     }
 
                     result.Success = response.Success;
@@ -603,6 +636,28 @@ namespace SudokuCollective.Data.Services
                             result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                             return result;
+                        }
+
+                        if (fullRecord)
+                        {
+                            foreach (var user in result.Users)
+                            {
+                                foreach (var userApp in user.Apps)
+                                {
+                                    userApp.App.Users = new List<UserApp>();
+                                }
+
+                                foreach (var userRole in user.Roles)
+                                {
+                                    userRole.Role.Users = new List<UserRole>();
+                                }
+
+                                foreach (var game in user.Games)
+                                {
+                                    game.User = null;
+                                    game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                }
+                            }
                         }
 
                         result.Success = response.Success;

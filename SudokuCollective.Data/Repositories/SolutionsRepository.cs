@@ -86,29 +86,26 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .SudokuSolutions
+                        .Include(s => s.Game)
+                            .ThenInclude(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.SudokuCells)
+                        .Include(s => s.Game)
+                            .ThenInclude(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.Difficulty)
                         .FirstOrDefaultAsync(s => s.Id == id);
-
-                    if (query == null)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
                 }
                 else
                 {
                     query = await context
                         .SudokuSolutions
                         .FirstOrDefaultAsync(s => s.Id == id);
+                }
 
-                    if (query == null)
-                    {
-                        result.Success = false;
+                if (query == null)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    query.Game = null;
+                    return result;
                 }
 
                 result.Success = true;
@@ -136,32 +133,23 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .SudokuSolutions
+                        .Include(s => s.Game)
+                            .ThenInclude(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.SudokuCells)
                         .ToListAsync();
-
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
                 }
                 else
                 {
                     query = await context
                         .SudokuSolutions
                         .ToListAsync();
+                }
 
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
+                if (query.Count == 0)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    foreach (var solution in query)
-                    {
-                        solution.Game = null;
-                    }
+                    return result;
                 }
 
                 result.Success = true;

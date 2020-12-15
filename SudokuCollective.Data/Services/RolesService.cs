@@ -9,6 +9,7 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
+using System.Collections.Generic;
 
 namespace SudokuCollective.Data.Services
 {
@@ -27,7 +28,8 @@ namespace SudokuCollective.Data.Services
 
         #region Methods
         public async Task<IRoleResult> GetRole(
-            int id, bool fullRecord = true)
+            int id, 
+            bool fullRecord = true)
         {
             var result = new RoleResult();
 
@@ -37,9 +39,21 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
+                    var role = (Role)response.Object;
+
+                    if (fullRecord)
+                    {
+                        foreach (var userRole in role.Users)
+                        {
+                            userRole.User.Apps = new List<UserApp>();
+                            userRole.User.Roles = new List<UserRole>();
+                            userRole.User.Games = new List<Game>();
+                        }
+                    }
+
                     result.Success = response.Success;
                     result.Message = RolesMessages.RoleFoundMessage;
-                    result.Role = (Role)response.Object;
+                    result.Role = role;
 
                     return result;
                 }
@@ -78,9 +92,24 @@ namespace SudokuCollective.Data.Services
 
                 if (rolesResponse.Success)
                 {
+                    var roles = rolesResponse.Objects.ConvertAll(r => (IRole)r);
+
+                    if (fullRecord)
+                    {
+                        foreach (var role in roles)
+                        {
+                            foreach (var userRole in role.Users)
+                            {
+                                userRole.User.Apps = new List<UserApp>();
+                                userRole.User.Roles = new List<UserRole>();
+                                userRole.User.Games = new List<Game>();
+                            }
+                        }
+                    }
+
                     result.Success = rolesResponse.Success;
                     result.Message = RolesMessages.RolesFoundMessage;
-                    result.Roles = rolesResponse.Objects.ConvertAll(r => (IRole)r);
+                    result.Roles = roles;
 
                     return result;
                 }
@@ -108,7 +137,8 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IRoleResult> CreateRole(string name,
+        public async Task<IRoleResult> CreateRole(
+            string name,
             RoleLevel roleLevel)
         {
             var result = new RoleResult();
@@ -166,7 +196,9 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> UpdateRole(int id, IUpdateRoleRequest updateRoleRO)
+        public async Task<IBaseResult> UpdateRole(
+            int id, 
+            IUpdateRoleRequest updateRoleRO)
         {
             var result = new BaseResult();
 

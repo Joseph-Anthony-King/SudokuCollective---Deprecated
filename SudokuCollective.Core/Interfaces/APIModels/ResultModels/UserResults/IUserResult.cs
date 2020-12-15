@@ -5,7 +5,7 @@ namespace SudokuCollective.Core.Interfaces.APIModels.ResultModels
     public interface IUserResult : IBaseResult
     {
         IUser User { get; set; }
-        bool ConfirmationEmailSuccessfullySent { get; set; }
+        bool? ConfirmationEmailSuccessfullySent { get; set; }
         string Token { get; set; }
     }
 }

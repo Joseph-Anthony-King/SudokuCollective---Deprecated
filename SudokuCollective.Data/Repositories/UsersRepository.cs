@@ -128,16 +128,6 @@ namespace SudokuCollective.Data.Repositories
 
                 await context.SaveChangesAsync();
 
-                foreach (var userRole in entity.Roles)
-                {
-                    userRole.Role.Users = new List<UserRole>();
-                }
-
-                foreach (var userApps in entity.Apps)
-                {
-                    userApps.App.Users = new List<UserApp>();
-                }
-
                 result.Success = true;
                 result.Object = entity;
                 result.Token = emailConfirmation.Token;
@@ -164,41 +154,29 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
+                        .Include(u => u.Apps)
+                            .ThenInclude(ua => ua.App)
+                        .Include(u => u.Roles)
+                            .ThenInclude(ur => ur.Role)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuSolution)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.SudokuCells)
                         .FirstOrDefaultAsync(u => u.Id == id);
-
-                    if (query == null)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
-
-                    foreach (var role in query.Roles)
-                    {
-                        role.Role.Users = new List<UserRole>();
-                    }
-
-                    foreach (var app in query.Apps)
-                    {
-                        app.App.Users = new List<UserApp>();
-                    }
                 }
                 else
                 {
                     query = await context
                         .Users
                         .FirstOrDefaultAsync(u => u.Id == id);
+                }
 
-                    if (query == null)
-                    {
-                        result.Success = false;
+                if (query == null)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    query.Apps = new List<UserApp>();
-                    query.Roles = new List<UserRole>();
-                    query.Games = new List<Game>();
+                    return result;
                 }
 
                 result.Success = true;
@@ -226,25 +204,17 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
+                        .Include(u => u.Apps)
+                            .ThenInclude(ua => ua.App)
+                        .Include(u => u.Roles)
+                            .ThenInclude(ur => ur.Role)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuSolution)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.SudokuCells)
                         .FirstOrDefaultAsync(
                             u => u.UserName.ToLower().Equals(username.ToLower()));
-
-                    if (query == null)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
-
-                    foreach (var role in query.Roles)
-                    {
-                        role.Role.Users = new List<UserRole>();
-                    }
-
-                    foreach (var app in query.Apps)
-                    {
-                        app.App.Users = new List<UserApp>();
-                    }
                 }
                 else
                 {
@@ -252,17 +222,13 @@ namespace SudokuCollective.Data.Repositories
                         .Users
                         .FirstOrDefaultAsync(
                             u => u.UserName.ToLower().Equals(username.ToLower()));
+                }
 
-                    if (query == null)
-                    {
-                        result.Success = false;
+                if (query == null)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    query.Apps = new List<UserApp>();
-                    query.Roles = new List<UserRole>();
-                    query.Games = new List<Game>();
+                    return result;
                 }
 
                 result.Success = true;
@@ -290,42 +256,30 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
+                        .Include(u => u.Apps)
+                            .ThenInclude(ua => ua.App)
+                        .Include(u => u.Roles)
+                            .ThenInclude(ur => ur.Role)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuSolution)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.SudokuCells)
                         .FirstOrDefaultAsync(
                             u => u.Email.ToLower().Equals(email.ToLower()));
-
-                    if (query == null)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
-
-                    foreach (var role in query.Roles)
-                    {
-                        role.Role.Users = new List<UserRole>();
-                    }
-
-                    foreach (var app in query.Apps)
-                    {
-                        app.App.Users = new List<UserApp>();
-                    }
                 }
                 else
                 {
                     query = await context
                         .Users
                         .FirstOrDefaultAsync(u => u.Email.ToLower().Equals(email.ToLower()));
+                }
 
-                    if (query == null)
-                    {
-                        result.Success = false;
+                if (query == null)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    query.Apps = new List<UserApp>();
-                    query.Roles = new List<UserRole>();
-                    query.Games = new List<Game>();
+                    return result;
                 }
 
                 result.Success = true;
@@ -353,28 +307,17 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
+                        .Include(u => u.Apps)
+                            .ThenInclude(ua => ua.App)
+                        .Include(u => u.Roles)
+                            .ThenInclude(ur => ur.Role)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuSolution)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.SudokuCells)
                         .OrderBy(u => u.Id)
                         .ToListAsync();
-
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
-
-                    foreach (var user in query)
-                    {
-                        foreach (var role in user.Roles)
-                        {
-                            role.Role.Users = new List<UserRole>();
-                        }
-
-                        foreach (var app in user.Apps)
-                        {
-                            app.App.Users = new List<UserApp>();
-                        }
-                    }
                 }
                 else
                 {
@@ -382,20 +325,13 @@ namespace SudokuCollective.Data.Repositories
                         .Users
                         .OrderBy(u => u.Id)
                         .ToListAsync();
+                }
 
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
+                if (query.Count == 0)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    foreach (var user in query)
-                    {
-                        user.Apps = new List<UserApp>();
-                        user.Roles = new List<UserRole>();
-                        user.Games = new List<Game>();
-                    }
+                    return result;
                 }
 
                 result.Success = true;
@@ -1014,17 +950,16 @@ namespace SudokuCollective.Data.Repositories
                     {
                         var user = await context
                             .Users
+                            .Include(u => u.Apps)
+                                .ThenInclude(ua => ua.App)
+                            .Include(u => u.Roles)
+                                .ThenInclude(ur => ur.Role)
+                            .Include(u => u.Games)
+                                .ThenInclude(g => g.SudokuSolution)
+                            .Include(u => u.Games)
+                                .ThenInclude(g => g.SudokuMatrix)
+                                    .ThenInclude(m => m.SudokuCells)
                             .FirstOrDefaultAsync(u => u.Id == emailConfirmed.UserId);
-
-                        foreach (var userApp in user.Apps)
-                        {
-                            userApp.App.Users = new List<UserApp>();
-                        }
-
-                        foreach (var userRole in user.Roles)
-                        {
-                            userRole.Role.Users = new List<UserRole>();
-                        }
 
                         user.DateUpdated = DateTime.UtcNow;
                         user.EmailConfirmed = true;
@@ -1251,6 +1186,48 @@ namespace SudokuCollective.Data.Repositories
         async public Task<bool> IsEmailUnique(string email)
         {
             var emails = await context.Users.Select(u => u.Email).ToListAsync();
+
+            var result = true;
+
+            foreach (var e in emails)
+            {
+                if (e.ToLower().Equals(email.ToLower()))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+       async public Task<bool> IsUpdatedUserNameUnique(int userId, string username)
+        {
+            var names = await context
+                .Users
+                .Where(u => u.Id != userId)
+                .Select(u => u.UserName)
+                .ToListAsync();
+
+            var result = true;
+
+            foreach (var name in names)
+            {
+                if (name.ToLower().Equals(username.ToLower()))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        async public Task<bool> IsUpdatedEmailUnique(int userId, string email)
+        {
+            var emails = await context
+                .Users
+                .Where(u => u.Id != userId)
+                .Select(u => u.Email)
+                .ToListAsync();
 
             var result = true;
 

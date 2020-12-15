@@ -87,6 +87,11 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Games
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.Difficulty)
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.SudokuCells)
+                        .Include(g => g.SudokuSolution)
                         .FirstOrDefaultAsync(g => g.Id == id);
 
                     if (query == null)
@@ -96,36 +101,20 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    foreach (var app in query.User.Apps)
-                    {
-                        app.App = null;
-                        app.User = null;
-                    }
-
-                    foreach (var role in query.User.Roles)
-                    {
-                        role.Role.Users = new List<UserRole>();
-                        role.User = null;
-                    }
-
-                    query.User.Games = new List<Game>();
+                    query.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
                 }
                 else
                 {
                     query = await context
                         .Games
                         .FirstOrDefaultAsync(g => g.Id == id);
+                }
 
-                    if (query == null)
-                    {
-                        result.Success = false;
+                if (query == null)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    query.SudokuMatrix = null;
-                    query.SudokuSolution = null;
-                    query.User = null;
+                    return result;
                 }
 
                 result.Success = true;
@@ -153,48 +142,30 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Games
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.Difficulty)
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.SudokuCells)
+                        .Include(g => g.SudokuSolution)
                         .ToListAsync();
-
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
-
-                    foreach (var game in query)
-                    {
-                        foreach (var app in game.User.Apps)
-                        {
-                            app.App = null;
-                            app.User = null;
-                        }
-
-                        foreach (var role in game.User.Roles)
-                        {
-                            role.Role.Users = new List<UserRole>();
-                            role.User = null;
-                        }
-
-                        game.User.Games = new List<Game>();
-                    }
                 }
                 else
                 {
                     query = await context.Games.ToListAsync();
+                }
 
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
+                if (query.Count == 0)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
+                    return result;
+                }
 
+                if (query.Count > 0 && fullRecord)
+                {
                     foreach (var game in query)
                     {
-                        game.SudokuMatrix = null;
-                        game.SudokuSolution = null;
-                        game.User = null;
+                        game.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
                     }
                 }
 
@@ -469,6 +440,11 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Games
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.Difficulty)
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.SudokuCells)
+                        .Include(g => g.SudokuSolution)
                         .FirstOrDefaultAsync(g => g.Id == id && g.AppId == appid);
 
                     if (query == null)
@@ -478,19 +454,7 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    foreach (var app in query.User.Apps)
-                    {
-                        app.App = null;
-                        app.User = null;
-                    }
-
-                    foreach (var role in query.User.Roles)
-                    {
-                        role.Role.Users = new List<UserRole>();
-                        role.User = null;
-                    }
-
-                    query.User.Games = new List<Game>();
+                    query.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
                 }
                 else
                 {
@@ -504,10 +468,6 @@ namespace SudokuCollective.Data.Repositories
 
                         return result;
                     }
-
-                    query.SudokuMatrix = null;
-                    query.SudokuSolution = null;
-                    query.User = null;
                 }
 
                 result.Success = true;
@@ -543,32 +503,13 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Games
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.Difficulty)
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.SudokuCells)
+                        .Include(g => g.SudokuSolution)
                         .Where(g => g.AppId == appid)
                         .ToListAsync();
-
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
-
-                    foreach (var game in query)
-                    {
-                        foreach (var app in game.User.Apps)
-                        {
-                            app.App = null;
-                            app.User = null;
-                        }
-
-                        foreach (var role in game.User.Roles)
-                        {
-                            role.Role.Users = new List<UserRole>();
-                            role.User = null;
-                        }
-
-                        game.User.Games = new List<Game>();
-                    }
                 }
                 else
                 {
@@ -576,19 +517,20 @@ namespace SudokuCollective.Data.Repositories
                         .Games
                         .Where(g => g.AppId == appid)
                         .ToListAsync();
+                }
 
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
+                if (query.Count == 0)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
+                    return result;
+                }
 
+                if (query.Count > 0 && fullRecord)
+                {
                     foreach (var game in query)
                     {
-                        game.SudokuMatrix = null;
-                        game.SudokuSolution = null;
-                        game.User = null;
+                        game.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
                     }
                 }
 
@@ -625,6 +567,12 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Games
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.Difficulty)
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.SudokuCells)
+                        .Include(g => g.SudokuSolution)
+                        .Where(g => g.AppId == appid)
                         .FirstOrDefaultAsync(predicate:
                             g => g.Id == gameid
                             && g.AppId == appid
@@ -637,19 +585,7 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    foreach (var app in query.User.Apps)
-                    {
-                        app.App = null;
-                        app.User = null;
-                    }
-
-                    foreach (var role in query.User.Roles)
-                    {
-                        role.Role.Users = new List<UserRole>();
-                        role.User = null;
-                    }
-
-                    query.User.Games = new List<Game>();
+                    query.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
                 }
                 else
                 {
@@ -666,10 +602,6 @@ namespace SudokuCollective.Data.Repositories
 
                         return result;
                     }
-
-                    query.SudokuMatrix = null;
-                    query.SudokuSolution = null;
-                    query.User = null;
                 }
 
                 result.Success = true;
@@ -709,32 +641,13 @@ namespace SudokuCollective.Data.Repositories
                         {
                             query = await context
                                 .Games
+                                .Include(g => g.SudokuMatrix)
+                                    .ThenInclude(g => g.Difficulty)
+                                .Include(g => g.SudokuMatrix)
+                                    .ThenInclude(g => g.SudokuCells)
+                                .Include(g => g.SudokuSolution)
                                 .Where(g => g.AppId == appid && g.UserId == userid)
                                 .ToListAsync();
-
-                            if (query.Count == 0)
-                            {
-                                result.Success = false;
-
-                                return result;
-                            }
-
-                            foreach (var game in query)
-                            {
-                                foreach (var app in game.User.Apps)
-                                {
-                                    app.App = null;
-                                    app.User = null;
-                                }
-
-                                foreach (var role in game.User.Roles)
-                                {
-                                    role.Role.Users = new List<UserRole>();
-                                    role.User = null;
-                                }
-
-                                game.User.Games = new List<Game>();
-                            }
                         }
                         else
                         {
@@ -742,19 +655,20 @@ namespace SudokuCollective.Data.Repositories
                                 .Games
                                 .Where(g => g.AppId == appid && g.UserId == userid)
                                 .ToListAsync();
+                        }
 
-                            if (query.Count == 0)
-                            {
-                                result.Success = false;
+                        if (query.Count == 0)
+                        {
+                            result.Success = false;
 
-                                return result;
-                            }
+                            return result;
+                        }
 
+                        if (query.Count > 0 && fullRecord)
+                        {
                             foreach (var game in query)
                             {
-                                game.SudokuMatrix = null;
-                                game.SudokuSolution = null;
-                                game.User = null;
+                                game.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
                             }
                         }
 
@@ -807,6 +721,10 @@ namespace SudokuCollective.Data.Repositories
 
                     query = await context
                         .Games
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.Difficulty)
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.SudokuCells)
                         .FirstOrDefaultAsync(predicate:
                             g => g.Id == gameid
                             && g.AppId == appid

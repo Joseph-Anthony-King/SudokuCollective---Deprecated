@@ -55,9 +55,30 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
+                        var user = (User)response.Object;
+
+                        if (fullRecord)
+                        {
+                            foreach (var userApp in user.Apps)
+                            {
+                                userApp.App.Users = new List<UserApp>();
+                            }
+
+                            foreach (var userRole in user.Roles)
+                            {
+                                userRole.Role.Users = new List<UserRole>();
+                            }
+
+                            foreach (var game in user.Games)
+                            {
+                                game.User = null;
+                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                            }
+                        }
+
                         result.Success = response.Success;
                         result.Message = UsersMessages.UserFoundMessage;
-                        result.User = (IUser)response.Object;
+                        result.User = user;
 
                         return result;
                     }
@@ -366,6 +387,28 @@ namespace SudokuCollective.Data.Services
                         result.Users = response.Objects.ConvertAll(u => (IUser)u);
                     }
 
+                    if (fullRecord)
+                    {
+                        foreach (var user in result.Users)
+                        {
+                            foreach (var userApp in user.Apps)
+                            {
+                                userApp.App.Users = new List<UserApp>();
+                            }
+
+                            foreach (var userRole in user.Roles)
+                            {
+                                userRole.Role.Users = new List<UserRole>();
+                            }
+
+                            foreach (var game in user.Games)
+                            {
+                                game.User = null;
+                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                            }
+                        }
+                    }
+
                     result.Success = response.Success;
                     result.Message = UsersMessages.UsersFoundMessage;
 
@@ -495,6 +538,18 @@ namespace SudokuCollective.Data.Services
 
                             if (userResponse.Success)
                             {
+                                user = (User)userResponse.Object;
+
+                                foreach (var userRole in user.Roles)
+                                {
+                                    userRole.Role.Users = new List<UserRole>();
+                                }
+
+                                foreach (var userApp in user.Apps)
+                                {
+                                    userApp.App.Users = new List<UserApp>();
+                                }
+
                                 var html = File.ReadAllText(emailtTemplatePath);
                                 var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}", 
                                     baseUrl, 
@@ -502,35 +557,35 @@ namespace SudokuCollective.Data.Services
                                 var appTitle = string.Empty;
                                 var url = string.Empty;
 
-                                if (((User)userResponse.Object).Apps[0].AppId == 1)
+                                if (user.Apps[0].AppId == 1)
                                 {
                                     appTitle = "SudokuCollective.com";
                                 }
                                 else
                                 {
-                                    appTitle = ((User)userResponse.Object).Apps[0].App.Name;
+                                    appTitle = user.Apps[0].App.Name;
                                 }
 
-                                if (((User)userResponse.Object).Apps[0].App.InProduction)
+                                if (user.Apps[0].App.InProduction)
                                 {
-                                    url = ((User)userResponse.Object).Apps[0].App.LiveUrl;
+                                    url = user.Apps[0].App.LiveUrl;
                                 }
                                 else
                                 {
-                                    url = ((User)userResponse.Object).Apps[0].App.DevUrl;
+                                    url = user.Apps[0].App.DevUrl;
                                 }
 
-                                html = html.Replace("{{USER_NAME}}", ((User)userResponse.Object).UserName);
+                                html = html.Replace("{{USER_NAME}}", user.UserName);
                                 html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
                                 html = html.Replace("{{APP_TITLE}}", appTitle);
                                 html = html.Replace("{{URL}}", url);
 
                                 result.ConfirmationEmailSuccessfullySent = emailService
-                                    .Send(((User)userResponse.Object).Email, "Please confirm email address", html);
+                                    .Send(user.Email, "Please confirm email address", html);
 
                                 result.Success = userResponse.Success;
                                 result.Message = UsersMessages.UserCreatedMessage;
-                                result.User = (User)userResponse.Object;
+                                result.User = user;
 
                                 return result;
                             }
@@ -583,15 +638,16 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IUserResult> UpdateUser(
-            int id, IUpdateUserRequest request)
+            int id, 
+            IUpdateUserRequest request)
         {
             var result = new UserResult();
 
             // User name accepsts alphanumeric and special characters except double and single quotes
             var regex = new Regex("^[^-]{1}?[^\"\']*$");
 
-            var isUserNameUnique = await usersRepository.IsUserNameUnique(request.UserName);
-            var isEmailUnique = await usersRepository.IsEmailUnique(request.Email);
+            var isUserNameUnique = await usersRepository.IsUpdatedUserNameUnique(id, request.UserName);
+            var isEmailUnique = await usersRepository.IsUpdatedEmailUnique(id, request.Email);
 
             if (string.IsNullOrEmpty(request.UserName)
                 || string.IsNullOrEmpty(request.Email)
@@ -1071,25 +1127,27 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    result.Success = response.Success;
-                    result.FirstName = ((User)response.Object).FirstName;
+                    var user = (User)response.Object;
 
-                    if (((User)response.Object).Apps[0].AppId == 1)
+                    result.Success = response.Success;
+                    result.FirstName = user.FirstName;
+
+                    if (user.Apps[0].AppId == 1)
                     {
                         result.AppTitle = "SudokuCollective.com";
                     }
                     else
                     {
-                        result.AppTitle = ((User)response.Object).Apps[0].App.Name;
+                        result.AppTitle = user.Apps[0].App.Name;
                     }
 
-                    if (((User)response.Object).Apps[0].App.InProduction)
+                    if (user.Apps[0].App.InProduction)
                     {
-                        result.Url = ((User)response.Object).Apps[0].App.LiveUrl;
+                        result.Url = user.Apps[0].App.LiveUrl;
                     }
                     else
                     {
-                        result.Url = ((User)response.Object).Apps[0].App.DevUrl;
+                        result.Url = user.Apps[0].App.DevUrl;
                     }
 
                     result.Message = UsersMessages.EmailConfirmedMessage;

@@ -29,7 +29,7 @@ namespace SudokuCollective.Test.MockServices
             GamesServiceUpdateFailedRequest = new Mock<IGamesService>();
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.CreateGame(It.IsAny<CreateGameRequest>(), It.IsAny<bool>()))
+                gamesService.CreateGame(It.IsAny<CreateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
@@ -190,7 +190,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.CreateGame(It.IsAny<CreateGameRequest>(), It.IsAny<bool>()))
+                gamesService.CreateGame(It.IsAny<CreateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository

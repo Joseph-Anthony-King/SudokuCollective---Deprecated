@@ -40,7 +40,7 @@ namespace SudokuCollective.Data.Services
 
         #region Methods
         public async Task<IGameResult> CreateGame(
-            ICreateGameRequest request, bool fullRecord = true)
+            ICreateGameRequest request)
         {
             var result = new GameResult();
 
@@ -50,7 +50,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (await difficultiesRepository.HasEntity(request.DifficultyId))
                     {
-                        var userResponse = await usersRepository.GetById(request.UserId, true);
+                        var userResponse = await usersRepository.GetById(request.UserId);
 
                         if (userResponse.Success)
                         {
@@ -312,16 +312,16 @@ namespace SudokuCollective.Data.Services
 
                         if (gameResponse.Success)
                         {
-                            ((IGame)gameResponse.Object).User = null;
-                            if (((IGame)gameResponse.Object).SudokuMatrix.Difficulty != null)
+                            var game = (Game)gameResponse.Object;
+
+                            if (fullRecord)
                             {
-                                ((IGame)gameResponse.Object).SudokuMatrix.Difficulty.Matrices = null;
+                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
                             }
-                            ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
 
                             result.Success = true;
                             result.Message = GamesMessages.GameFoundMessage;
-                            result.Game = (IGame)gameResponse.Object;
+                            result.Game = game;
 
                             return result;
                         }
@@ -495,6 +495,14 @@ namespace SudokuCollective.Data.Services
                             result.Games = response.Objects.ConvertAll(g => (IGame)g);
                         }
 
+                        if (fullRecord)
+                        {
+                            foreach (var game in result.Games)
+                            {
+                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                            }
+                        }
+
                         result.Success = response.Success;
                         result.Message = GamesMessages.GamesFoundMessage;
 
@@ -553,16 +561,16 @@ namespace SudokuCollective.Data.Services
 
                         if (gameResponse.Success)
                         {
-                            ((IGame)gameResponse.Object).User = null;
-                            if (((IGame)gameResponse.Object).SudokuMatrix.Difficulty != null)
+                            var game = (Game)gameResponse.Object;
+
+                            if (fullRecord)
                             {
-                                ((IGame)gameResponse.Object).SudokuMatrix.Difficulty.Matrices = null;
+                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
                             }
-                            ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
 
                             result.Success = true;
                             result.Message = GamesMessages.GameFoundMessage;
-                            result.Game = (IGame)gameResponse.Object;
+                            result.Game = game;
 
                             return result;
                         }
@@ -737,6 +745,14 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Games = response.Objects.ConvertAll(g => (IGame)g);
+                        }
+
+                        if (fullRecord)
+                        {
+                            foreach (var game in result.Games)
+                            {
+                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                            }
                         }
 
                         result.Success = response.Success;

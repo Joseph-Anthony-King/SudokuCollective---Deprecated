@@ -202,7 +202,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.PostGame(createGameRequest, true);
+            var result = sutSuccess.PostGame(createGameRequest);
             var message = ((GameResult)((ObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result.Result).StatusCode;
             var game = ((GameResult)((ObjectResult)result.Result.Result).Value).Game;
@@ -221,7 +221,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.PostGame(createGameRequest, true);
+            var result = sutFailure.PostGame(createGameRequest);
             var message = ((GameResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 

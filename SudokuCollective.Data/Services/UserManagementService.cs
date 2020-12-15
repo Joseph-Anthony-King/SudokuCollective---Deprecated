@@ -12,13 +12,18 @@ namespace SudokuCollective.Data.Services
 {
     public class UserManagementService : IUserManagementService
     {
+        #region Fields
         private readonly IUsersRepository<User> usersRepository;
+        #endregion
 
+        #region Constructors
         public UserManagementService(IUsersRepository<User> usersRepo)
         {
             usersRepository = usersRepo;
         }
+        #endregion
 
+        #region Methods
         public async Task<bool> IsValidUser(string username, string password)
         {
             var userResponse = await usersRepository.GetByUserName(username, true);
@@ -88,5 +93,6 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
         }
+        #endregion
     }
 }

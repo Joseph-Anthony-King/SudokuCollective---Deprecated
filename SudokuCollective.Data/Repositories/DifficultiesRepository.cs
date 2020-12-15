@@ -87,29 +87,24 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Difficulties
+                        .Include(d => d.Matrices)
+                            .ThenInclude(m => m.SudokuCells)
+                        .Include(d => d.Matrices)
+                            .ThenInclude(m => m.Game)
                         .FirstOrDefaultAsync(d => d.Id == id);
-
-                    if (query == null)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
                 }
                 else
                 {
                     query = await context
                         .Difficulties
                         .FirstOrDefaultAsync(d => d.Id == id);
+                }
 
-                    if (query == null)
-                    {
-                        result.Success = false;
+                if (query == null)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    query.Matrices = new List<SudokuMatrix>();
+                    return result;
                 }
 
                 result.Success = true;
@@ -137,18 +132,15 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Difficulties
+                        .Include(d => d.Matrices)
+                            .ThenInclude(m => m.SudokuCells)
+                        .Include(d => d.Matrices)
+                            .ThenInclude(m => m.Game)
                         .Where(d => 
                             d.DifficultyLevel != DifficultyLevel.NULL 
                             && d.DifficultyLevel != DifficultyLevel.TEST)
-                        .OrderBy(d => d.Id)
+                        .OrderBy(d => d.DifficultyLevel)
                         .ToListAsync();
-
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
                 }
                 else
                 {
@@ -157,20 +149,15 @@ namespace SudokuCollective.Data.Repositories
                         .Where(d =>
                             d.DifficultyLevel != DifficultyLevel.NULL
                             && d.DifficultyLevel != DifficultyLevel.TEST)
-                        .OrderBy(d => d.Id)
+                        .OrderBy(d => d.DifficultyLevel)
                         .ToListAsync();
+                }
 
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
+                if (query.Count == 0)
+                {
+                    result.Success = false;
 
-                        return result;
-                    }
-
-                    foreach (var difficulty in query)
-                    {
-                        difficulty.Matrices = new List<SudokuMatrix>();
-                    }
+                    return result;
                 }
 
                 result.Success = true;
@@ -310,13 +297,20 @@ namespace SudokuCollective.Data.Repositories
                 {
                     context.Remove(entity);
 
-                    var games = await context.Games.ToListAsync();
-
-                    foreach (var game in games)
+                    if (entity.Matrices.Count == 0)
                     {
-                        if (game.SudokuMatrix.DifficultyId == entity.Id)
+                        var games = await context
+                            .Games
+                            .Include(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.SudokuCells)
+                            .ToListAsync();
+
+                        foreach (var game in games)
                         {
-                            context.Remove(game);
+                            if (game.SudokuMatrix.DifficultyId == entity.Id)
+                            {
+                                context.Remove(game);
+                            }
                         }
                     }
 
@@ -329,6 +323,10 @@ namespace SudokuCollective.Data.Repositories
                             entry.State = EntityState.Modified;
                         }
                         else if (dbEntry is UserRole)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else if (dbEntry is SudokuSolution)
                         {
                             entry.State = EntityState.Modified;
                         }
@@ -367,8 +365,6 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var games = await context.Games.ToListAsync();
-
                 foreach (var entity in entities)
                 {
                     if (entity.Id == 0)
@@ -382,11 +378,20 @@ namespace SudokuCollective.Data.Repositories
                     {
                         context.Remove(entity);
 
-                        foreach (var game in games)
+                        if (entity.Matrices.Count == 0)
                         {
-                            if (game.SudokuMatrix.DifficultyId == entity.Id)
+                            var games = await context
+                                .Games
+                                .Include(g => g.SudokuMatrix)
+                                    .ThenInclude(m => m.SudokuCells)
+                                .ToListAsync();
+
+                            foreach (var game in games)
                             {
-                                context.Remove(game);
+                                if (game.SudokuMatrix.DifficultyId == entity.Id)
+                                {
+                                    context.Remove(game);
+                                }
                             }
                         }
                     }
@@ -407,6 +412,10 @@ namespace SudokuCollective.Data.Repositories
                         entry.State = EntityState.Modified;
                     }
                     else if (dbEntry is UserRole)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is SudokuSolution)
                     {
                         entry.State = EntityState.Modified;
                     }

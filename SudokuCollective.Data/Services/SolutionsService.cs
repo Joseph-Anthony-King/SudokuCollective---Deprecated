@@ -34,7 +34,8 @@ namespace SudokuCollective.Data.Services
 
         #region Methods
         public async Task<ISolutionResult> GetSolution(
-            int id, bool fullRecord = true)
+            int id,
+            bool fullRecord = true)
         {
             var result = new SolutionResult();
 
@@ -44,9 +45,16 @@ namespace SudokuCollective.Data.Services
 
                 if (solutionResponse.Success)
                 {
+                    var solution = (SudokuSolution)solutionResponse.Object;
+
+                    if (fullRecord)
+                    {
+                        solution.Game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                    }
+
                     result.Success = solutionResponse.Success;
                     result.Message = SolutionsMessages.SolutionFoundMessage;
-                    result.Solution = (SudokuSolution)solutionResponse.Object;
+                    result.Solution = solution;
 
                     return result;
                 }
@@ -200,6 +208,17 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Solutions = response.Objects.ConvertAll(s => (ISudokuSolution)s);
+                    }
+
+                    if (fullRecord)
+                    {
+                        foreach (var solution in result.Solutions)
+                        {
+                            if (solution.Game != null)
+                            {
+                                solution.Game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                            }
+                        }
                     }
 
                     result.Success = response.Success;
