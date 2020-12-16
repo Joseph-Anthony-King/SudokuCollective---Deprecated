@@ -236,6 +236,9 @@ namespace SudokuCollective.Data.Models
 
             modelBuilder.Entity<EmailConfirmation>()
                 .HasKey(ec => ec.Id);
+
+            modelBuilder.Entity<EmailConfirmation>()
+                .Ignore(ec => ec.IsUpdate);
         }
     }
 }

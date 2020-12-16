@@ -11,6 +11,23 @@ namespace SudokuCollective.Core.Models
         public int UserId { get; set; }
         public int AppId { get; set; }
         public string Token { get; set; }
+        public string OldEmailAddress { get; set; }
+        public string NewEmailAddress { get; set; }
+        public bool OldEmailAddressConfirmed { get; set; }
+        public bool IsUpdate 
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(OldEmailAddress) && string.IsNullOrEmpty(NewEmailAddress))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
         #endregion
 
         #region Constructors
@@ -20,6 +37,9 @@ namespace SudokuCollective.Core.Models
             UserId = 0;
             AppId = 0;
             Token = string.Empty;
+            OldEmailAddress = string.Empty;
+            NewEmailAddress = string.Empty;
+            OldEmailAddressConfirmed = false;
         }
 
         public EmailConfirmation(int userId, int appId) : base()
@@ -29,17 +49,32 @@ namespace SudokuCollective.Core.Models
             Token = Guid.NewGuid().ToString();
         }
 
+        public EmailConfirmation(int userId, int appId, string oldEmailAddress, string newEmailAddress) : base()
+        {
+            UserId = userId;
+            AppId = appId;
+            Token = Guid.NewGuid().ToString();
+            OldEmailAddress = oldEmailAddress;
+            NewEmailAddress = newEmailAddress;
+        }
+
         [JsonConstructor]
         public EmailConfirmation(
             int id, 
             int userId,
             int appId,
-            string code)
+            string token,
+            string oldEmailAddress,
+            string newEmailAddress,
+            bool oldEmailAddressConfirmed)
         {
             Id = id;
             UserId = userId;
             AppId = appId;
-            Token = code;
+            Token = token;
+            OldEmailAddress = oldEmailAddress;
+            NewEmailAddress = newEmailAddress;
+            OldEmailAddressConfirmed = oldEmailAddressConfirmed;
         }
         #endregion
     }

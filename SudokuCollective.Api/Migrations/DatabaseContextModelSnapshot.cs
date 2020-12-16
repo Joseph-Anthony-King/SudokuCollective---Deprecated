@@ -93,6 +93,15 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<int>("AppId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("NewEmailAddress")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OldEmailAddress")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("OldEmailAddressConfirmed")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Token")
                         .HasColumnType("text");
 

@@ -175,6 +175,14 @@ namespace SudokuCollective.Test.MockRepositories
                 usersRepo.IsEmailUnique(It.IsAny<string>()))
                     .Returns(Task.FromResult(true));
 
+            UsersRepositorySuccessfulRequest.Setup(usersRepo =>
+                usersRepo.IsUpdatedUserNameUnique(It.IsAny<int>(), It.IsAny<string>()))
+                    .Returns(Task.FromResult(true));
+
+            UsersRepositorySuccessfulRequest.Setup(usersRepo =>
+                usersRepo.IsUpdatedEmailUnique(It.IsAny<int>(), It.IsAny<string>()))
+                    .Returns(Task.FromResult(true));
+
             UsersRepositoryFailedRequest.Setup(usersRepo =>
                 usersRepo.Create(It.IsAny<User>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
@@ -285,6 +293,14 @@ namespace SudokuCollective.Test.MockRepositories
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
                 usersRepo.IsEmailUnique(It.IsAny<string>()))
+                    .Returns(Task.FromResult(false));
+
+            UsersRepositoryFailedRequest.Setup(usersRepo =>
+                usersRepo.IsUpdatedUserNameUnique(It.IsAny<int>(), It.IsAny<string>()))
+                    .Returns(Task.FromResult(false));
+
+            UsersRepositoryFailedRequest.Setup(usersRepo =>
+                usersRepo.IsUpdatedEmailUnique(It.IsAny<int>(), It.IsAny<string>()))
                     .Returns(Task.FromResult(false));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
@@ -422,6 +438,14 @@ namespace SudokuCollective.Test.MockRepositories
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
                 usersRepo.IsEmailUnique(It.IsAny<string>()))
+                    .Returns(Task.FromResult(false));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.IsUpdatedUserNameUnique(It.IsAny<int>(), It.IsAny<string>()))
+                    .Returns(Task.FromResult(true));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.IsUpdatedEmailUnique(It.IsAny<int>(), It.IsAny<string>()))
                     .Returns(Task.FromResult(false));
         }
     }

@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SudokuCollective.Api.Migrations
 {
-    public partial class InitiateDatabase : Migration
+    public partial class InitializeDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,7 +52,10 @@ namespace SudokuCollective.Api.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(nullable: false),
                     AppId = table.Column<int>(nullable: false),
-                    Token = table.Column<string>(nullable: true)
+                    Token = table.Column<string>(nullable: true),
+                    OldEmailAddress = table.Column<string>(nullable: true),
+                    NewEmailAddress = table.Column<string>(nullable: true),
+                    OldEmailAddressConfirmed = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

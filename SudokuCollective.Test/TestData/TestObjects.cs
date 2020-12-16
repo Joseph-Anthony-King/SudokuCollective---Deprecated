@@ -470,5 +470,27 @@ namespace SudokuCollective.Test.TestData
                 DateCreated = DateTime.UtcNow
             };
         }
+
+        public static EmailConfirmation GetNewEmailConfirmation()
+        {
+            return new EmailConfirmation
+            {
+                UserId = 1,
+                AppId = 1,
+                Token = "CC924471-AAB6-4809-8E6D-723AE422CB33"
+            };
+        }
+
+        public static EmailConfirmation GetUpdateEmailConfirmation()
+        {
+            return new EmailConfirmation
+            {
+                UserId = 1,
+                AppId = 1,
+                Token = "CC924471-AAB6-4809-8E6D-723AE422CB33",
+                OldEmailAddress = "TestSuperUser@example.com",
+                NewEmailAddress = "UPDATEDTestSuperUser@example.com"
+            };
+        }
     }
 }

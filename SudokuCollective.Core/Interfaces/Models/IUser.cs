@@ -16,6 +16,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         bool IsActive { get; set; }
         bool IsSuperUser { get; set; }
         bool IsAdmin { get; set; }
+        bool EmailConfirmed { get; set; }
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
         List<Game> Games { get; set; }
