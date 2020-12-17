@@ -543,16 +543,6 @@ namespace SudokuCollective.Data.Services
                             {
                                 user = (User)userResponse.Object;
 
-                                foreach (var userRole in user.Roles)
-                                {
-                                    userRole.Role.Users = new List<UserRole>();
-                                }
-
-                                foreach (var userApp in user.Apps)
-                                {
-                                    userApp.App.Users = new List<UserApp>();
-                                }
-
                                 var emailConfirmation = new EmailConfirmation(
                                     user.Id,
                                     user.Apps.FirstOrDefault().AppId);
@@ -566,22 +556,22 @@ namespace SudokuCollective.Data.Services
                                 var appTitle = string.Empty;
                                 var url = string.Empty;
 
-                                if (user.Apps[0].AppId == 1)
+                                if (user.Apps.FirstOrDefault().AppId == 1)
                                 {
                                     appTitle = "SudokuCollective.com";
                                 }
                                 else
                                 {
-                                    appTitle = user.Apps[0].App.Name;
+                                    appTitle = user.Apps.FirstOrDefault().App.Name;
                                 }
 
                                 if (user.Apps[0].App.InProduction)
                                 {
-                                    url = user.Apps[0].App.LiveUrl;
+                                    url = user.Apps.FirstOrDefault().App.LiveUrl;
                                 }
                                 else
                                 {
-                                    url = user.Apps[0].App.DevUrl;
+                                    url = user.Apps.FirstOrDefault().App.DevUrl;
                                 }
 
                                 html = html.Replace("{{USER_NAME}}", user.UserName);
@@ -591,6 +581,16 @@ namespace SudokuCollective.Data.Services
 
                                 result.ConfirmationEmailSuccessfullySent = emailService
                                     .Send(user.Email, "Please confirm email address", html);
+
+                                foreach (var userRole in user.Roles)
+                                {
+                                    userRole.Role.Users = new List<UserRole>();
+                                }
+
+                                foreach (var userApp in user.Apps)
+                                {
+                                    userApp.App.Users = new List<UserApp>();
+                                }
 
                                 result.Success = userResponse.Success;
                                 result.Message = UsersMessages.UserCreatedMessage;
