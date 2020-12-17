@@ -20,7 +20,8 @@ namespace SudokuCollective.Api.Controllers
         private readonly IAuthenticateService authService;
         private readonly IWebHostEnvironment hostEnvironment;
 
-        public RegisterController(IUsersService usersServ,
+        public RegisterController(
+            IUsersService usersServ,
             IAuthenticateService authServ,
             IWebHostEnvironment environment)
         {

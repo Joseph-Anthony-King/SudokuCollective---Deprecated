@@ -7,6 +7,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SudokuCollective.Api.Controllers
 {
@@ -17,13 +18,16 @@ namespace SudokuCollective.Api.Controllers
     {
         private readonly IUsersService usersService;
         private readonly IAppsService appsService;
+        private readonly IWebHostEnvironment hostEnvironment;
 
         public UsersController(
             IUsersService userServ,
-            IAppsService appsServ)
+            IAppsService appsServ,
+            IWebHostEnvironment environment)
         {
             usersService = userServ;
             appsService = appsServ;
+            hostEnvironment = environment;
         }
 
         // POST: api/users/5
@@ -104,7 +108,35 @@ namespace SudokuCollective.Api.Controllers
                 updateUserRequest.License,
                 updateUserRequest.RequestorId))
             {
-                var result = await usersService.UpdateUser(id, updateUserRequest);
+                string baseUrl;
+
+                if (Request != null)
+                {
+                    baseUrl = Request.Host.ToString();
+                }
+                else
+                {
+                    baseUrl = "https://SudokuCollective.com";
+                }
+
+                string emailtTemplatePath;
+
+                if (!string.IsNullOrEmpty(hostEnvironment.WebRootPath))
+                {
+                    emailtTemplatePath = Path.Combine(hostEnvironment.WebRootPath, "/Content/EmailTemplates/confirm-old-email-inlined.html");
+
+                    emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
+                }
+                else
+                {
+                    emailtTemplatePath = "../../Content/EmailTemplates/email-inlined.html";
+                }
+
+                var result = await usersService.UpdateUser(
+                    id, 
+                    updateUserRequest,
+                    baseUrl,
+                    emailtTemplatePath);
 
                 if (result.Success)
                 {

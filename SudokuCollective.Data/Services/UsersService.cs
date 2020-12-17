@@ -565,7 +565,7 @@ namespace SudokuCollective.Data.Services
                                     appTitle = user.Apps.FirstOrDefault().App.Name;
                                 }
 
-                                if (user.Apps[0].App.InProduction)
+                                if (user.Apps.FirstOrDefault().App.InProduction)
                                 {
                                     url = user.Apps.FirstOrDefault().App.LiveUrl;
                                 }
@@ -648,7 +648,9 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IUserResult> UpdateUser(
             int id, 
-            IUpdateUserRequest request)
+            IUpdateUserRequest request,
+            string baseUrl,
+            string emailtTemplatePath)
         {
             var result = new UserResult();
 
@@ -710,20 +712,86 @@ namespace SudokuCollective.Data.Services
 
                         if (userResponse.Success)
                         {
-                            ((User)userResponse.Object).UserName = request.UserName;
-                            ((User)userResponse.Object).FirstName = request.FirstName;
-                            ((User)userResponse.Object).LastName = request.LastName;
-                            ((User)userResponse.Object).NickName = request.NickName;
-                            ((User)userResponse.Object).Email = request.Email;
-                            ((User)userResponse.Object).DateUpdated = DateTime.UtcNow;
+                            var user = (User)userResponse.Object;
 
-                            var updateUserResponse = await usersRepository.Update((User)userResponse.Object);
+                            user.UserName = request.UserName;
+                            user.FirstName = request.FirstName;
+                            user.LastName = request.LastName;
+                            user.NickName = request.NickName;
+                            user.DateUpdated = DateTime.UtcNow;
+
+                            if (!user.Email.ToLower().Equals(request.Email.ToLower()))
+                            {
+                                user.Email = request.Email;
+
+                                var emailConfirmation = new EmailConfirmation(
+                                    user.Id, 
+                                    request.AppId, 
+                                    user.Email, 
+                                    request.Email);
+
+                                var emailConfirmationResponse = await emailConfirmationsRepository
+                                    .Create(emailConfirmation);
+
+                                var html = File.ReadAllText(emailtTemplatePath);
+                                var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
+                                    baseUrl,
+                                    ((EmailConfirmation)emailConfirmationResponse.Object).Token);
+                                var appTitle = string.Empty;
+                                var url = string.Empty;
+
+                                if (request.AppId == 1)
+                                {
+                                    appTitle = "SudokuCollective.com";
+                                }
+                                else
+                                {
+                                    appTitle = user
+                                        .Apps
+                                        .Where(ua => ua.AppId == request.AppId)
+                                        .Select(ua => ua.App.Name)
+                                        .FirstOrDefault();
+                                }
+
+                                if (user
+                                    .Apps
+                                    .Where(ua => ua.AppId == request.AppId)
+                                    .Select(ua => ua.App.InProduction)
+                                    .FirstOrDefault())
+                                {
+                                    url = user
+                                        .Apps
+                                        .Where(ua => ua.AppId == request.AppId)
+                                        .Select(ua => ua.App.LiveUrl)
+                                        .FirstOrDefault();
+                                }
+                                else
+                                {
+                                    url = user
+                                        .Apps
+                                        .Where(ua => ua.AppId == request.AppId)
+                                        .Select(ua => ua.App.DevUrl)
+                                        .FirstOrDefault();
+                                }
+
+                                html = html.Replace("{{USER_NAME}}", user.UserName);
+                                html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
+                                html = html.Replace("{{APP_TITLE}}", appTitle);
+                                html = html.Replace("{{URL}}", url);
+
+                                result.ConfirmationEmailSuccessfullySent = emailService
+                                    .Send(user.Email, "Please confirm email address", html);
+                            }
+
+                            var updateUserResponse = await usersRepository.Update(user);
 
                             if (updateUserResponse.Success)
                             {
+                                user = (User)updateUserResponse.Object;
+
                                 result.Success = userResponse.Success;
                                 result.Message = UsersMessages.UserUpdatedMessage;
-                                result.User = (User)userResponse.Object;
+                                result.User = user;
 
                                 return result;
                             }
