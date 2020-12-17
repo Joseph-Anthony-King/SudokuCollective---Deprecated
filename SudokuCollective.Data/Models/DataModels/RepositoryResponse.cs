@@ -11,7 +11,6 @@ namespace SudokuCollective.Data.Models.DataModels
         public Exception Exception { get; set; }
         public IEntityBase Object { get; set; }
         public List<IEntityBase> Objects { get; set; }
-        public string Token { get; set; }
 
         public RepositoryResponse()
         {
@@ -19,7 +18,6 @@ namespace SudokuCollective.Data.Models.DataModels
             Exception = null;
             Object = null;
             Objects = null;
-            Token = string.Empty;
         }
     }
 }

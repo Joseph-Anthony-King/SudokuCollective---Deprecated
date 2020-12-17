@@ -24,6 +24,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockUsersRepository MockUsersRepository;
         private MockAppsRepository MockAppsRepository;
         private MockRolesRepository MockRolesRepository;
+        private MockEmailConfirmationsRepository MockEmailConfirmationsRepository;
         private IUsersService sut;
         private IUsersService sutFailure;
         private IUsersService sutEmailFailure;
@@ -38,23 +39,27 @@ namespace SudokuCollective.Test.TestCases.Services
             MockUsersRepository = new MockUsersRepository(context);
             MockAppsRepository = new MockAppsRepository(context);
             MockRolesRepository = new MockRolesRepository(context);
+            MockEmailConfirmationsRepository = new MockEmailConfirmationsRepository(context);
 
             sut = new UsersService(
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             sutFailure = new UsersService(
                 MockUsersRepository.UsersRepositoryFailedRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             sutEmailFailure = new UsersService(
                 MockUsersRepository.UsersRepositoryEmailFailedRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             baseRequest = TestObjects.GetBaseRequest();

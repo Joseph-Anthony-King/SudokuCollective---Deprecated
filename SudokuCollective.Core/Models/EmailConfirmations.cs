@@ -6,12 +6,28 @@ namespace SudokuCollective.Core.Models
 {
     public class EmailConfirmation : IEmailConfirmation
     {
+        #region Fields
+        private string _oldEmailAddress;
+        #endregion
+
         #region Properties
         public int Id { get; set; }
         public int UserId { get; set; }
         public int AppId { get; set; }
         public string Token { get; set; }
-        public string OldEmailAddress { get; set; }
+        public string OldEmailAddress
+        {
+            get
+            {
+                return _oldEmailAddress;
+            }
+
+            set
+            {
+                _oldEmailAddress = value;
+                OldEmailAddressConfirmed = false;
+            }
+        }
         public string NewEmailAddress { get; set; }
         public bool OldEmailAddressConfirmed { get; set; }
         public bool IsUpdate 

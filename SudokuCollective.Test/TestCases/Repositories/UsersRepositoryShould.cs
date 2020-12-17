@@ -92,33 +92,6 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task ConfirmUserEmails()
-        {
-            // Arrange
-            var newUser = TestObjects.GetNewUser();
-            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
-            var userApp = new UserApp
-            {
-                User = newUser,
-                UserId = newUser.Id,
-                App = app,
-                AppId = app.Id
-            };
-
-            newUser.Apps.Add(userApp);
-
-            var response = await sut.Create(newUser);
-            var emailInitiallyUnconfirmed = ((User)response.Object).EmailConfirmed;
-
-            // Act
-            var result = await sut.ConfirmEmail(response.Token);
-
-            Assert.That(emailInitiallyUnconfirmed, Is.False);
-            Assert.That(result.Success, Is.True);
-        }
-
-        [Test]
-        [Category("Repository")]
         public async Task ReturnFalseIfConfirmUserEmailsFails()
         {
             // Arrange

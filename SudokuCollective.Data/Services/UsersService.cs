@@ -25,6 +25,7 @@ namespace SudokuCollective.Data.Services
         private readonly IUsersRepository<User> usersRepository;
         private readonly IAppsRepository<App> appsRepository;
         private readonly IRolesRepository<Role> rolesRepository;
+        private readonly IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepository;
         private readonly IEmailService emailService;
         #endregion
 
@@ -32,12 +33,14 @@ namespace SudokuCollective.Data.Services
         public UsersService(
             IUsersRepository<User> usersRepo,
             IAppsRepository<App> appsRepo,
-            IRolesRepository<Role> rolesApp,
+            IRolesRepository<Role> rolesRepo,
+            IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepo,
             IEmailService emailServ)
         {
             usersRepository = usersRepo;
             appsRepository = appsRepo;
-            rolesRepository = rolesApp;
+            rolesRepository = rolesRepo;
+            emailConfirmationsRepository = emailConfirmationsRepo;
             emailService = emailServ;
         }
         #endregion
@@ -550,10 +553,16 @@ namespace SudokuCollective.Data.Services
                                     userApp.App.Users = new List<UserApp>();
                                 }
 
+                                var emailConfirmation = new EmailConfirmation(
+                                    user.Id,
+                                    user.Apps.FirstOrDefault().AppId);
+
+                                var emailConfirmationResponse = await emailConfirmationsRepository.Create(emailConfirmation);
+
                                 var html = File.ReadAllText(emailtTemplatePath);
                                 var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}", 
                                     baseUrl, 
-                                    userResponse.Token);
+                                    ((EmailConfirmation)emailConfirmationResponse.Object).Token);
                                 var appTitle = string.Empty;
                                 var url = string.Empty;
 

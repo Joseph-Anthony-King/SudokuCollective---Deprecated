@@ -63,7 +63,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task GetAppsById()
+        public async Task GetDifficultiesById()
         {
             // Arrange
 

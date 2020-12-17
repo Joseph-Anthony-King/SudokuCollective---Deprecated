@@ -81,6 +81,7 @@ namespace SudokuCollective.Api
             services.AddScoped<IDifficultiesRepository<Difficulty>, DifficultiesRepository<Difficulty>>();
             services.AddScoped<IRolesRepository<Role>, RolesRepository<Role>>();
             services.AddScoped<ISolutionsRepository<SudokuSolution>, SolutionsRepository<SudokuSolution>>();
+            services.AddScoped<IEmailConfirmationsRepository<EmailConfirmation>, EmailConfirmationsRepository<EmailConfirmation>>();
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IAppsService, AppsService>();

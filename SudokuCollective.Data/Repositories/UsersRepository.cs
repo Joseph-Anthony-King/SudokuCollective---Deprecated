@@ -57,7 +57,7 @@ namespace SudokuCollective.Data.Repositories
                     } 
                 };
 
-                if (entity.Apps[0].AppId == 1)
+                if (entity.Apps.FirstOrDefault().AppId == 1)
                 {
                     var adminRole = await context
                         .Roles
@@ -120,17 +120,8 @@ namespace SudokuCollective.Data.Repositories
 
                 await context.SaveChangesAsync();
 
-                var emailConfirmation = new EmailConfirmation(
-                    entity.Id,
-                    entity.Apps[0].App.Id);
-
-                context.Entry(emailConfirmation).State = EntityState.Added;
-
-                await context.SaveChangesAsync();
-
                 result.Success = true;
                 result.Object = entity;
-                result.Token = emailConfirmation.Token;
 
                 return result;
             }

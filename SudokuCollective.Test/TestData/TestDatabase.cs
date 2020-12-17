@@ -367,6 +367,16 @@ namespace SudokuCollective.Test.TestData
                 await databaseContext.SaveChangesAsync();
             }
 
+            if (await databaseContext.EmailConfirmations.CountAsync() <= 0)
+            {
+                databaseContext.EmailConfirmations.AddRange(
+
+                    new EmailConfirmation(1, 1, 1, "F5D6377E-B170-4335-A425-25066A112987", string.Empty, string.Empty, false)
+                );
+
+                await databaseContext.SaveChangesAsync();
+            }
+
             return databaseContext;
         }
     }
