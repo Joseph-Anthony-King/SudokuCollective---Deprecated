@@ -925,19 +925,17 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> ConfirmEmail(string token)
+        async public Task<IRepositoryResponse> ConfirmEmail(IEmailConfirmation emailConfirmation)
         {
             var result = new RepositoryResponse();
 
             try
             {
-                if (await context.EmailConfirmations.AnyAsync(ec => ec.Token.ToLower().Equals(token.ToLower())))
+                if (await context
+                    .EmailConfirmations
+                    .AnyAsync(ec => ec.Id == emailConfirmation.Id))
                 {
-                    var emailConfirmed = await context
-                        .EmailConfirmations
-                        .FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
-
-                    if (await context.Users.AnyAsync(u => u.Id == emailConfirmed.UserId))
+                    if (await context.Users.AnyAsync(u => u.Id == emailConfirmation.UserId))
                     {
                         var user = await context
                             .Users
@@ -950,7 +948,7 @@ namespace SudokuCollective.Data.Repositories
                             .Include(u => u.Games)
                                 .ThenInclude(g => g.SudokuMatrix)
                                     .ThenInclude(m => m.SudokuCells)
-                            .FirstOrDefaultAsync(u => u.Id == emailConfirmed.UserId);
+                            .FirstOrDefaultAsync(u => u.Id == emailConfirmation.UserId);
 
                         user.DateUpdated = DateTime.UtcNow;
                         user.EmailConfirmed = true;
@@ -976,11 +974,84 @@ namespace SudokuCollective.Data.Repositories
                             }
                         }
 
-                        var emailConfirmation = await context
-                            .EmailConfirmations
-                            .FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
+                        await context.SaveChangesAsync();
 
-                        context.EmailConfirmations.Remove(emailConfirmation);
+                        result.Success = true;
+                        result.Object = user;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
+        async public Task<IRepositoryResponse> UpdateUserEmail(IEmailConfirmation emailConfirmation)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                if (await context
+                    .EmailConfirmations
+                    .AnyAsync(ec => ec.Id == emailConfirmation.Id))
+                {
+                    if (await context.Users.AnyAsync(u => u.Id == emailConfirmation.UserId))
+                    {
+                        var user = await context
+                            .Users
+                            .Include(u => u.Apps)
+                                .ThenInclude(ua => ua.App)
+                            .Include(u => u.Roles)
+                                .ThenInclude(ur => ur.Role)
+                            .Include(u => u.Games)
+                                .ThenInclude(g => g.SudokuSolution)
+                            .Include(u => u.Games)
+                                .ThenInclude(g => g.SudokuMatrix)
+                                    .ThenInclude(m => m.SudokuCells)
+                            .FirstOrDefaultAsync(u => u.Id == emailConfirmation.UserId);
+
+                        user.Email = emailConfirmation.NewEmailAddress;
+                        user.DateUpdated = DateTime.UtcNow;
+
+                        context.Attach(user);
+
+                        foreach (var entry in context.ChangeTracker.Entries())
+                        {
+                            var dbEntry = (IEntityBase)entry.Entity;
+
+                            if (dbEntry is UserApp)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+
+                            if (dbEntry is UserRole)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                // Otherwise do nothing...
+                            }
+                        }
 
                         await context.SaveChangesAsync();
 

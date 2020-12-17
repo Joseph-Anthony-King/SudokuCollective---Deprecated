@@ -97,7 +97,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
 
             // Act
-            var result = await sut.ConfirmEmail(Guid.NewGuid().ToString());
+            var result = await sut.ConfirmEmail(TestObjects.GetNewEmailConfirmation());
 
             Assert.That(result.Success, Is.False);
         }

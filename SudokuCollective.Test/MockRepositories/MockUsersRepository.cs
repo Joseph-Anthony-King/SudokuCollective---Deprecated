@@ -144,7 +144,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.ConfirmEmail(It.IsAny<string>()))
+                usersRepo.ConfirmEmail(It.IsAny<EmailConfirmation>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -265,7 +265,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.ConfirmEmail(It.IsAny<string>()))
+                usersRepo.ConfirmEmail(It.IsAny<IEmailConfirmation>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -410,7 +410,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.ConfirmEmail(It.IsAny<string>()))
+                usersRepo.ConfirmEmail(It.IsAny<IEmailConfirmation>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true

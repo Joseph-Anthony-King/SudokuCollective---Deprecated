@@ -89,7 +89,11 @@ namespace SudokuCollective.Test.MockServices
                 } as IUsersResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.UpdateUser(It.IsAny<int>(), It.IsAny<UpdateUserRequest>()))
+                userService.UpdateUser(
+                    It.IsAny<int>(), 
+                    It.IsAny<UpdateUserRequest>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRespository
@@ -184,13 +188,16 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(usersService =>
-                usersService.ConfirmEmail(It.IsAny<string>()))
+                usersService.ConfirmEmail(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new ConfirmEmailResult()
                 {
                     Success = MockUsersRespository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .ConfirmEmail(It.IsAny<string>())
+                        .ConfirmEmail(It.IsAny<IEmailConfirmation>())
                         .Result
                         .Success,
                     Message = UsersMessages.EmailConfirmedMessage
@@ -249,7 +256,11 @@ namespace SudokuCollective.Test.MockServices
                 } as IUsersResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.UpdateUser(It.IsAny<int>(), It.IsAny<UpdateUserRequest>()))
+                userService.UpdateUser(
+                    It.IsAny<int>(), 
+                    It.IsAny<UpdateUserRequest>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRespository
@@ -344,13 +355,16 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(usersService =>
-                usersService.ConfirmEmail(It.IsAny<string>()))
+                usersService.ConfirmEmail(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new ConfirmEmailResult()
                 {
                     Success = MockUsersRespository
                         .UsersRepositoryFailedRequest
                         .Object
-                        .ConfirmEmail(It.IsAny<string>())
+                        .ConfirmEmail(It.IsAny<IEmailConfirmation>())
                         .Result
                         .Success,
                     Message = UsersMessages.EmailNotConfirmedMessage

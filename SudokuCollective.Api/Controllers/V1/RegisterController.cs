@@ -50,13 +50,13 @@ namespace SudokuCollective.Api.Controllers
 
             if (!string.IsNullOrEmpty(hostEnvironment.WebRootPath))
             {
-                emailtTemplatePath = Path.Combine(hostEnvironment.WebRootPath, "/Content/EmailTemplates/email-inlined.html");
+                emailtTemplatePath = Path.Combine(hostEnvironment.WebRootPath, "/Content/EmailTemplates/create-email-inlined.html");
 
                 emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
             }
             else
             {
-                emailtTemplatePath = "../../Content/EmailTemplates/email-inlined.html";
+                emailtTemplatePath = "../../Content/EmailTemplates/create-email-inlined.html";
             }
 
             var result = await usersService.CreateUser(

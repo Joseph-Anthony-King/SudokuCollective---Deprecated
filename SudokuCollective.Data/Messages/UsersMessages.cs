@@ -35,5 +35,7 @@
         public static string OldPasswordIncorrectMessage = "Old Password Incorrect";
         public static string EmailConfirmedMessage = "Email Confirmed";
         public static string EmailNotConfirmedMessage = "Email Not Confirmed";
+        public static string OldEmailConfirmedMessage = "Old Email Confirmed";
+        public static string OldEmailNotConfirmedMessage = "Old Email Not Confirmed";
     }
 }

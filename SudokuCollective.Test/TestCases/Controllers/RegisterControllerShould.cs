@@ -11,7 +11,6 @@ using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.Controllers;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {

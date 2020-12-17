@@ -130,7 +130,8 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             var baseUrl = "https://example.com";
-            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/email-inlined.html";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/create-email-inlined.html";
 
             // Act
             var result = await sut.CreateUser(registerRequest, baseUrl, html);
@@ -146,9 +147,14 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task ConfirmUserEmail()
         {
             // Arrange
+            var emailConfirmation = context.EmailConfirmations.FirstOrDefault();
+
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
             // Act
-            var result = await sut.ConfirmEmail(Guid.NewGuid().ToString());
+            var result = await sut.ConfirmEmail(emailConfirmation.Token, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -160,9 +166,14 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task NotifyIfConfirmUserEmailFails()
         {
             // Arrange
+            var emailConfirmation = TestObjects.GetNewEmailConfirmation();
+
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
             // Act
-            var result = await sutFailure.ConfirmEmail(Guid.NewGuid().ToString());
+            var result = await sutEmailFailure.ConfirmEmail(emailConfirmation.Token, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -187,6 +198,7 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             var baseUrl = "https://example.com";
+
             var html = "c:/path/to/html";
 
             // Act
@@ -215,6 +227,7 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             var baseUrl = "https://example.com";
+
             var html = "c:/path/to/html";
 
             // Act
@@ -243,7 +256,9 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             var baseUrl = "https://example.com";
+
             var emailMetaData = new EmailMetaData();
+
             var html = "c:/path/to/html";
 
             // Act
@@ -272,6 +287,7 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             var baseUrl = "https://example.com";
+
             var html = "c:/path/to/html";
 
             // Act
@@ -300,8 +316,12 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/create-email-inlined.html";
+
             // Act
-            var result = await sut.UpdateUser(userId, updateUserRequest);
+            var result = await sut.UpdateUser(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -327,8 +347,12 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
             // Act
-            var result = await sutFailure.UpdateUser(userId, updateUserRequest);
+            var result = await sutFailure.UpdateUser(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -353,8 +377,12 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
             // Act
-            var result = await sut.UpdateUser(userId, updateUserRequest);
+            var result = await sut.UpdateUser(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -379,8 +407,12 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
             // Act
-            var result = await sutEmailFailure.UpdateUser(userId, updateUserRequest);
+            var result = await sutEmailFailure.UpdateUser(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -405,8 +437,12 @@ namespace SudokuCollective.Test.TestCases.Services
                 RequestorId = 1
             };
 
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
             // Act
-            var result = await sut.UpdateUser(userId, updateUserRequest);
+            var result = await sut.UpdateUser(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);

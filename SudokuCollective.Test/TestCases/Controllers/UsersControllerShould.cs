@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
+using Moq;
 using NUnit.Framework;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Test.MockServices;
@@ -24,6 +26,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private UpdateUserRequest updateUserRequest;
         private UpdatePasswordRequest updatePasswordRequest;
         private UpdateUserRoleRequest updateUserRoleRequest;
+        private Mock<IWebHostEnvironment> mockWebHostEnvironment;
 
         [SetUp]
         public async Task Setup()
@@ -31,6 +34,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             context = await TestDatabase.GetDatabaseContext();
             mockUsersService = new MockUsersService(context);
             mockAppsService = new MockAppsService(context);
+            mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             baseRequest = new BaseRequest();
 
@@ -65,11 +69,13 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             sutSuccess = new UsersController(
                 mockUsersService.UsersServiceSuccessfulRequest.Object,
-                mockAppsService.AppsServiceSuccessfulRequest.Object);
+                mockAppsService.AppsServiceSuccessfulRequest.Object,
+                mockWebHostEnvironment.Object);
 
             sutFailure = new UsersController(
                 mockUsersService.UsersServiceFailedRequest.Object,
-                mockAppsService.AppsServiceSuccessfulRequest.Object);
+                mockAppsService.AppsServiceSuccessfulRequest.Object,
+                mockWebHostEnvironment.Object);
         }
 
         [Test]

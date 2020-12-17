@@ -1194,47 +1194,229 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IConfirmEmailResult> ConfirmEmail(string code)
+        public async Task<IConfirmEmailResult> ConfirmEmail(
+            string token,
+            string baseUrl,
+            string emailtTemplatePath)
         {
             var result = new ConfirmEmailResult();
 
             try
             {
-                var response = await usersRepository.ConfirmEmail(code);
+                var emailConfirmationResponse = await emailConfirmationsRepository.GetByToken(token);
 
-                if (response.Success)
+                if (emailConfirmationResponse.Success)
                 {
-                    var user = (User)response.Object;
+                    var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.Object;
 
-                    result.Success = response.Success;
-                    result.FirstName = user.FirstName;
-
-                    if (user.Apps[0].AppId == 1)
+                    if (!emailConfirmation.IsUpdate)
                     {
-                        result.AppTitle = "SudokuCollective.com";
+                        var response = await usersRepository.ConfirmEmail(emailConfirmation);
+
+                        if (response.Success)
+                        {
+                            var removeEmailConfirmationResponse = await emailConfirmationsRepository.Delete(emailConfirmation);
+
+                            var user = (User)response.Object;
+
+                            result.Success = response.Success;
+                            result.FirstName = user.FirstName;
+
+                            if (emailConfirmation.AppId == 1)
+                            {
+                                result.AppTitle = "SudokuCollective.com";
+                            }
+                            else
+                            {
+                                result.AppTitle = user
+                                    .Apps
+                                    .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                    .Select(ua => ua.App.Name)
+                                    .FirstOrDefault();
+                            }
+
+                            if (user
+                                .Apps
+                                .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                .Select(ua => ua.App.InProduction)
+                                .FirstOrDefault())
+                            {
+                                result.Url = user
+                                    .Apps
+                                    .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                    .Select(ua => ua.App.LiveUrl)
+                                    .FirstOrDefault();
+                            }
+                            else
+                            {
+                                result.Url = user
+                                    .Apps
+                                    .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                    .Select(ua => ua.App.DevUrl)
+                                    .FirstOrDefault();
+                            }
+
+                            result.Message = UsersMessages.EmailConfirmedMessage;
+
+                            return result;
+                        }
+                        else if (!response.Success && response.Exception != null)
+                        {
+                            result.Success = response.Success;
+                            result.Message = response.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.EmailNotConfirmedMessage;
+
+                            return result;
+                        }
+                    }
+                    else if (emailConfirmation.IsUpdate && !emailConfirmation.OldEmailAddressConfirmed)
+                    {
+                        var response = await usersRepository.UpdateUserEmail(emailConfirmation);
+                        var user = (User)response.Object;
+                        var app = (App)(await appsRepository.GetById(emailConfirmation.AppId)).Object;
+
+                        if (response.Success)
+                        {
+                            var html = File.ReadAllText(emailtTemplatePath);
+                            var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
+                                baseUrl,
+                                emailConfirmation.Token);
+                            var appTitle = string.Empty;
+                            var url = string.Empty;
+
+                            if (emailConfirmation.AppId == 1)
+                            {
+                                appTitle = "SudokuCollective.com";
+                            }
+                            else
+                            {
+                                appTitle = app.Name;
+                            }
+
+                            if (app.InProduction)
+                            {
+                                url = app.LiveUrl;
+                            }
+                            else
+                            {
+                                url = app.DevUrl;
+                            }
+
+                            html = html.Replace("{{USER_NAME}}", user.UserName);
+                            html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
+                            html = html.Replace("{{APP_TITLE}}", appTitle);
+                            html = html.Replace("{{URL}}", url);
+
+                            result.ConfirmationEmailSuccessfullySent = emailService
+                                .Send(user.Email, "Please confirm email address", html);
+
+                            emailConfirmation.OldEmailAddressConfirmed = true;
+
+                            emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.Update(emailConfirmation)).Object;
+
+                            result.Success = response.Success;
+                            result.FirstName = user.FirstName;
+                            result.IsUpdate = emailConfirmation.IsUpdate;
+                            result.AppTitle = appTitle;
+                            result.Url = url;
+                            result.Message = UsersMessages.OldEmailConfirmedMessage;
+
+                            return result;
+                        }
+                        else if (!response.Success && response.Exception != null)
+                        {
+                            result.Success = response.Success;
+                            result.Message = response.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.OldEmailNotConfirmedMessage;
+
+                            return result;
+                        }
                     }
                     else
                     {
-                        result.AppTitle = user.Apps[0].App.Name;
-                    }
+                        var response = await usersRepository.ConfirmEmail(emailConfirmation);
 
-                    if (user.Apps[0].App.InProduction)
-                    {
-                        result.Url = user.Apps[0].App.LiveUrl;
-                    }
-                    else
-                    {
-                        result.Url = user.Apps[0].App.DevUrl;
-                    }
+                        if (response.Success)
+                        {
+                            var removeEmailConfirmationResponse = await emailConfirmationsRepository.Delete(emailConfirmation);
 
-                    result.Message = UsersMessages.EmailConfirmedMessage;
+                            var user = (User)response.Object;
 
-                    return result;
+                            result.Success = response.Success;
+                            result.FirstName = user.FirstName;
+                            result.IsUpdate = emailConfirmation.IsUpdate;
+                            result.NewEmailAddressConfirmed = true;
+
+                            if (emailConfirmation.AppId == 1)
+                            {
+                                result.AppTitle = "SudokuCollective.com";
+                            }
+                            else
+                            {
+                                result.AppTitle = user
+                                    .Apps
+                                    .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                    .Select(ua => ua.App.Name)
+                                    .FirstOrDefault();
+                            }
+
+                            if (user
+                                .Apps
+                                .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                .Select(ua => ua.App.InProduction)
+                                .FirstOrDefault())
+                            {
+                                result.Url = user
+                                    .Apps
+                                    .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                    .Select(ua => ua.App.LiveUrl)
+                                    .FirstOrDefault();
+                            }
+                            else
+                            {
+                                result.Url = user
+                                    .Apps
+                                    .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                    .Select(ua => ua.App.DevUrl)
+                                    .FirstOrDefault();
+                            }
+
+                            result.Message = UsersMessages.EmailConfirmedMessage;
+
+                            return result;
+                        }
+                        else if (!response.Success && response.Exception != null)
+                        {
+                            result.Success = response.Success;
+                            result.Message = response.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.EmailNotConfirmedMessage;
+
+                            return result;
+                        }
+                    }
                 }
-                else if (!response.Success && response.Exception != null)
+                else if (!emailConfirmationResponse.Success && emailConfirmationResponse.Exception != null)
                 {
-                    result.Success = response.Success;
-                    result.Message = response.Exception.Message;
+                    result.Success = emailConfirmationResponse.Success;
+                    result.Message = emailConfirmationResponse.Exception.Message;
 
                     return result;
                 }

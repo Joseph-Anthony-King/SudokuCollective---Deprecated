@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
@@ -101,12 +102,12 @@ namespace SudokuCollective.Api.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(
-            int id, [FromBody] UpdateUserRequest updateUserRequest)
+            int id, [FromBody] UpdateUserRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
-                updateUserRequest.AppId,
-                updateUserRequest.License,
-                updateUserRequest.RequestorId))
+                request.AppId,
+                request.License,
+                request.RequestorId))
             {
                 string baseUrl;
 
@@ -129,12 +130,12 @@ namespace SudokuCollective.Api.Controllers
                 }
                 else
                 {
-                    emailtTemplatePath = "../../Content/EmailTemplates/email-inlined.html";
+                    emailtTemplatePath = "../../Content/EmailTemplates/confirm-old-email-inlined.html";
                 }
 
                 var result = await usersService.UpdateUser(
                     id, 
-                    updateUserRequest,
+                    request,
                     baseUrl,
                     emailtTemplatePath);
 
