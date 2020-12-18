@@ -723,7 +723,7 @@ namespace SudokuCollective.Data.Services
 
                             if (!user.Email.ToLower().Equals(request.Email.ToLower()))
                             {
-                                user.ProcessingEmailUpdate = true;
+                                user.ReceivedRequestToUpdateEmail = true;
 
                                 var emailConfirmation = new EmailConfirmation(
                                     user.Id, 

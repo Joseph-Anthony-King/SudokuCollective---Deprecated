@@ -103,7 +103,7 @@ namespace SudokuCollective.Api.Migrations
                     NickName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: false),
                     EmailConfirmed = table.Column<bool>(nullable: false),
-                    ProcessingEmailUpdate = table.Column<bool>(nullable: false),
+                    ReceivedRequestToUpdateEmail = table.Column<bool>(nullable: false),
                     Password = table.Column<string>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),

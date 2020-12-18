@@ -290,7 +290,7 @@ namespace SudokuCollective.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("ProcessingEmailUpdate")
+                    b.Property<bool>("ReceivedRequestToUpdateEmail")
                         .HasColumnType("boolean");
 
                     b.Property<string>("UserName")

@@ -71,7 +71,7 @@ namespace SudokuCollective.Core.Models
             }
         }
         public bool EmailConfirmed { get; set; }
-        public bool ProcessingEmailUpdate { get; set; }
+        public bool ReceivedRequestToUpdateEmail { get; set; }
         [JsonIgnore]
         [Required]
         public string Password { get; set; }
@@ -191,7 +191,7 @@ namespace SudokuCollective.Core.Models
             NickName = string.Empty;
             Email = string.Empty;
             EmailConfirmed = false;
-            ProcessingEmailUpdate = false;
+            ReceivedRequestToUpdateEmail = false;
             Password = string.Empty;
             DateCreated = DateTime.MinValue;
             DateUpdated = DateTime.MinValue;
@@ -210,7 +210,7 @@ namespace SudokuCollective.Core.Models
             string nickName,
             string email,
             bool emailConfirmed,
-            bool processingEmailUpdate,
+            bool receivedRequestToUpdateEmail,
             string password,
             bool isActive,
             DateTime dateCreated,
@@ -223,7 +223,7 @@ namespace SudokuCollective.Core.Models
             NickName = nickName;
             Email = email;
             EmailConfirmed = emailConfirmed;
-            ProcessingEmailUpdate = processingEmailUpdate;
+            ReceivedRequestToUpdateEmail = receivedRequestToUpdateEmail;
             Password = password;
             IsActive = isActive;
             DateCreated = dateCreated;

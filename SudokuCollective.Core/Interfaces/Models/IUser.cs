@@ -12,12 +12,12 @@ namespace SudokuCollective.Core.Interfaces.Models
         string NickName { get; set; }
         string FullName { get; }
         string Email { get; set; }
-        bool ProcessingEmailUpdate { get; set; }
+        bool EmailConfirmed { get; set; }
+        bool ReceivedRequestToUpdateEmail { get; set; }
         string Password { get; set; }
         bool IsActive { get; set; }
         bool IsSuperUser { get; set; }
         bool IsAdmin { get; set; }
-        bool EmailConfirmed { get; set; }
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
         List<Game> Games { get; set; }

@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201218000735_InitializeDatabase")]
+    [Migration("20201218002550_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -292,7 +292,7 @@ namespace SudokuCollective.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("ProcessingEmailUpdate")
+                    b.Property<bool>("ReceivedRequestToUpdateEmail")
                         .HasColumnType("boolean");
 
                     b.Property<string>("UserName")

@@ -64,6 +64,12 @@
               v-model="user.email"
             ></v-text-field>
             <v-checkbox
+              name="user_receivedRequestToUpdateEmail"
+              label="Received Request to Update Email"
+              v-model="user.receivedRequestToUpdateEmail"
+              disabled
+            ></v-checkbox>
+            <v-checkbox
               name="user_isActive"
               label="Is Active"
               v-model="user.isActive"
