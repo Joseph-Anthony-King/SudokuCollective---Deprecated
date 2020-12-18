@@ -14,6 +14,9 @@ namespace SudokuCollective.Data.Models.DTOModels
         public string NickName { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
+        public bool EmailConfirmed { get; set; }
+        public bool ReceivedRequestToUpdateEmail { get; set; }
+        public bool ReceivedRequestToUpdatePassword { get; set; }
         public bool IsActive { get; set; }
         public bool IsSuperUser { get; set; }
         public bool IsAdmin { get; set; }
@@ -33,6 +36,9 @@ namespace SudokuCollective.Data.Models.DTOModels
             NickName = string.Empty;
             FullName = string.Empty;
             Email = string.Empty;
+            EmailConfirmed = false;
+            ReceivedRequestToUpdateEmail = false;
+            ReceivedRequestToUpdatePassword = false;
             IsActive = false;
             IsSuperUser = false;
             IsAdmin = false;
@@ -52,6 +58,9 @@ namespace SudokuCollective.Data.Models.DTOModels
             NickName = user.NickName;
             FullName = user.FullName;
             Email = user.Email;
+            EmailConfirmed = user.EmailConfirmed;
+            ReceivedRequestToUpdateEmail = user.ReceivedRequestToUpdateEmail;
+            ReceivedRequestToUpdatePassword = user.ReceivedRequestToUpdatePassword;
             IsActive = user.IsActive;
             IsSuperUser = user.IsSuperUser;
             IsAdmin = user.IsAdmin;

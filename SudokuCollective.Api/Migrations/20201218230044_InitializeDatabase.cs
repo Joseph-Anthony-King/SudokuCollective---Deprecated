@@ -20,7 +20,7 @@ namespace SudokuCollective.Api.Migrations
                     DevUrl = table.Column<string>(nullable: true),
                     LiveUrl = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
-                    InProduction = table.Column<bool>(nullable: false),
+                    InDevelopment = table.Column<bool>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false)
                 },

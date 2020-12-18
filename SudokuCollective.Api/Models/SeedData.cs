@@ -155,7 +155,7 @@ namespace SudokuCollective.Api.Models
                             config.GetValue<string>("DefaultAdminApp:DevUrl"),
                             config.GetValue<string>("DefaultAdminApp:LiveUrl"),
                             true,
-                            false,
+                            true,
                             createdDate,
                             DateTime.MinValue)
                     );
@@ -172,7 +172,7 @@ namespace SudokuCollective.Api.Models
                             config.GetValue<string>("DefaultClientApp:DevUrl"),
                             config.GetValue<string>("DefaultClientApp:LiveUrl"),
                             true,
-                            false,
+                            true,
                             createdDate,
                             DateTime.MinValue)
                     );

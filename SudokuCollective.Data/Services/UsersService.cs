@@ -560,25 +560,16 @@ namespace SudokuCollective.Data.Services
                                 var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}", 
                                     baseUrl, 
                                     ((EmailConfirmation)emailConfirmationResponse.Object).Token);
-                                var appTitle = string.Empty;
+                                var appTitle = user.Apps.FirstOrDefault().App.Name;
                                 var url = string.Empty;
 
-                                if (user.Apps.FirstOrDefault().AppId == 1)
-                                {
-                                    appTitle = "SudokuCollective.com";
-                                }
-                                else
-                                {
-                                    appTitle = user.Apps.FirstOrDefault().App.Name;
-                                }
-
-                                if (user.Apps.FirstOrDefault().App.InProduction)
-                                {
-                                    url = user.Apps.FirstOrDefault().App.LiveUrl;
-                                }
-                                else
+                                if (user.Apps.FirstOrDefault().App.InDevelopment)
                                 {
                                     url = user.Apps.FirstOrDefault().App.DevUrl;
+                                }
+                                else
+                                {
+                                    url = user.Apps.FirstOrDefault().App.LiveUrl;
                                 }
 
                                 html = html.Replace("{{USER_NAME}}", user.UserName);
@@ -746,32 +737,23 @@ namespace SudokuCollective.Data.Services
                                 var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
                                     baseUrl,
                                     ((EmailConfirmation)emailConfirmationResponse.Object).Token);
-                                var appTitle = string.Empty;
+                                var appTitle = user
+                                    .Apps
+                                    .Where(ua => ua.AppId == request.AppId)
+                                    .Select(ua => ua.App.Name)
+                                    .FirstOrDefault();
                                 var url = string.Empty;
-
-                                if (request.AppId == 1)
-                                {
-                                    appTitle = "SudokuCollective.com";
-                                }
-                                else
-                                {
-                                    appTitle = user
-                                        .Apps
-                                        .Where(ua => ua.AppId == request.AppId)
-                                        .Select(ua => ua.App.Name)
-                                        .FirstOrDefault();
-                                }
 
                                 if (user
                                     .Apps
                                     .Where(ua => ua.AppId == request.AppId)
-                                    .Select(ua => ua.App.InProduction)
+                                    .Select(ua => ua.App.InDevelopment)
                                     .FirstOrDefault())
                                 {
                                     url = user
                                         .Apps
                                         .Where(ua => ua.AppId == request.AppId)
-                                        .Select(ua => ua.App.LiveUrl)
+                                        .Select(ua => ua.App.DevUrl)
                                         .FirstOrDefault();
                                 }
                                 else
@@ -779,7 +761,7 @@ namespace SudokuCollective.Data.Services
                                     url = user
                                         .Apps
                                         .Where(ua => ua.AppId == request.AppId)
-                                        .Select(ua => ua.App.DevUrl)
+                                        .Select(ua => ua.App.LiveUrl)
                                         .FirstOrDefault();
                                 }
 
@@ -898,25 +880,16 @@ namespace SudokuCollective.Data.Services
                                 var emailConfirmationUrl = string.Format("https://{0}/passwordUpdate/{1}",
                                     baseUrl,
                                     passwordUpdate.Token);
-                                var appTitle = string.Empty;
+                                var appTitle = app.Name;
                                 var url = string.Empty;
 
-                                if (app.Id == 1)
-                                {
-                                    appTitle = "SudokuCollective.com";
-                                }
-                                else
-                                {
-                                    appTitle = app.Name;
-                                }
-
-                                if (app.InProduction)
-                                {
-                                    url = app.LiveUrl;
-                                }
-                                else
+                                if (app.InDevelopment)
                                 {
                                     url = app.DevUrl;
+                                }
+                                else
+                                {
+                                    url = app.LiveUrl;
                                 }
 
                                 html = html.Replace("{{USER_NAME}}", user.UserName);
@@ -1499,29 +1472,22 @@ namespace SudokuCollective.Data.Services
                             result.Success = response.Success;
                             result.UserName = user.UserName;
 
-                            if (emailConfirmation.AppId == 1)
-                            {
-                                result.AppTitle = "SudokuCollective.com";
-                            }
-                            else
-                            {
-                                result.AppTitle = user
-                                    .Apps
-                                    .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                    .Select(ua => ua.App.Name)
-                                    .FirstOrDefault();
-                            }
+                            result.AppTitle = user
+                                .Apps
+                                .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                .Select(ua => ua.App.Name)
+                                .FirstOrDefault();
 
                             if (user
                                 .Apps
                                 .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                .Select(ua => ua.App.InProduction)
+                                .Select(ua => ua.App.InDevelopment)
                                 .FirstOrDefault())
                             {
                                 result.Url = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                    .Select(ua => ua.App.LiveUrl)
+                                    .Select(ua => ua.App.DevUrl)
                                     .FirstOrDefault();
                             }
                             else
@@ -1529,7 +1495,7 @@ namespace SudokuCollective.Data.Services
                                 result.Url = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                    .Select(ua => ua.App.DevUrl)
+                                    .Select(ua => ua.App.LiveUrl)
                                     .FirstOrDefault();
                             }
 
@@ -1564,25 +1530,16 @@ namespace SudokuCollective.Data.Services
                             var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
                                 baseUrl,
                                 emailConfirmation.Token);
-                            var appTitle = string.Empty;
+                            var appTitle = app.Name;
                             var url = string.Empty;
 
-                            if (emailConfirmation.AppId == 1)
-                            {
-                                appTitle = "SudokuCollective.com";
-                            }
-                            else
-                            {
-                                appTitle = app.Name;
-                            }
-
-                            if (app.InProduction)
-                            {
-                                url = app.LiveUrl;
-                            }
-                            else
+                            if (app.InDevelopment)
                             {
                                 url = app.DevUrl;
+                            }
+                            else
+                            {
+                                url = app.LiveUrl;
                             }
 
                             html = html.Replace("{{USER_NAME}}", user.UserName);
@@ -1635,30 +1592,23 @@ namespace SudokuCollective.Data.Services
                             result.UserName = user.UserName;
                             result.IsUpdate = emailConfirmation.IsUpdate;
                             result.NewEmailAddressConfirmed = true;
+                            result.AppTitle = user
+                                .Apps
+                                .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                .Select(ua => ua.App.Name)
+                                .FirstOrDefault();
 
-                            if (emailConfirmation.AppId == 1)
-                            {
-                                result.AppTitle = "SudokuCollective.com";
-                            }
-                            else
-                            {
-                                result.AppTitle = user
-                                    .Apps
-                                    .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                    .Select(ua => ua.App.Name)
-                                    .FirstOrDefault();
-                            }
 
                             if (user
                                 .Apps
                                 .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                .Select(ua => ua.App.InProduction)
+                                .Select(ua => ua.App.InDevelopment)
                                 .FirstOrDefault())
                             {
                                 result.Url = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                    .Select(ua => ua.App.LiveUrl)
+                                    .Select(ua => ua.App.DevUrl)
                                     .FirstOrDefault();
                             }
                             else
@@ -1666,7 +1616,7 @@ namespace SudokuCollective.Data.Services
                                 result.Url = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                    .Select(ua => ua.App.DevUrl)
+                                    .Select(ua => ua.App.LiveUrl)
                                     .FirstOrDefault();
                             }
 

@@ -35,7 +35,7 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<string>("DevUrl")
                         .HasColumnType("text");
 
-                    b.Property<bool>("InProduction")
+                    b.Property<bool>("InDevelopment")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsActive")

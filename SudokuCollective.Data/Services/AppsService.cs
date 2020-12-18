@@ -822,7 +822,7 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).Name = request.Name;
                         ((IApp)getAppResponse.Object).DevUrl = request.DevUrl;
                         ((IApp)getAppResponse.Object).LiveUrl = request.LiveUrl;
-                        ((IApp)getAppResponse.Object).InProduction = request.InProduction;
+                        ((IApp)getAppResponse.Object).InDevelopment = request.InDevelopment;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
                         var updateAppResponse = await appsRepository

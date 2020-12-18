@@ -64,9 +64,21 @@
               v-model="user.email"
             ></v-text-field>
             <v-checkbox
+              name="user_emailConfirmed"
+              label="Email Confirmed"
+              v-model="user.emailConfirmed"
+              disabled
+            ></v-checkbox>
+            <v-checkbox
               name="user_receivedRequestToUpdateEmail"
               label="Received Request to Update Email"
               v-model="user.receivedRequestToUpdateEmail"
+              disabled
+            ></v-checkbox>
+            <v-checkbox
+              name="user_receivedRequestToUpdatePassword"
+              label="Received Request to Update Password"
+              v-model="user.receivedRequestToUpdatePassword"
               disabled
             ></v-checkbox>
             <v-checkbox

@@ -32,7 +32,7 @@ namespace SudokuCollective.Api.Controllers
                     UserId = result.User.Id,
                     UserName = result.User.UserName,
                     AppTitle = result.App.Name,
-                    Url = result.App.InProduction ? result.App.LiveUrl : result.App.DevUrl
+                    Url = result.App.InDevelopment ? result.App.DevUrl : result.App.LiveUrl
                 };
 
                 return View(passwordUpdate);

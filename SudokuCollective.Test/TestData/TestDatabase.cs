@@ -135,7 +135,7 @@ namespace SudokuCollective.Test.TestData
                         "https://localhost:4200",
                         "https://testapp.com",
                         true,
-                        false,
+                        true,
                         dateCreated,
                         DateTime.MinValue),
                     new App(
@@ -146,7 +146,7 @@ namespace SudokuCollective.Test.TestData
                         "https://localhost:8080",
                         "https://testapp2.com",
                         true,
-                        false,
+                        true,
                         dateCreated,
                         DateTime.MinValue)
                 );

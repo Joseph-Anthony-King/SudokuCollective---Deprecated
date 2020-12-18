@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201218184658_InitializeDatabase")]
+    [Migration("20201218230044_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<string>("DevUrl")
                         .HasColumnType("text");
 
-                    b.Property<bool>("InProduction")
+                    b.Property<bool>("InDevelopment")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsActive")
