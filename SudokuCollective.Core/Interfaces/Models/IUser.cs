@@ -12,6 +12,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         string NickName { get; set; }
         string FullName { get; }
         string Email { get; set; }
+        bool ProcessingEmailUpdate { get; set; }
         string Password { get; set; }
         bool IsActive { get; set; }
         bool IsSuperUser { get; set; }

@@ -40,8 +40,9 @@ namespace SudokuCollective.Test.MockRepositories
                             "User 3",
                             "Test User 3",
                             "TestUser3@example.com",
-                            "password",
                             true,
+                            false,
+                            "password",
                             true,
                             todaysDate,
                             DateTime.MinValue)
@@ -315,9 +316,10 @@ namespace SudokuCollective.Test.MockRepositories
                             "User 3",
                             "Test User 3",
                             "TestUser3@example.com",
+                            false,
+                            false,
                             "password",
                             true,
-                            false,
                             todaysDate,
                             DateTime.MinValue)
                     } as IRepositoryResponse));

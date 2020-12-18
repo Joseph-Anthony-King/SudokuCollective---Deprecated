@@ -29,7 +29,7 @@ namespace SudokuCollective.Core.Models
             }
         }
         public string NewEmailAddress { get; set; }
-        public bool OldEmailAddressConfirmed { get; set; }
+        public bool? OldEmailAddressConfirmed { get; set; }
         public bool IsUpdate 
         {
             get
@@ -55,7 +55,7 @@ namespace SudokuCollective.Core.Models
             Token = string.Empty;
             OldEmailAddress = string.Empty;
             NewEmailAddress = string.Empty;
-            OldEmailAddressConfirmed = false;
+            OldEmailAddressConfirmed = null;
         }
 
         public EmailConfirmation(int userId, int appId) : base()
@@ -72,6 +72,7 @@ namespace SudokuCollective.Core.Models
             Token = Guid.NewGuid().ToString();
             OldEmailAddress = oldEmailAddress;
             NewEmailAddress = newEmailAddress;
+            OldEmailAddressConfirmed = false;
         }
 
         [JsonConstructor]

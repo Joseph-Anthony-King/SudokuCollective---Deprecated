@@ -55,7 +55,7 @@ namespace SudokuCollective.Api.Migrations
                     Token = table.Column<string>(nullable: true),
                     OldEmailAddress = table.Column<string>(nullable: true),
                     NewEmailAddress = table.Column<string>(nullable: true),
-                    OldEmailAddressConfirmed = table.Column<bool>(nullable: false)
+                    OldEmailAddressConfirmed = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,9 +102,10 @@ namespace SudokuCollective.Api.Migrations
                     LastName = table.Column<string>(nullable: false),
                     NickName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: false),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    ProcessingEmailUpdate = table.Column<bool>(nullable: false),
                     Password = table.Column<string>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false)
                 },

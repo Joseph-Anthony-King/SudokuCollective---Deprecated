@@ -525,9 +525,10 @@ namespace SudokuCollective.Data.Services
                                 request.LastName,
                                 request.NickName,
                                 request.Email,
+                                false,
+                                false,
                                 BCrypt.Net.BCrypt.HashPassword(request.Password, salt),
                                 true,
-                                false,
                                 DateTime.UtcNow,
                                 DateTime.MinValue);
 
@@ -722,7 +723,7 @@ namespace SudokuCollective.Data.Services
 
                             if (!user.Email.ToLower().Equals(request.Email.ToLower()))
                             {
-                                user.Email = request.Email;
+                                user.ProcessingEmailUpdate = true;
 
                                 var emailConfirmation = new EmailConfirmation(
                                     user.Id, 
@@ -1220,7 +1221,7 @@ namespace SudokuCollective.Data.Services
                             var user = (User)response.Object;
 
                             result.Success = response.Success;
-                            result.FirstName = user.FirstName;
+                            result.UserName = user.UserName;
 
                             if (emailConfirmation.AppId == 1)
                             {
@@ -1275,7 +1276,7 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
                     }
-                    else if (emailConfirmation.IsUpdate && !emailConfirmation.OldEmailAddressConfirmed)
+                    else if (emailConfirmation.IsUpdate && !(bool)emailConfirmation.OldEmailAddressConfirmed)
                     {
                         var response = await usersRepository.UpdateUserEmail(emailConfirmation);
                         var user = (User)response.Object;
@@ -1321,7 +1322,7 @@ namespace SudokuCollective.Data.Services
                             emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.Update(emailConfirmation)).Object;
 
                             result.Success = response.Success;
-                            result.FirstName = user.FirstName;
+                            result.UserName = user.UserName;
                             result.IsUpdate = emailConfirmation.IsUpdate;
                             result.AppTitle = appTitle;
                             result.Url = url;
@@ -1355,7 +1356,7 @@ namespace SudokuCollective.Data.Services
                             var user = (User)response.Object;
 
                             result.Success = response.Success;
-                            result.FirstName = user.FirstName;
+                            result.UserName = user.UserName;
                             result.IsUpdate = emailConfirmation.IsUpdate;
                             result.NewEmailAddressConfirmed = true;
 

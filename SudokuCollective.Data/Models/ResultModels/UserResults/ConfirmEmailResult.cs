@@ -6,7 +6,7 @@ namespace SudokuCollective.Data.Models.ResultModels
     {
         public bool Success { get; set; }
         public string Message { get; set; }
-        public string FirstName { get; set; }
+        public string UserName { get; set; }
         public string AppTitle { get; set; }
         public string Url { get; set; }
         public bool? IsUpdate { get; set; }
@@ -15,7 +15,7 @@ namespace SudokuCollective.Data.Models.ResultModels
 
         public ConfirmEmailResult() : base()
         {
-            FirstName = string.Empty;
+            UserName = string.Empty;
             AppTitle = string.Empty;
             Url = string.Empty;
             IsUpdate = null;

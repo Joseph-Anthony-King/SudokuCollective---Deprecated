@@ -7,7 +7,7 @@
         string Token { get; set; }
         string OldEmailAddress { get; set; }
         string NewEmailAddress { get; set; }
-        bool OldEmailAddressConfirmed { get; set; }
+        bool? OldEmailAddressConfirmed { get; set; }
         bool IsUpdate { get; }
     }
 }

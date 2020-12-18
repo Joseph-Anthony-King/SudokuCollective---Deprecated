@@ -70,6 +70,8 @@ namespace SudokuCollective.Core.Models
                 EmailConfirmed = false;
             }
         }
+        public bool EmailConfirmed { get; set; }
+        public bool ProcessingEmailUpdate { get; set; }
         [JsonIgnore]
         [Required]
         public string Password { get; set; }
@@ -125,7 +127,6 @@ namespace SudokuCollective.Core.Models
                 _isAdmin = value;
             }
         }
-        public bool EmailConfirmed { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public virtual List<Game> Games
@@ -189,11 +190,12 @@ namespace SudokuCollective.Core.Models
             LastName = string.Empty;
             NickName = string.Empty;
             Email = string.Empty;
+            EmailConfirmed = false;
+            ProcessingEmailUpdate = false;
             Password = string.Empty;
             DateCreated = DateTime.MinValue;
             DateUpdated = DateTime.MinValue;
             IsActive = false;
-            EmailConfirmed = false;
             Games = new List<Game>();
             Roles = new List<UserRole>();
             Apps = new List<UserApp>();
@@ -207,9 +209,10 @@ namespace SudokuCollective.Core.Models
             string lastName,
             string nickName,
             string email,
+            bool emailConfirmed,
+            bool processingEmailUpdate,
             string password,
             bool isActive,
-            bool emailConfirmed,
             DateTime dateCreated,
             DateTime dateUpdated)
         {
@@ -219,9 +222,10 @@ namespace SudokuCollective.Core.Models
             LastName = lastName;
             NickName = nickName;
             Email = email;
+            EmailConfirmed = emailConfirmed;
+            ProcessingEmailUpdate = processingEmailUpdate;
             Password = password;
             IsActive = isActive;
-            EmailConfirmed = emailConfirmed;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
         }

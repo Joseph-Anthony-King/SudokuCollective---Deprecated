@@ -1030,6 +1030,7 @@ namespace SudokuCollective.Data.Repositories
                             .FirstOrDefaultAsync(u => u.Id == emailConfirmation.UserId);
 
                         user.Email = emailConfirmation.NewEmailAddress;
+                        user.ProcessingEmailUpdate = false;
                         user.DateUpdated = DateTime.UtcNow;
 
                         context.Attach(user);

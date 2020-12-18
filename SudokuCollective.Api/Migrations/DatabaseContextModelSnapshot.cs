@@ -99,7 +99,7 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<string>("OldEmailAddress")
                         .HasColumnType("text");
 
-                    b.Property<bool>("OldEmailAddressConfirmed")
+                    b.Property<bool?>("OldEmailAddressConfirmed")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Token")
@@ -289,6 +289,9 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("ProcessingEmailUpdate")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
                         .IsRequired()

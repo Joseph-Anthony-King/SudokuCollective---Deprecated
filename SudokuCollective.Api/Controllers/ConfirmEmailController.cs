@@ -57,7 +57,7 @@ namespace SudokuCollective.Api.Controllers
             {
                 var confirmEmailModel = new ConfirmEmail
                 {
-                    FirstName = result.FirstName,
+                    UserName = result.UserName,
                     AppTitle = result.AppTitle,
                     Url = result.Url,
                     IsUpdate = result.IsUpdate != null && (bool)result.IsUpdate,

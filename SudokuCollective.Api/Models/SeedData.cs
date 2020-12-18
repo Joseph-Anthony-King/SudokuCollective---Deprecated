@@ -110,8 +110,9 @@ namespace SudokuCollective.Api.Models
                             config.GetValue<string>("DefaultUserAccounts:SuperUser:LastName"),
                             config.GetValue<string>("DefaultUserAccounts:SuperUser:NickName"),
                             config.GetValue<string>("DefaultUserAccounts:SuperUser:Email"),
-                            BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt)),
                             true,
+                            false,
+                            BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt)),
                             true,
                             createdDate,
                             DateTime.MinValue)
@@ -128,8 +129,9 @@ namespace SudokuCollective.Api.Models
                             config.GetValue<string>("DefaultUserAccounts:AdminUser:LastName"),
                             config.GetValue<string>("DefaultUserAccounts:AdminUser:NickName"),
                             config.GetValue<string>("DefaultUserAccounts:AdminUser:Email"),
-                            BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt)),
                             true,
+                            false,
+                            BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt)),
                             true,
                             createdDate,
                             DateTime.MinValue)
