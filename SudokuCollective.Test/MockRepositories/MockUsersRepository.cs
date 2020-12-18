@@ -43,6 +43,7 @@ namespace SudokuCollective.Test.MockRepositories
                             true,
                             false,
                             "password",
+                            false,
                             true,
                             todaysDate,
                             DateTime.MinValue)
@@ -319,6 +320,7 @@ namespace SudokuCollective.Test.MockRepositories
                             false,
                             false,
                             "password",
+                            false,
                             true,
                             todaysDate,
                             DateTime.MinValue)

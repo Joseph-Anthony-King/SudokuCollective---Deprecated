@@ -70,6 +70,7 @@ namespace SudokuCollective.Test.TestData
                         true,
                         false,
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
+                        false,
                         true,
                         dateCreated,
                         DateTime.MinValue),
@@ -84,6 +85,7 @@ namespace SudokuCollective.Test.TestData
                         true,
                         false,
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
+                        false,
                         true,
                         dateCreated,
                         DateTime.MinValue),
@@ -98,6 +100,7 @@ namespace SudokuCollective.Test.TestData
                         true,
                         false,
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
+                        false,
                         true,
                         dateCreated,
                         DateTime.MinValue)
@@ -374,7 +377,7 @@ namespace SudokuCollective.Test.TestData
             {
                 databaseContext.EmailConfirmations.AddRange(
 
-                    new EmailConfirmation(1, 1, 1, "F5D6377E-B170-4335-A425-25066A112987", string.Empty, string.Empty, false)
+                    new EmailConfirmation(1, 1, 1, "F5D6377E-B170-4335-A425-25066A112987", string.Empty, string.Empty, false, DateTime.UtcNow)
                 );
 
                 await databaseContext.SaveChangesAsync();

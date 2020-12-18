@@ -75,6 +75,7 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         [Required]
         public string Password { get; set; }
+        public bool ReceivedRequestToUpdatePassword { get; set; }
         public bool IsActive { get; set; }
         public bool IsSuperUser
         {
@@ -175,6 +176,7 @@ namespace SudokuCollective.Core.Models
             FirstName = firstName;
             LastName = lastName;
             Password = password;
+            ReceivedRequestToUpdatePassword = false;
             DateCreated = dateUserCreated;
             IsActive = true;
             IsSuperUser = false;
@@ -193,6 +195,7 @@ namespace SudokuCollective.Core.Models
             EmailConfirmed = false;
             ReceivedRequestToUpdateEmail = false;
             Password = string.Empty;
+            ReceivedRequestToUpdatePassword = false;
             DateCreated = DateTime.MinValue;
             DateUpdated = DateTime.MinValue;
             IsActive = false;
@@ -212,6 +215,7 @@ namespace SudokuCollective.Core.Models
             bool emailConfirmed,
             bool receivedRequestToUpdateEmail,
             string password,
+            bool receivedRequestToUpdatePassword,
             bool isActive,
             DateTime dateCreated,
             DateTime dateUpdated)
@@ -225,6 +229,7 @@ namespace SudokuCollective.Core.Models
             EmailConfirmed = emailConfirmed;
             ReceivedRequestToUpdateEmail = receivedRequestToUpdateEmail;
             Password = password;
+            ReceivedRequestToUpdatePassword = receivedRequestToUpdatePassword;
             IsActive = isActive;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;

@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201218002550_InitializeDatabase")]
+    [Migration("20201218010445_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,9 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<int>("AppId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("NewEmailAddress")
                         .HasColumnType("text");
 
@@ -157,6 +160,30 @@ namespace SudokuCollective.Api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("SudokuCollective.Core.Models.PasswordUpdate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AppId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordUpdates");
                 });
 
             modelBuilder.Entity("SudokuCollective.Core.Models.Role", b =>
@@ -293,6 +320,9 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("ReceivedRequestToUpdateEmail")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ReceivedRequestToUpdatePassword")
                         .HasColumnType("boolean");
 
                     b.Property<string>("UserName")

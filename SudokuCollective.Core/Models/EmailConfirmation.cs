@@ -44,6 +44,7 @@ namespace SudokuCollective.Core.Models
                 }
             }
         }
+        public DateTime DateCreated { get; set; }
         #endregion
 
         #region Constructors
@@ -56,6 +57,7 @@ namespace SudokuCollective.Core.Models
             OldEmailAddress = string.Empty;
             NewEmailAddress = string.Empty;
             OldEmailAddressConfirmed = null;
+            DateCreated = DateTime.MinValue;
         }
 
         public EmailConfirmation(int userId, int appId) : base()
@@ -63,6 +65,7 @@ namespace SudokuCollective.Core.Models
             UserId = userId;
             AppId = appId;
             Token = Guid.NewGuid().ToString();
+            DateCreated = DateTime.UtcNow;
         }
 
         public EmailConfirmation(int userId, int appId, string oldEmailAddress, string newEmailAddress) : base()
@@ -73,6 +76,7 @@ namespace SudokuCollective.Core.Models
             OldEmailAddress = oldEmailAddress;
             NewEmailAddress = newEmailAddress;
             OldEmailAddressConfirmed = false;
+            DateCreated = DateTime.UtcNow;
         }
 
         [JsonConstructor]
@@ -83,7 +87,8 @@ namespace SudokuCollective.Core.Models
             string token,
             string oldEmailAddress,
             string newEmailAddress,
-            bool oldEmailAddressConfirmed)
+            bool oldEmailAddressConfirmed,
+            DateTime dateCreated)
         {
             Id = id;
             UserId = userId;
@@ -92,6 +97,7 @@ namespace SudokuCollective.Core.Models
             OldEmailAddress = oldEmailAddress;
             NewEmailAddress = newEmailAddress;
             OldEmailAddressConfirmed = oldEmailAddressConfirmed;
+            DateCreated = dateCreated;
         }
         #endregion
     }

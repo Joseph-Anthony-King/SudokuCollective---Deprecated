@@ -55,11 +55,28 @@ namespace SudokuCollective.Api.Migrations
                     Token = table.Column<string>(nullable: true),
                     OldEmailAddress = table.Column<string>(nullable: true),
                     NewEmailAddress = table.Column<string>(nullable: true),
-                    OldEmailAddressConfirmed = table.Column<bool>(nullable: true)
+                    OldEmailAddressConfirmed = table.Column<bool>(nullable: true),
+                    DateCreated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmailConfirmations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PasswordUpdates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(nullable: false),
+                    AppId = table.Column<int>(nullable: false),
+                    Token = table.Column<string>(nullable: true),
+                    DateCreated = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PasswordUpdates", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,6 +122,7 @@ namespace SudokuCollective.Api.Migrations
                     EmailConfirmed = table.Column<bool>(nullable: false),
                     ReceivedRequestToUpdateEmail = table.Column<bool>(nullable: false),
                     Password = table.Column<string>(nullable: false),
+                    ReceivedRequestToUpdatePassword = table.Column<bool>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false)
@@ -316,6 +334,9 @@ namespace SudokuCollective.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Games");
+
+            migrationBuilder.DropTable(
+                name: "PasswordUpdates");
 
             migrationBuilder.DropTable(
                 name: "SudokuCells");

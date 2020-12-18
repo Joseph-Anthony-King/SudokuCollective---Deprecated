@@ -1,4 +1,6 @@
-﻿namespace SudokuCollective.Core.Interfaces.Models
+﻿using System;
+
+namespace SudokuCollective.Core.Interfaces.Models
 {
     public interface IEmailConfirmation : IEntityBase
     {
@@ -9,5 +11,6 @@
         string NewEmailAddress { get; set; }
         bool? OldEmailAddressConfirmed { get; set; }
         bool IsUpdate { get; }
+        DateTime DateCreated { get; set; }
     }
 }

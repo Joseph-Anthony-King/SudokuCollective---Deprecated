@@ -113,6 +113,7 @@ namespace SudokuCollective.Api.Models
                             true,
                             false,
                             BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt)),
+                            false,
                             true,
                             createdDate,
                             DateTime.MinValue)
@@ -132,6 +133,7 @@ namespace SudokuCollective.Api.Models
                             true,
                             false,
                             BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt)),
+                            false,
                             true,
                             createdDate,
                             DateTime.MinValue)

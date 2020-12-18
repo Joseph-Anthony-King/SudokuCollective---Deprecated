@@ -528,6 +528,7 @@ namespace SudokuCollective.Data.Services
                                 false,
                                 false,
                                 BCrypt.Net.BCrypt.HashPassword(request.Password, salt),
+                                false,
                                 true,
                                 DateTime.UtcNow,
                                 DateTime.MinValue);
@@ -844,7 +845,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> UpdatePassword(int id, IUpdatePasswordRequest request)
+        public async Task<IBaseResult> UpdatePassword(int id, Core.Interfaces.APIModels.RequestModels.IUpdatePasswordRequest request)
         {
             var result = new BaseResult();
             var salt = BCrypt.Net.BCrypt.GenerateSalt();

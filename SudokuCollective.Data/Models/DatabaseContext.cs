@@ -31,6 +31,7 @@ namespace SudokuCollective.Data.Models
         public DbSet<App> Apps { get; set; }
         public DbSet<UserApp> UsersApps { get; set; }
         public DbSet<EmailConfirmation> EmailConfirmations { get; set; }
+        public DbSet<PasswordUpdate> PasswordUpdates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -239,6 +240,9 @@ namespace SudokuCollective.Data.Models
 
             modelBuilder.Entity<EmailConfirmation>()
                 .Ignore(ec => ec.IsUpdate);
+
+            modelBuilder.Entity<PasswordUpdate>()
+                .HasKey(pu => pu.Id);
         }
     }
 }
