@@ -59,9 +59,14 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task GetEmailConfirmationsById()
         {
             // Arrange
+            var token = context
+                .EmailConfirmations
+                .Where(ec => ec.Id == 1)
+                .Select(ec => ec.Token)
+                .FirstOrDefault();
 
             // Act
-            var result = await sut.GetById(1);
+            var result = await sut.Get(token);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -73,9 +78,10 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfGetByIdFails()
         {
             // Arrange
+            var token = Guid.NewGuid().ToString();
 
             // Act
-            var result = await sut.GetById(7);
+            var result = await sut.Get(token);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -90,7 +96,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             var token = context.EmailConfirmations.Select(ec => ec.Token).FirstOrDefault();
 
             // Act
-            var result = await sut.GetByToken(token);
+            var result = await sut.Get(token);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -104,7 +110,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
 
             // Act
-            var result = await sut.GetByToken(Guid.NewGuid().ToString());
+            var result = await sut.Get(Guid.NewGuid().ToString());
 
             // Assert
             Assert.That(result.Success, Is.False);

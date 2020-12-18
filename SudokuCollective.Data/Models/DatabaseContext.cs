@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SudokuCollective.Core.Models;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace SudokuCollective.Data.Models
 {
@@ -35,11 +36,17 @@ namespace SudokuCollective.Data.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var intListConverter = new ValueConverter<List<int>, string>(
+            var valueConverter = new ValueConverter<List<int>, string>(
                 v => string.Join(",", v),
                 v => v.Split(",", StringSplitOptions.RemoveEmptyEntries)
                     .Select(val => int.Parse(val))
                     .ToList()
+            );
+
+            var valueComparer = new ValueComparer<List<int>>(
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                c => c.ToList()
             );
 
             modelBuilder.UseIdentityColumns();
@@ -200,7 +207,9 @@ namespace SudokuCollective.Data.Models
 
             modelBuilder.Entity<SudokuSolution>()
                 .Property(solution => solution.SolutionList)
-                .HasConversion(intListConverter);
+                .HasConversion(valueConverter)
+                .Metadata
+                .SetValueComparer(valueComparer);
 
             modelBuilder.Entity<SudokuSolution>()
                 .Ignore(solution => solution.FirstRow)

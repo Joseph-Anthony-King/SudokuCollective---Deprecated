@@ -8,7 +8,7 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.RequestModels;
 
-namespace SudokuCollective.Api.Controllers
+namespace SudokuCollective.Api.V1.Controllers
 {
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]

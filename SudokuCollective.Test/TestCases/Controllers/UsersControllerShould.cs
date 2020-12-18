@@ -7,7 +7,7 @@ using NUnit.Framework;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
-using SudokuCollective.Api.Controllers;
+using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.PageModels;
@@ -52,11 +52,9 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             updatePasswordRequest = new UpdatePasswordRequest()
             {
+                UserId = 1,
                 OldPassword = "password1",
-                NewPassword = "password2",
-                License = TestObjects.GetLicense(),
-                RequestorId = 1,
-                PageListModel = new PageListModel()
+                NewPassword = "password2"
             };
 
             updateUserRoleRequest = new UpdateUserRoleRequest()
@@ -191,16 +189,16 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public void SuccessfullyUpdateUsersPasswords()
         {
             // Arrange
-            int userId = 1;
+            var updatePasswordRequest = TestObjects.GetRequestPasswordUpdateRequest();
 
             // Act
-            var result = sutSuccess.UpdatePassword(userId, updatePasswordRequest);
+            var result = sutSuccess.RequestPasswordUpdate(updatePasswordRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Password Updated"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Processed Password Request"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -209,16 +207,16 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public void IssueErrorAndMessageShouldUpdateUsersPasswordsFail()
         {
             // Arrange
-            int userId = 1;
+            var updatePasswordRequest = TestObjects.GetRequestPasswordUpdateRequest();
 
             // Act
-            var result = sutFailure.UpdatePassword(userId, updatePasswordRequest);
+            var result = sutFailure.RequestPasswordUpdate(updatePasswordRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Password Not Updated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Unable To Process Password Request"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 

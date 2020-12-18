@@ -492,5 +492,14 @@ namespace SudokuCollective.Test.TestData
                 NewEmailAddress = "UPDATEDTestSuperUser@example.com"
             };
         }
+
+        public static RequestPasswordUpdateRequest GetRequestPasswordUpdateRequest()
+        {
+            return new RequestPasswordUpdateRequest
+            {
+                License = "03C0D43F-3AD8-490A-A131-F73C81FE02C0",
+                Email = "TestUser@example.com"
+            };
+        }
     }
 }

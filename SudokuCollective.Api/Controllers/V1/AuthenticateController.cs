@@ -7,7 +7,7 @@ using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.TokenModels;
 using SudokuCollective.Data.Models.ResultModels;
 
-namespace SudokuCollective.Api.Controllers
+namespace SudokuCollective.Api.V1.Controllers
 {
     [Authorize]
     [Route("api/v1/[controller]")]

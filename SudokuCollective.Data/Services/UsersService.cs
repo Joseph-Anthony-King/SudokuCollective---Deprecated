@@ -26,6 +26,7 @@ namespace SudokuCollective.Data.Services
         private readonly IAppsRepository<App> appsRepository;
         private readonly IRolesRepository<Role> rolesRepository;
         private readonly IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepository;
+        private readonly IPasswordUpdatesRepository<PasswordUpdate> passwordUpdatesRepository;
         private readonly IEmailService emailService;
         #endregion
 
@@ -35,12 +36,14 @@ namespace SudokuCollective.Data.Services
             IAppsRepository<App> appsRepo,
             IRolesRepository<Role> rolesRepo,
             IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepo,
+            IPasswordUpdatesRepository<PasswordUpdate> passwordUpdatesRepo,
             IEmailService emailServ)
         {
             usersRepository = usersRepo;
             appsRepository = appsRepo;
             rolesRepository = rolesRepo;
             emailConfirmationsRepository = emailConfirmationsRepo;
+            passwordUpdatesRepository = passwordUpdatesRepo;
             emailService = emailServ;
         }
         #endregion
@@ -549,6 +552,8 @@ namespace SudokuCollective.Data.Services
                                     user.Id,
                                     user.Apps.FirstOrDefault().AppId);
 
+                                emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
+
                                 var emailConfirmationResponse = await emailConfirmationsRepository.Create(emailConfirmation);
 
                                 var html = File.ReadAllText(emailtTemplatePath);
@@ -732,6 +737,8 @@ namespace SudokuCollective.Data.Services
                                     user.Email, 
                                     request.Email);
 
+                                emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
+
                                 var emailConfirmationResponse = await emailConfirmationsRepository
                                     .Create(emailConfirmation);
 
@@ -845,47 +852,105 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> UpdatePassword(int id, Core.Interfaces.APIModels.RequestModels.IUpdatePasswordRequest request)
+        public async Task<IBaseResult> RequestPasswordUpdate(
+            IRequestPasswordUpdateRequest request,
+            string baseUrl,
+            string emailtTemplatePath)
         {
             var result = new BaseResult();
-            var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
             try
             {
-                if (await usersRepository.HasEntity(id))
+                var appResult = await appsRepository.GetByLicense(request.License);
+
+                if (appResult.Success)
                 {
-                    var userResponse = await usersRepository.GetById(id, true);
+                    var userResult = await usersRepository.GetByEmail(request.Email);
 
-                    if (userResponse.Success)
+                    if (userResult.Success)
                     {
-                        if (BCrypt.Net.BCrypt.Verify(request.OldPassword, ((IUser)userResponse.Object).Password))
+                        var app = (App)appResult.Object;
+                        var user = (User)userResult.Object;
+
+                        if (user.Apps.Any(ua => ua.AppId == app.Id))
                         {
-                            ((User)userResponse.Object).Password = BCrypt.Net.BCrypt
-                                    .HashPassword(request.NewPassword, salt);
-
-
-                            ((User)userResponse.Object).DateUpdated = DateTime.UtcNow;
-
-                            var updateUserResponse = await usersRepository.Update((User)userResponse.Object);
-
-                            if (updateUserResponse.Success)
+                            if (!user.EmailConfirmed)
                             {
-                                result.Success = userResponse.Success;
-                                result.Message = UsersMessages.PasswordUpdatedMessage;
+                                result.Success = false;
+                                result.Message = UsersMessages.UserEmailNotConfirmed;
 
                                 return result;
                             }
-                            else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
+
+                            var passwordUpdate = new PasswordUpdate(user.Id, app.Id);
+
+                            passwordUpdate = await EnsurePasswordUpdateTokenIsUnique(passwordUpdate);
+
+                            var passwordUpdateResult = await passwordUpdatesRepository.Create(passwordUpdate);
+
+                            if (passwordUpdateResult.Success)
                             {
-                                result.Success = userResponse.Success;
-                                result.Message = userResponse.Exception.Message;
+                                user.ReceivedRequestToUpdatePassword = true;
+
+                                user = (User)(await usersRepository.Update(user)).Object;
+
+                                var html = File.ReadAllText(emailtTemplatePath);
+                                var emailConfirmationUrl = string.Format("https://{0}/passwordUpdate/{1}",
+                                    baseUrl,
+                                    passwordUpdate.Token);
+                                var appTitle = string.Empty;
+                                var url = string.Empty;
+
+                                if (app.Id == 1)
+                                {
+                                    appTitle = "SudokuCollective.com";
+                                }
+                                else
+                                {
+                                    appTitle = app.Name;
+                                }
+
+                                if (app.InProduction)
+                                {
+                                    url = app.LiveUrl;
+                                }
+                                else
+                                {
+                                    url = app.DevUrl;
+                                }
+
+                                html = html.Replace("{{USER_NAME}}", user.UserName);
+                                html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
+                                html = html.Replace("{{APP_TITLE}}", appTitle);
+                                html = html.Replace("{{URL}}", url);
+
+                                result.Success = emailService
+                                    .Send(user.Email, "Please confirm email address", html);
+
+                                if (result.Success)
+                                {
+                                    result.Message = UsersMessages.ProcessedPasswordRequest;
+
+                                    return result;
+                                }
+                                else
+                                {
+                                    result.Message = UsersMessages.UnableToProcessPasswordRequest;
+
+                                    return result;
+                                }
+                            }
+                            else if (!passwordUpdateResult.Success && passwordUpdateResult.Exception != null)
+                            {
+                                result.Success = passwordUpdateResult.Success;
+                                result.Message = passwordUpdateResult.Exception.Message;
 
                                 return result;
                             }
                             else
                             {
-                                result.Success = false;
-                                result.Message = UsersMessages.PasswordNotUpdatedMessage;
+                                result.Success = userResult.Success;
+                                result.Message = UsersMessages.UnableToProcessPasswordRequest;
 
                                 return result;
                             }
@@ -893,7 +958,217 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = UsersMessages.OldPasswordIncorrectMessage;
+                            result.Message = AppsMessages.UserNotSignedUpToApp;
+
+                            return result;
+                        }
+                    }
+                    else if (!userResult.Success && userResult.Exception != null)
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = userResult.Exception.Message;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = AppsMessages.AppNotFoundMessage;
+
+                        return result;
+                    }
+                }
+                else if (!appResult.Success && appResult.Exception != null)
+                {
+                    result.Success = appResult.Success;
+                    result.Message = appResult.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = appResult.Success;
+                    result.Message = AppsMessages.AppNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IInitiatePasswordUpdateResult> InitiatePasswordUpdate(string token)
+        {
+            var result = new InitiatePasswordUpdateResult();
+
+            try
+            {
+                var passwordUpdateResult = await passwordUpdatesRepository.Get(token);
+
+                if (passwordUpdateResult.Success)
+                {
+                    var passwordUpdate = (PasswordUpdate)passwordUpdateResult.Object;
+
+                    var userResult = await usersRepository.GetById(passwordUpdate.UserId);
+
+                    if (userResult.Success)
+                    {
+                        var user = (User)userResult.Object;
+
+                        var appResult = await appsRepository.GetById(passwordUpdate.AppId);
+
+                        if (appResult.Success)
+                        {
+                            var app = (App)appResult.Object;
+
+                            if (user.Apps.Any(ua => ua.AppId == app.Id))
+                            {
+                                if (user.ReceivedRequestToUpdatePassword)
+                                {
+                                    result.Success = true;
+                                    result.Message = UsersMessages.UserFoundMessage;
+                                    result.User = user;
+                                    result.App = app;
+
+                                    return result;
+                                }
+                                else
+                                {
+                                    result.Success = false;
+                                    result.Message = UsersMessages.NoOutstandingRequestToUpdatePassword;
+
+                                    return result;
+                                }
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = AppsMessages.UserNotSignedUpToApp;
+
+                                return result;
+                            }
+                        }
+                        else if (!appResult.Success && appResult.Exception != null)
+                        {
+                            result.Success = passwordUpdateResult.Success;
+                            result.Message = passwordUpdateResult.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = appResult.Success;
+                            result.Message = AppsMessages.AppNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else if (!userResult.Success && userResult.Exception != null)
+                    {
+                        result.Success = passwordUpdateResult.Success;
+                        result.Message = passwordUpdateResult.Exception.Message;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = UsersMessages.UserNotFoundMessage;
+
+                        return result;
+                    }
+                }
+                else if (!passwordUpdateResult.Success && passwordUpdateResult.Exception != null)
+                {
+                    result.Success = passwordUpdateResult.Success;
+                    result.Message = passwordUpdateResult.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = passwordUpdateResult.Success;
+                    result.Message = UsersMessages.ProcessPasswordRequestNotFound;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IBaseResult> UpdatePassword(IUpdatePasswordRequest request)
+        {
+            var result = new BaseResult();
+            var salt = BCrypt.Net.BCrypt.GenerateSalt();
+
+            try
+            {
+                if (await usersRepository.HasEntity(request.UserId))
+                {
+                    var userResponse = await usersRepository.GetById(request.UserId, true);
+
+                    if (userResponse.Success)
+                    {
+                        var user = (User)userResponse.Object;
+
+                        if (user.ReceivedRequestToUpdatePassword)
+                        {
+                            if (BCrypt.Net.BCrypt.Verify(request.OldPassword, user.Password))
+                            {
+                                user.Password = BCrypt.Net.BCrypt
+                                        .HashPassword(request.NewPassword, salt);
+
+                                user.DateUpdated = DateTime.UtcNow;
+
+                                user.ReceivedRequestToUpdatePassword = false;
+
+                                var updateUserResponse = await usersRepository.Update(user);
+
+                                if (updateUserResponse.Success)
+                                {
+                                    result.Success = userResponse.Success;
+                                    result.Message = UsersMessages.PasswordUpdatedMessage;
+
+                                    return result;
+                                }
+                                else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
+                                {
+                                    result.Success = userResponse.Success;
+                                    result.Message = userResponse.Exception.Message;
+
+                                    return result;
+                                }
+                                else
+                                {
+                                    result.Success = false;
+                                    result.Message = UsersMessages.PasswordNotUpdatedMessage;
+
+                                    return result;
+                                }
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = UsersMessages.OldPasswordIncorrectMessage;
+
+                                return result;
+                            }
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.NoOutstandingRequestToUpdatePassword;
 
                             return result;
                         }
@@ -1205,7 +1480,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var emailConfirmationResponse = await emailConfirmationsRepository.GetByToken(token);
+                var emailConfirmationResponse = await emailConfirmationsRepository.Get(token);
 
                 if (emailConfirmationResponse.Success)
                 {
@@ -1437,6 +1712,72 @@ namespace SudokuCollective.Data.Services
 
                 return result;
             }
+        }
+
+        private async Task<EmailConfirmation> EnsureEmailConfirmationTokenIsUnique(EmailConfirmation emailConfirmation)
+        {
+            var emailConfirmationResposnse = await emailConfirmationsRepository.GetAll();
+
+            if (emailConfirmationResposnse.Success)
+            {
+                bool tokenNotUnique;
+
+                var emailConfirmations = emailConfirmationResposnse
+                    .Objects
+                    .ConvertAll(ec => (EmailConfirmation)ec);
+
+                do
+                {
+                    if (emailConfirmations
+                        .Any(ec => ec.Token.ToLower()
+                        .Equals(emailConfirmation.Token.ToLower())))
+                    {
+                        tokenNotUnique = true;
+
+                        emailConfirmation.Token = Guid.NewGuid().ToString();
+                    }
+                    else
+                    {
+                        tokenNotUnique = false;
+                    }
+
+                } while (tokenNotUnique);
+            }
+
+            return emailConfirmation;
+        }
+
+        private async Task<PasswordUpdate> EnsurePasswordUpdateTokenIsUnique(PasswordUpdate passwordUpdate)
+        {
+            var passwordUpdateResponse = await passwordUpdatesRepository.GetAll();
+
+            if (passwordUpdateResponse.Success)
+            {
+                bool tokenNotUnique;
+
+                var passwordUpdates = passwordUpdateResponse
+                    .Objects
+                    .ConvertAll(pu => (PasswordUpdate)pu);
+
+                do
+                {
+                    if (passwordUpdates
+                        .Any(ec => ec.Token.ToLower()
+                        .Equals(passwordUpdate.Token.ToLower())))
+                    {
+                        tokenNotUnique = true;
+
+                        passwordUpdate.Token = Guid.NewGuid().ToString();
+                    }
+                    else
+                    {
+                        tokenNotUnique = false;
+                    }
+
+                } while (tokenNotUnique);
+            }
+
+            return passwordUpdate;
         }
         #endregion
     }

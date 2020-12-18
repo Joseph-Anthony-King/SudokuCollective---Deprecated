@@ -6,7 +6,7 @@ using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
-using SudokuCollective.Api.Controllers;
+using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers

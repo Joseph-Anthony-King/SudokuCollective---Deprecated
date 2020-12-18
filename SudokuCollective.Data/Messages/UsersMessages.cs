@@ -37,5 +37,10 @@
         public static string EmailNotConfirmedMessage = "Email Not Confirmed";
         public static string OldEmailConfirmedMessage = "Old Email Confirmed";
         public static string OldEmailNotConfirmedMessage = "Old Email Not Confirmed";
+        public static string ProcessedPasswordRequest = "Processed Password Request";
+        public static string UnableToProcessPasswordRequest = "Unable To Process Password Request";
+        public static string UserEmailNotConfirmed = "User Email Not Confirmed";
+        public static string ProcessPasswordRequestNotFound = "Process Password Request Not Found";
+        public static string NoOutstandingRequestToUpdatePassword = "No Outstanding Request To Update Password";
     }
 }

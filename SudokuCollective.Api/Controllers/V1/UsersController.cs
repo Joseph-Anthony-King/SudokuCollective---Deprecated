@@ -10,7 +10,7 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
 using Microsoft.AspNetCore.Hosting;
 
-namespace SudokuCollective.Api.Controllers
+namespace SudokuCollective.Api.V1.Controllers
 {
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
@@ -159,35 +159,48 @@ namespace SudokuCollective.Api.Controllers
             }
         }
 
-        // PUT: api/users/5/updatepassword
+        // PUT: api/users/requestPasswordUpdate
         [Authorize(Roles = "USER")]
-        [HttpPut("{id}/UpdatePassword")]
-        public async Task<IActionResult> UpdatePassword(
-            int id, [FromBody] UpdatePasswordRequest updatePasswordRequest)
+        [HttpPut("RequestPasswordUpdate")]
+        public async Task<IActionResult> RequestPasswordUpdate([FromBody] RequestPasswordUpdateRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                updatePasswordRequest.AppId,
-                updatePasswordRequest.License,
-                updatePasswordRequest.RequestorId))
+            string baseUrl;
+
+            if (Request != null)
             {
-                var result = await usersService.UpdatePassword(id, updatePasswordRequest);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
+                baseUrl = Request.Host.ToString();
             }
             else
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                baseUrl = "https://SudokuCollective.com";
+            }
+
+            string emailtTemplatePath;
+
+            if (!string.IsNullOrEmpty(hostEnvironment.WebRootPath))
+            {
+                emailtTemplatePath = Path.Combine(hostEnvironment.WebRootPath, "/Content/EmailTemplates/update-password-requested-inlined.html");
+
+                emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
+            }
+            else
+            {
+                emailtTemplatePath = "../../Content/EmailTemplates/confirm-old-email-inlined.html";
+            }
+
+            var result = await usersService.RequestPasswordUpdate(request, baseUrl, emailtTemplatePath);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
             }
         }
 

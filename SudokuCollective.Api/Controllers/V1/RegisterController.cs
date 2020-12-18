@@ -10,7 +10,7 @@ using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.TokenModels;
 
-namespace SudokuCollective.Api.Controllers
+namespace SudokuCollective.Api.V1.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]

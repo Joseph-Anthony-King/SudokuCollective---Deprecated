@@ -4,12 +4,11 @@ using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Core.Interfaces.Repositories
 {
-    public interface IEmailConfirmationsRepository<TEntity> where TEntity : IEmailConfirmation
+    public interface IPasswordUpdatesRepository<TEntity> where TEntity : IEntityBase
     {
         Task<IRepositoryResponse> Create(TEntity entity);
         Task<IRepositoryResponse> Get(string token);
         Task<IRepositoryResponse> GetAll();
-        Task<IRepositoryResponse> Update(TEntity entity);
         Task<IRepositoryResponse> Delete(TEntity entity);
         Task<bool> HasEntity(int id);
     }

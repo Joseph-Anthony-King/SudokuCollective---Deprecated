@@ -1,0 +1,55 @@
+﻿@using SudokuCollective.Api.Models
+@model PasswordUpdate
+
+@{
+    ViewData["Title"] = "Password Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+        @if (Model.Success)
+        {
+            <h2>Update Password</h2>
+            <p>
+                @Model.UserName, please confirm your old password and then submit a new password:
+            </p>
+            @using (Html.BeginForm("result", "passwordUpdate", Model, FormMethod.Post))
+            {
+                <div>Old Password</div>
+                @Html.TextBoxFor(m => m.OldPassword)
+                <div>Confirm Old Password</div>
+                @Html.TextBoxFor(m => m.ConfirmOldPassword)
+                <div>New Password</div>
+                @Html.TextBoxFor(m => m.NewPassword)
+                <div>Confirm New Password</div>
+                @Html.TextBoxFor(m => m.ConfirmNewPassword)
+                <div />
+                <input class="btn btn-primary top-buffer"
+                       type="submit" 
+                       value="Submit New Password" />
+            }
+        }
+        else
+        {
+            <h2>Password Update Token Already Redeemed</h2>
+            <p>
+                Sorry, but this password update token was already redeemed.
+            </p>
+        }
+    </div>
+    <div class="col-sm-2"></div>
+</div>
+
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .top-buffer {
+        margin-top: 20px;
+    }
+</style>

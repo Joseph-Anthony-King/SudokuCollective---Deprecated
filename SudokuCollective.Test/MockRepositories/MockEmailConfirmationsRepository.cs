@@ -1,15 +1,12 @@
-﻿using Moq;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Moq;
 using SudokuCollective.Core.Interfaces.DataModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.DataModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SudokuCollective.Test.MockRepositories
 {
@@ -35,7 +32,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
-                emailConfirmationsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                emailConfirmationsRepo.Get(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -43,7 +40,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
-                emailConfirmationsRepo.GetAll(It.IsAny<bool>()))
+                emailConfirmationsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -61,21 +58,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
-                emailConfirmationsRepo.UpdateRange(It.IsAny<List<EmailConfirmation>>()))
-                    .Returns(Task.FromResult(new RepositoryResponse()
-                    {
-                        Success = true
-                    } as IRepositoryResponse));
-
-            EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
                 emailConfirmationsRepo.Delete(It.IsAny<EmailConfirmation>()))
-                    .Returns(Task.FromResult(new RepositoryResponse()
-                    {
-                        Success = true
-                    } as IRepositoryResponse));
-
-            EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
-                emailConfirmationsRepo.DeleteRange(It.IsAny<List<EmailConfirmation>>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true
@@ -85,74 +68,44 @@ namespace SudokuCollective.Test.MockRepositories
                 emailConfirmationsRepo.HasEntity(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
-            EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
-                emailConfirmationsRepo.GetByToken(It.IsAny<string>()))
-                    .Returns(Task.FromResult(new RepositoryResponse()
-                    {
-                        Success = true,
-                        Object = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
-                    } as IRepositoryResponse));
-
-
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.Create(It.IsAny<EmailConfirmation>()))
+            EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.Create(It.IsAny<EmailConfirmation>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+            EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.Get(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetAll(It.IsAny<bool>()))
+            EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.Update(It.IsAny<EmailConfirmation>()))
+            EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.Update(It.IsAny<EmailConfirmation>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.UpdateRange(It.IsAny<List<EmailConfirmation>>()))
+            EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.Delete(It.IsAny<EmailConfirmation>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.Delete(It.IsAny<EmailConfirmation>()))
-                    .Returns(Task.FromResult(new RepositoryResponse()
-                    {
-                        Success = false
-                    } as IRepositoryResponse));
-
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.DeleteRange(It.IsAny<List<EmailConfirmation>>()))
-                    .Returns(Task.FromResult(new RepositoryResponse()
-                    {
-                        Success = false
-                    } as IRepositoryResponse));
-
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.HasEntity(It.IsAny<int>()))
+            EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.HasEntity(It.IsAny<int>()))
                     .Returns(Task.FromResult(false));
-
-            EmailConfirmationsRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetByToken(It.IsAny<string>()))
-                    .Returns(Task.FromResult(new RepositoryResponse()
-                    {
-                        Success = false
-                    } as IRepositoryResponse));
         }
     }
 }

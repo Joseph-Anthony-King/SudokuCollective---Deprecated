@@ -1,0 +1,47 @@
+﻿@using SudokuCollective.Api.Models
+@model PasswordUpdate
+
+@{
+
+    if (Model.Success)
+    {
+        ViewData["Title"] = "Password Updated";
+    }
+    else
+    {
+        ViewData["Title"] = "Password Not Updated";
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+        @if (Model.Success)
+        {
+            <h2>Password Updated</h2>
+            <p>
+                @Model.UserName, your password has been updated.  Please feel free to return to <a href="@Model.Url" target="_blank" title="@Model.AppTitle">@Model.AppTitle</a>, hope you are having fun!
+            </p>
+        }
+        else
+        {
+            <h2>Password Not Updated</h2>
+            <p>
+                Sorry @Model.UserName, but your request to update your password failed with the following error message:
+            </p>
+            <p>
+                @Model.Message
+            </p>
+        }
+    </div>
+    <div class="col-sm-2"></div>
+</div>
+
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>

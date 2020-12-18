@@ -25,6 +25,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockAppsRepository MockAppsRepository;
         private MockRolesRepository MockRolesRepository;
         private MockEmailConfirmationsRepository MockEmailConfirmationsRepository;
+        private MockPasswordUpdatesRepository MockPasswordUpdatesRepository;
         private IUsersService sut;
         private IUsersService sutFailure;
         private IUsersService sutEmailFailure;
@@ -40,12 +41,14 @@ namespace SudokuCollective.Test.TestCases.Services
             MockAppsRepository = new MockAppsRepository(context);
             MockRolesRepository = new MockRolesRepository(context);
             MockEmailConfirmationsRepository = new MockEmailConfirmationsRepository(context);
+            MockPasswordUpdatesRepository = new MockPasswordUpdatesRepository(context);
 
             sut = new UsersService(
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
+                MockPasswordUpdatesRepository.PasswordUpdatesRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             sutFailure = new UsersService(
@@ -53,6 +56,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
+                MockPasswordUpdatesRepository.PasswordUpdatesRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             sutEmailFailure = new UsersService(
@@ -60,6 +64,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
+                MockPasswordUpdatesRepository.PasswordUpdatesRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             baseRequest = TestObjects.GetBaseRequest();
@@ -454,18 +459,19 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task UpdateUserPassword()
         {
             // Arrange
-            var userId = 1;
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            user.ReceivedRequestToUpdatePassword = true;
+            context.SaveChanges();
 
             var updatePasswordRequest = new UpdatePasswordRequest()
             {
+                UserId = user.Id,
                 OldPassword = "password1",
                 NewPassword = "password2",
-                License = TestObjects.GetLicense(),
-                RequestorId = 1
             };
 
             // Act
-            var result = await sut.UpdatePassword(userId, updatePasswordRequest);
+            var result = await sut.UpdatePassword(updatePasswordRequest);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -477,18 +483,19 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task RequireOldPaswordForUpdateRequests()
         {
             // Arrange
-            var userId = 1;
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            user.ReceivedRequestToUpdatePassword = true;
+            context.SaveChanges();
 
             var updatePasswordRequest = new UpdatePasswordRequest()
             {
+                UserId = user.Id,
                 OldPassword = "password!",
-                NewPassword = "password2",
-                License = TestObjects.GetLicense(),
-                RequestorId = 1
+                NewPassword = "password2"
             };
 
             // Act
-            var result = await sut.UpdatePassword(userId, updatePasswordRequest);
+            var result = await sut.UpdatePassword(updatePasswordRequest);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -504,14 +511,13 @@ namespace SudokuCollective.Test.TestCases.Services
 
             var updatePasswordRequest = new UpdatePasswordRequest()
             {
+                UserId = 1,
                 OldPassword = "password1",
-                NewPassword = "password2",
-                License = TestObjects.GetLicense(),
-                RequestorId = 1
+                NewPassword = "password2"
             };
 
             // Act
-            var result = await sutFailure.UpdatePassword(userId, updatePasswordRequest);
+            var result = await sutFailure.UpdatePassword(updatePasswordRequest);
 
             // Assert
             Assert.That(result.Success, Is.False);

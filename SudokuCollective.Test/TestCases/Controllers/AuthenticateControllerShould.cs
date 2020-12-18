@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Models.TokenModels;
-using SudokuCollective.Api.Controllers;
+using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Test.MockServices;
 
 namespace SudokuCollective.Test.TestCases.Controllers
