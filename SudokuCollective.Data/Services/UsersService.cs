@@ -536,18 +536,19 @@ namespace SudokuCollective.Data.Services
                                 DateTime.UtcNow,
                                 DateTime.MinValue);
 
+                            var app = (App)appResponse.Object;
+
                             user.Apps.Add(
                                 new UserApp() { 
                                     User = user, 
-                                    App = (App)appResponse.Object, 
-                                    AppId = ((App)appResponse.Object).Id });
+                                    App = app,
+                                    AppId = app.Id });
 
                             var userResponse = await usersRepository.Create(user);
 
                             if (userResponse.Success)
                             {
                                 user = (User)userResponse.Object;
-                                var app = (App)appResponse.Object;
 
                                 var emailConfirmation = new EmailConfirmation(
                                     user.Id,
@@ -582,16 +583,16 @@ namespace SudokuCollective.Data.Services
                                 }
 
                                 var html = File.ReadAllText(emailtTemplatePath);
-                                var appTitle = user.Apps.FirstOrDefault().App.Name;
+                                var appTitle = app.Name;
                                 var url = string.Empty;
 
-                                if (user.Apps.FirstOrDefault().App.InDevelopment)
+                                if (app.InDevelopment)
                                 {
-                                    url = user.Apps.FirstOrDefault().App.DevUrl;
+                                    url = app.DevUrl;
                                 }
                                 else
                                 {
-                                    url = user.Apps.FirstOrDefault().App.LiveUrl;
+                                    url = app.LiveUrl;
                                 }
 
                                 html = html.Replace("{{USER_NAME}}", user.UserName);
@@ -599,8 +600,10 @@ namespace SudokuCollective.Data.Services
                                 html = html.Replace("{{APP_TITLE}}", appTitle);
                                 html = html.Replace("{{URL}}", url);
 
+                                var emailSubject = string.Format("Greetings from {0}: Please Confirm Email", appTitle);
+
                                 result.ConfirmationEmailSuccessfullySent = emailService
-                                    .Send(user.Email, "Please confirm email address", html);
+                                    .Send(user.Email, emailSubject, html);
 
                                 foreach (var userRole in user.Roles)
                                 {
@@ -781,32 +784,16 @@ namespace SudokuCollective.Data.Services
                                 }
 
                                 var html = File.ReadAllText(emailtTemplatePath);
-                                var appTitle = user
-                                    .Apps
-                                    .Where(ua => ua.AppId == request.AppId)
-                                    .Select(ua => ua.App.Name)
-                                    .FirstOrDefault();
+                                var appTitle = app.Name;
                                 var url = string.Empty;
 
-                                if (user
-                                    .Apps
-                                    .Where(ua => ua.AppId == request.AppId)
-                                    .Select(ua => ua.App.InDevelopment)
-                                    .FirstOrDefault())
+                                if (app.InDevelopment)
                                 {
-                                    url = user
-                                        .Apps
-                                        .Where(ua => ua.AppId == request.AppId)
-                                        .Select(ua => ua.App.DevUrl)
-                                        .FirstOrDefault();
+                                    url = app.DevUrl;
                                 }
                                 else
                                 {
-                                    url = user
-                                        .Apps
-                                        .Where(ua => ua.AppId == request.AppId)
-                                        .Select(ua => ua.App.LiveUrl)
-                                        .FirstOrDefault();
+                                    url = app.LiveUrl;
                                 }
 
                                 html = html.Replace("{{USER_NAME}}", user.UserName);
@@ -814,8 +801,10 @@ namespace SudokuCollective.Data.Services
                                 html = html.Replace("{{APP_TITLE}}", appTitle);
                                 html = html.Replace("{{URL}}", url);
 
+                                var emailSubject = string.Format("Greetings from {0}: Please Confirm Old Email", appTitle);
+
                                 result.ConfirmationEmailSuccessfullySent = emailService
-                                    .Send(user.Email, "Please confirm email address", html);
+                                    .Send(user.Email, emailSubject, html);
                             }
 
                             var updateUserResponse = await usersRepository.Update(user);
@@ -962,8 +951,10 @@ namespace SudokuCollective.Data.Services
                                 html = html.Replace("{{APP_TITLE}}", appTitle);
                                 html = html.Replace("{{URL}}", url);
 
+                                var emailSubject = string.Format("Greetings from {0}: Password Update Request Received", appTitle);
+
                                 result.Success = emailService
-                                    .Send(user.Email, "Please confirm email address", html);
+                                    .Send(user.Email, emailSubject, html);
 
                                 if (result.Success)
                                 {
@@ -1612,8 +1603,10 @@ namespace SudokuCollective.Data.Services
                             html = html.Replace("{{APP_TITLE}}", appTitle);
                             html = html.Replace("{{URL}}", url);
 
+                            var emailSubject = string.Format("Greetings from {0}: Please Confirm New Email", appTitle);
+
                             result.ConfirmationEmailSuccessfullySent = emailService
-                                .Send(user.Email, "Please confirm email address", html);
+                                .Send(user.Email, emailSubject, html);
 
                             emailConfirmation.OldEmailAddressConfirmed = true;
 
