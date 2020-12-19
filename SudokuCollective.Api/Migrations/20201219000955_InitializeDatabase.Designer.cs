@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201218230044_InitializeDatabase")]
+    [Migration("20201219000955_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,18 @@ namespace SudokuCollective.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("CustomEmailConfirmationDevUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomEmailConfirmationLiveUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomPasswordUpdateDevUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomPasswordUpdateLiveUrl")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp without time zone");

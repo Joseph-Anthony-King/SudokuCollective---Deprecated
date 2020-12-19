@@ -26,6 +26,18 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("CustomEmailConfirmationDevUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomEmailConfirmationLiveUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomPasswordUpdateDevUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomPasswordUpdateLiveUrl")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp without time zone");
 

@@ -136,6 +136,10 @@ namespace SudokuCollective.Test.TestData
                         "https://testapp.com",
                         true,
                         true,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
                         dateCreated,
                         DateTime.MinValue),
                     new App(
@@ -147,6 +151,10 @@ namespace SudokuCollective.Test.TestData
                         "https://testapp2.com",
                         true,
                         true,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
                         dateCreated,
                         DateTime.MinValue)
                 );

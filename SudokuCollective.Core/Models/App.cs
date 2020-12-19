@@ -25,6 +25,48 @@ namespace SudokuCollective.Core.Models
         public string LiveUrl { get; set; }
         public bool IsActive { get; set; }
         public bool InDevelopment { get; set; }
+        public string CustomEmailConfirmationDevUrl { get; set; }
+        public string CustomEmailConfirmationLiveUrl { get; set; }
+        [JsonIgnore]
+        public bool UseCustomEmailConfirmationUrl 
+        {
+            get
+            {
+                if (InDevelopment && !string.IsNullOrEmpty(CustomEmailConfirmationDevUrl))
+                {
+                    return true;
+                }
+                else if (!InDevelopment && !string.IsNullOrEmpty(CustomEmailConfirmationLiveUrl))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        public string CustomPasswordUpdateDevUrl { get; set; }
+        public string CustomPasswordUpdateLiveUrl { get; set; }
+        [JsonIgnore]
+        public bool UseCustomPasswordUpdateUrl
+        {
+            get
+            {
+                if (InDevelopment && !string.IsNullOrEmpty(CustomPasswordUpdateDevUrl))
+                {
+                    return true;
+                }
+                else if (!InDevelopment && !string.IsNullOrEmpty(CustomPasswordUpdateLiveUrl))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
         public int GameCount
         {
             get
@@ -71,6 +113,7 @@ namespace SudokuCollective.Core.Models
                 _users = value;
             }
         }
+
         #endregion
 
         #region Constructors
@@ -85,11 +128,19 @@ namespace SudokuCollective.Core.Models
             LiveUrl = string.Empty;
             IsActive = false;
             InDevelopment = true;
+            CustomEmailConfirmationDevUrl = string.Empty;
+            CustomEmailConfirmationLiveUrl = string.Empty;
+            CustomPasswordUpdateDevUrl = string.Empty;
+            CustomPasswordUpdateLiveUrl = string.Empty;
             Users = new List<UserApp>();
         }
 
-        public App(string name, string license,
-            int ownerId, string devUrl, string liveUrl) : this()
+        public App(
+            string name, 
+            string license,
+            int ownerId, 
+            string devUrl, 
+            string liveUrl) : this()
         {
             Name = name;
             License = license;
@@ -111,6 +162,10 @@ namespace SudokuCollective.Core.Models
             string liveUrl,
             bool isActive,
             bool inDevelopment,
+            string customEmailConfirmationDevUrl,
+            string customEmailConfirmationLiveUrl,
+            string customPasswordUpdateDevUrl,
+            string customPasswordUpdateLiveUrl,
             DateTime dateCreated,
             DateTime dateUpdated)
         {
@@ -122,6 +177,10 @@ namespace SudokuCollective.Core.Models
             LiveUrl = liveUrl;
             IsActive = isActive;
             InDevelopment = inDevelopment;
+            CustomEmailConfirmationDevUrl = customEmailConfirmationDevUrl;
+            CustomEmailConfirmationLiveUrl = customEmailConfirmationLiveUrl;
+            CustomPasswordUpdateDevUrl = customPasswordUpdateDevUrl;
+            CustomPasswordUpdateLiveUrl = customPasswordUpdateLiveUrl;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
         }

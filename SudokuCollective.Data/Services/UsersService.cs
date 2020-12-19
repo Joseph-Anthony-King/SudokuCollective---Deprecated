@@ -547,19 +547,41 @@ namespace SudokuCollective.Data.Services
                             if (userResponse.Success)
                             {
                                 user = (User)userResponse.Object;
+                                var app = (App)appResponse.Object;
 
                                 var emailConfirmation = new EmailConfirmation(
                                     user.Id,
-                                    user.Apps.FirstOrDefault().AppId);
+                                    app.Id);
 
                                 emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
 
                                 var emailConfirmationResponse = await emailConfirmationsRepository.Create(emailConfirmation);
 
+                                string emailConfirmationUrl;
+
+                                if (app.UseCustomEmailConfirmationUrl)
+                                {
+                                    if (app.InDevelopment)
+                                    {
+                                        emailConfirmationUrl = string.Format("{0}{1}",
+                                            app.CustomEmailConfirmationDevUrl,
+                                            emailConfirmation.Token);
+                                    }
+                                    else
+                                    {
+                                        emailConfirmationUrl = string.Format("{0}{1}",
+                                            app.CustomPasswordUpdateLiveUrl,
+                                            emailConfirmation.Token);
+                                    }
+                                }
+                                else
+                                {
+                                    emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
+                                        baseUrl,
+                                        ((EmailConfirmation)emailConfirmationResponse.Object).Token);
+                                }
+
                                 var html = File.ReadAllText(emailtTemplatePath);
-                                var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}", 
-                                    baseUrl, 
-                                    ((EmailConfirmation)emailConfirmationResponse.Object).Token);
                                 var appTitle = user.Apps.FirstOrDefault().App.Name;
                                 var url = string.Empty;
 
@@ -711,6 +733,7 @@ namespace SudokuCollective.Data.Services
                         if (userResponse.Success)
                         {
                             var user = (User)userResponse.Object;
+                            var app = (App)(await appsRepository.GetById(request.AppId)).Object;
 
                             user.UserName = request.UserName;
                             user.FirstName = request.FirstName;
@@ -733,10 +756,31 @@ namespace SudokuCollective.Data.Services
                                 var emailConfirmationResponse = await emailConfirmationsRepository
                                     .Create(emailConfirmation);
 
+                                string emailConfirmationUrl;
+
+                                if (app.UseCustomEmailConfirmationUrl)
+                                {
+                                    if (app.InDevelopment)
+                                    {
+                                        emailConfirmationUrl = string.Format("{0}{1}", 
+                                            app.CustomEmailConfirmationDevUrl, 
+                                            emailConfirmation.Token);
+                                    }
+                                    else
+                                    {
+                                        emailConfirmationUrl = string.Format("{0}{1}",
+                                            app.CustomPasswordUpdateLiveUrl,
+                                            emailConfirmation.Token);
+                                    }
+                                }
+                                else
+                                {
+                                    emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
+                                        baseUrl,
+                                        ((EmailConfirmation)emailConfirmationResponse.Object).Token);
+                                }
+
                                 var html = File.ReadAllText(emailtTemplatePath);
-                                var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
-                                    baseUrl,
-                                    ((EmailConfirmation)emailConfirmationResponse.Object).Token);
                                 var appTitle = user
                                     .Apps
                                     .Where(ua => ua.AppId == request.AppId)
@@ -876,10 +920,31 @@ namespace SudokuCollective.Data.Services
 
                                 user = (User)(await usersRepository.Update(user)).Object;
 
+                                string emailConfirmationUrl;
+
+                                if (app.UseCustomPasswordUpdateUrl)
+                                {
+                                    if (app.InDevelopment)
+                                    {
+                                        emailConfirmationUrl = string.Format("{0}{1}", 
+                                            app.CustomPasswordUpdateDevUrl, 
+                                            passwordUpdate.Token);
+                                    }
+                                    else
+                                    {
+                                        emailConfirmationUrl = string.Format("{0}{1}",
+                                            app.CustomPasswordUpdateLiveUrl,
+                                            passwordUpdate.Token);
+                                    }
+                                }
+                                else
+                                {
+                                    emailConfirmationUrl = string.Format("https://{0}/passwordUpdate/{1}",
+                                        baseUrl,
+                                        passwordUpdate.Token);
+                                }
+
                                 var html = File.ReadAllText(emailtTemplatePath);
-                                var emailConfirmationUrl = string.Format("https://{0}/passwordUpdate/{1}",
-                                    baseUrl,
-                                    passwordUpdate.Token);
                                 var appTitle = app.Name;
                                 var url = string.Empty;
 
