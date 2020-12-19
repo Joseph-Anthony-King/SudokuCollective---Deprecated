@@ -507,8 +507,6 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task RejectPasswordUpdatesIfUserNotFound()
         {
             // Arrange
-            var userId = 4;
-
             var updatePasswordRequest = new UpdatePasswordRequest()
             {
                 UserId = 1,
