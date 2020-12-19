@@ -24,7 +24,7 @@ namespace SudokuCollective.Core.Models
             DateCreated = DateTime.MinValue;
         }
 
-        public PasswordUpdate(int userId, int appId) : base()
+        public PasswordUpdate(int userId, int appId) : this()
         {
             UserId = userId;
             AppId = appId;

@@ -23,7 +23,7 @@ namespace SudokuCollective.Core.Models
             App = null;
         }
 
-        public UserApp(int userId, int appId) : base()
+        public UserApp(int userId, int appId) : this()
         {
             UserId = userId;
             AppId = appId;

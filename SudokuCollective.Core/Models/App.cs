@@ -25,6 +25,7 @@ namespace SudokuCollective.Core.Models
         public string LiveUrl { get; set; }
         public bool IsActive { get; set; }
         public bool InDevelopment { get; set; }
+        public bool DisableCustomUrls { get; set; }
         public string CustomEmailConfirmationDevUrl { get; set; }
         public string CustomEmailConfirmationLiveUrl { get; set; }
         [JsonIgnore]
@@ -32,11 +33,11 @@ namespace SudokuCollective.Core.Models
         {
             get
             {
-                if (InDevelopment && !string.IsNullOrEmpty(CustomEmailConfirmationDevUrl))
+                if (InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomEmailConfirmationDevUrl))
                 {
                     return true;
                 }
-                else if (!InDevelopment && !string.IsNullOrEmpty(CustomEmailConfirmationLiveUrl))
+                else if (!InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomEmailConfirmationLiveUrl))
                 {
                     return true;
                 }
@@ -53,11 +54,11 @@ namespace SudokuCollective.Core.Models
         {
             get
             {
-                if (InDevelopment && !string.IsNullOrEmpty(CustomPasswordUpdateDevUrl))
+                if (InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomPasswordUpdateDevUrl))
                 {
                     return true;
                 }
-                else if (!InDevelopment && !string.IsNullOrEmpty(CustomPasswordUpdateLiveUrl))
+                else if (!InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomPasswordUpdateLiveUrl))
                 {
                     return true;
                 }
@@ -128,6 +129,7 @@ namespace SudokuCollective.Core.Models
             LiveUrl = string.Empty;
             IsActive = false;
             InDevelopment = true;
+            DisableCustomUrls = true;
             CustomEmailConfirmationDevUrl = string.Empty;
             CustomEmailConfirmationLiveUrl = string.Empty;
             CustomPasswordUpdateDevUrl = string.Empty;
@@ -148,8 +150,6 @@ namespace SudokuCollective.Core.Models
             DateCreated = DateTime.UtcNow;
             DevUrl = devUrl;
             LiveUrl = liveUrl;
-            IsActive = true;
-            InDevelopment = true;
         }
 
         [JsonConstructor]
@@ -162,6 +162,7 @@ namespace SudokuCollective.Core.Models
             string liveUrl,
             bool isActive,
             bool inDevelopment,
+            bool disableCustomUrls,
             string customEmailConfirmationDevUrl,
             string customEmailConfirmationLiveUrl,
             string customPasswordUpdateDevUrl,
@@ -177,6 +178,7 @@ namespace SudokuCollective.Core.Models
             LiveUrl = liveUrl;
             IsActive = isActive;
             InDevelopment = inDevelopment;
+            DisableCustomUrls = disableCustomUrls;
             CustomEmailConfirmationDevUrl = customEmailConfirmationDevUrl;
             CustomEmailConfirmationLiveUrl = customEmailConfirmationLiveUrl;
             CustomPasswordUpdateDevUrl = customPasswordUpdateDevUrl;

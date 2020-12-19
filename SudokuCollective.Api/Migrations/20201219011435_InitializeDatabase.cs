@@ -21,6 +21,7 @@ namespace SudokuCollective.Api.Migrations
                     LiveUrl = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     InDevelopment = table.Column<bool>(nullable: false),
+                    DisableCustomUrls = table.Column<bool>(nullable: false),
                     CustomEmailConfirmationDevUrl = table.Column<string>(nullable: true),
                     CustomEmailConfirmationLiveUrl = table.Column<string>(nullable: true),
                     CustomPasswordUpdateDevUrl = table.Column<string>(nullable: true),

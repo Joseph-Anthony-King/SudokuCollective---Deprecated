@@ -47,6 +47,9 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<string>("DevUrl")
                         .HasColumnType("text");
 
+                    b.Property<bool>("DisableCustomUrls")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("InDevelopment")
                         .HasColumnType("boolean");
 

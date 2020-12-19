@@ -13,6 +13,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         string LiveUrl { get; set; }
         bool IsActive { get; set; }
         bool InDevelopment { get; set; }
+        bool DisableCustomUrls { get; set; }
         string CustomEmailConfirmationDevUrl { get; set; }
         string CustomEmailConfirmationLiveUrl { get; set; }
         bool UseCustomEmailConfirmationUrl { get; }

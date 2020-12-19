@@ -60,7 +60,7 @@ namespace SudokuCollective.Core.Models
             DateCreated = DateTime.MinValue;
         }
 
-        public EmailConfirmation(int userId, int appId) : base()
+        public EmailConfirmation(int userId, int appId) : this()
         {
             UserId = userId;
             AppId = appId;
@@ -68,7 +68,7 @@ namespace SudokuCollective.Core.Models
             DateCreated = DateTime.UtcNow;
         }
 
-        public EmailConfirmation(int userId, int appId, string oldEmailAddress, string newEmailAddress) : base()
+        public EmailConfirmation(int userId, int appId, string oldEmailAddress, string newEmailAddress) : this()
         {
             UserId = userId;
             AppId = appId;

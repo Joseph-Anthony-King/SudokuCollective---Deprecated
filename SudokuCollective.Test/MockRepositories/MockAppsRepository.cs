@@ -41,6 +41,7 @@ namespace SudokuCollective.Test.MockRepositories
                             "https://testapp3.com",
                             true,
                             false,
+                            true,
                             string.Empty,
                             string.Empty,
                             string.Empty,
