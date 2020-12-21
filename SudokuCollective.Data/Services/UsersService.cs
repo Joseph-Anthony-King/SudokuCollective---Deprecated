@@ -556,7 +556,8 @@ namespace SudokuCollective.Data.Services
 
                                 emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
 
-                                var emailConfirmationResponse = await emailConfirmationsRepository.Create(emailConfirmation);
+                                emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.Create(emailConfirmation))
+                                    .Object;
 
                                 string emailConfirmationUrl;
 
@@ -579,7 +580,7 @@ namespace SudokuCollective.Data.Services
                                 {
                                     emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
                                         baseUrl,
-                                        ((EmailConfirmation)emailConfirmationResponse.Object).Token);
+                                        emailConfirmation.Token);
                                 }
 
                                 var html = File.ReadAllText(emailtTemplatePath);
