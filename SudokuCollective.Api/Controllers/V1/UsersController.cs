@@ -160,7 +160,7 @@ namespace SudokuCollective.Api.V1.Controllers
         }
 
         // PUT: api/users/requestPasswordUpdate
-        [Authorize(Roles = "USER")]
+        [AllowAnonymous]
         [HttpPut("RequestPasswordUpdate")]
         public async Task<IActionResult> RequestPasswordUpdate([FromBody] RequestPasswordUpdateRequest request)
         {

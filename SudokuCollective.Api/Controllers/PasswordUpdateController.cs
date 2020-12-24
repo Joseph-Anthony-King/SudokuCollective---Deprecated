@@ -51,6 +51,11 @@ namespace SudokuCollective.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Result(PasswordUpdate passwordUpdate)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("Index", passwordUpdate);
+            }
+
             var userResut = await usersService.GetUser(passwordUpdate.UserId);
 
             if (userResut.Success)
@@ -58,13 +63,11 @@ namespace SudokuCollective.Api.Controllers
                 var updatePasswordRequest = new UpdatePasswordRequest
                 {
                     UserId = userResut.User.Id,
-                    OldPassword = passwordUpdate.OldPassword,
                     NewPassword = passwordUpdate.NewPassword
                 };
 
                 var updatePasswordResult = await usersService.UpdatePassword(updatePasswordRequest);
 
-                passwordUpdate.OldPassword = string.Empty;
                 passwordUpdate.NewPassword = string.Empty;
 
                 if (updatePasswordResult.Success)
@@ -84,7 +87,6 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                passwordUpdate.OldPassword = string.Empty;
                 passwordUpdate.NewPassword = string.Empty;
                 passwordUpdate.Message = userResut.Message;
 

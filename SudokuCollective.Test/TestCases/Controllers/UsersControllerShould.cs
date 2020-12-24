@@ -53,7 +53,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
             updatePasswordRequest = new UpdatePasswordRequest()
             {
                 UserId = 1,
-                OldPassword = "password1",
                 NewPassword = "password2"
             };
 

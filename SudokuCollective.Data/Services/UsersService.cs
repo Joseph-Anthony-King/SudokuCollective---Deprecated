@@ -1154,43 +1154,33 @@ namespace SudokuCollective.Data.Services
 
                         if (user.ReceivedRequestToUpdatePassword)
                         {
-                            if (BCrypt.Net.BCrypt.Verify(request.OldPassword, user.Password))
+                            user.Password = BCrypt.Net.BCrypt
+                                    .HashPassword(request.NewPassword, salt);
+
+                            user.DateUpdated = DateTime.UtcNow;
+
+                            user.ReceivedRequestToUpdatePassword = false;
+
+                            var updateUserResponse = await usersRepository.Update(user);
+
+                            if (updateUserResponse.Success)
                             {
-                                user.Password = BCrypt.Net.BCrypt
-                                        .HashPassword(request.NewPassword, salt);
+                                result.Success = userResponse.Success;
+                                result.Message = UsersMessages.PasswordUpdatedMessage;
 
-                                user.DateUpdated = DateTime.UtcNow;
+                                return result;
+                            }
+                            else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
+                            {
+                                result.Success = userResponse.Success;
+                                result.Message = userResponse.Exception.Message;
 
-                                user.ReceivedRequestToUpdatePassword = false;
-
-                                var updateUserResponse = await usersRepository.Update(user);
-
-                                if (updateUserResponse.Success)
-                                {
-                                    result.Success = userResponse.Success;
-                                    result.Message = UsersMessages.PasswordUpdatedMessage;
-
-                                    return result;
-                                }
-                                else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
-                                {
-                                    result.Success = userResponse.Success;
-                                    result.Message = userResponse.Exception.Message;
-
-                                    return result;
-                                }
-                                else
-                                {
-                                    result.Success = false;
-                                    result.Message = UsersMessages.PasswordNotUpdatedMessage;
-
-                                    return result;
-                                }
+                                return result;
                             }
                             else
                             {
                                 result.Success = false;
-                                result.Message = UsersMessages.OldPasswordIncorrectMessage;
+                                result.Message = UsersMessages.PasswordNotUpdatedMessage;
 
                                 return result;
                             }

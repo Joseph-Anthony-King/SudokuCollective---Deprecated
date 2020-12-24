@@ -13,21 +13,19 @@
         {
             <h2>Update Password</h2>
             <p>
-                @Model.UserName, please confirm your old password and then submit a new password:
+                @Model.UserName, please create a new password:
             </p>
             @using (Html.BeginForm("result", "passwordUpdate", Model, FormMethod.Post))
             {
-                <div>Old Password</div>
-                @Html.TextBoxFor(m => m.OldPassword)
-                <div>Confirm Old Password</div>
-                @Html.TextBoxFor(m => m.ConfirmOldPassword)
                 <div>New Password</div>
                 @Html.TextBoxFor(m => m.NewPassword)
+                @Html.ValidationMessageFor(m => m.NewPassword, "", new { @class = "error" })
                 <div>Confirm New Password</div>
                 @Html.TextBoxFor(m => m.ConfirmNewPassword)
+                @Html.ValidationMessageFor(m => m.ConfirmNewPassword, "", new { @class = "error" })
                 <div />
                 <input class="btn btn-primary top-buffer"
-                       type="submit" 
+                       type="submit"
                        value="Submit New Password" />
             }
         }
@@ -51,5 +49,10 @@
 
     .top-buffer {
         margin-top: 20px;
+    }
+
+    .error {
+        color: red;
+        margin-left: 5px;
     }
 </style>

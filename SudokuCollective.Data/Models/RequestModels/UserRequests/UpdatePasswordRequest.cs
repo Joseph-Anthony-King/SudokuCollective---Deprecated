@@ -5,13 +5,11 @@ namespace SudokuCollective.Data.Models.RequestModels
     public class UpdatePasswordRequest : IUpdatePasswordRequest
     {
         public int UserId { get; set; }
-        public string OldPassword { get; set; }
         public string NewPassword { get; set; }
 
         public UpdatePasswordRequest() : base()
         {
             UserId = 0;
-            OldPassword = string.Empty;
             NewPassword = string.Empty;
         }
     }

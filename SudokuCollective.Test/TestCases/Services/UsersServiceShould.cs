@@ -466,7 +466,6 @@ namespace SudokuCollective.Test.TestCases.Services
             var updatePasswordRequest = new UpdatePasswordRequest()
             {
                 UserId = user.Id,
-                OldPassword = "password1",
                 NewPassword = "password2",
             };
 
@@ -480,37 +479,12 @@ namespace SudokuCollective.Test.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task RequireOldPaswordForUpdateRequests()
-        {
-            // Arrange
-            var user = context.Users.FirstOrDefault(u => u.Id == 1);
-            user.ReceivedRequestToUpdatePassword = true;
-            context.SaveChanges();
-
-            var updatePasswordRequest = new UpdatePasswordRequest()
-            {
-                UserId = user.Id,
-                OldPassword = "password!",
-                NewPassword = "password2"
-            };
-
-            // Act
-            var result = await sut.UpdatePassword(updatePasswordRequest);
-
-            // Assert
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Old Password Incorrect"));
-        }
-
-        [Test]
-        [Category("Services")]
         public async Task RejectPasswordUpdatesIfUserNotFound()
         {
             // Arrange
             var updatePasswordRequest = new UpdatePasswordRequest()
             {
                 UserId = 1,
-                OldPassword = "password1",
                 NewPassword = "password2"
             };
 
