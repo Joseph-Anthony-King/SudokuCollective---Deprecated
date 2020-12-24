@@ -9,11 +9,11 @@ namespace SudokuCollective.Api.Controllers
 {
     [Route("[controller]")]
     [Controller]
-    public class PasswordUpdateController : Controller
+    public class PasswordResetController : Controller
     {
         private readonly IUsersService usersService;
 
-        public PasswordUpdateController(IUsersService usersServ)
+        public PasswordResetController(IUsersService usersServ)
         {
             usersService = usersServ;
         }
@@ -22,11 +22,11 @@ namespace SudokuCollective.Api.Controllers
         [HttpGet("{token}")]
         public async Task<IActionResult> Index(string token)
         {
-            var result = await usersService.InitiatePasswordUpdate(token);
+            var result = await usersService.InitiatePasswordReset(token);
 
             if (result.Success)
             {
-                var passwordUpdate = new PasswordUpdate
+                var passwordReset = new PasswordReset
                 {
                     Success = result.Success,
                     UserId = result.User.Id,
@@ -35,62 +35,63 @@ namespace SudokuCollective.Api.Controllers
                     Url = result.App.InDevelopment ? result.App.DevUrl : result.App.LiveUrl
                 };
 
-                return View(passwordUpdate);
+                return View(passwordReset);
             }
             else
             {
-                var passwordUpdateModel = new PasswordUpdate();
+                var passwordReset = new PasswordReset
+                {
+                    Success = result.Success
+                };
 
-                passwordUpdateModel.Success = result.Success;
-
-                return View(passwordUpdateModel);
+                return View(passwordReset);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Result(PasswordUpdate passwordUpdate)
+        public async Task<IActionResult> Result(PasswordReset passwordReset)
         {
             if (!ModelState.IsValid)
             {
-                return View("Index", passwordUpdate);
+                return View("Index", passwordReset);
             }
 
-            var userResut = await usersService.GetUser(passwordUpdate.UserId);
+            var userResut = await usersService.GetUser(passwordReset.UserId);
 
             if (userResut.Success)
             {
                 var updatePasswordRequest = new UpdatePasswordRequest
                 {
                     UserId = userResut.User.Id,
-                    NewPassword = passwordUpdate.NewPassword
+                    NewPassword = passwordReset.NewPassword
                 };
 
                 var updatePasswordResult = await usersService.UpdatePassword(updatePasswordRequest);
 
-                passwordUpdate.NewPassword = string.Empty;
+                passwordReset.NewPassword = string.Empty;
 
                 if (updatePasswordResult.Success)
                 {
-                    passwordUpdate.Success = updatePasswordResult.Success;
-                    passwordUpdate.Message = updatePasswordResult.Message;
+                    passwordReset.Success = updatePasswordResult.Success;
+                    passwordReset.Message = updatePasswordResult.Message;
 
-                    return View(passwordUpdate);
+                    return View(passwordReset);
                 }
                 else
                 {
-                    passwordUpdate.Success = updatePasswordResult.Success;
-                    passwordUpdate.Message = updatePasswordResult.Message;
+                    passwordReset.Success = updatePasswordResult.Success;
+                    passwordReset.Message = updatePasswordResult.Message;
 
-                    return View(passwordUpdate);
+                    return View(passwordReset);
                 }
             }
             else
             {
-                passwordUpdate.NewPassword = string.Empty;
-                passwordUpdate.Message = userResut.Message;
+                passwordReset.NewPassword = string.Empty;
+                passwordReset.Message = userResut.Message;
 
-                return View(passwordUpdate);
+                return View(passwordReset);
             }
         }
     }

@@ -1,15 +1,15 @@
 ﻿@using SudokuCollective.Api.Models
-@model PasswordUpdate
+@model PasswordReset
 
 @{
 
     if (Model.Success)
     {
-        ViewData["Title"] = "Password Updated";
+        ViewData["Title"] = "Password Reset";
     }
     else
     {
-        ViewData["Title"] = "Password Not Updated";
+        ViewData["Title"] = "Password Not Reset";
     }
     Layout = "~/Views/Shared/_Layout.cshtml";
 }

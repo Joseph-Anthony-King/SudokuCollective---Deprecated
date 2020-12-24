@@ -2,7 +2,7 @@
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
-    public class UpdatePasswordRequest : IUpdatePasswordRequest
+    public class UpdatePasswordRequest : IPasswordResetRequest
     {
         public int UserId { get; set; }
         public string NewPassword { get; set; }

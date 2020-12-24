@@ -159,10 +159,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/users/requestPasswordUpdate
+        // POST: api/users/requestPasswordReset
         [AllowAnonymous]
-        [HttpPut("RequestPasswordUpdate")]
-        public async Task<IActionResult> RequestPasswordUpdate([FromBody] RequestPasswordUpdateRequest request)
+        [HttpPost("RequestPasswordReset")]
+        public async Task<IActionResult> RequestPasswordReset([FromBody] RequestPasswordResetRequest request)
         {
             string baseUrl;
 
@@ -188,7 +188,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 emailtTemplatePath = "../../Content/EmailTemplates/confirm-old-email-inlined.html";
             }
 
-            var result = await usersService.RequestPasswordUpdate(request, baseUrl, emailtTemplatePath);
+            var result = await usersService.RequestPasswordReset(request, baseUrl, emailtTemplatePath);
 
             if (result.Success)
             {

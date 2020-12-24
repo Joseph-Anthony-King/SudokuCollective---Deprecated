@@ -88,7 +88,7 @@ namespace SudokuCollective.Data.Services
             else
             {
                 result.Success = false;
-                result.Message = UsersMessages.EmailDoesNotExist;
+                result.Message = UsersMessages.NoUserIsUsingThisEmail;
 
                 return result;
             }

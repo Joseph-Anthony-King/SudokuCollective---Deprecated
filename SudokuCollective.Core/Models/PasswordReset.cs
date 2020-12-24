@@ -4,7 +4,7 @@ using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Core.Models
 {
-    public class PasswordUpdate : IPasswordUpdate
+    public class PasswordReset : IPasswordReset
     {
         #region Properties
         public int Id { get; set; }
@@ -15,7 +15,7 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Constructors
-        public PasswordUpdate()
+        public PasswordReset()
         {
             Id = 0;
             UserId = 0;
@@ -24,7 +24,7 @@ namespace SudokuCollective.Core.Models
             DateCreated = DateTime.MinValue;
         }
 
-        public PasswordUpdate(int userId, int appId) : this()
+        public PasswordReset(int userId, int appId) : this()
         {
             UserId = userId;
             AppId = appId;
@@ -33,7 +33,7 @@ namespace SudokuCollective.Core.Models
         }
 
         [JsonConstructor]
-        public PasswordUpdate(int id, int userId, int appId, string token, DateTime dateCreated)
+        public PasswordReset(int id, int userId, int appId, string token, DateTime dateCreated)
         {
             Id = id;
             UserId = userId;

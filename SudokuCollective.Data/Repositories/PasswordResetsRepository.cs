@@ -12,14 +12,14 @@ using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Data.Repositories
 {
-    public class PasswordUpdatesRepository<TEntity> : IPasswordUpdatesRepository<TEntity> where TEntity : PasswordUpdate
+    public class PasswordResetsRepository<TEntity> : IPasswordResetsRepository<TEntity> where TEntity : PasswordReset
     {
         #region Fields
         private readonly DatabaseContext context;
         #endregion
 
         #region Constructor
-        public PasswordUpdatesRepository(DatabaseContext databaseContext)
+        public PasswordResetsRepository(DatabaseContext databaseContext)
         {
             context = databaseContext;
         }
@@ -39,7 +39,7 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
 
-                if (await context.PasswordUpdates
+                if (await context.PasswordResets
                         .AnyAsync(pu => pu.Token.ToLower().Equals(entity.Token.ToLower())))
                 {
                     result.Success = false;
@@ -86,12 +86,12 @@ namespace SudokuCollective.Data.Repositories
         async public Task<IRepositoryResponse> Get(string token)
         {
             var result = new RepositoryResponse();
-            var query = new PasswordUpdate();
+            var query = new PasswordReset();
 
             try
             {
                 query = await context
-                    .PasswordUpdates
+                    .PasswordResets
                     .FirstOrDefaultAsync(pu => pu.Token.ToLower().Equals(token.ToLower()));
 
                 if (query == null)
@@ -118,12 +118,12 @@ namespace SudokuCollective.Data.Repositories
         async public Task<IRepositoryResponse> GetAll()
         {
             var result = new RepositoryResponse();
-            var query = new List<PasswordUpdate>();
+            var query = new List<PasswordReset>();
 
             try
             {
                 query = await context
-                    .PasswordUpdates
+                    .PasswordResets
                     .OrderBy(ec => ec.Id)
                     .ToListAsync();
 
@@ -156,7 +156,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.PasswordUpdates.AnyAsync(pu => pu.Id == entity.Id))
+                if (await context.PasswordResets.AnyAsync(pu => pu.Id == entity.Id))
                 {
                     context.Remove(entity);
 
@@ -203,7 +203,7 @@ namespace SudokuCollective.Data.Repositories
 
         async public Task<bool> HasEntity(int id)
         {
-            var result = await context.PasswordUpdates.AnyAsync(ec => ec.Id == id);
+            var result = await context.PasswordResets.AnyAsync(ec => ec.Id == id);
 
             return result;
         }

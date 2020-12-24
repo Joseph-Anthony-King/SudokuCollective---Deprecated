@@ -26,7 +26,7 @@ namespace SudokuCollective.Data.Services
         private readonly IAppsRepository<App> appsRepository;
         private readonly IRolesRepository<Role> rolesRepository;
         private readonly IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepository;
-        private readonly IPasswordUpdatesRepository<PasswordUpdate> passwordUpdatesRepository;
+        private readonly IPasswordResetsRepository<PasswordReset> passwordResetsRepository;
         private readonly IEmailService emailService;
         #endregion
 
@@ -36,14 +36,14 @@ namespace SudokuCollective.Data.Services
             IAppsRepository<App> appsRepo,
             IRolesRepository<Role> rolesRepo,
             IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepo,
-            IPasswordUpdatesRepository<PasswordUpdate> passwordUpdatesRepo,
+            IPasswordResetsRepository<PasswordReset> passwordResetsRepo,
             IEmailService emailServ)
         {
             usersRepository = usersRepo;
             appsRepository = appsRepo;
             rolesRepository = rolesRepo;
             emailConfirmationsRepository = emailConfirmationsRepo;
-            passwordUpdatesRepository = passwordUpdatesRepo;
+            passwordResetsRepository = passwordResetsRepo;
             emailService = emailServ;
         }
         #endregion
@@ -572,7 +572,7 @@ namespace SudokuCollective.Data.Services
                                     else
                                     {
                                         emailConfirmationUrl = string.Format("{0}{1}",
-                                            app.CustomPasswordUpdateLiveUrl,
+                                            app.CustomPasswordResetLiveUrl,
                                             emailConfirmation.Token);
                                     }
                                 }
@@ -773,7 +773,7 @@ namespace SudokuCollective.Data.Services
                                     else
                                     {
                                         emailConfirmationUrl = string.Format("{0}{1}",
-                                            app.CustomPasswordUpdateLiveUrl,
+                                            app.CustomPasswordResetLiveUrl,
                                             emailConfirmation.Token);
                                     }
                                 }
@@ -868,8 +868,8 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> RequestPasswordUpdate(
-            IRequestPasswordUpdateRequest request,
+        public async Task<IBaseResult> RequestPasswordReset(
+            IRequestPasswordResetRequest request,
             string baseUrl,
             string emailtTemplatePath)
         {
@@ -898,13 +898,13 @@ namespace SudokuCollective.Data.Services
                                 return result;
                             }
 
-                            var passwordUpdate = new PasswordUpdate(user.Id, app.Id);
+                            var passwordReset = new PasswordReset(user.Id, app.Id);
 
-                            passwordUpdate = await EnsurePasswordUpdateTokenIsUnique(passwordUpdate);
+                            passwordReset = await EnsurePasswordResetTokenIsUnique(passwordReset);
 
-                            var passwordUpdateResult = await passwordUpdatesRepository.Create(passwordUpdate);
+                            var passwordResetResult = await passwordResetsRepository.Create(passwordReset);
 
-                            if (passwordUpdateResult.Success)
+                            if (passwordResetResult.Success)
                             {
                                 user.ReceivedRequestToUpdatePassword = true;
 
@@ -912,26 +912,26 @@ namespace SudokuCollective.Data.Services
 
                                 string emailConfirmationUrl;
 
-                                if (app.UseCustomPasswordUpdateUrl)
+                                if (app.UseCustomPasswordResetUrl)
                                 {
                                     if (app.InDevelopment)
                                     {
                                         emailConfirmationUrl = string.Format("{0}{1}", 
-                                            app.CustomPasswordUpdateDevUrl, 
-                                            passwordUpdate.Token);
+                                            app.CustomPasswordResetDevUrl, 
+                                            passwordReset.Token);
                                     }
                                     else
                                     {
                                         emailConfirmationUrl = string.Format("{0}{1}",
-                                            app.CustomPasswordUpdateLiveUrl,
-                                            passwordUpdate.Token);
+                                            app.CustomPasswordResetLiveUrl,
+                                            passwordReset.Token);
                                     }
                                 }
                                 else
                                 {
-                                    emailConfirmationUrl = string.Format("https://{0}/passwordUpdate/{1}",
+                                    emailConfirmationUrl = string.Format("https://{0}/passwordReset/{1}",
                                         baseUrl,
-                                        passwordUpdate.Token);
+                                        passwordReset.Token);
                                 }
 
                                 var html = File.ReadAllText(emailtTemplatePath);
@@ -959,28 +959,28 @@ namespace SudokuCollective.Data.Services
 
                                 if (result.Success)
                                 {
-                                    result.Message = UsersMessages.ProcessedPasswordRequest;
+                                    result.Message = UsersMessages.ProcessedPasswordResetRequest;
 
                                     return result;
                                 }
                                 else
                                 {
-                                    result.Message = UsersMessages.UnableToProcessPasswordRequest;
+                                    result.Message = UsersMessages.UnableToProcessPasswordResetRequest;
 
                                     return result;
                                 }
                             }
-                            else if (!passwordUpdateResult.Success && passwordUpdateResult.Exception != null)
+                            else if (!passwordResetResult.Success && passwordResetResult.Exception != null)
                             {
-                                result.Success = passwordUpdateResult.Success;
-                                result.Message = passwordUpdateResult.Exception.Message;
+                                result.Success = passwordResetResult.Success;
+                                result.Message = passwordResetResult.Exception.Message;
 
                                 return result;
                             }
                             else
                             {
                                 result.Success = userResult.Success;
-                                result.Message = UsersMessages.UnableToProcessPasswordRequest;
+                                result.Message = UsersMessages.UnableToProcessPasswordResetRequest;
 
                                 return result;
                             }
@@ -1003,7 +1003,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = userResult.Success;
-                        result.Message = AppsMessages.AppNotFoundMessage;
+                        result.Message = UsersMessages.NoUserIsUsingThisEmail;
 
                         return result;
                     }
@@ -1032,25 +1032,25 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IInitiatePasswordUpdateResult> InitiatePasswordUpdate(string token)
+        public async Task<IInitiatePasswordResetResult> InitiatePasswordReset(string token)
         {
-            var result = new InitiatePasswordUpdateResult();
+            var result = new InitiatePasswordResetResult();
 
             try
             {
-                var passwordUpdateResult = await passwordUpdatesRepository.Get(token);
+                var passwordResetResult = await passwordResetsRepository.Get(token);
 
-                if (passwordUpdateResult.Success)
+                if (passwordResetResult.Success)
                 {
-                    var passwordUpdate = (PasswordUpdate)passwordUpdateResult.Object;
+                    var passwordReset = (PasswordReset)passwordResetResult.Object;
 
-                    var userResult = await usersRepository.GetById(passwordUpdate.UserId);
+                    var userResult = await usersRepository.GetById(passwordReset.UserId);
 
                     if (userResult.Success)
                     {
                         var user = (User)userResult.Object;
 
-                        var appResult = await appsRepository.GetById(passwordUpdate.AppId);
+                        var appResult = await appsRepository.GetById(passwordReset.AppId);
 
                         if (appResult.Success)
                         {
@@ -1070,7 +1070,7 @@ namespace SudokuCollective.Data.Services
                                 else
                                 {
                                     result.Success = false;
-                                    result.Message = UsersMessages.NoOutstandingRequestToUpdatePassword;
+                                    result.Message = UsersMessages.NoOutstandingRequestToResetPassword;
 
                                     return result;
                                 }
@@ -1085,8 +1085,8 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (!appResult.Success && appResult.Exception != null)
                         {
-                            result.Success = passwordUpdateResult.Success;
-                            result.Message = passwordUpdateResult.Exception.Message;
+                            result.Success = passwordResetResult.Success;
+                            result.Message = passwordResetResult.Exception.Message;
 
                             return result;
                         }
@@ -1100,8 +1100,8 @@ namespace SudokuCollective.Data.Services
                     }
                     else if (!userResult.Success && userResult.Exception != null)
                     {
-                        result.Success = passwordUpdateResult.Success;
-                        result.Message = passwordUpdateResult.Exception.Message;
+                        result.Success = passwordResetResult.Success;
+                        result.Message = passwordResetResult.Exception.Message;
 
                         return result;
                     }
@@ -1113,17 +1113,17 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
                 }
-                else if (!passwordUpdateResult.Success && passwordUpdateResult.Exception != null)
+                else if (!passwordResetResult.Success && passwordResetResult.Exception != null)
                 {
-                    result.Success = passwordUpdateResult.Success;
-                    result.Message = passwordUpdateResult.Exception.Message;
+                    result.Success = passwordResetResult.Success;
+                    result.Message = passwordResetResult.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = passwordUpdateResult.Success;
-                    result.Message = UsersMessages.ProcessPasswordRequestNotFound;
+                    result.Success = passwordResetResult.Success;
+                    result.Message = UsersMessages.ProcessPasswordResetRequestNotFound;
 
                     return result;
                 }
@@ -1137,7 +1137,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> UpdatePassword(IUpdatePasswordRequest request)
+        public async Task<IBaseResult> UpdatePassword(IPasswordResetRequest request)
         {
             var result = new BaseResult();
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
@@ -1166,7 +1166,7 @@ namespace SudokuCollective.Data.Services
                             if (updateUserResponse.Success)
                             {
                                 result.Success = userResponse.Success;
-                                result.Message = UsersMessages.PasswordUpdatedMessage;
+                                result.Message = UsersMessages.PasswordResetMessage;
 
                                 return result;
                             }
@@ -1180,7 +1180,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = UsersMessages.PasswordNotUpdatedMessage;
+                                result.Message = UsersMessages.PasswordNotResetMessage;
 
                                 return result;
                             }
@@ -1188,7 +1188,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = UsersMessages.NoOutstandingRequestToUpdatePassword;
+                            result.Message = UsersMessages.NoOutstandingRequestToResetPassword;
 
                             return result;
                         }
@@ -1746,27 +1746,27 @@ namespace SudokuCollective.Data.Services
             return emailConfirmation;
         }
 
-        private async Task<PasswordUpdate> EnsurePasswordUpdateTokenIsUnique(PasswordUpdate passwordUpdate)
+        private async Task<PasswordReset> EnsurePasswordResetTokenIsUnique(PasswordReset passwordReset)
         {
-            var passwordUpdateResponse = await passwordUpdatesRepository.GetAll();
+            var passwordResetResponse = await passwordResetsRepository.GetAll();
 
-            if (passwordUpdateResponse.Success)
+            if (passwordResetResponse.Success)
             {
                 bool tokenNotUnique;
 
-                var passwordUpdates = passwordUpdateResponse
+                var passwordResets = passwordResetResponse
                     .Objects
-                    .ConvertAll(pu => (PasswordUpdate)pu);
+                    .ConvertAll(pu => (PasswordReset)pu);
 
                 do
                 {
-                    if (passwordUpdates
+                    if (passwordResets
                         .Any(ec => ec.Token.ToLower()
-                        .Equals(passwordUpdate.Token.ToLower())))
+                        .Equals(passwordReset.Token.ToLower())))
                     {
                         tokenNotUnique = true;
 
-                        passwordUpdate.Token = Guid.NewGuid().ToString();
+                        passwordReset.Token = Guid.NewGuid().ToString();
                     }
                     else
                     {
@@ -1776,7 +1776,7 @@ namespace SudokuCollective.Data.Services
                 } while (tokenNotUnique);
             }
 
-            return passwordUpdate;
+            return passwordReset;
         }
         #endregion
     }

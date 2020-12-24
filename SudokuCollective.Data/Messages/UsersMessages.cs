@@ -24,22 +24,22 @@
         public static string UserNameConfirmedMessage = "User Name Confirmed";
         public static string EmailUniqueMessage = "Email Not Unique";
         public static string EmailRequiredMessage = "Email Required";
-        public static string EmailDoesNotExist = "Email Does Not Exist";
+        public static string NoUserIsUsingThisEmail = "No User Is Using This Email";
         public static string RolesAddedMessage = "Roles Added";
         public static string RolesNotAddedMessage = "Roles Not Added";
         public static string RolesRemovedMessage = "Roles Removed";
         public static string RolesNotRemovedMessage = "Roles Not Removed";
         public static string RoleInvalidMessage = "Role Invalid";
-        public static string PasswordUpdatedMessage = "Password Updated";
-        public static string PasswordNotUpdatedMessage = "Password Not Updated";
+        public static string PasswordResetMessage = "Password Reset";
+        public static string PasswordNotResetMessage = "Password Not Reset";
         public static string EmailConfirmedMessage = "Email Confirmed";
         public static string EmailNotConfirmedMessage = "Email Not Confirmed";
         public static string OldEmailConfirmedMessage = "Old Email Confirmed";
         public static string OldEmailNotConfirmedMessage = "Old Email Not Confirmed";
-        public static string ProcessedPasswordRequest = "Processed Password Request";
-        public static string UnableToProcessPasswordRequest = "Unable To Process Password Request";
+        public static string ProcessedPasswordResetRequest = "Processed Password Reset Request";
+        public static string UnableToProcessPasswordResetRequest = "Unable To Process Password Reset Request";
         public static string UserEmailNotConfirmed = "User Email Not Confirmed";
-        public static string ProcessPasswordRequestNotFound = "Process Password Request Not Found";
-        public static string NoOutstandingRequestToUpdatePassword = "No Outstanding Request To Update Password";
+        public static string ProcessPasswordResetRequestNotFound = "Process Password Reset Request Not Found";
+        public static string NoOutstandingRequestToResetPassword = "No Outstanding Request To Reset Password";
     }
 }

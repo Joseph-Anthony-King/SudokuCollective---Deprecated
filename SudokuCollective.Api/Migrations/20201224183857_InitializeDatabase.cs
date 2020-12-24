@@ -24,8 +24,8 @@ namespace SudokuCollective.Api.Migrations
                     DisableCustomUrls = table.Column<bool>(nullable: false),
                     CustomEmailConfirmationDevUrl = table.Column<string>(nullable: true),
                     CustomEmailConfirmationLiveUrl = table.Column<string>(nullable: true),
-                    CustomPasswordUpdateDevUrl = table.Column<string>(nullable: true),
-                    CustomPasswordUpdateLiveUrl = table.Column<string>(nullable: true),
+                    CustomPasswordResetDevUrl = table.Column<string>(nullable: true),
+                    CustomPasswordResetLiveUrl = table.Column<string>(nullable: true),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false)
                 },
@@ -69,7 +69,7 @@ namespace SudokuCollective.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PasswordUpdates",
+                name: "PasswordResets",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -81,7 +81,7 @@ namespace SudokuCollective.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PasswordUpdates", x => x.Id);
+                    table.PrimaryKey("PK_PasswordResets", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -341,7 +341,7 @@ namespace SudokuCollective.Api.Migrations
                 name: "Games");
 
             migrationBuilder.DropTable(
-                name: "PasswordUpdates");
+                name: "PasswordResets");
 
             migrationBuilder.DropTable(
                 name: "SudokuCells");

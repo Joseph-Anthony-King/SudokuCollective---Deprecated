@@ -185,10 +185,18 @@ export default {
           this.$router.push("/dashboard");
         }
 
+        var logInMessage;
+
+        if (this.$data.user.emailConfirmed){
+          logInMessage = "You are logged in";
+        } else {
+          logInMessage = "You are logged in, but please confirm your email";
+        }
+
         showToast(
           this, 
           ToastMethods["success"], 
-          "You are logged in.", 
+          logInMessage, 
           { duration: 3000 });
       }
 

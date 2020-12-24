@@ -4,7 +4,7 @@ using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Core.Interfaces.Repositories
 {
-    public interface IPasswordUpdatesRepository<TEntity> where TEntity : IEntityBase
+    public interface IPasswordResetsRepository<TEntity> where TEntity : IEntityBase
     {
         Task<IRepositoryResponse> Create(TEntity entity);
         Task<IRepositoryResponse> Get(string token);

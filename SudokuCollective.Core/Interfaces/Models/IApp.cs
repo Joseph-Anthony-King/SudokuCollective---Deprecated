@@ -17,9 +17,9 @@ namespace SudokuCollective.Core.Interfaces.Models
         string CustomEmailConfirmationDevUrl { get; set; }
         string CustomEmailConfirmationLiveUrl { get; set; }
         bool UseCustomEmailConfirmationUrl { get; }
-        string CustomPasswordUpdateDevUrl { get; set; }
-        string CustomPasswordUpdateLiveUrl { get; set; }
-        bool UseCustomPasswordUpdateUrl { get; }
+        string CustomPasswordResetDevUrl { get; set; }
+        string CustomPasswordResetLiveUrl { get; set; }
+        bool UseCustomPasswordResetUrl { get; }
         int GameCount { get; }
         int UserCount { get; }
         DateTime DateCreated { get; set; }

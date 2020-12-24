@@ -25,7 +25,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockAppsRepository MockAppsRepository;
         private MockRolesRepository MockRolesRepository;
         private MockEmailConfirmationsRepository MockEmailConfirmationsRepository;
-        private MockPasswordUpdatesRepository MockPasswordUpdatesRepository;
+        private MockPasswordResetsRepository MockPasswordResetRepository;
         private IUsersService sut;
         private IUsersService sutFailure;
         private IUsersService sutEmailFailure;
@@ -41,14 +41,14 @@ namespace SudokuCollective.Test.TestCases.Services
             MockAppsRepository = new MockAppsRepository(context);
             MockRolesRepository = new MockRolesRepository(context);
             MockEmailConfirmationsRepository = new MockEmailConfirmationsRepository(context);
-            MockPasswordUpdatesRepository = new MockPasswordUpdatesRepository(context);
+            MockPasswordResetRepository = new MockPasswordResetsRepository(context);
 
             sut = new UsersService(
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
-                MockPasswordUpdatesRepository.PasswordUpdatesRepositorySuccessfulRequest.Object,
+                MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             sutFailure = new UsersService(
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
-                MockPasswordUpdatesRepository.PasswordUpdatesRepositorySuccessfulRequest.Object,
+                MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             sutEmailFailure = new UsersService(
@@ -64,7 +64,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
-                MockPasswordUpdatesRepository.PasswordUpdatesRepositorySuccessfulRequest.Object,
+                MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             baseRequest = TestObjects.GetBaseRequest();
@@ -474,12 +474,12 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Password Updated"));
+            Assert.That(result.Message, Is.EqualTo("Password Reset"));
         }
 
         [Test]
         [Category("Services")]
-        public async Task RejectPasswordUpdatesIfUserNotFound()
+        public async Task RejectPasswordResetIfUserNotFound()
         {
             // Arrange
             var updatePasswordRequest = new UpdatePasswordRequest()

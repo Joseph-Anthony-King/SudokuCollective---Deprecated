@@ -112,14 +112,14 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.RequestPasswordUpdate(
-                    It.IsAny<RequestPasswordUpdateRequest>(),
+                userService.RequestPasswordReset(
+                    It.IsAny<RequestPasswordResetRequest>(),
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = true,
-                    Message = UsersMessages.ProcessedPasswordRequest
+                    Message = UsersMessages.ProcessedPasswordResetRequest
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
@@ -132,7 +132,7 @@ namespace SudokuCollective.Test.MockServices
                         .Update(It.IsAny<User>())
                         .Result
                         .Success,
-                    Message = UsersMessages.PasswordUpdatedMessage
+                    Message = UsersMessages.PasswordResetMessage
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
@@ -290,14 +290,14 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.RequestPasswordUpdate(
-                    It.IsAny<RequestPasswordUpdateRequest>(),
+                userService.RequestPasswordReset(
+                    It.IsAny<RequestPasswordResetRequest>(),
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = false,
-                    Message = UsersMessages.UnableToProcessPasswordRequest
+                    Message = UsersMessages.UnableToProcessPasswordResetRequest
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>
@@ -310,7 +310,7 @@ namespace SudokuCollective.Test.MockServices
                         .Update(It.IsAny<User>())
                         .Result
                         .Success,
-                    Message = UsersMessages.PasswordNotUpdatedMessage
+                    Message = UsersMessages.PasswordNotResetMessage
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>

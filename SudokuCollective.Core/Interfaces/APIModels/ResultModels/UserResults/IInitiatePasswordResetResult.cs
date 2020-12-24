@@ -2,7 +2,7 @@
 
 namespace SudokuCollective.Core.Interfaces.APIModels.ResultModels.UserResults
 {
-    public interface IInitiatePasswordUpdateResult : IUserResult
+    public interface IInitiatePasswordResetResult : IUserResult
     {
         IApp App { get; set; }
     }

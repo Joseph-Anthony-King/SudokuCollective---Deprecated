@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201219011435_InitializeDatabase")]
+    [Migration("20201224183857_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,10 +34,10 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<string>("CustomEmailConfirmationLiveUrl")
                         .HasColumnType("text");
 
-                    b.Property<string>("CustomPasswordUpdateDevUrl")
+                    b.Property<string>("CustomPasswordResetDevUrl")
                         .HasColumnType("text");
 
-                    b.Property<string>("CustomPasswordUpdateLiveUrl")
+                    b.Property<string>("CustomPasswordResetLiveUrl")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("DateCreated")
@@ -177,7 +177,7 @@ namespace SudokuCollective.Api.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("SudokuCollective.Core.Models.PasswordUpdate", b =>
+            modelBuilder.Entity("SudokuCollective.Core.Models.PasswordReset", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -198,7 +198,7 @@ namespace SudokuCollective.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PasswordUpdates");
+                    b.ToTable("PasswordResets");
                 });
 
             modelBuilder.Entity("SudokuCollective.Core.Models.Role", b =>

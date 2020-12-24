@@ -10,37 +10,37 @@ using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Test.MockRepositories
 {
-    public class MockPasswordUpdatesRepository
+    public class MockPasswordResetsRepository
     {
         private readonly DatabaseContext context;
-        internal Mock<IPasswordUpdatesRepository<PasswordUpdate>> PasswordUpdatesRepositorySuccessfulRequest { get; set; }
-        internal Mock<IPasswordUpdatesRepository<PasswordUpdate>> PasswordUpdatesRepositoryFailedRequest { get; set; }
+        internal Mock<IPasswordResetsRepository<PasswordReset>> PasswordResetsRepositorySuccessfulRequest { get; set; }
+        internal Mock<IPasswordResetsRepository<PasswordReset>> PasswordResetsRepositoryFailedRequest { get; set; }
 
-        public MockPasswordUpdatesRepository(DatabaseContext ctxt)
+        public MockPasswordResetsRepository(DatabaseContext ctxt)
         {
             context = ctxt;
 
-            PasswordUpdatesRepositorySuccessfulRequest = new Mock<IPasswordUpdatesRepository<PasswordUpdate>>();
-            PasswordUpdatesRepositoryFailedRequest = new Mock<IPasswordUpdatesRepository<PasswordUpdate>>();
+            PasswordResetsRepositorySuccessfulRequest = new Mock<IPasswordResetsRepository<PasswordReset>>();
+            PasswordResetsRepositoryFailedRequest = new Mock<IPasswordResetsRepository<PasswordReset>>();
 
-            PasswordUpdatesRepositorySuccessfulRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.Create(It.IsAny<PasswordUpdate>()))
+            PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Create(It.IsAny<PasswordReset>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
                         Object = new EmailConfirmation()
                     } as IRepositoryResponse));
 
-            PasswordUpdatesRepositorySuccessfulRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.Get(It.IsAny<string>()))
+            PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Get(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
                         Object = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
                     } as IRepositoryResponse));
 
-            PasswordUpdatesRepositorySuccessfulRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.GetAll())
+            PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -49,48 +49,48 @@ namespace SudokuCollective.Test.MockRepositories
                             .ConvertAll(d => (IEntityBase)d)
                     } as IRepositoryResponse));
 
-            PasswordUpdatesRepositorySuccessfulRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.Delete(It.IsAny<PasswordUpdate>()))
+            PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Delete(It.IsAny<PasswordReset>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true
                     } as IRepositoryResponse));
 
-            PasswordUpdatesRepositorySuccessfulRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.HasEntity(It.IsAny<int>()))
+            PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.HasEntity(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
 
-            PasswordUpdatesRepositoryFailedRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.Create(It.IsAny<PasswordUpdate>()))
+            PasswordResetsRepositoryFailedRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Create(It.IsAny<PasswordReset>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            PasswordUpdatesRepositoryFailedRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.Get(It.IsAny<string>()))
+            PasswordResetsRepositoryFailedRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Get(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            PasswordUpdatesRepositoryFailedRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.GetAll())
+            PasswordResetsRepositoryFailedRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            PasswordUpdatesRepositoryFailedRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.Delete(It.IsAny<PasswordUpdate>()))
+            PasswordResetsRepositoryFailedRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Delete(It.IsAny<PasswordReset>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
-            PasswordUpdatesRepositoryFailedRequest.Setup(passwordUpdatesRepo =>
-                passwordUpdatesRepo.HasEntity(It.IsAny<int>()))
+            PasswordResetsRepositoryFailedRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.HasEntity(It.IsAny<int>()))
                     .Returns(Task.FromResult(false));
         }
     }

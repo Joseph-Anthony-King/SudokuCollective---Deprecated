@@ -32,7 +32,7 @@ namespace SudokuCollective.Data.Models
         public DbSet<App> Apps { get; set; }
         public DbSet<UserApp> UsersApps { get; set; }
         public DbSet<EmailConfirmation> EmailConfirmations { get; set; }
-        public DbSet<PasswordUpdate> PasswordUpdates { get; set; }
+        public DbSet<PasswordReset> PasswordResets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -235,7 +235,7 @@ namespace SudokuCollective.Data.Models
                 .Ignore(app => app.UseCustomEmailConfirmationUrl);
 
             modelBuilder.Entity<App>()
-                .Ignore(app => app.UseCustomPasswordUpdateUrl);
+                .Ignore(app => app.UseCustomPasswordResetUrl);
 
             modelBuilder.Entity<UserApp>()
                 .HasKey(ua => ua.Id);
@@ -256,7 +256,7 @@ namespace SudokuCollective.Data.Models
             modelBuilder.Entity<EmailConfirmation>()
                 .Ignore(ec => ec.IsUpdate);
 
-            modelBuilder.Entity<PasswordUpdate>()
+            modelBuilder.Entity<PasswordReset>()
                 .HasKey(pu => pu.Id);
         }
     }

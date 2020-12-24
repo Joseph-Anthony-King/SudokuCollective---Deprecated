@@ -137,7 +137,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(success, Is.False);
             Assert.That(result, Is.InstanceOf<AuthenticationResult>());
-            Assert.That(message, Is.EqualTo("Email Does Not Exist"));
+            Assert.That(message, Is.EqualTo("No User Is Using This Email"));
         }
     }
 }

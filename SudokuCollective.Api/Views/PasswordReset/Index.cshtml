@@ -1,5 +1,5 @@
 ﻿@using SudokuCollective.Api.Models
-@model PasswordUpdate
+@model PasswordReset
 
 @{
     ViewData["Title"] = "Password Update";
@@ -15,7 +15,7 @@
             <p>
                 @Model.UserName, please create a new password:
             </p>
-            @using (Html.BeginForm("result", "passwordUpdate", Model, FormMethod.Post))
+            @using (Html.BeginForm("result", "passwordReset", Model, FormMethod.Post))
             {
                 <div>New Password</div>
                 @Html.TextBoxFor(m => m.NewPassword)

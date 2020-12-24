@@ -188,16 +188,16 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public void SuccessfullyUpdateUsersPasswords()
         {
             // Arrange
-            var updatePasswordRequest = TestObjects.GetRequestPasswordUpdateRequest();
+            var updatePasswordRequest = TestObjects.GetRequestPasswordResetRequest();
 
             // Act
-            var result = sutSuccess.RequestPasswordUpdate(updatePasswordRequest);
+            var result = sutSuccess.RequestPasswordReset(updatePasswordRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Processed Password Request"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Processed Password Reset Request"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -206,16 +206,16 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public void IssueErrorAndMessageShouldUpdateUsersPasswordsFail()
         {
             // Arrange
-            var updatePasswordRequest = TestObjects.GetRequestPasswordUpdateRequest();
+            var updatePasswordRequest = TestObjects.GetRequestPasswordResetRequest();
 
             // Act
-            var result = sutFailure.RequestPasswordUpdate(updatePasswordRequest);
+            var result = sutFailure.RequestPasswordReset(updatePasswordRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Unable To Process Password Request"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Unable To Process Password Reset Request"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 

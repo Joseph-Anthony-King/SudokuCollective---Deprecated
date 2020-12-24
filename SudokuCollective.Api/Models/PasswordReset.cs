@@ -2,7 +2,7 @@
 
 namespace SudokuCollective.Api.Models
 {
-    public class PasswordUpdate
+    public class PasswordReset
     {
         public bool Success { get; set; }
         public int UserId { get; set; }

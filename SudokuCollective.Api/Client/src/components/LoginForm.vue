@@ -4,7 +4,7 @@
       <span class="headline">Login</span>
     </v-card-title>
     <v-card-title v-show="gettingHelp">
-      <span class="headline">Look Up User Name</span>
+      <span class="headline">Login Help</span>
     </v-card-title>
     <v-form v-model="loginFormIsValid" ref="loginForm" v-show="!gettingHelp">
       <v-card-text>
@@ -81,6 +81,14 @@
         <v-btn
           color="blue darken-1"
           text
+          @click="requestPasswordReset"
+          :disabled="!userNameFormIsValid"
+        >
+          Reset Password
+        </v-btn>
+        <v-btn
+          color="blue darken-1"
+          text
           @click="confirmUserName"
           :disabled="!userNameFormIsValid"
         >
@@ -97,6 +105,7 @@
 
 <script>
 import { authenticationService } from "@/services/authenticationService/authentication.service";
+import { userService } from "../services/userService/user.service";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast } from "@/helpers/toastHelper";
@@ -115,7 +124,7 @@ export default {
     needHelp: false,
     gettingHelp: false,
     invalidUserNames: [],
-    invalidUserNameMessage: "User name does not exist.",
+    invalidUserNameMessage: "No user is using this user name.",
     invalidPasswords: [],
     invalidPasswordMessage: "Password is incorrect.",
     invalidEmails: [],
@@ -201,25 +210,48 @@ export default {
           );
 
           this.$data.gettingHelp = false;
-        } else if (response.status === 400) {
-          this.$data.invalidEmails.push(this.$data.email);
-          this.$refs.userNameForm.validate();
-          if (response.data === "Status Code 400: No Record Of Email Address") {
-            showToast(
-              this,
-              ToastMethods["error"],
-              `Sudoku Collective does not have a record for ${this.$data.email}.`,
-              { duration: 3000 }
-            );
-          } else {
-            showToast(
-              this,
-              ToastMethods["error"],
-              "Experienced an error retrieving the user name.",
-              { duration: 3000 }
-            );
-          }
+        } else {   
+          showToast(
+            this,
+            ToastMethods["error"],
+            response.data.message,
+            { duration: 3000 }
+          );
         }
+      } catch (error) {
+        showToast(this, ToastMethods["error"], error, { duration: 3000 });
+      }
+    },
+
+    async requestPasswordReset() {
+      try {
+        const response = await userService.getRequestPasswordReset(
+          this.$data.email
+        );
+
+        if (response.status === 200) {
+        
+          showToast(
+            this,
+            ToastMethods["success"],
+            `Please review ${this.$data.email} to reset your password`,
+            { duration: 3000 }
+          );
+
+          this.$data.gettingHelp = false;
+
+        } else {
+
+          console.log(response);
+
+          showToast(
+            this,
+            ToastMethods["error"],
+            response.data.message,
+            { duration: 3000 }
+          );
+        }
+
       } catch (error) {
         showToast(this, ToastMethods["error"], error, { duration: 3000 });
       }

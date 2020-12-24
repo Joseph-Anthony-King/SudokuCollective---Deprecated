@@ -44,7 +44,7 @@ namespace SudokuCollective.Test.MockServices
                     .Returns(Task.FromResult(new AuthenticationResult()
                     {
                         Success = false,
-                        Message = UsersMessages.EmailDoesNotExist
+                        Message = UsersMessages.NoUserIsUsingThisEmail
                     } as IAuthenticationResult));
 
             UserManagementServiceUserNameFailedRequest.Setup(userManagementService =>

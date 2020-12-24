@@ -2,7 +2,7 @@
 
 namespace SudokuCollective.Core.Interfaces.Models
 {
-    public interface IPasswordUpdate : IEntityBase
+    public interface IPasswordReset : IEntityBase
     {
         int UserId { get; set; }
         int AppId { get; set; }

@@ -20,12 +20,12 @@ namespace SudokuCollective.Core.Interfaces.Services
             IUpdateUserRequest request,
             string baseUrl,
             string emailtTemplatePath);
-        Task<IBaseResult> RequestPasswordUpdate(
-            IRequestPasswordUpdateRequest request,
+        Task<IBaseResult> RequestPasswordReset(
+            IRequestPasswordResetRequest request,
             string baseUrl,
             string emailtTemplatePath);
-        Task<IInitiatePasswordUpdateResult> InitiatePasswordUpdate(string token);
-        Task<IBaseResult> UpdatePassword(IUpdatePasswordRequest request);
+        Task<IInitiatePasswordResetResult> InitiatePasswordReset(string token);
+        Task<IBaseResult> UpdatePassword(IPasswordResetRequest request);
         Task<IBaseResult> DeleteUser(int id);
         Task<IBaseResult> AddUserRoles(int userid, List<int> roleIds);
         Task<IBaseResult> RemoveUserRoles(int userid, List<int> roleIds);

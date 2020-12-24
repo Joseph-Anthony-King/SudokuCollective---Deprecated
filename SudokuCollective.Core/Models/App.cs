@@ -47,18 +47,18 @@ namespace SudokuCollective.Core.Models
                 }
             }
         }
-        public string CustomPasswordUpdateDevUrl { get; set; }
-        public string CustomPasswordUpdateLiveUrl { get; set; }
+        public string CustomPasswordResetDevUrl { get; set; }
+        public string CustomPasswordResetLiveUrl { get; set; }
         [JsonIgnore]
-        public bool UseCustomPasswordUpdateUrl
+        public bool UseCustomPasswordResetUrl
         {
             get
             {
-                if (InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomPasswordUpdateDevUrl))
+                if (InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomPasswordResetDevUrl))
                 {
                     return true;
                 }
-                else if (!InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomPasswordUpdateLiveUrl))
+                else if (!InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomPasswordResetLiveUrl))
                 {
                     return true;
                 }
@@ -132,8 +132,8 @@ namespace SudokuCollective.Core.Models
             DisableCustomUrls = true;
             CustomEmailConfirmationDevUrl = string.Empty;
             CustomEmailConfirmationLiveUrl = string.Empty;
-            CustomPasswordUpdateDevUrl = string.Empty;
-            CustomPasswordUpdateLiveUrl = string.Empty;
+            CustomPasswordResetDevUrl = string.Empty;
+            CustomPasswordResetLiveUrl = string.Empty;
             Users = new List<UserApp>();
         }
 
@@ -165,8 +165,8 @@ namespace SudokuCollective.Core.Models
             bool disableCustomUrls,
             string customEmailConfirmationDevUrl,
             string customEmailConfirmationLiveUrl,
-            string customPasswordUpdateDevUrl,
-            string customPasswordUpdateLiveUrl,
+            string customPasswordResetDevUrl,
+            string customPasswordResetLiveUrl,
             DateTime dateCreated,
             DateTime dateUpdated)
         {
@@ -181,8 +181,8 @@ namespace SudokuCollective.Core.Models
             DisableCustomUrls = disableCustomUrls;
             CustomEmailConfirmationDevUrl = customEmailConfirmationDevUrl;
             CustomEmailConfirmationLiveUrl = customEmailConfirmationLiveUrl;
-            CustomPasswordUpdateDevUrl = customPasswordUpdateDevUrl;
-            CustomPasswordUpdateLiveUrl = customPasswordUpdateLiveUrl;
+            CustomPasswordResetDevUrl = customPasswordResetDevUrl;
+            CustomPasswordResetLiveUrl = customPasswordResetLiveUrl;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
         }

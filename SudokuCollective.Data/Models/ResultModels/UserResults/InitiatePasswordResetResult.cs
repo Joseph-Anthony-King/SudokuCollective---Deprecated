@@ -4,7 +4,7 @@ using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Data.Models.ResultModels
 {
-    public class InitiatePasswordUpdateResult : IInitiatePasswordUpdateResult
+    public class InitiatePasswordResetResult : IInitiatePasswordResetResult
     {
         public bool Success { get; set; }
         public string Message { get; set; }
@@ -13,7 +13,7 @@ namespace SudokuCollective.Data.Models.ResultModels
         public IUser User { get; set; }
         public IApp App { get; set; }
 
-        public InitiatePasswordUpdateResult() : base()
+        public InitiatePasswordResetResult() : base()
         {
             Token = null;
             ConfirmationEmailSuccessfullySent = null;

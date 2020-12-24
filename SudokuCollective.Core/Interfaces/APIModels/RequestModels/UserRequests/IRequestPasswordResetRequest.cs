@@ -1,6 +1,6 @@
 ﻿namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
 {
-    public interface IRequestPasswordUpdateRequest
+    public interface IRequestPasswordResetRequest
     {
         string License { get; set; }
         string Email { get; set; }

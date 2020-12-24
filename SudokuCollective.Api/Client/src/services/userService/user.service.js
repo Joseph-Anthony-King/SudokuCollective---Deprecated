@@ -4,7 +4,7 @@ import User from "../../models/user";
 import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
 import { requestDataUpdateUser } from "../../helpers/userRequestData/userRequestData";
-import { getUserEnpoint } from "./service.endpoints";
+import { getUserEnpoint, getRequestPasswordResetEnpoint } from "./service.endpoints";
 
 const getUser = async function (id, pageListModel, fullRecord) {
 
@@ -113,6 +113,35 @@ const updateUser = async function (
     }
 }
 
+const getRequestPasswordReset = async function (email) {
+    
+    try {
+
+        const license = process.env.VUE_APP_LICENSE;
+
+        const config = {
+            method: "post",
+            url: `${getRequestPasswordResetEnpoint}`,
+            headers: requestHeader(),
+            data: {
+                License: license,
+                Email: email
+            }
+        }
+
+        console.log(config);
+
+        const response = await axios(config);
+
+        return response;
+        
+    } catch (error) {
+        
+        console.error(error.name, error.message);
+        return error.response;
+    }
+}
+
 const loginUser = function(user, token) {
 
     user.login();
@@ -159,6 +188,7 @@ export const userService = {
     getUser,
     getUsers,
     updateUser,
+    getRequestPasswordReset,
     loginUser,
     logoutUser,
     assignAPIReponseToUser

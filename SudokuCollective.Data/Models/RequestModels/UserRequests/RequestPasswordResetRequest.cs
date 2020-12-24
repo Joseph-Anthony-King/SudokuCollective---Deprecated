@@ -2,12 +2,12 @@
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
-    public class RequestPasswordUpdateRequest : IRequestPasswordUpdateRequest
+    public class RequestPasswordResetRequest : IRequestPasswordResetRequest
     {
         public string License { get; set; }
         public string Email { get; set; }
 
-        public RequestPasswordUpdateRequest()
+        public RequestPasswordResetRequest()
         {
             License = string.Empty;
             Email = string.Empty;
