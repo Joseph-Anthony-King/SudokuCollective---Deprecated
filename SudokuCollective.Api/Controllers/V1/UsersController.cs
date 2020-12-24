@@ -179,7 +179,7 @@ namespace SudokuCollective.Api.V1.Controllers
 
             if (!string.IsNullOrEmpty(hostEnvironment.WebRootPath))
             {
-                emailtTemplatePath = Path.Combine(hostEnvironment.WebRootPath, "/Content/EmailTemplates/update-password-requested-inlined.html");
+                emailtTemplatePath = Path.Combine(hostEnvironment.WebRootPath, "/Content/EmailTemplates/password-reset-requested-inlined.html");
 
                 emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
             }
