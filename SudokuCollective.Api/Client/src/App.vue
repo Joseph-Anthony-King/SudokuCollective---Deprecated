@@ -267,7 +267,7 @@ export default {
           this.$router.push("/dashboard");
         }
 
-        showToast(this, ToastMethods["success"], "Thank you for signing up, please confirm your email address", {
+        showToast(this, ToastMethods["success"], "Thank you for signing up, please review your email to confirm your address", {
           duration: 3000,
         });
       }
