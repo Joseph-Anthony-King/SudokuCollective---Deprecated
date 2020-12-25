@@ -14,7 +14,7 @@
               <v-text-field
                 v-model="username"
                 label="User Name"
-                prepend-icon="mdi-account circle"
+                prepend-icon="mdi-account-circle"
                 :rules="userNameRules"
                 required
               ></v-text-field>
@@ -43,6 +43,14 @@
           v-show="needHelp"
         >
           Help
+        </v-btn>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click="redirectToSignUp"
+          v-show="needHelp"
+        >
+          Sign Up
         </v-btn>
         <v-btn color="blue darken-1" text @click="resetForm"> Reset </v-btn>
         <v-btn color="blue darken-1" text @click="close"> Close </v-btn>
@@ -105,7 +113,7 @@
 
 <script>
 import { authenticationService } from "@/services/authenticationService/authentication.service";
-import { userService } from "../services/userService/user.service";
+import { userService } from "@/services/userService/user.service";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast } from "@/helpers/toastHelper";
@@ -124,7 +132,7 @@ export default {
     needHelp: false,
     gettingHelp: false,
     invalidUserNames: [],
-    invalidUserNameMessage: "No user is using this user name.",
+    invalidUserNameMessage: "No user has this user name.",
     invalidPasswords: [],
     invalidPasswordMessage: "Password is incorrect.",
     invalidEmails: [],
@@ -257,12 +265,6 @@ export default {
       }
     },
 
-    close() {
-      this.$emit("user-logging-in-event", null, null);
-
-      this.resetForm();
-    },
-
     resetForm() {
       this.$refs.loginForm.reset();
       this.$refs.userNameForm.reset();
@@ -272,8 +274,19 @@ export default {
       this.$data.needHelp = false;
       this.$data.gettingHelp = false;
     },
-  },
 
+    redirectToSignUp() {
+      this.$emit("redirect-to-sign-up", null, null);
+
+      this.resetForm();
+    },
+
+    close() {
+      this.$emit("user-logging-in-event", null, null);
+
+      this.resetForm();
+    },
+  },
   computed: {
     userNameRules() {
       return [
@@ -314,7 +327,6 @@ export default {
       return !this.loginFormStatus;
     },
   },
-
   mounted() {
     let self = this;
 

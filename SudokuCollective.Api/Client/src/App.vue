@@ -60,6 +60,16 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item v-if="!user.isLoggedIn">
+            <v-list-item-content>
+              <v-list-item-title>
+                <div class="menu-item" @click="userSigningUp = true">
+                  <v-icon>mdi-account-plus</v-icon>
+                  <span class="mr-2">Sign Up</span>
+                </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item v-if="user.isLoggedIn">
             <v-list-item-content>
               <v-list-item-title>
@@ -120,8 +130,17 @@
             :userForAuthentication="user"
             :loginFormStatus="userLoggingIn"
             v-on:user-logging-in-event="login"
+            v-on:redirect-to-sign-up="redirectToSignUp"
           />
         </v-dialog>
+
+        <v-dialog v-model="userSigningUp" persistent max-width="600px">
+          <SignUpForm
+            :signUpFormStatus="userSigningUp"
+            v-on:user-signing-up-event="signUp"
+          />
+        </v-dialog>
+
       </v-container>
     </v-main>
 
@@ -152,6 +171,7 @@
 import { mapActions } from "vuex";
 import { userService } from "@/services/userService/user.service";
 import LoginForm from "@/components/LoginForm";
+import SignUpForm from "@/components/SignUpForm";
 import User from "@/models/user";
 import MenuItem from "@/models/viewModels/menuItem";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -163,12 +183,14 @@ export default {
 
   components: {
     LoginForm,
+    SignUpForm
   },
 
   data: () => ({
     appMenuItems: [],
     navMenuItems: [],
     userLoggingIn: false,
+    userSigningUp: false,
     user: {},
   }),
 
@@ -187,17 +209,15 @@ export default {
 
         var logInMessage;
 
-        if (this.$data.user.emailConfirmed){
+        if (this.$data.user.emailConfirmed) {
           logInMessage = "You are logged in";
         } else {
           logInMessage = "You are logged in, but please confirm your email";
         }
 
-        showToast(
-          this, 
-          ToastMethods["success"], 
-          logInMessage, 
-          { duration: 3000 });
+        showToast(this, ToastMethods["success"], logInMessage, {
+          duration: 3000,
+        });
       }
 
       this.$data.userLoggingIn = false;
@@ -216,11 +236,9 @@ export default {
               this.$router.push("/");
             }
 
-            showToast(
-              this, 
-              ToastMethods["info"], 
-              "You are logged out.",
-              { duration: 3000 });
+            showToast(this, ToastMethods["info"], "You are logged out.", {
+              duration: 3000,
+            });
           },
         },
         {
@@ -235,7 +253,30 @@ export default {
         this,
         ToastMethods["show"],
         "Are you sure you want to log out?",
-        { action: action });
+        { action: action }
+      );
+    },
+
+    signUp(user, token) {
+      if (user !== null && token !== null) {
+        this.$data.user = user;
+
+        this.$data.user = userService.loginUser(this.$data.user, token);
+
+        if (this.$router.currentRoute.path !== "/dashboard") {
+          this.$router.push("/dashboard");
+        }
+
+        showToast(this, ToastMethods["success"], "Thank you for signing up, please confirm your email address", {
+          duration: 3000,
+        });
+      }
+      this.$data.userSigningUp = false;
+    },
+
+    redirectToSignUp() {
+      this.$data.userLoggingIn = false;
+      this.$data.userSigningUp = true;
     },
 
     populateAppMenuItems() {
