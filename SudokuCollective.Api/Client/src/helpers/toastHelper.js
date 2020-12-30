@@ -44,10 +44,21 @@ export function defaultToastOptions() {
     }
 }
 
-export function actionToastOptions(action) {
+export function actionToastOptions(action, icon) {
 
-    return {
-        action: action,
-        position: "top-center",
+    if (icon === null) {
+
+        return {
+            action: action,
+            position: "top-center",
+        }
+
+    } else {
+
+        return {
+            icon: icon,
+            action: action,
+            position: "top-center",
+        }
     }
 }

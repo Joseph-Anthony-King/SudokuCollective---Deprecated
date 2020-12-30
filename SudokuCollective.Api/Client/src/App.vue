@@ -259,7 +259,7 @@ export default {
         this,
         ToastMethods["show"],
         "Are you sure you want to log out?",
-        actionToastOptions(action)
+        actionToastOptions(action, "logout")
       );
     },
 
