@@ -39,8 +39,8 @@ export function showToast(component, type, message, options) {
 export function defaultToastOptions() {
 
     return {
+        duration: 3000,
         position: "top-center",
-        duration: 3000
     }
 }
 
