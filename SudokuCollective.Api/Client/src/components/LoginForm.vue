@@ -116,7 +116,7 @@ import { authenticationService } from "@/services/authenticationService/authenti
 import { userService } from "@/services/userService/user.service";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast } from "@/helpers/toastHelper";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "LoginForm",
@@ -167,7 +167,7 @@ export default {
                 this,
                 ToastMethods["error"],
                 this.$data.invalidUserNameMessage,
-                { duration: 3000 }
+                defaultToastOptions()
               );
             } else if (response.data === "Status Code 400: Password Invalid") {
               this.$data.invalidPasswords.push(this.$data.password);
@@ -177,13 +177,16 @@ export default {
                 this,
                 ToastMethods["error"],
                 this.$data.invalidPasswordMessage,
-                { duration: 3000 }
+                defaultToastOptions()
               );
             } else {
               this.$data.needHelp = true;
-              showToast(this, ToastMethods["error"], response.data, {
-                duration: 3000,
-              });
+              showToast(
+                this, 
+                ToastMethods["error"], 
+                response.data,
+                defaultToastOptions()
+              );
             }
           } else {
             this.$data.needHelp = true;
@@ -191,12 +194,17 @@ export default {
               this,
               ToastMethods["error"],
               "An error occurred while trying to authenticate the user",
-              { duration: 3000 }
+              defaultToastOptions()
             );
           }
         } catch (error) {
           this.$data.needHelp = true;
-          showToast(this, ToastMethods["error"], error, { duration: 3000 });
+          showToast(
+            this, 
+            ToastMethods["error"], 
+            error,
+            defaultToastOptions()
+          );
         }
       }
     },
@@ -214,20 +222,26 @@ export default {
             this,
             ToastMethods["success"],
             "Your user name has been retrieved",
-            { duration: 3000 }
+            defaultToastOptions()
           );
 
           this.$data.gettingHelp = false;
-        } else {   
+        } else {
+
           showToast(
             this,
             ToastMethods["error"],
-            response.data.message,
-            { duration: 3000 }
+            response.data.message.substring(17),
+            defaultToastOptions()
           );
         }
       } catch (error) {
-        showToast(this, ToastMethods["error"], error, { duration: 3000 });
+        showToast(
+          this, 
+          ToastMethods["error"], 
+          error,
+          defaultToastOptions()
+        );
       }
     },
 
@@ -243,25 +257,28 @@ export default {
             this,
             ToastMethods["success"],
             `Please review ${this.$data.email} to reset your password`,
-            { duration: 3000 }
+            defaultToastOptions()
           );
 
           this.$data.gettingHelp = false;
 
         } else {
 
-          console.log(response);
-
           showToast(
             this,
             ToastMethods["error"],
-            response.data.message,
-            { duration: 3000 }
+            response.data.message.substring(17),
+            defaultToastOptions()
           );
         }
 
       } catch (error) {
-        showToast(this, ToastMethods["error"], error, { duration: 3000 });
+        showToast(
+          this, 
+          ToastMethods["error"], 
+          error,
+          defaultToastOptions()
+        );
       }
     },
 

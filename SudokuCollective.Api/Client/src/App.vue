@@ -176,7 +176,7 @@ import User from "@/models/user";
 import MenuItem from "@/models/viewModels/menuItem";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { AppMenuItems } from "@/models/arrays/appMenuItems";
-import { showToast } from "@/helpers/toastHelper";
+import { showToast, defaultToastOptions, actionToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "App",
@@ -215,9 +215,12 @@ export default {
           logInMessage = "You are logged in, but please confirm your email";
         }
 
-        showToast(this, ToastMethods["success"], logInMessage, {
-          duration: 3000,
-        });
+        showToast(
+          this, 
+          ToastMethods["success"], 
+          logInMessage,
+          defaultToastOptions()
+        );
       }
 
       this.$data.userLoggingIn = false;
@@ -236,9 +239,12 @@ export default {
               this.$router.push("/");
             }
 
-            showToast(this, ToastMethods["info"], "You are logged out.", {
-              duration: 3000,
-            });
+            showToast(
+              this, 
+              ToastMethods["info"], 
+              "You are logged out.",
+              defaultToastOptions()
+            );
           },
         },
         {
@@ -253,7 +259,7 @@ export default {
         this,
         ToastMethods["show"],
         "Are you sure you want to log out?",
-        { action: action }
+        actionToastOptions(action)
       );
     },
 
@@ -267,9 +273,12 @@ export default {
           this.$router.push("/dashboard");
         }
 
-        showToast(this, ToastMethods["success"], "Thank you for signing up, please review your email to confirm your address", {
-          duration: 3000,
-        });
+        showToast(
+          this, 
+          ToastMethods["success"], 
+          "Thank you for signing up, please review your email to confirm your address",
+          defaultToastOptions()
+        );
       }
       this.$data.userSigningUp = false;
     },

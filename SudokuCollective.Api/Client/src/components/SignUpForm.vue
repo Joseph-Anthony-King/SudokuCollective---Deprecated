@@ -100,7 +100,7 @@ import { registerService } from "@/services/registerService/register.service";
 import SignUpModel from "@/models/viewModels/signUpModel";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast } from "@/helpers/toastHelper";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "SignUpForm",
@@ -145,12 +145,20 @@ export default {
               response.data.token
             );
           } else {
-            showToast(this, ToastMethods["error"], response.data, {
-              duration: 3000,
-            });
+            showToast(
+              this, 
+              ToastMethods["error"], 
+              response.data,
+              defaultToastOptions()
+            );
           }
         } catch (error) {
-          showToast(this, ToastMethods["error"], error, { duration: 3000 });
+          showToast(
+            this, 
+            ToastMethods["error"], 
+            error,
+            defaultToastOptions()
+          );
         }
       }
     },

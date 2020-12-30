@@ -35,3 +35,19 @@ export function showToast(component, type, message, options) {
         }, timeout);
     }
 }
+
+export function defaultToastOptions() {
+
+    return {
+        position: "top-center",
+        duration: 3000
+    }
+}
+
+export function actionToastOptions(action) {
+
+    return {
+        action: action,
+        position: "top-center",
+    }
+}
