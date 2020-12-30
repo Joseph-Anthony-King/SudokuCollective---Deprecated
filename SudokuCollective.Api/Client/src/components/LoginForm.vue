@@ -132,9 +132,7 @@ export default {
     needHelp: false,
     gettingHelp: false,
     invalidUserNames: [],
-    invalidUserNameMessage: "No user has this user name.",
     invalidPasswords: [],
-    invalidPasswordMessage: "Password is incorrect.",
     invalidEmails: [],
   }),
   methods: {
@@ -159,14 +157,14 @@ export default {
               response.data.token
             );
           } else if (response.status === 400) {
-            if (response.data === "Status Code 400: User Name Invalid") {
+            if (response.data === "Status Code 400: No User Has This User Name") {
               this.$data.invalidUserNames.push(this.$data.username);
               this.$refs.loginForm.validate();
               this.$data.needHelp = true;
               showToast(
                 this,
                 ToastMethods["error"],
-                this.$data.invalidUserNameMessage,
+                response.data.substring(17),
                 defaultToastOptions()
               );
             } else if (response.data === "Status Code 400: Password Invalid") {
@@ -176,7 +174,7 @@ export default {
               showToast(
                 this,
                 ToastMethods["error"],
-                this.$data.invalidPasswordMessage,
+                response.data.substring(17),
                 defaultToastOptions()
               );
             } else {

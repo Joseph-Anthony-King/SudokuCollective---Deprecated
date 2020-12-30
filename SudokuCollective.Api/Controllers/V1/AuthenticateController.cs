@@ -55,7 +55,7 @@ namespace SudokuCollective.Api.V1.Controllers
 
                 if (result == UserAuthenticationErrorType.USERNAMEINVALID)
                 {
-                    return BadRequest(ControllerMessages.StatusCode400("User Name Invalid"));
+                    return BadRequest(ControllerMessages.StatusCode400("No User Has This User Name"));
                 }
                 else if (result == UserAuthenticationErrorType.PASSWORDINVALID)
                 {
