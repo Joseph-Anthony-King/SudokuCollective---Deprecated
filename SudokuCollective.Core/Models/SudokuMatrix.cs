@@ -482,14 +482,6 @@ namespace SudokuCollective.Core.Models
             return result.ToString();
         }
 
-        private void ZeroOutSudokuCells()
-        {
-            foreach (var SudokuCell in SudokuCells)
-            {
-                SudokuCell.Value = 0;
-            }
-        }
-
         public void SetTimeLimit(int limit)
         {
             Minutes = limit;
@@ -561,6 +553,14 @@ namespace SudokuCollective.Core.Models
                     _stopwatch.Stop();
                 }
             });
+        }
+
+        private void ZeroOutSudokuCells()
+        {
+            foreach (var SudokuCell in SudokuCells)
+            {
+                SudokuCell.Value = 0;
+            }
         }
         #endregion
 
