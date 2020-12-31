@@ -11,9 +11,9 @@ namespace SudokuCollective.ConsoleDev.Classes
         {
             DisplayMatix(game.SudokuMatrix);
 
-            Console.Write(string.Format("\n\n{0}, please make your selection\n\n1) Enter a value (ENTER)", game.User.NickName));
-            Console.Write("\n2) Delete a value (DELETE) \n3) Check Your Answer (CHECK)");
-            Console.Write("\n4) Exit to Main Menu (EXIT)\n");
+            Console.Write(string.Format("\n\n{0}, please make your selection\n\nEnter 1 to enter a value or 'ENTER'", game.User.NickName));
+            Console.Write("\nEnter 2 to delete a value or 'DELETE' \nEnter 3 to check Your Answer or 'CHECK'");
+            Console.Write("\nEnter 4 to exit to Main Menu or 'EXIT'\n");
             Console.Write("\nYour Selection: ");
         }
 

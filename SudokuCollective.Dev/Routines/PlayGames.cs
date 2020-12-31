@@ -120,7 +120,7 @@ namespace SudokuCollective.ConsoleDev.Routines
                                                     if (command.Equals("1") || command.Equals("ENTER"))
                                                     {
 
-                                                        Console.Write("\nEnter a number from 1 through 9> ");
+                                                        Console.Write("\nEnter a number from 1 through 9: ");
                                                         string userEntry = Console.ReadLine();
 
                                                         if (Int32.TryParse(userEntry, out var userNumber))

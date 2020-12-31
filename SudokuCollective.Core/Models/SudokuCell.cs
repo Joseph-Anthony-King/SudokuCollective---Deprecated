@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using SudokuCollective.Core.Extensions;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Structs;
 
@@ -40,9 +41,15 @@ namespace SudokuCollective.Core.Models
                                 Row
                             )
                         );
-
-                        _value = value;
                     }
+
+                    _value = value;
+
+                    AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+                    Random random = new Random();
+
+                    CoreExtensions.Shuffle(AvailableValues, random);
                 }
                 else
                 {
@@ -90,9 +97,6 @@ namespace SudokuCollective.Core.Models
         public SudokuCell(int index, int column, int region, int row, int matrixID)
         {
             Id = 0;
-
-            AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
             Index = index;
             Column = column;
             Region = region;
@@ -109,9 +113,11 @@ namespace SudokuCollective.Core.Models
 
             if (Value == 0)
             {
-
                 AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
+                Random random = new Random();
+
+                CoreExtensions.Shuffle(AvailableValues, random);
             }
             else
             {

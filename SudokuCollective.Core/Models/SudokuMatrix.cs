@@ -381,22 +381,9 @@ namespace SudokuCollective.Core.Models
 
                 foreach (var SudokuCell in SudokuCells)
                 {
-                    if (SudokuCell.Value == 0 && SudokuCell.AvailableValues.Count > 1)
-                    {
-                        Random random = new Random();
-
-                        CoreExtensions.Shuffle(SudokuCell.AvailableValues, random);
-
-                        SudokuCell.Value = SudokuCell.AvailableValues[0];
-                    }
-                    else if (SudokuCell.Value == 0 && SudokuCell.AvailableValues.Count == 1)
+                    if (SudokuCell.Value == 0 && SudokuCell.AvailableValues.Count > 0)
                     {
                         SudokuCell.Value = SudokuCell.AvailableValues[0];
-                    }
-
-                    if (SudokuCell.Value == 0)
-                    {
-                        break;
                     }
                 }
 
@@ -542,26 +529,15 @@ namespace SudokuCollective.Core.Models
                             }
                         }
 
-                        for (var i = 0; i < unknownsIndex.Count;)
+                        for (var i = 0; i < unknownsIndex.Count; i++)
                         {
                             if (loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues.Count > 0)
                             {
-                                Random random = new Random();
-
-                                CoreExtensions.Shuffle(loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues, random);
-
                                 loopTmp.SudokuCells[unknownsIndex[i]].Value = loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues[0];
-
-                                i++;
-                            }
-                            else if (loopTmp.SudokuCells[unknownsIndex[i]].Value > 0)
-                            {
-                                i++;
                             }
                             else
                             {
-                                loopTmp = new SudokuMatrix(loopSeed);
-                                i = 0;
+                                i = unknownsIndex.Count;
                             }
                         }
 
