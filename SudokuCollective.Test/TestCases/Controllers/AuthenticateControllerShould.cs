@@ -91,7 +91,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result, Is.TypeOf<Task<ActionResult>>());
-            Assert.That(message, Is.EqualTo("Status Code 400: User Name Invalid"));
+            Assert.That(message, Is.EqualTo("Status Code 400: No User Has This User Name"));
             Assert.That(statusCode, Is.EqualTo(400));
         }
 

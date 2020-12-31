@@ -3,7 +3,7 @@ using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Core.Models
 {
-    internal static class SudokuSolverMethods
+    internal static class SudokuMatrixUtilities
     {
         internal static List<int> IsolateIntersectingValues(ISudokuMatrix sudokuMatrix, List<int> paramList)
         {

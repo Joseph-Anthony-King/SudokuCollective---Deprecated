@@ -80,7 +80,7 @@ namespace SudokuCollective.ConsoleDev.Routines
                 var runningTimeResponse = new string(Console.ReadLine());
                 Console.WriteLine();
 
-                var matrix = new SudokuSolver(response.ToString());
+                var matrix = new SudokuMatrix(response.ToString());
                 if (Int32.TryParse(runningTimeResponse, out var runningTime))
                 {
                     if (runningTime > 0 && runningTime < 16)
@@ -114,10 +114,10 @@ namespace SudokuCollective.ConsoleDev.Routines
 
                     // Format and display the TimeSpan value.
                     string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                        matrix.stopwatch.Elapsed.Hours,
-                        matrix.stopwatch.Elapsed.Minutes,
-                        matrix.stopwatch.Elapsed.Seconds,
-                        matrix.stopwatch.Elapsed.Milliseconds / 10);
+                        matrix.Stopwatch.Elapsed.Hours,
+                        matrix.Stopwatch.Elapsed.Minutes,
+                        matrix.Stopwatch.Elapsed.Seconds,
+                        matrix.Stopwatch.Elapsed.Milliseconds / 10);
 
                     Console.Write("\n\nTime to generate solution: " + elapsedTime + "\n\n");
 

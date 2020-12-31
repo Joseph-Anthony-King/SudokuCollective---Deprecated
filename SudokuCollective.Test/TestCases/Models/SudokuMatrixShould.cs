@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Utilities;
@@ -331,6 +332,38 @@ namespace SudokuCollective.Test.TestCases.Models
 
             // Assert
             Assert.That(sut.IsValid(), Is.True);
+        }
+
+        [Test]
+        [Category("Models")]
+        public async Task SolveSudokuMatrices()
+        {
+            // Arrange
+            var intList = new List<int>() {
+                    4, 1, 9, 2, 6, 5, 3, 8, 7,
+                    2, 8, 3, 1, 7, 9, 4, 5, 6,
+                    5, 6, 7, 4, 3, 8, 9, 1, 2,
+                    1, 2, 5, 3, 9, 4, 7, 6, 8,
+                    7, 3, 8, 5, 1, 6, 2, 4, 9,
+                    6, 9, 4, 7, 8, 2, 5, 3, 1,
+                    3, 5, 6, 8, 2, 7, 1, 9, 4,
+                    8, 7, 1, 9, 4, 3, 6, 2, 5,
+                    9, 4, 2, 6, 5, 1, 8, 7, 3
+                };
+
+            var sut = new SudokuMatrix(intList);
+            sut.SetDifficulty(new Difficulty()
+            {
+                Name = "Easy",
+                DifficultyLevel = DifficultyLevel.EASY
+            }
+            );
+
+            // Act
+            await sut.Solve();
+
+            // Assert
+            Assert.That(sut.IsValid(), Is.EqualTo(true));
         }
     }
 }

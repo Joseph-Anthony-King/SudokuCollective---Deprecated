@@ -2,6 +2,8 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Extensions;
@@ -14,6 +16,9 @@ namespace SudokuCollective.Core.Models
     {
         #region Fields
         private List<SudokuCell> _sudokuCells = new List<SudokuCell>();
+        private int _minutes;
+        private long timeLimit;
+        private Stopwatch stopwatch = new Stopwatch();
         #endregion
 
         #region Properties
@@ -32,7 +37,34 @@ namespace SudokuCollective.Core.Models
                 _sudokuCells = value;
             }
         }
+        private int Minutes
+        {
+            get => _minutes;
+            set
+            {
+                if (value < 1)
+                {
+                    _minutes = 1;
+                }
+                else if (value > 15)
+                {
+                    _minutes = 15;
+                }
+                else
+                {
+                    _minutes = value;
+                }
+            }
+        }
+        public Stopwatch Stopwatch
+        {
+            get
+            {
+                return stopwatch;
+            }
+        }
 
+        #region Column Properties
         public List<List<SudokuCell>> Columns
         {
             get
@@ -150,6 +182,7 @@ namespace SudokuCollective.Core.Models
         public List<int> SeventhRowValues { get => SudokuCells.Where(row => row.Row == 7).Select(i => i.Value).Distinct().ToList(); }
         public List<int> EighthRowValues { get => SudokuCells.Where(row => row.Row == 8).Select(i => i.Value).Distinct().ToList(); }
         public List<int> NinthRowValues { get => SudokuCells.Where(row => row.Row == 9).Select(i => i.Value).Distinct().ToList(); }
+        #endregion
         #endregion
 
         #region Constructors
@@ -278,6 +311,9 @@ namespace SudokuCollective.Core.Models
                     rowIndexer++;
                 }
             }
+
+            Minutes = 3;
+            timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
         [JsonConstructor]
@@ -285,6 +321,9 @@ namespace SudokuCollective.Core.Models
         {
             Id = id;
             DifficultyId = difficultyId;
+
+            Minutes = 3;
+            timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
         #endregion
 
@@ -461,6 +500,90 @@ namespace SudokuCollective.Core.Models
             {
                 SudokuCell.Value = 0;
             }
+        }
+
+        public void SetTimeLimit(int limit)
+        {
+            Minutes = limit;
+            timeLimit = TimeSpan.TicksPerMinute * Minutes;
+        }
+
+        public async Task Solve()
+        {
+            await Task.Run(() =>
+            {
+                stopwatch.Reset();
+                stopwatch.Start();
+
+                var resultSeed = new List<int>();
+                var tmp = new SudokuMatrix(this.ToInt32List());
+                var loopSeed = SudokuMatrixUtilities.IsolateIntersectingValues(tmp, tmp.ToInt32List());
+
+                if (loopSeed.Contains(0))
+                {
+                    var loopTmp = new SudokuMatrix(loopSeed);
+
+                    do
+                    {
+                        if (!stopwatch.IsRunning)
+                        {
+                            stopwatch.Start();
+                        }
+
+                        loopTmp = new SudokuMatrix(loopSeed);
+
+                        var unknownsIndex = new List<int>();
+
+                        for (var i = 0; i < loopTmp.SudokuCells.Count; i++)
+                        {
+                            if (loopTmp.SudokuCells[i].Value == 0)
+                            {
+                                unknownsIndex.Add(i);
+                            }
+                        }
+
+                        for (var i = 0; i < unknownsIndex.Count;)
+                        {
+                            if (loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues.Count > 0)
+                            {
+                                Random random = new Random();
+
+                                CoreExtensions.Shuffle(loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues, random);
+
+                                loopTmp.SudokuCells[unknownsIndex[i]].Value = loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues[0];
+
+                                i++;
+                            }
+                            else if (loopTmp.SudokuCells[unknownsIndex[i]].Value > 0)
+                            {
+                                i++;
+                            }
+                            else
+                            {
+                                loopTmp = new SudokuMatrix(loopSeed);
+                                i = 0;
+                            }
+                        }
+
+                        stopwatch.Stop();
+
+                    } while (stopwatch.Elapsed.Ticks < timeLimit && !loopTmp.IsValid());
+
+                    resultSeed.AddRange(loopTmp.ToInt32List());
+                }
+                else
+                {
+                    resultSeed.AddRange(loopSeed);
+                }
+
+                var result = new SudokuMatrix(resultSeed);
+                SudokuCells = result.SudokuCells;
+
+                if (stopwatch.IsRunning)
+                {
+                    stopwatch.Stop();
+                }
+            });
         }
         #endregion
 

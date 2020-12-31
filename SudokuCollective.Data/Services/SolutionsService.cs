@@ -307,7 +307,7 @@ namespace SudokuCollective.Data.Services
 
                     if (!solutionInDB)
                     {
-                        var sudokuSolver = new SudokuSolver(intList);
+                        var sudokuSolver = new SudokuMatrix(intList);
 
                         sudokuSolver.SetTimeLimit(request.Minutes);
 

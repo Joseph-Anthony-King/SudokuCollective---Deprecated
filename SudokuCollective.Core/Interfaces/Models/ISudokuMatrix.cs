@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Structs;
 
@@ -10,6 +11,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         int DifficultyId { get; set; }
         Difficulty Difficulty { get; set; }
         List<SudokuCell> SudokuCells { get; set; }
+        Stopwatch Stopwatch { get; }
         List<List<SudokuCell>> Columns { get; }
         List<List<SudokuCell>> Regions { get; }
         List<List<SudokuCell>> Rows { get; }
