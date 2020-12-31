@@ -65,7 +65,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        #region Column Properties
+        #region SudokuCell List Properties
         public List<List<SudokuCell>> Columns
         {
             get
