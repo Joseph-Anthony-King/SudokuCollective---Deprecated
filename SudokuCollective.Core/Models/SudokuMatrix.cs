@@ -9,6 +9,7 @@ using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Extensions;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Structs;
+using SudokuCollective.Core.Utilities;
 
 namespace SudokuCollective.Core.Models
 {

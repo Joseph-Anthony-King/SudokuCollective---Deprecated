@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Models;
 
-namespace SudokuCollective.Core.Models
+namespace SudokuCollective.Core.Utilities
 {
     internal static class SudokuMatrixUtilities
     {
