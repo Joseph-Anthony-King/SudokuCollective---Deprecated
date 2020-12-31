@@ -30,7 +30,7 @@ namespace SudokuCollective.ConsoleDev.Classes
 
         internal static void DisplayMatix(ISudokuMatrix matrix)
         {
-            Console.Write("\n       SudokuApp\n");
+            Console.Write("\n  Sudoku Collective\n");
             Console.Write("\n   1 2 3 4 5 6 7 8 9\n");
             var i = 1;
             foreach (var row in matrix.Rows)

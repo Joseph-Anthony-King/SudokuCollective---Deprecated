@@ -17,8 +17,8 @@ namespace SudokuCollective.Core.Models
         #region Fields
         private List<SudokuCell> _sudokuCells = new List<SudokuCell>();
         private int _minutes;
-        private long timeLimit;
-        private Stopwatch stopwatch = new Stopwatch();
+        private long _timeLimit;
+        private Stopwatch _stopwatch = new Stopwatch();
         #endregion
 
         #region Properties
@@ -35,6 +35,13 @@ namespace SudokuCollective.Core.Models
             set
             {
                 _sudokuCells = value;
+            }
+        }
+        public Stopwatch Stopwatch
+        {
+            get
+            {
+                return _stopwatch;
             }
         }
         private int Minutes
@@ -54,13 +61,6 @@ namespace SudokuCollective.Core.Models
                 {
                     _minutes = value;
                 }
-            }
-        }
-        public Stopwatch Stopwatch
-        {
-            get
-            {
-                return stopwatch;
             }
         }
 
@@ -313,7 +313,7 @@ namespace SudokuCollective.Core.Models
             }
 
             Minutes = 3;
-            timeLimit = TimeSpan.TicksPerMinute * Minutes;
+            _timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
         [JsonConstructor]
@@ -323,7 +323,7 @@ namespace SudokuCollective.Core.Models
             DifficultyId = difficultyId;
 
             Minutes = 3;
-            timeLimit = TimeSpan.TicksPerMinute * Minutes;
+            _timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
         #endregion
 
@@ -505,15 +505,15 @@ namespace SudokuCollective.Core.Models
         public void SetTimeLimit(int limit)
         {
             Minutes = limit;
-            timeLimit = TimeSpan.TicksPerMinute * Minutes;
+            _timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
         public async Task Solve()
         {
             await Task.Run(() =>
             {
-                stopwatch.Reset();
-                stopwatch.Start();
+                _stopwatch.Reset();
+                _stopwatch.Start();
 
                 var resultSeed = new List<int>();
                 var tmp = new SudokuMatrix(this.ToInt32List());
@@ -525,9 +525,9 @@ namespace SudokuCollective.Core.Models
 
                     do
                     {
-                        if (!stopwatch.IsRunning)
+                        if (!_stopwatch.IsRunning)
                         {
-                            stopwatch.Start();
+                            _stopwatch.Start();
                         }
 
                         loopTmp = new SudokuMatrix(loopSeed);
@@ -565,9 +565,9 @@ namespace SudokuCollective.Core.Models
                             }
                         }
 
-                        stopwatch.Stop();
+                        _stopwatch.Stop();
 
-                    } while (stopwatch.Elapsed.Ticks < timeLimit && !loopTmp.IsValid());
+                    } while (_stopwatch.Elapsed.Ticks < _timeLimit && !loopTmp.IsValid());
 
                     resultSeed.AddRange(loopTmp.ToInt32List());
                 }
@@ -579,9 +579,9 @@ namespace SudokuCollective.Core.Models
                 var result = new SudokuMatrix(resultSeed);
                 SudokuCells = result.SudokuCells;
 
-                if (stopwatch.IsRunning)
+                if (_stopwatch.IsRunning)
                 {
-                    stopwatch.Stop();
+                    _stopwatch.Stop();
                 }
             });
         }
