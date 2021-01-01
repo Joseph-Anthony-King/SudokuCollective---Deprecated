@@ -16,7 +16,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         bool Obscured { get; set; }
         int SudokuMatrixId { get; set; }
         SudokuMatrix SudokuMatrix { get; set; }
-        List<int> AvailableValues { get; set; }
+        List<IAvailableValue> AvailableValues { get; set; }
         int ToInt32() => DisplayValue;
         string ToString() => DisplayValue.ToString();
         void UpdateAvailableValues(int i);

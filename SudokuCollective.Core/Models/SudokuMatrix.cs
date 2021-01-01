@@ -380,11 +380,24 @@ namespace SudokuCollective.Core.Models
             {
                 ZeroOutSudokuCells();
 
-                foreach (var SudokuCell in SudokuCells)
+                foreach (var sudokuCell in SudokuCells)
                 {
-                    if (SudokuCell.Value == 0 && SudokuCell.AvailableValues.Count > 0)
+                    if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Where(a => a.Available == true).ToList().Count > 0)
                     {
-                        SudokuCell.Value = SudokuCell.AvailableValues[0];
+                        var availableValues = sudokuCell.AvailableValues.Where(a => a.Available == true).ToList();
+
+                        var indexList = new List<int>();
+
+                        for (var i = 0; i < availableValues.Count; i++)
+                        {
+                            indexList.Add(i);
+                        }
+
+                        Random random = new Random();
+
+                        CoreExtensions.Shuffle(indexList, random);
+
+                        sudokuCell.Value = availableValues[indexList.FirstOrDefault()].Value;
                     }
                 }
 
@@ -526,7 +539,7 @@ namespace SudokuCollective.Core.Models
                         {
                             if (loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues.Count > 0)
                             {
-                                loopTmp.SudokuCells[unknownsIndex[i]].Value = loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues[0];
+                                loopTmp.SudokuCells[unknownsIndex[i]].Value = loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues.Where(a => a.Available).Select(a => a.Value).FirstOrDefault();
                             }
                             else
                             {
@@ -560,6 +573,11 @@ namespace SudokuCollective.Core.Models
             foreach (var SudokuCell in SudokuCells)
             {
                 SudokuCell.Value = 0;
+
+                foreach (var availableValue in SudokuCell.AvailableValues)
+                {
+                    availableValue.Available = true;
+                }
             }
         }
         #endregion
@@ -970,7 +988,10 @@ namespace SudokuCollective.Core.Models
 
                 result.Sort();
 
-                SudokuCells[e.Index - 1].AvailableValues.AddRange(result);
+                foreach (var number in result)
+                {
+                    SudokuCells[e.Index - 1].UpdateAvailableValues(number);
+                }
             }
         }
         #endregion
