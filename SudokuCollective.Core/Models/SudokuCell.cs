@@ -13,7 +13,6 @@ namespace SudokuCollective.Core.Models
         #region Fields
         private int _value;
         private int _displayValue;
-        private bool _initializing = true;
         #endregion
 
         #region Properties
@@ -30,7 +29,7 @@ namespace SudokuCollective.Core.Models
             {
                 if (value == 0)
                 {
-                    if (!_initializing)
+                    if (Value != 0)
                     {
                         OnSuccessfulSudokuCellReset(
                             new ResetSudokuCellEventArgs(
@@ -94,23 +93,18 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Constructors
-        public SudokuCell(int index, int column, int region, int row, int matrixID)
+        public SudokuCell(int index, int column, int region, int row, int matrixID) : this()
         {
-            Id = 0;
             Index = index;
             Column = column;
             Region = region;
             Row = row;
             SudokuMatrixId = matrixID;
             Value = 0;
-            Obscured = true;
-            _initializing = false;
         }
 
-        public SudokuCell(int index, int column, int region, int row, int value, int matrixId)
+        public SudokuCell(int index, int column, int region, int row, int value, int matrixId) : this()
         {
-            Id = 0;
-
             if (Value == 0)
             {
                 AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -131,15 +125,13 @@ namespace SudokuCollective.Core.Models
             Row = row;
             SudokuMatrixId = matrixId;
             Value = value;
-            Obscured = true;
-            _initializing = false;
         }
 
         public SudokuCell()
         {
             Id = 0;
             Obscured = true;
-            _initializing = false;
+            AvailableValues = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         }
 
         [JsonConstructor]
