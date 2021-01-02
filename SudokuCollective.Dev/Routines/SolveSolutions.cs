@@ -11,15 +11,12 @@ namespace SudokuCollective.ConsoleDev.Routines
     {
         internal static void Run()
         {
-            var firstRun = true;
-
             Console.WriteLine("\nPlease enter the sudoku puzzle you wish to solve.");
             Console.WriteLine("You will be entering the nine values for each row.");
             Console.WriteLine("Just enter the values with no spaces, for unknown");
             Console.WriteLine("values enter 0.  Once you're done the solver will");
-            Console.WriteLine("produce an answer if possible from the provided.");
-            Console.WriteLine("values.  If it cannot produce an answer the solver");
-            Console.WriteLine("will let you know.\n");
+            Console.WriteLine("produce an answer.  The solver will notify you if");
+            Console.WriteLine("the sodoku puzzle cannot be solved.\n");
             Console.WriteLine("Press enter to continue!");
 
             Console.ReadLine();
@@ -66,29 +63,11 @@ namespace SudokuCollective.ConsoleDev.Routines
 
                 response.Append(Console.ReadLine());
 
-                if (firstRun)
-                {
-                    Console.WriteLine("\nThe solver will run for 3 minutes by default.  You");
-                    Console.WriteLine("can adjust this time from anywhere between 1 to 15");
-                    Console.WriteLine("minutes.  If you do not want to adjust the default");
-                    Console.WriteLine("running time simply press enter at the prompt.");
-                    firstRun = false;
-                }
+                Console.Write("\nPress enter to continue... ");
 
-                Console.Write("\nIndicate new running time if desired: ");
-
-                var runningTimeResponse = new string(Console.ReadLine());
-                Console.WriteLine();
+                Console.ReadLine();
 
                 var matrix = new SudokuMatrix(response.ToString());
-                if (Int32.TryParse(runningTimeResponse, out var runningTime))
-                {
-                    if (runningTime > 0 && runningTime < 16)
-                    {
-
-                        matrix.SetTimeLimit(runningTime);
-                    }
-                }
 
                 Task solver = matrix.Solve();
 

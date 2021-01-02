@@ -141,7 +141,6 @@ namespace SudokuCollective.Core.Models
                         new AvailableValue
                         {
                             Value = i,
-                            Errors = 0,
                             Available = true
                         }
                     );
@@ -184,7 +183,6 @@ namespace SudokuCollective.Core.Models
                         new AvailableValue
                         {
                             Value = i,
-                            Errors = 0,
                             Available = availability
                         }
                     );
@@ -200,24 +198,24 @@ namespace SudokuCollective.Core.Models
         public void UpdateAvailableValues(int i)
         {
             if (AvailableValues.Any(a => a.Value == i && a.Available) &&
-                AvailableValues.Where(a => a.Available).ToList().Count > 1 &&
-                Value == 0)
+                AvailableValues.Where(a => a.Available).ToList().Count > 0)
             {
                 var availableValue = AvailableValues
                     .Where(a => a.Value == i)
                     .FirstOrDefault();
 
                 availableValue.Available = false;
-            }
-            else if (AvailableValues.Where(a => a.Available).ToList().Count == 1 && Value == 0)
-            {
-                var availableValue = AvailableValues
-                    .Where(a => a.Available)
-                    .FirstOrDefault();
 
-                Value = availableValue.Value;
+                if (AvailableValues.Where(a => a.Available).ToList().Count == 1)
+                {
+                    var finalAvailableValue = AvailableValues
+                        .Where(a => a.Available)
+                        .FirstOrDefault();
 
-                availableValue.Available = false;
+                    Value = finalAvailableValue.Value;
+
+                    finalAvailableValue.Available = false;
+                }
             }
             else
             {

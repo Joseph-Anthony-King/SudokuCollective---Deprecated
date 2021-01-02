@@ -309,8 +309,6 @@ namespace SudokuCollective.Data.Services
                     {
                         var sudokuSolver = new SudokuMatrix(intList);
 
-                        sudokuSolver.SetTimeLimit(request.Minutes);
-
                         await sudokuSolver.Solve();
 
                         if (sudokuSolver.IsValid())

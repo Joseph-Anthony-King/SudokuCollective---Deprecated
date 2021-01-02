@@ -17,8 +17,6 @@ namespace SudokuCollective.Core.Models
     {
         #region Fields
         private List<SudokuCell> _sudokuCells = new List<SudokuCell>();
-        private int _minutes;
-        private long _timeLimit;
         private Stopwatch _stopwatch = new Stopwatch();
         #endregion
 
@@ -43,25 +41,6 @@ namespace SudokuCollective.Core.Models
             get
             {
                 return _stopwatch;
-            }
-        }
-        private int Minutes
-        {
-            get => _minutes;
-            set
-            {
-                if (value < 1)
-                {
-                    _minutes = 1;
-                }
-                else if (value > 15)
-                {
-                    _minutes = 15;
-                }
-                else
-                {
-                    _minutes = value;
-                }
             }
         }
 
@@ -312,9 +291,6 @@ namespace SudokuCollective.Core.Models
                     rowIndexer++;
                 }
             }
-
-            Minutes = 3;
-            _timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
 
         [JsonConstructor]
@@ -322,9 +298,6 @@ namespace SudokuCollective.Core.Models
         {
             Id = id;
             DifficultyId = difficultyId;
-
-            Minutes = 3;
-            _timeLimit = TimeSpan.TicksPerMinute * Minutes;
         }
         #endregion
 
@@ -495,12 +468,6 @@ namespace SudokuCollective.Core.Models
             return result.ToString();
         }
 
-        public void SetTimeLimit(int limit)
-        {
-            Minutes = limit;
-            _timeLimit = TimeSpan.TicksPerMinute * Minutes;
-        }
-
         public async Task Solve()
         {
             await Task.Run(() =>
@@ -514,7 +481,7 @@ namespace SudokuCollective.Core.Models
 
                 if (loopSeed.Contains(0))
                 {
-                    var loopTmp = new SudokuMatrix(loopSeed);
+                    SudokuMatrix loopMatrix;
 
                     do
                     {
@@ -523,35 +490,34 @@ namespace SudokuCollective.Core.Models
                             _stopwatch.Start();
                         }
 
-                        loopTmp = new SudokuMatrix(loopSeed);
+                        loopMatrix = new SudokuMatrix(loopSeed);
 
-                        var unknownsIndex = new List<int>();
-
-                        for (var i = 0; i < loopTmp.SudokuCells.Count; i++)
+                        foreach (var sudokuCell in loopMatrix.SudokuCells)
                         {
-                            if (loopTmp.SudokuCells[i].Value == 0)
+                            if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Where(a => a.Available == true).ToList().Count > 0)
                             {
-                                unknownsIndex.Add(i);
-                            }
-                        }
+                                var availableValues = sudokuCell.AvailableValues.Where(a => a.Available == true).ToList();
 
-                        for (var i = 0; i < unknownsIndex.Count; i++)
-                        {
-                            if (loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues.Count > 0)
-                            {
-                                loopTmp.SudokuCells[unknownsIndex[i]].Value = loopTmp.SudokuCells[unknownsIndex[i]].AvailableValues.Where(a => a.Available).Select(a => a.Value).FirstOrDefault();
-                            }
-                            else
-                            {
-                                i = unknownsIndex.Count;
+                                var indexList = new List<int>();
+
+                                for (var i = 0; i < availableValues.Count; i++)
+                                {
+                                    indexList.Add(i);
+                                }
+
+                                Random random = new Random();
+
+                                CoreExtensions.Shuffle(indexList, random);
+
+                                sudokuCell.Value = availableValues[indexList.FirstOrDefault()].Value;
                             }
                         }
 
                         _stopwatch.Stop();
 
-                    } while (_stopwatch.Elapsed.Ticks < _timeLimit && !loopTmp.IsValid());
+                    } while (_stopwatch.Elapsed.TotalMinutes < 5  && !loopMatrix.IsValid());
 
-                    resultSeed.AddRange(loopTmp.ToInt32List());
+                    resultSeed.AddRange(loopMatrix.ToInt32List());
                 }
                 else
                 {
