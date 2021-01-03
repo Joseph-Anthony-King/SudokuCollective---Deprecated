@@ -85,7 +85,7 @@ namespace SudokuCollective.Core.Models
                     ContinueGame = false;
                     DateUpdated = solvedDate;
                     DateCompleted = solvedDate;
-                    SudokuSolution.SolutionList = SudokuMatrix.ToInt32List();
+                    SudokuSolution.SolutionList = SudokuMatrix.ToIntList();
                     SudokuSolution.DateSolved = solvedDate;
                 }
             }

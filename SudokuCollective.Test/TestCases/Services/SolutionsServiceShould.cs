@@ -109,8 +109,6 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
             var solveRequest = new SolveRequest()
             {
-                UserId = 1,
-                Minutes = 3,
                 FirstRow = new int[9] { 0, 2, 0, 5, 0, 0, 8, 7, 6 },
                 SecondRow = new int[9] { 7, 0, 0, 1, 8, 0, 0, 5, 0 },
                 ThirdRow = new int[9] { 8, 5, 9, 7, 0, 0, 0, 4, 0 },
@@ -119,9 +117,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 SixthRow = new int[9] { 0, 0, 0, 8, 6, 0, 0, 9, 5 },
                 SeventhRow = new int[9] { 2, 0, 7, 0, 0, 8, 0, 0, 9 },
                 EighthRow = new int[9] { 9, 0, 4, 0, 0, 7, 2, 0, 8 },
-                NinthRow = new int[9] { 0, 0, 0, 0, 0, 2, 4, 6, 0 },
-                License = license,
-                RequestorId = 1
+                NinthRow = new int[9] { 0, 0, 0, 0, 0, 2, 4, 6, 0 }
             };
 
             // Act

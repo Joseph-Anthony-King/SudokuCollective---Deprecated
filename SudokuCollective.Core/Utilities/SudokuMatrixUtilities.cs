@@ -454,8 +454,8 @@ namespace SudokuCollective.Core.Utilities
 
             } while (count < 10);
 
-            var result = new SudokuMatrix(tmp.ToInt32List());
-            return result.ToInt32List();
+            var result = new SudokuMatrix(tmp.ToIntList());
+            return result.ToIntList();
         }
 
         private static List<int> MissingSudokuValues(List<int> values)

@@ -72,11 +72,11 @@ namespace SudokuCollective.Core.Interfaces.Models
         bool IsValid();
         bool IsSolved();
         void GenerateSolution();
-        List<int> ToInt32List();
+        List<int> ToIntList();
         List<int> ToDisplayedValuesList();
         void SetDifficulty(IDifficulty difficulty);
         string ToString();
-        void HandleSudokuCellUpdatedEvent(object sender, UpdateSudokuCellEventArgs e);
-        void HandleSudokuCellResetEvent(object sender, ResetSudokuCellEventArgs e);
+        void HandleSudokuCellUpdatedEvent(object sender, SudokuCellEventArgs e);
+        void HandleSudokuCellResetEvent(object sender, SudokuCellEventArgs e);
     }
 }

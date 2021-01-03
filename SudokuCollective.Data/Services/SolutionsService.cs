@@ -12,6 +12,7 @@ using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Extensions;
 
 namespace SudokuCollective.Data.Services
 {
@@ -257,100 +258,102 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await usersRepository.HasEntity(request.UserId))
+                var solvedSolutions = ((await solutionsRepository.GetSolvedSolutions()).Objects)
+                    .ConvertAll(s => (SudokuSolution)s);
+
+                var intList = new List<int>();
+
+                intList.AddRange(request.FirstRow);
+                intList.AddRange(request.SecondRow);
+                intList.AddRange(request.ThirdRow);
+                intList.AddRange(request.FourthRow);
+                intList.AddRange(request.FifthRow);
+                intList.AddRange(request.SixthRow);
+                intList.AddRange(request.SeventhRow);
+                intList.AddRange(request.EighthRow);
+                intList.AddRange(request.NinthRow);
+
+                var sudokuSolver = new SudokuMatrix(intList);
+
+                await sudokuSolver.Solve();
+
+                if (sudokuSolver.IsValid())
                 {
-                    var intList = new List<int>();
+                    var solution = new SudokuSolution(sudokuSolver.ToIntList());
 
-                    intList.AddRange(request.FirstRow);
-                    intList.AddRange(request.SecondRow);
-                    intList.AddRange(request.ThirdRow);
-                    intList.AddRange(request.FourthRow);
-                    intList.AddRange(request.FifthRow);
-                    intList.AddRange(request.SixthRow);
-                    intList.AddRange(request.SeventhRow);
-                    intList.AddRange(request.EighthRow);
-                    intList.AddRange(request.NinthRow);
-
-                    var solvedSolutions = ((await solutionsRepository.GetSolvedSolutions()).Objects)
-                        .ConvertAll(s => (SudokuSolution)s);
-
-                    var solutionInDB = false;
+                    var addResultToDataContext = true;
 
                     if (solvedSolutions.Count > 0)
                     {
-                        foreach (var solution in solvedSolutions)
+                        foreach (var solvedSolution in solvedSolutions)
                         {
-                            if (solution.SolutionList.Count > 0)
+                            if (solvedSolution.ToString().Equals(solution.ToString()))
                             {
-                                var possibleSolution = true;
-
-                                for (var i = 0; i < intList.Count - 1; i++)
-                                {
-                                    if (intList[i] != 0 && intList[i] != solution.SolutionList[i])
-                                    {
-                                        possibleSolution = false;
-                                        break;
-                                    }
-                                }
-
-                                if (possibleSolution)
-                                {
-                                    solutionInDB = possibleSolution;
-                                    result.Success = possibleSolution;
-                                    result.Solution = solution;
-                                    result.Message = SolutionsMessages.SolutionSolvedMessage;
-                                    break;
-                                }
+                                addResultToDataContext = false;
                             }
                         }
                     }
 
-                    if (!solutionInDB)
+                    if (addResultToDataContext)
                     {
-                        var sudokuSolver = new SudokuMatrix(intList);
+                        solution = (SudokuSolution)(await solutionsRepository.Create(solution)).Object;
+                    }
+                    else
+                    {
+                        solution = solvedSolutions.Where(s => s.SolutionList.IsThisListEqual(solution.SolutionList)).FirstOrDefault();
+                    }
 
-                        await sudokuSolver.Solve();
+                    result.Success = true;
+                    result.Solution = solution;
+                    result.Message = SolutionsMessages.SolutionSolvedMessage;
+                }
+                else
+                {
+                    intList = sudokuSolver.ToIntList();
 
-                        if (sudokuSolver.IsValid())
+                    if (solvedSolutions.Count > 0)
+                    {
+                        var solutonInDB = false;
+
+                        foreach (var solution in solvedSolutions)
                         {
-                            var possibleResult = new SudokuSolution(sudokuSolver.ToInt32List());
+                            var possibleSolution = true;
 
-                            var addResultToDataContext = true;
-
-                            foreach (var solution in solvedSolutions)
+                            for (var i = 0; i < intList.Count - 1; i++)
                             {
-                                if (solution.ToString().Equals(possibleResult.ToString()))
+                                if (intList[i] != 0 && intList[i] != solution.SolutionList[i])
                                 {
-                                    addResultToDataContext = false;
+                                    possibleSolution = false;
+                                    break;
                                 }
                             }
 
-                            if (addResultToDataContext && !possibleResult.ToString().Contains('0'))
+                            if (possibleSolution)
                             {
-                                possibleResult = (SudokuSolution)(await solutionsRepository.Create(possibleResult)).Object;
-
-                                result.Success = true;
-                                result.Solution = possibleResult;
+                                solutonInDB = possibleSolution;
+                                result.Success = possibleSolution;
+                                result.Solution = solution;
                                 result.Message = SolutionsMessages.SolutionSolvedMessage;
+                                break;
                             }
                         }
-                        else
+
+                        if (!solutonInDB)
                         {
-                            result.Success = true;
+                            result.Success = false;
                             result.Solution = null;
                             result.Message = SolutionsMessages.SolutionNotSolvedMessage;
                         }
                     }
-
-                    return result;
+                    else
+                    {
+                        result.Success = false;
+                        result.Solution = null;
+                        result.Message = SolutionsMessages.SolutionNotSolvedMessage;
+                    }
                 }
-                else
-                {
-                    result.Success = false;
-                    result.Message = UsersMessages.UserNotFoundMessage;
 
-                    return result;
-                }
+                return result;
             }
             catch (Exception exp)
             {
@@ -391,7 +394,7 @@ namespace SudokuCollective.Data.Services
                 if (matrixNotInDB)
                 {
                     result.Solution = new SudokuSolution(
-                        matrix.ToInt32List());
+                        matrix.ToIntList());
 
                     continueLoop = false;
                 }
@@ -464,9 +467,9 @@ namespace SudokuCollective.Data.Services
                     {
                         matrix.GenerateSolution();
 
-                        if (!solutionsInDB.Contains(matrix.ToInt32List()))
+                        if (!solutionsInDB.Contains(matrix.ToIntList()))
                         {
-                            solutionsList.Add(matrix.ToInt32List());
+                            solutionsList.Add(matrix.ToIntList());
                         }
                     }
 

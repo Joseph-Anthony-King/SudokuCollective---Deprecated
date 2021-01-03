@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Models;
@@ -129,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Models
             var sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
-            Assert.That(sut.AvailableValues.Count, Is.EqualTo(0));
+            Assert.That(sut.AvailableValues.Where(a => a.Available).Count, Is.EqualTo(0));
         }
 
         [Test]

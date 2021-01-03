@@ -1,9 +1,7 @@
 ﻿namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
 {
-    public interface ISolveRequest : IBaseRequest
+    public interface ISolveRequest
     {
-        int UserId { get; set; }
-        int Minutes { get; set; }
         int[] FirstRow { get; set; }
         int[] SecondRow { get; set; }
         int[] ThirdRow { get; set; }

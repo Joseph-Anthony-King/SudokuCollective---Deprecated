@@ -331,7 +331,7 @@ namespace SudokuCollective.Core.Models
         {
             var result = true;
 
-            var solution = ToInt32List();
+            var solution = ToIntList();
             var usersAnsweres = ToDisplayedValuesList();
 
             for (var i = 0; i < solution.Count; i++)
@@ -355,9 +355,17 @@ namespace SudokuCollective.Core.Models
 
                 foreach (var sudokuCell in SudokuCells)
                 {
-                    if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Where(a => a.Available == true).ToList().Count > 0)
+                    if (sudokuCell.Value == 0 && 
+                        sudokuCell
+                            .AvailableValues
+                            .Where(a => a.Available == true)
+                            .ToList()
+                            .Count > 0)
                     {
-                        var availableValues = sudokuCell.AvailableValues.Where(a => a.Available == true).ToList();
+                        var availableValues = sudokuCell
+                            .AvailableValues
+                            .Where(a => a.Available == true)
+                            .ToList();
 
                         var indexList = new List<int>();
 
@@ -377,7 +385,7 @@ namespace SudokuCollective.Core.Models
             } while (!IsValid());
         }
 
-        public List<int> ToInt32List()
+        public List<int> ToIntList()
         {
             List<int> result = new List<int>();
 
@@ -476,8 +484,8 @@ namespace SudokuCollective.Core.Models
                 _stopwatch.Start();
 
                 var resultSeed = new List<int>();
-                var tmp = new SudokuMatrix(this.ToInt32List());
-                var loopSeed = SudokuMatrixUtilities.IsolateIntersectingValues(tmp, tmp.ToInt32List());
+                var tmp = new SudokuMatrix(this.ToIntList());
+                var loopSeed = SudokuMatrixUtilities.IsolateIntersectingValues(tmp, tmp.ToIntList());
 
                 if (loopSeed.Contains(0))
                 {
@@ -494,9 +502,17 @@ namespace SudokuCollective.Core.Models
 
                         foreach (var sudokuCell in loopMatrix.SudokuCells)
                         {
-                            if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Where(a => a.Available == true).ToList().Count > 0)
+                            if (sudokuCell.Value == 0 && 
+                                sudokuCell
+                                    .AvailableValues
+                                    .Where(a => a.Available == true)
+                                    .ToList()
+                                    .Count > 0)
                             {
-                                var availableValues = sudokuCell.AvailableValues.Where(a => a.Available == true).ToList();
+                                var availableValues = sudokuCell
+                                    .AvailableValues
+                                    .Where(a => a.Available == true)
+                                    .ToList();
 
                                 var indexList = new List<int>();
 
@@ -515,9 +531,9 @@ namespace SudokuCollective.Core.Models
 
                         _stopwatch.Stop();
 
-                    } while (_stopwatch.Elapsed.TotalMinutes < 5  && !loopMatrix.IsValid());
+                    } while (_stopwatch.Elapsed.TotalMinutes < 3  && !loopMatrix.IsValid());
 
-                    resultSeed.AddRange(loopMatrix.ToInt32List());
+                    resultSeed.AddRange(loopMatrix.ToIntList());
                 }
                 else
                 {
@@ -525,6 +541,7 @@ namespace SudokuCollective.Core.Models
                 }
 
                 var result = new SudokuMatrix(resultSeed);
+
                 SudokuCells = result.SudokuCells;
 
                 if (_stopwatch.IsRunning)
@@ -551,412 +568,50 @@ namespace SudokuCollective.Core.Models
         #region Event Handlers
         public void HandleSudokuCellUpdatedEvent(
             object sender,
-            UpdateSudokuCellEventArgs e)
+            SudokuCellEventArgs e)
         {
             foreach (var sudokuCell in SudokuCells)
             {
-                if (sudokuCell.Index != e.Index)
+                if (sudokuCell.Column == e.Column)
                 {
-                    if (sudokuCell.Column == e.Column)
-                    {
-                        sudokuCell.UpdateAvailableValues(e.Value);
-                    }
-                    else if (sudokuCell.Region == e.Region)
-                    {
-                        sudokuCell.UpdateAvailableValues(e.Value);
-                    }
-                    else if (sudokuCell.Row == e.Row)
-                    {
-                        sudokuCell.UpdateAvailableValues(e.Value);
-                    }
-                    else
-                    {
-                        // do nothing...
-                    }
+                    sudokuCell.UpdateAvailableValues(e.Value);
+                }
+                else if (sudokuCell.Region == e.Region)
+                {
+                    sudokuCell.UpdateAvailableValues(e.Value);
+                }
+                else if (sudokuCell.Row == e.Row)
+                {
+                    sudokuCell.UpdateAvailableValues(e.Value);
+                }
+                else
+                {
+                    // do nothing...
                 }
             }
         }
 
         public void HandleSudokuCellResetEvent(
             object sender,
-            ResetSudokuCellEventArgs e)
+            SudokuCellEventArgs e)
         {
-            if (e.Values.Count == 0)
+            foreach (var SudokuCell in SudokuCells)
             {
-                var tmp = new List<int>();
-
-                foreach (var SudokuCell in SudokuCells)
+                if (SudokuCell.Column == e.Column)
                 {
-                    if (SudokuCell.Index != e.Index)
-                    {
-                        if (SudokuCell.Column == e.Column)
-                        {
-                            SudokuCell.ResetAvailableValues(e.Value);
-                        }
-                        else if (SudokuCell.Region == e.Region)
-                        {
-                            SudokuCell.ResetAvailableValues(e.Value);
-                        }
-                        else if (SudokuCell.Row == e.Row)
-                        {
-                            SudokuCell.ResetAvailableValues(e.Value);
-                        }
-                        else
-                        {
-                            // do nothing...
-                        }
-                    }
+                    SudokuCell.ResetAvailableValues(e.Value);
                 }
-
-                foreach (var sudokuCell in SudokuCells)
+                else if (SudokuCell.Region == e.Region)
                 {
-                    var allNineValues = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-                    if (sudokuCell.Index != e.Index)
-                    {
-                        if (e.Index == 1)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(FirstRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 2)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(FirstRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 3)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(FirstRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 4)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(SecondRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 5)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(SecondRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 6)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(SecondRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 7)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(ThirdRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 8)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(ThirdRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 9)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(ThirdRegionValues).Except(FirstRowValues).ToList();
-                        }
-                        else if (e.Index == 10)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(FirstRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 11)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(FirstRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 12)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(FirstRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 13)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(SecondRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 14)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(SecondRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 15)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(SecondRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 16)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(ThirdRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 17)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(ThirdRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 18)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(ThirdRegionValues).Except(SecondRowValues).ToList();
-                        }
-                        else if (e.Index == 19)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(FirstRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 20)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(FirstRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 21)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(FirstRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 22)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(SecondRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 23)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(SecondRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 24)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(SecondRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 25)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(ThirdRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 26)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(ThirdRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 27)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(ThirdRegionValues).Except(ThirdRowValues).ToList();
-                        }
-                        else if (e.Index == 28)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(FourthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 29)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(FourthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 30)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(FourthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 31)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(FifthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 32)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(FifthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 33)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(FifthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 34)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(SixthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 35)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(SixthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 36)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(SixthRegionValues).Except(FourthRowValues).ToList();
-                        }
-                        else if (e.Index == 37)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(FourthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 38)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(FourthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 39)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(FourthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 40)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(FifthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 41)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(FifthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 42)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(FifthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 43)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(SixthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 44)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(SixthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 45)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(SixthRegionValues).Except(FifthRowValues).ToList();
-                        }
-                        else if (e.Index == 46)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(FourthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 47)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(FourthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 48)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(FourthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 49)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(FifthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 50)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(FifthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 51)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(FifthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 52)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(SixthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 53)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(SixthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 54)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(SixthRegionValues).Except(SixthRowValues).ToList();
-                        }
-                        else if (e.Index == 55)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(SeventhRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 56)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(SeventhRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 57)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(SeventhRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 58)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(EighthRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 59)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(EighthRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 60)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(EighthRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 61)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(NinthRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 62)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(NinthRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 63)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(NinthRegionValues).Except(SeventhRowValues).ToList();
-                        }
-                        else if (e.Index == 64)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(SeventhRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 65)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(SeventhRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 66)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(SeventhRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 67)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(EighthRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 68)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(EighthRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 69)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(EighthRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 70)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(NinthRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 71)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(NinthRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 72)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(NinthRegionValues).Except(EighthRowValues).ToList();
-                        }
-                        else if (e.Index == 73)
-                        {
-                            tmp = allNineValues.Except(FirstColumnValues).Except(SeventhRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else if (e.Index == 74)
-                        {
-                            tmp = allNineValues.Except(SecondColumnValues).Except(SeventhRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else if (e.Index == 75)
-                        {
-                            tmp = allNineValues.Except(ThirdColumnValues).Except(SeventhRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else if (e.Index == 76)
-                        {
-                            tmp = allNineValues.Except(FourthColumnValues).Except(EighthRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else if (e.Index == 77)
-                        {
-                            tmp = allNineValues.Except(FifthColumnValues).Except(EighthRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else if (e.Index == 78)
-                        {
-                            tmp = allNineValues.Except(SixthColumnValues).Except(EighthRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else if (e.Index == 79)
-                        {
-                            tmp = allNineValues.Except(SeventhColumnValues).Except(NinthRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else if (e.Index == 80)
-                        {
-                            tmp = allNineValues.Except(EighthColumnValues).Except(NinthRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else if (e.Index == 81)
-                        {
-                            tmp = allNineValues.Except(NinthColumnValues).Except(NinthRegionValues).Except(NinthRowValues).ToList();
-                        }
-                        else
-                        {
-                            // do nothing...
-                        }
-                    }
+                    SudokuCell.ResetAvailableValues(e.Value);
                 }
-
-                var result = tmp.Distinct().ToList();
-
-                if (result.Contains(0))
+                else if (SudokuCell.Row == e.Row)
                 {
-                    result.Remove(0);
+                    SudokuCell.ResetAvailableValues(e.Value);
                 }
-
-                result.Sort();
-
-                foreach (var number in result)
+                else
                 {
-                    SudokuCells[e.Index - 1].UpdateAvailableValues(number);
+                    // do nothing...
                 }
             }
         }

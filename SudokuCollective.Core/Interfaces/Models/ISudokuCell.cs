@@ -21,9 +21,9 @@ namespace SudokuCollective.Core.Interfaces.Models
         string ToString() => DisplayValue.ToString();
         void UpdateAvailableValues(int i);
         void ResetAvailableValues(int i);
-        void OnSuccessfulSudokuCellUpdate(UpdateSudokuCellEventArgs e);
-        void OnSuccessfulSudokuCellReset(ResetSudokuCellEventArgs e);
-        event EventHandler<UpdateSudokuCellEventArgs> SudokuCellUpdatedEvent;
-        event EventHandler<ResetSudokuCellEventArgs> SudokuCellResetEvent;
+        void OnSuccessfulSudokuCellUpdate(SudokuCellEventArgs e);
+        void OnSuccessfulSudokuCellReset(SudokuCellEventArgs e);
+        event EventHandler<SudokuCellEventArgs> SudokuCellUpdatedEvent;
+        event EventHandler<SudokuCellEventArgs> SudokuCellResetEvent;
     }
 }

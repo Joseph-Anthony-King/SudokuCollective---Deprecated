@@ -31,7 +31,7 @@ namespace SudokuCollective.Core.Models
                     if (Value != 0)
                     {
                         OnSuccessfulSudokuCellReset(
-                            new ResetSudokuCellEventArgs(
+                            new SudokuCellEventArgs(
                                 Index,
                                 _value,
                                 Column,
@@ -40,8 +40,6 @@ namespace SudokuCollective.Core.Models
                             )
                         );
                     }
-
-                    _value = value;
                 }
                 else
                 {
@@ -50,18 +48,18 @@ namespace SudokuCollective.Core.Models
                         availableValue.Available = false;
                     }
 
-                    _value = value;
-
                     OnSuccessfulSudokuCellUpdate(
-                        new UpdateSudokuCellEventArgs(
+                        new SudokuCellEventArgs(
                             Index,
-                            _value,
+                            value,
                             Column,
                             Region,
                             Row
                         )
                     );
                 }
+
+                _value = value;
             }
         }
         public int DisplayValue
@@ -197,8 +195,7 @@ namespace SudokuCollective.Core.Models
 
         public void UpdateAvailableValues(int i)
         {
-            if (AvailableValues.Any(a => a.Value == i && a.Available) &&
-                AvailableValues.Where(a => a.Available).ToList().Count > 0)
+            if (AvailableValues.Any(a => a.Value == i && a.Available))
             {
                 var availableValue = AvailableValues
                     .Where(a => a.Value == i)
@@ -217,15 +214,15 @@ namespace SudokuCollective.Core.Models
                     finalAvailableValue.Available = false;
                 }
             }
-            else
-            {
-                // do nothing...
-            }
         }
 
         public void ResetAvailableValues(int i)
         {
-            if (Value == 0 && AvailableValues.Where(a => a.Value == i).Select(a => a.Available).FirstOrDefault())
+            if (Value == 0 &&
+                AvailableValues
+                    .Where(a => a.Value == i)
+                    .Select(a => a.Available)
+                    .FirstOrDefault())
             {
                 var availableValue = AvailableValues
                     .Where(a => a.Value == i)
@@ -237,16 +234,16 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Event Handlers
-        public event EventHandler<UpdateSudokuCellEventArgs> SudokuCellUpdatedEvent;
+        public event EventHandler<SudokuCellEventArgs> SudokuCellUpdatedEvent;
 
-        public event EventHandler<ResetSudokuCellEventArgs> SudokuCellResetEvent;
+        public event EventHandler<SudokuCellEventArgs> SudokuCellResetEvent;
 
-        public virtual void OnSuccessfulSudokuCellUpdate(UpdateSudokuCellEventArgs e)
+        public virtual void OnSuccessfulSudokuCellUpdate(SudokuCellEventArgs e)
         {
             SudokuCellUpdatedEvent.Invoke(this, e);
         }
 
-        public virtual void OnSuccessfulSudokuCellReset(ResetSudokuCellEventArgs e)
+        public virtual void OnSuccessfulSudokuCellReset(SudokuCellEventArgs e)
         {
             SudokuCellResetEvent.Invoke(this, e);
         }

@@ -67,6 +67,8 @@ namespace SudokuCollective.ConsoleDev.Routines
 
                 Console.ReadLine();
 
+                Console.WriteLine();
+
                 var matrix = new SudokuMatrix(response.ToString());
 
                 Task solver = matrix.Solve();
@@ -79,6 +81,7 @@ namespace SudokuCollective.ConsoleDev.Routines
                 }
 
                 Console.WriteLine();
+
                 Console.Beep();
 
                 if (matrix.IsValid())

@@ -37,8 +37,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             solveRequest = new SolveRequest()
             {
-                UserId = 1,
-                Minutes = 15,
                 FirstRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 SecondRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 ThirdRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -47,10 +45,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 SixthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 SeventhRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 EighthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                NinthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                License = TestObjects.GetLicense(),
-                RequestorId = 1,
-                PageListModel = new PageListModel()
+                NinthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
             };
 
             addSolutionRequest = new AddSolutionRequest()
@@ -189,7 +184,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.Generate(solveRequest);
+            var result = sutSuccess.Generate();
             var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -206,7 +201,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.Generate(solveRequest);
+            var result = sutFailure.Generate();
             var message = ((SolutionResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 

@@ -1,6 +1,6 @@
 ﻿namespace SudokuCollective.Core.Structs
 {
-    public struct UpdateSudokuCellEventArgs
+    public struct SudokuCellEventArgs
     {
         public int Index { get; set; }
         public int Value { get; set; }
@@ -8,7 +8,7 @@
         public int Region { get; set; }
         public int Row { get; set; }
 
-        public UpdateSudokuCellEventArgs(
+        public SudokuCellEventArgs(
             int index, 
             int value, 
             int column, 

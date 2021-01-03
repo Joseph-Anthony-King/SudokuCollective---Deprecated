@@ -119,7 +119,7 @@ namespace SudokuCollective.Test.TestCases.Models
             var sut = populatedTestMatrix;
 
             // Act
-            var result = sut.ToInt32List();
+            var result = sut.ToIntList();
 
             // Assert
             Assert.That(result, Is.TypeOf<List<int>>());
