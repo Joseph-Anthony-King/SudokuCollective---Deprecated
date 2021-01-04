@@ -346,44 +346,6 @@ namespace SudokuCollective.Core.Models
             return result;
         }
 
-        public void GenerateSolution()
-        {
-            do
-            {
-                ZeroOutSudokuCells();
-
-                foreach (var sudokuCell in SudokuCells)
-                {
-                    if (sudokuCell.Value == 0 && 
-                        sudokuCell
-                            .AvailableValues
-                            .Where(a => a.Available == true)
-                            .ToList()
-                            .Count > 0)
-                    {
-                        var availableValues = sudokuCell
-                            .AvailableValues
-                            .Where(a => a.Available == true)
-                            .ToList();
-
-                        var indexList = new List<int>();
-
-                        for (var i = 0; i < availableValues.Count; i++)
-                        {
-                            indexList.Add(i);
-                        }
-
-                        Random random = new Random();
-
-                        CoreExtensions.Shuffle(indexList, random);
-
-                        sudokuCell.Value = availableValues[indexList.FirstOrDefault()].Value;
-                    }
-                }
-
-            } while (!IsValid());
-        }
-
         public List<int> ToIntList()
         {
             List<int> result = new List<int>();
@@ -406,6 +368,18 @@ namespace SudokuCollective.Core.Models
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder result = new StringBuilder();
+
+            foreach (var SudokuCell in SudokuCells)
+            {
+                result.Append(SudokuCell);
+            }
+
+            return result.ToString();
         }
 
         public void SetDifficulty(IDifficulty difficulty)
@@ -463,16 +437,42 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        public override string ToString()
+        public void GenerateSolution()
         {
-            StringBuilder result = new StringBuilder();
-
-            foreach (var SudokuCell in SudokuCells)
+            do
             {
-                result.Append(SudokuCell);
-            }
+                ZeroOutSudokuCells();
 
-            return result.ToString();
+                foreach (var sudokuCell in SudokuCells)
+                {
+                    if (sudokuCell.Value == 0 &&
+                        sudokuCell
+                            .AvailableValues
+                            .Where(a => a.Available == true)
+                            .ToList()
+                            .Count > 0)
+                    {
+                        var availableValues = sudokuCell
+                            .AvailableValues
+                            .Where(a => a.Available == true)
+                            .ToList();
+
+                        var indexList = new List<int>();
+
+                        for (var i = 0; i < availableValues.Count; i++)
+                        {
+                            indexList.Add(i);
+                        }
+
+                        Random random = new Random();
+
+                        CoreExtensions.Shuffle(indexList, random);
+
+                        sudokuCell.Value = availableValues[indexList.FirstOrDefault()].Value;
+                    }
+                }
+
+            } while (!IsValid());
         }
 
         public async Task Solve()
@@ -480,15 +480,16 @@ namespace SudokuCollective.Core.Models
             await Task.Run(() =>
             {
                 _stopwatch.Reset();
+
                 _stopwatch.Start();
 
-                var resultSeed = new List<int>();
                 var tmp = new SudokuMatrix(this.ToIntList());
-                var loopSeed = SudokuMatrixUtilities.IsolateIntersectingValues(tmp, tmp.ToIntList());
 
-                if (loopSeed.Contains(0))
+                var seed = SudokuMatrixUtilities.IsolateIntersectingValues(tmp, tmp.ToIntList());
+
+                if (seed.Contains(0))
                 {
-                    SudokuMatrix loopMatrix;
+                    SudokuMatrix maatrix;
 
                     do
                     {
@@ -497,11 +498,11 @@ namespace SudokuCollective.Core.Models
                             _stopwatch.Start();
                         }
 
-                        loopMatrix = new SudokuMatrix(loopSeed);
+                        maatrix = new SudokuMatrix(seed);
 
-                        foreach (var sudokuCell in loopMatrix.SudokuCells)
+                        foreach (var sudokuCell in maatrix.SudokuCells)
                         {
-                            if (sudokuCell.Value == 0 && 
+                            if (sudokuCell.Value == 0 &&
                                 sudokuCell
                                     .AvailableValues
                                     .Where(a => a.Available == true)
@@ -530,16 +531,12 @@ namespace SudokuCollective.Core.Models
 
                         _stopwatch.Stop();
 
-                    } while (_stopwatch.Elapsed.TotalMinutes < 3  && !loopMatrix.IsValid());
+                    } while (_stopwatch.Elapsed.TotalMinutes < 3 && !maatrix.IsValid());
 
-                    resultSeed.AddRange(loopMatrix.ToIntList());
-                }
-                else
-                {
-                    resultSeed.AddRange(loopSeed);
+                    seed = maatrix.ToIntList();
                 }
 
-                var result = new SudokuMatrix(resultSeed);
+                var result = new SudokuMatrix(seed);
 
                 SudokuCells = result.SudokuCells;
 

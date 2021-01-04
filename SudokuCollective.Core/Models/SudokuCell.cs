@@ -210,24 +210,9 @@ namespace SudokuCollective.Core.Models
                 }
             }
         }
-
-        public void ResetAvailableValues(int i)
-        {
-            if (AvailableValues
-                .Where(a => a.Value == i)
-                .Select(a => a.Available)
-                .FirstOrDefault())
-            {
-                var availableValue = AvailableValues
-                    .Where(a => a.Value == i)
-                    .FirstOrDefault();
-
-                availableValue.Available = true;
-            }
-        }
         #endregion
 
-        #region Event Handlers
+        #region Events
         public event EventHandler<SudokuCellEventArgs> SudokuCellEvent;
 
         public virtual void OnSuccessfulSudokuCellUpdate(SudokuCellEventArgs e)

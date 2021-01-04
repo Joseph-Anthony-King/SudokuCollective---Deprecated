@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Structs;
 
@@ -71,11 +72,12 @@ namespace SudokuCollective.Core.Interfaces.Models
         List<int> NinthRowValues { get; }        
         bool IsValid();
         bool IsSolved();
-        void GenerateSolution();
         List<int> ToIntList();
         List<int> ToDisplayedValuesList();
-        void SetDifficulty(IDifficulty difficulty);
         string ToString();
+        void SetDifficulty(IDifficulty difficulty);
+        void GenerateSolution();
+        Task Solve();
         void HandleSudokuCellEvent(object sender, SudokuCellEventArgs e);
     }
 }

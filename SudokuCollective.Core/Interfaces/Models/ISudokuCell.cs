@@ -20,7 +20,6 @@ namespace SudokuCollective.Core.Interfaces.Models
         int ToInt32() => DisplayValue;
         string ToString() => DisplayValue.ToString();
         void UpdateAvailableValues(int i);
-        void ResetAvailableValues(int i);
         void OnSuccessfulSudokuCellUpdate(SudokuCellEventArgs e);
         event EventHandler<SudokuCellEventArgs> SudokuCellEvent;
     }
