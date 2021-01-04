@@ -308,7 +308,7 @@ export default {
         (v) => !!v || "User Name is required",
         (v) =>
           !this.$data.invalidUserNames.includes(v) ||
-          this.$data.invalidUserNameMessage,
+          "No User Has This User Name",
       ];
     },
 
@@ -317,7 +317,7 @@ export default {
         (v) => !!v || "Password is required",
         (v) =>
           !this.$data.invalidPasswords.includes(v) ||
-          this.$data.invalidPasswordMessage,
+          "Password Invalid",
       ];
     },
 

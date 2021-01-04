@@ -426,7 +426,7 @@ namespace SudokuCollective.Data.Services
                                         }
 
                                         result.Games = result.Games
-                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue)
+                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue && !g.ContinueGame)
                                             .OrderByDescending(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
@@ -440,7 +440,7 @@ namespace SudokuCollective.Data.Services
                                         }
 
                                         result.Games = result.Games
-                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue)
+                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue && !g.ContinueGame)
                                             .OrderBy(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
@@ -709,7 +709,7 @@ namespace SudokuCollective.Data.Services
                                         }
 
                                         result.Games = result.Games
-                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue)
+                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue && !g.ContinueGame)
                                             .OrderByDescending(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
@@ -723,7 +723,7 @@ namespace SudokuCollective.Data.Services
                                         }
 
                                         result.Games = result.Games
-                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue)
+                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue && !g.ContinueGame)
                                             .OrderBy(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
