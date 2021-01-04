@@ -106,6 +106,13 @@ namespace SudokuCollective.Core.Models
             int value, 
             int matrixId) : this()
         {
+            Index = index;
+            Column = column;
+            Region = region;
+            Row = row;
+            SudokuMatrixId = matrixId;
+            Value = value;
+
             if (Value != 0)
             {
                 foreach (var availableValue in AvailableValues)
@@ -113,18 +120,17 @@ namespace SudokuCollective.Core.Models
                     availableValue.Available = false;
                 }
             }
-
-            Index = index;
-            Column = column;
-            Region = region;
-            Row = row;
-            SudokuMatrixId = matrixId;
-            Value = value;
         }
 
         public SudokuCell()
         {
             Id = 0;
+            Index = 0;
+            Column = 0;
+            Region = 0;
+            Row = 0;
+            Value = 0;
+            SudokuMatrixId = 0;
             Obscured = true;
             AvailableValues = new List<IAvailableValue>();
 

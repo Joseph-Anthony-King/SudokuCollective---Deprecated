@@ -489,7 +489,7 @@ namespace SudokuCollective.Core.Models
 
                 if (seed.Contains(0))
                 {
-                    SudokuMatrix maatrix;
+                    SudokuMatrix matrix;
 
                     do
                     {
@@ -498,9 +498,9 @@ namespace SudokuCollective.Core.Models
                             _stopwatch.Start();
                         }
 
-                        maatrix = new SudokuMatrix(seed);
+                        matrix = new SudokuMatrix(seed);
 
-                        foreach (var sudokuCell in maatrix.SudokuCells)
+                        foreach (var sudokuCell in matrix.SudokuCells)
                         {
                             if (sudokuCell.Value == 0 &&
                                 sudokuCell
@@ -531,9 +531,9 @@ namespace SudokuCollective.Core.Models
 
                         _stopwatch.Stop();
 
-                    } while (_stopwatch.Elapsed.TotalMinutes < 3 && !maatrix.IsValid());
+                    } while (_stopwatch.Elapsed.TotalMinutes < 3 && !matrix.IsValid());
 
-                    seed = maatrix.ToIntList();
+                    seed = matrix.ToIntList();
                 }
 
                 var result = new SudokuMatrix(seed);
