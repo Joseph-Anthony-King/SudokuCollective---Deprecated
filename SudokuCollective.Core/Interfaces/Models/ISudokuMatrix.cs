@@ -76,7 +76,6 @@ namespace SudokuCollective.Core.Interfaces.Models
         List<int> ToDisplayedValuesList();
         void SetDifficulty(IDifficulty difficulty);
         string ToString();
-        void HandleSudokuCellUpdatedEvent(object sender, SudokuCellEventArgs e);
-        void HandleSudokuCellResetEvent(object sender, SudokuCellEventArgs e);
+        void HandleSudokuCellEvent(object sender, SudokuCellEventArgs e);
     }
 }

@@ -280,8 +280,7 @@ namespace SudokuCollective.Core.Models
                     )
                 );
 
-                SudokuCells[i - 1].SudokuCellUpdatedEvent += HandleSudokuCellUpdatedEvent;
-                SudokuCells[i - 1].SudokuCellResetEvent += HandleSudokuCellResetEvent;
+                SudokuCells[i - 1].SudokuCellEvent += HandleSudokuCellEvent;
 
                 columnIndexer++;
 
@@ -566,7 +565,7 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Event Handlers
-        public void HandleSudokuCellUpdatedEvent(
+        public void HandleSudokuCellEvent(
             object sender,
             SudokuCellEventArgs e)
         {
@@ -583,31 +582,6 @@ namespace SudokuCollective.Core.Models
                 else if (sudokuCell.Row == e.Row)
                 {
                     sudokuCell.UpdateAvailableValues(e.Value);
-                }
-                else
-                {
-                    // do nothing...
-                }
-            }
-        }
-
-        public void HandleSudokuCellResetEvent(
-            object sender,
-            SudokuCellEventArgs e)
-        {
-            foreach (var SudokuCell in SudokuCells)
-            {
-                if (SudokuCell.Column == e.Column)
-                {
-                    SudokuCell.ResetAvailableValues(e.Value);
-                }
-                else if (SudokuCell.Region == e.Region)
-                {
-                    SudokuCell.ResetAvailableValues(e.Value);
-                }
-                else if (SudokuCell.Row == e.Row)
-                {
-                    SudokuCell.ResetAvailableValues(e.Value);
                 }
                 else
                 {

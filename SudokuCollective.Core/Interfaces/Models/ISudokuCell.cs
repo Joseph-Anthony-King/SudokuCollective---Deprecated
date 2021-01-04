@@ -22,8 +22,6 @@ namespace SudokuCollective.Core.Interfaces.Models
         void UpdateAvailableValues(int i);
         void ResetAvailableValues(int i);
         void OnSuccessfulSudokuCellUpdate(SudokuCellEventArgs e);
-        void OnSuccessfulSudokuCellReset(SudokuCellEventArgs e);
-        event EventHandler<SudokuCellEventArgs> SudokuCellUpdatedEvent;
-        event EventHandler<SudokuCellEventArgs> SudokuCellResetEvent;
+        event EventHandler<SudokuCellEventArgs> SudokuCellEvent;
     }
 }

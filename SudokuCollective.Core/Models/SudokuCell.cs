@@ -30,15 +30,10 @@ namespace SudokuCollective.Core.Models
                 {
                     if (Value != 0)
                     {
-                        OnSuccessfulSudokuCellReset(
-                            new SudokuCellEventArgs(
-                                Index,
-                                _value,
-                                Column,
-                                Region,
-                                Row
-                            )
-                        );
+                        foreach (var availableValue in AvailableValues)
+                        {
+                            availableValue.Available = true;
+                        }
                     }
                 }
                 else
@@ -233,18 +228,11 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Event Handlers
-        public event EventHandler<SudokuCellEventArgs> SudokuCellUpdatedEvent;
-
-        public event EventHandler<SudokuCellEventArgs> SudokuCellResetEvent;
+        public event EventHandler<SudokuCellEventArgs> SudokuCellEvent;
 
         public virtual void OnSuccessfulSudokuCellUpdate(SudokuCellEventArgs e)
         {
-            SudokuCellUpdatedEvent.Invoke(this, e);
-        }
-
-        public virtual void OnSuccessfulSudokuCellReset(SudokuCellEventArgs e)
-        {
-            SudokuCellResetEvent.Invoke(this, e);
+            SudokuCellEvent.Invoke(this, e);
         }
         #endregion
     }
