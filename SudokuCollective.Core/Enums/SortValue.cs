@@ -15,6 +15,7 @@
         DATECREATED,
         DATEUPDATED,
         DIFFICULTY,
-        USERCOUNT
+        USERCOUNT,
+        SCORE
     }
 }

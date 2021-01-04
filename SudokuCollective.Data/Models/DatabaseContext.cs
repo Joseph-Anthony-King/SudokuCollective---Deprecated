@@ -155,6 +155,10 @@ namespace SudokuCollective.Data.Models
                 .HasForeignKey(game => game.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Game>()
+                .Property(g => g.TimeToSolve)
+                .HasConversion(new TimeSpanToTicksConverter());
+
             modelBuilder.Entity<User>()
                 .HasKey(user => user.Id);
 

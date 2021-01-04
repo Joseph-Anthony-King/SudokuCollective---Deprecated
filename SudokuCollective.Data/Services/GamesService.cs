@@ -416,6 +416,37 @@ namespace SudokuCollective.Data.Services
                                             .ToList();
                                     }
                                 }
+                                else if (request.PageListModel.SortBy == SortValue.SCORE)
+                                {
+                                    if (!request.PageListModel.OrderByDescending)
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue)
+                                            .OrderByDescending(g => g.Score)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue)
+                                            .OrderBy(g => g.Score)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                }
                                 else if (request.PageListModel.SortBy == SortValue.DATECREATED)
                                 {
                                     if (!request.PageListModel.OrderByDescending)
@@ -663,6 +694,37 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.Id)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                }
+                                else if (request.PageListModel.SortBy == SortValue.SCORE)
+                                {
+                                    if (!request.PageListModel.OrderByDescending)
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue)
+                                            .OrderByDescending(g => g.Score)
+                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
+                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        foreach (var obj in response.Objects)
+                                        {
+                                            result.Games.Add((IGame)obj);
+                                        }
+
+                                        result.Games = result.Games
+                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue)
+                                            .OrderBy(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
                                             .ToList();

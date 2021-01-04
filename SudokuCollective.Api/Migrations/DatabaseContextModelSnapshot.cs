@@ -153,11 +153,17 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<double>("Score")
+                        .HasColumnType("double precision");
+
                     b.Property<int>("SudokuMatrixId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SudokuSolutionId")
                         .HasColumnType("integer");
+
+                    b.Property<long>("TimeToSolve")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");

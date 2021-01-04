@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201224183857_InitializeDatabase")]
+    [Migration("20210104172842_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -155,11 +155,17 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<double>("Score")
+                        .HasColumnType("double precision");
+
                     b.Property<int>("SudokuMatrixId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SudokuSolutionId")
                         .HasColumnType("integer");
+
+                    b.Property<long>("TimeToSolve")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");

@@ -217,8 +217,10 @@ namespace SudokuCollective.Api.Migrations
                     UserId = table.Column<int>(nullable: false),
                     SudokuMatrixId = table.Column<int>(nullable: false),
                     SudokuSolutionId = table.Column<int>(nullable: false),
-                    ContinueGame = table.Column<bool>(nullable: false),
                     AppId = table.Column<int>(nullable: false),
+                    ContinueGame = table.Column<bool>(nullable: false),
+                    Score = table.Column<double>(nullable: false),
+                    TimeToSolve = table.Column<long>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
                     DateCompleted = table.Column<DateTime>(nullable: false)

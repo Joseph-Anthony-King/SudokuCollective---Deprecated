@@ -68,14 +68,19 @@ namespace SudokuCollective.ConsoleDev.Routines
             }
 
             ISudokuMatrix matrix = new SudokuMatrix();
+
             matrix.GenerateSolution();
+
             matrix.SetDifficulty(difficulty);
+
             IGame game = new Game(
                 user, 
                 (SudokuMatrix)matrix, 
                 (Difficulty)difficulty);
 
             var continueGame = true;
+
+            game.SudokuMatrix.Stopwatch.Start();
 
             do
             {
@@ -188,8 +193,19 @@ namespace SudokuCollective.ConsoleDev.Routines
                 {
                     if (game.IsSolved())
                     {
-                        Console.WriteLine("\nYOU WIN!");
+                        Console.WriteLine("\nYOU WIN!\n");
+
                         continueGame = false;
+
+                        // Format and display the TimeSpan value.
+                        string elapsedTime = String.Format("{0:00}{1:00}:{2:00}:{3:00}.{4:00}",
+                            game.TimeToSolve.Days,
+                            game.TimeToSolve.Hours,
+                            game.TimeToSolve.Minutes,
+                            game.TimeToSolve.Seconds,
+                            game.TimeToSolve.Milliseconds / 10);
+
+                        Console.Write("\nTime to solve: " + elapsedTime);
                     }
                     else
                     {
