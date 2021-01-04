@@ -218,11 +218,10 @@ namespace SudokuCollective.Core.Models
 
         public void ResetAvailableValues(int i)
         {
-            if (Value == 0 &&
-                AvailableValues
-                    .Where(a => a.Value == i)
-                    .Select(a => a.Available)
-                    .FirstOrDefault())
+            if (AvailableValues
+                .Where(a => a.Value == i)
+                .Select(a => a.Available)
+                .FirstOrDefault())
             {
                 var availableValue = AvailableValues
                     .Where(a => a.Value == i)
