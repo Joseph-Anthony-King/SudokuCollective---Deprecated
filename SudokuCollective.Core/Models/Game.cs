@@ -108,19 +108,19 @@ namespace SudokuCollective.Core.Models
 
                         if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.EASY)
                         {
-                            Score = Convert.ToInt32((TimeToSolve.Ticks * .80) / 1000000);
+                            Score = Convert.ToInt32((TimeToSolve.Ticks * .80) / 1000000000);
                         }
                         else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.MEDIUM)
                         {
-                            Score = Convert.ToInt32((TimeToSolve.Ticks * .60) / 1000000);
+                            Score = Convert.ToInt32((TimeToSolve.Ticks * .60) / 1000000000);
                         }
                         else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.HARD)
                         {
-                            Score = Convert.ToInt32((TimeToSolve.Ticks * .40) / 1000000);
+                            Score = Convert.ToInt32((TimeToSolve.Ticks * .40) / 1000000000);
                         }
                         else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.EVIL)
                         {
-                            Score = Convert.ToInt32((TimeToSolve.Ticks * 20) / 1000000);
+                            Score = Convert.ToInt32((TimeToSolve.Ticks * 20) / 1000000000);
                         }
                         else
                         {
