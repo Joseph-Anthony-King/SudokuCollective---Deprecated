@@ -13,7 +13,8 @@ namespace SudokuCollective.Core.Interfaces.Models
         SudokuSolution SudokuSolution { get; set; }
         int AppId { get; set; }
         bool ContinueGame { get; set; }
-        double Score { get; set; }
+        int Score { get; set; }
+        bool KeepScore { get; set; }
         TimeSpan TimeToSolve { get; set; }
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }

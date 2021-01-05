@@ -13,9 +13,6 @@ namespace SudokuCollective.Core.Interfaces.Models
         Difficulty Difficulty { get; set; }
         List<SudokuCell> SudokuCells { get; set; }
         Stopwatch Stopwatch { get; }
-        List<List<SudokuCell>> Columns { get; }
-        List<List<SudokuCell>> Regions { get; }
-        List<List<SudokuCell>> Rows { get; }
         List<SudokuCell> FirstColumn { get; }
         List<SudokuCell> SecondColumn { get; }
         List<SudokuCell> ThirdColumn { get; }

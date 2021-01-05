@@ -124,7 +124,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var checkValue = result.Game.SudokuMatrix.SudokuCells
                 .OrderBy(cell => cell.Index)
                 .Where(cell => cell.Index == 2)
-                .Select(cell => cell.DisplayValue)
+                .Select(cell => cell.DisplayedValue)
                 .FirstOrDefault();
 
             // Assert
@@ -321,7 +321,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             var checkValue = updatedGame.SudokuMatrix.SudokuCells
                 .Where(cell => cell.Id == 58)
-                .Select(cell => cell.DisplayValue)
+                .Select(cell => cell.DisplayedValue)
                 .FirstOrDefault();
 
             // Assert

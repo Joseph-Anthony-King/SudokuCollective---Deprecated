@@ -91,9 +91,9 @@ namespace SudokuCollective.Test.TestCases.Models
             var sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
-            Assert.That(sut.Obscured, Is.EqualTo(true));
-            Assert.That(sut.DisplayValue, Is.EqualTo(0));
-            Assert.That(sut.DisplayValue, Is.Not.EqualTo(sut.Value));
+            Assert.That(sut.Hidden, Is.EqualTo(true));
+            Assert.That(sut.DisplayedValue, Is.EqualTo(0));
+            Assert.That(sut.DisplayedValue, Is.Not.EqualTo(sut.Value));
         }
 
         [Test]
@@ -102,12 +102,12 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
-            sut.Obscured = false;
+            sut.Hidden = false;
 
             // Assert
             Assert.That(firstInt, Is.Not.EqualTo(0));
-            Assert.That(sut.DisplayValue, Is.EqualTo(firstInt));
-            Assert.That(sut.DisplayValue, Is.EqualTo(sut.Value));
+            Assert.That(sut.DisplayedValue, Is.EqualTo(firstInt));
+            Assert.That(sut.DisplayedValue, Is.EqualTo(sut.Value));
         }
 
         [Test]
@@ -139,7 +139,7 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
-            sut.Obscured = false;
+            sut.Hidden = false;
 
             // Assert
             Assert.That(sut.ToInt32(), Is.TypeOf<int>());
@@ -152,7 +152,7 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange and Act
             var sut = populatedTestMatrix.SudokuCells[0];
-            sut.Obscured = false;
+            sut.Hidden = false;
 
             // Assert
             Assert.That(sut.ToString(), Is.TypeOf<string>());

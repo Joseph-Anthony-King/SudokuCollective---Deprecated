@@ -78,7 +78,7 @@ namespace SudokuCollective.ConsoleDev.Routines
                 (SudokuMatrix)matrix, 
                 (Difficulty)difficulty);
 
-            var continueGame = true;
+            game.KeepScore = true;
 
             game.SudokuMatrix.Stopwatch.Start();
 
@@ -116,7 +116,7 @@ namespace SudokuCollective.ConsoleDev.Routines
                                             var cell = game.SudokuMatrix.SudokuCells
                                                 .Where(c => c.Column == xNumber && c.Row == yNumber).FirstOrDefault();
 
-                                            if (cell.Obscured)
+                                            if (cell.Hidden)
                                             {
                                                 bool userEntryInvalid = true;
 
@@ -132,7 +132,7 @@ namespace SudokuCollective.ConsoleDev.Routines
                                                         {
                                                             if (userNumber > 0 && userNumber < 10)
                                                             {
-                                                                cell.DisplayValue = userNumber;
+                                                                cell.DisplayedValue = userNumber;
                                                                 continueX = false;
                                                                 continueY = false;
                                                                 userEntryInvalid = false;
@@ -151,7 +151,7 @@ namespace SudokuCollective.ConsoleDev.Routines
                                                     }
                                                     else
                                                     {
-                                                        cell.DisplayValue = 0;
+                                                        cell.DisplayedValue = 0;
                                                         continueX = false;
                                                         continueY = false;
                                                         userEntryInvalid = false;
@@ -193,19 +193,20 @@ namespace SudokuCollective.ConsoleDev.Routines
                 {
                     if (game.IsSolved())
                     {
-                        Console.WriteLine("\nYOU WIN!\n");
+                        Console.WriteLine(string.Format("\n{0}, you win!\n", user.NickName));
 
-                        continueGame = false;
+                        game.ContinueGame = false;
 
                         // Format and display the TimeSpan value.
-                        string elapsedTime = String.Format("{0:00}{1:00}:{2:00}:{3:00}.{4:00}",
+                        string elapsedTime = String.Format("{0:00}{1:00}:{2:00}:{3:00}.{4:00}\n",
                             game.TimeToSolve.Days,
                             game.TimeToSolve.Hours,
                             game.TimeToSolve.Minutes,
                             game.TimeToSolve.Seconds,
                             game.TimeToSolve.Milliseconds / 10);
 
-                        Console.Write("\nTime to solve: " + elapsedTime);
+                        Console.Write("Time to solve: " + elapsedTime + "\n");
+                        Console.Write("Score: " + game.Score + "\n");
                     }
                     else
                     {
@@ -215,12 +216,14 @@ namespace SudokuCollective.ConsoleDev.Routines
                 }
                 else if (command.Equals("4") || command.Equals("EXIT"))
                 {
-                    continueGame = false;
+                    game.ContinueGame = false;
                 }
 
-            } while (continueGame);
+            } while (game.ContinueGame);
 
-            Console.WriteLine("\nPress enter to exit to main menu.");
+            Console.WriteLine("\nPress enter to return to the main menu.");
+
+            Console.ReadLine();
         }
     }
 }

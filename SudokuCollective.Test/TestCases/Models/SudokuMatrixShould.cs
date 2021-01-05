@@ -173,7 +173,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
             foreach (var cell in sut.SudokuCells)
             {
-                if (cell.Obscured == false)
+                if (cell.Hidden == false)
                 {
                     result++;
                 }
@@ -200,7 +200,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
             foreach (var cell in sut.SudokuCells)
             {
-                if (cell.Obscured == false)
+                if (cell.Hidden == false)
                 {
                     result++;
                 }
@@ -227,7 +227,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
             foreach (var cell in sut.SudokuCells)
             {
-                if (cell.Obscured == false)
+                if (cell.Hidden == false)
                 {
                     result++;
                 }
@@ -254,7 +254,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
             foreach (var cell in sut.SudokuCells)
             {
-                if (cell.Obscured == false)
+                if (cell.Hidden == false)
                 {
                     result++;
                 }
@@ -281,7 +281,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
             foreach (var cell in sut.SudokuCells)
             {
-                if (cell.Obscured == false)
+                if (cell.Hidden == false)
                 {
                     result++;
                 }

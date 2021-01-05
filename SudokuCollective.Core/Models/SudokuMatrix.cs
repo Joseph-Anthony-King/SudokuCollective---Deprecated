@@ -18,6 +18,9 @@ namespace SudokuCollective.Core.Models
         #region Fields
         private List<SudokuCell> _sudokuCells = new List<SudokuCell>();
         private Stopwatch _stopwatch = new Stopwatch();
+        public Dictionary<string, List<SudokuCell>> Columns = new Dictionary<string, List<SudokuCell>>();
+        public Dictionary<string, List<SudokuCell>> Regions = new Dictionary<string, List<SudokuCell>>();
+        public Dictionary<string, List<SudokuCell>> Rows = new Dictionary<string, List<SudokuCell>>();
         #endregion
 
         #region Properties
@@ -36,6 +39,7 @@ namespace SudokuCollective.Core.Models
                 _sudokuCells = value;
             }
         }
+        [JsonIgnore]
         public Stopwatch Stopwatch
         {
             get
@@ -45,123 +49,178 @@ namespace SudokuCollective.Core.Models
         }
 
         #region SudokuCell List Properties
-        public List<List<SudokuCell>> Columns
-        {
-            get
-            {
-                var result = new List<List<SudokuCell>>() {
-                    FirstColumn,
-                    SecondColumn,
-                    ThirdColumn,
-                    FourthColumn,
-                    FifthColumn,
-                    SixthColumn,
-                    SeventhColumn,
-                    EighthColumn,
-                    NinthColumn
-                };
-
-                return result;
-            }
-        }
-        public List<List<SudokuCell>> Regions
-        {
-            get
-            {
-                var result = new List<List<SudokuCell>>() {
-                    FirstRegion,
-                    SecondRegion,
-                    ThirdRegion,
-                    FourthRegion,
-                    FifthRegion,
-                    SixthRegion,
-                    SeventhRegion,
-                    EighthRegion,
-                    NinthRegion
-                };
-
-                return result;
-            }
-        }
-        public List<List<SudokuCell>> Rows
-        {
-            get
-            {
-                var result = new List<List<SudokuCell>>() {
-                    FirstRow,
-                    SecondRow,
-                    ThirdRow,
-                    FourthRow,
-                    FifthRow,
-                    SixthRow,
-                    SeventhRow,
-                    EighthRow,
-                    NinthRow
-                };
-
-                return result;
-            }
-        }
-
+        [JsonIgnore]
         public List<SudokuCell> FirstColumn { get => SudokuCells.Where(column => column.Column == 1).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SecondColumn { get => SudokuCells.Where(column => column.Column == 2).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> ThirdColumn { get => SudokuCells.Where(column => column.Column == 3).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> FourthColumn { get => SudokuCells.Where(column => column.Column == 4).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> FifthColumn { get => SudokuCells.Where(column => column.Column == 5).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SixthColumn { get => SudokuCells.Where(column => column.Column == 6).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SeventhColumn { get => SudokuCells.Where(column => column.Column == 7).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> EighthColumn { get => SudokuCells.Where(column => column.Column == 8).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> NinthColumn { get => SudokuCells.Where(column => column.Column == 9).ToList(); }
 
+        [JsonIgnore]
         public List<SudokuCell> FirstRegion { get => SudokuCells.Where(region => region.Region == 1).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SecondRegion { get => SudokuCells.Where(region => region.Region == 2).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> ThirdRegion { get => SudokuCells.Where(region => region.Region == 3).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> FourthRegion { get => SudokuCells.Where(region => region.Region == 4).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> FifthRegion { get => SudokuCells.Where(region => region.Region == 5).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SixthRegion { get => SudokuCells.Where(region => region.Region == 6).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SeventhRegion { get => SudokuCells.Where(region => region.Region == 7).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> EighthRegion { get => SudokuCells.Where(region => region.Region == 8).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> NinthRegion { get => SudokuCells.Where(region => region.Region == 9).ToList(); }
 
+        [JsonIgnore]
         public List<SudokuCell> FirstRow { get => SudokuCells.Where(row => row.Row == 1).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SecondRow { get => SudokuCells.Where(row => row.Row == 2).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> ThirdRow { get => SudokuCells.Where(row => row.Row == 3).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> FourthRow { get => SudokuCells.Where(row => row.Row == 4).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> FifthRow { get => SudokuCells.Where(row => row.Row == 5).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SixthRow { get => SudokuCells.Where(row => row.Row == 6).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> SeventhRow { get => SudokuCells.Where(row => row.Row == 7).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> EighthRow { get => SudokuCells.Where(row => row.Row == 8).ToList(); }
+        [JsonIgnore]
         public List<SudokuCell> NinthRow { get => SudokuCells.Where(row => row.Row == 9).ToList(); }
+        #endregion
 
+        #region Sudoku Cell Value Lists
+        [JsonIgnore]
         public List<int> FirstColumnValues { get => SudokuCells.Where(column => column.Column == 1).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SecondColumnValues { get => SudokuCells.Where(column => column.Column == 2).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> ThirdColumnValues { get => SudokuCells.Where(column => column.Column == 3).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> FourthColumnValues { get => SudokuCells.Where(column => column.Column == 4).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> FifthColumnValues { get => SudokuCells.Where(column => column.Column == 5).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SixthColumnValues { get => SudokuCells.Where(column => column.Column == 6).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SeventhColumnValues { get => SudokuCells.Where(column => column.Column == 7).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> EighthColumnValues { get => SudokuCells.Where(column => column.Column == 8).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> NinthColumnValues { get => SudokuCells.Where(column => column.Column == 9).Select(i => i.Value).Distinct().ToList(); }
 
+        [JsonIgnore]
         public List<int> FirstRegionValues { get => SudokuCells.Where(region => region.Region == 1).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SecondRegionValues { get => SudokuCells.Where(region => region.Region == 2).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> ThirdRegionValues { get => SudokuCells.Where(region => region.Region == 3).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> FourthRegionValues { get => SudokuCells.Where(region => region.Region == 4).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> FifthRegionValues { get => SudokuCells.Where(region => region.Region == 5).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SixthRegionValues { get => SudokuCells.Where(region => region.Region == 6).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SeventhRegionValues { get => SudokuCells.Where(region => region.Region == 7).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> EighthRegionValues { get => SudokuCells.Where(region => region.Region == 8).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> NinthRegionValues { get => SudokuCells.Where(region => region.Region == 9).Select(i => i.Value).Distinct().ToList(); }
 
+        [JsonIgnore]
         public List<int> FirstRowValues { get => SudokuCells.Where(row => row.Row == 1).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SecondRowValues { get => SudokuCells.Where(row => row.Row == 2).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> ThirdRowValues { get => SudokuCells.Where(row => row.Row == 3).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> FourthRowValues { get => SudokuCells.Where(row => row.Row == 4).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> FifthRowValues { get => SudokuCells.Where(row => row.Row == 5).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SixthRowValues { get => SudokuCells.Where(row => row.Row == 6).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> SeventhRowValues { get => SudokuCells.Where(row => row.Row == 7).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> EighthRowValues { get => SudokuCells.Where(row => row.Row == 8).Select(i => i.Value).Distinct().ToList(); }
+        [JsonIgnore]
         public List<int> NinthRowValues { get => SudokuCells.Where(row => row.Row == 9).Select(i => i.Value).Distinct().ToList(); }
+
+        [JsonIgnore]
+        public List<int> FirstColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 1).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SecondColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 2).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> ThirdColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 3).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> FourthColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 4).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> FifthColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 5).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SixthColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 6).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SeventhColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 7).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> EighthColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 8).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> NinthColumnDisplayedValues { get => SudokuCells.Where(column => column.Column == 9).Select(i => i.DisplayedValue).Distinct().ToList(); }
+
+        [JsonIgnore]
+        public List<int> FirstRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 1).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SecondRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 2).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> ThirdRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 3).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> FourthRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 4).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> FifthRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 5).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SixthRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 6).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SeventhRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 7).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> EighthRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 8).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> NinthRegionDisplayedValues { get => SudokuCells.Where(region => region.Region == 9).Select(i => i.DisplayedValue).Distinct().ToList(); }
+
+        [JsonIgnore]
+        public List<int> FirstRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 1).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SecondRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 2).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> ThirdRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 3).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> FourthRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 4).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> FifthRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 5).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SixthRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 6).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> SeventhRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 7).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> EighthRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 8).Select(i => i.DisplayedValue).Distinct().ToList(); }
+        [JsonIgnore]
+        public List<int> NinthRowDisplayedValues { get => SudokuCells.Where(row => row.Row == 9).Select(i => i.DisplayedValue).Distinct().ToList(); }
         #endregion
         #endregion
 
@@ -290,6 +349,36 @@ namespace SudokuCollective.Core.Models
                     rowIndexer++;
                 }
             }
+
+            Columns.Add("first column", FirstColumn);
+            Columns.Add("second column", SecondColumn);
+            Columns.Add("third column", ThirdColumn);
+            Columns.Add("fourth column", FourthColumn);
+            Columns.Add("fifth column", FifthColumn);
+            Columns.Add("sixth column", SixthColumn);
+            Columns.Add("seventh column", SeventhColumn);
+            Columns.Add("eighth column", EighthColumn);
+            Columns.Add("ninth column", NinthColumn);
+
+            Regions.Add("first region", FirstRegion);
+            Regions.Add("second region", SecondRegion);
+            Regions.Add("third region", ThirdRegion);
+            Regions.Add("fourth region", FourthRegion);
+            Regions.Add("fifth region", FifthRegion);
+            Regions.Add("sixth region", SixthRegion);
+            Regions.Add("seventh region", SeventhRegion);
+            Regions.Add("eighth region", EighthRegion);
+            Regions.Add("ninth region", NinthRegion);
+
+            Rows.Add("first row", FirstRow);
+            Rows.Add("second row", SecondRow);
+            Rows.Add("third row", ThirdRow);
+            Rows.Add("fourth row", FourthRow);
+            Rows.Add("fifth row", FifthRow);
+            Rows.Add("sixth row", SixthRow);
+            Rows.Add("seventh row", SeventhRow);
+            Rows.Add("eighth row", EighthRow);
+            Rows.Add("ninth row", NinthRow);
         }
 
         [JsonConstructor]
@@ -297,6 +386,36 @@ namespace SudokuCollective.Core.Models
         {
             Id = id;
             DifficultyId = difficultyId;
+
+            Columns.Add("first column", FirstColumn);
+            Columns.Add("second column", SecondColumn);
+            Columns.Add("third column", ThirdColumn);
+            Columns.Add("fourth column", FourthColumn);
+            Columns.Add("fifth column", FifthColumn);
+            Columns.Add("sixth column", SixthColumn);
+            Columns.Add("seventh column", SeventhColumn);
+            Columns.Add("eighth column", EighthColumn);
+            Columns.Add("ninth column", NinthColumn);
+
+            Regions.Add("first region", FirstRegion);
+            Regions.Add("second region", SecondRegion);
+            Regions.Add("third region", ThirdRegion);
+            Regions.Add("fourth region", FourthRegion);
+            Regions.Add("fifth region", FifthRegion);
+            Regions.Add("sixth region", SixthRegion);
+            Regions.Add("seventh region", SeventhRegion);
+            Regions.Add("eighth region", EighthRegion);
+            Regions.Add("ninth region", NinthRegion);
+
+            Rows.Add("first row", FirstRow);
+            Rows.Add("second row", SecondRow);
+            Rows.Add("third row", ThirdRow);
+            Rows.Add("fourth row", FourthRow);
+            Rows.Add("fifth row", FifthRow);
+            Rows.Add("sixth row", SixthRow);
+            Rows.Add("seventh row", SeventhRow);
+            Rows.Add("eighth row", EighthRow);
+            Rows.Add("ninth row", NinthRow);
         }
         #endregion
 
@@ -328,22 +447,27 @@ namespace SudokuCollective.Core.Models
 
         public virtual bool IsSolved()
         {
-            var result = true;
-
-            var solution = ToIntList();
-            var usersAnsweres = ToDisplayedValuesList();
-
-            for (var i = 0; i < solution.Count; i++)
+            if (FirstColumnDisplayedValues.Count == 9 && SecondColumnDisplayedValues.Count == 9
+                && ThirdColumnDisplayedValues.Count == 9 && FourthColumnDisplayedValues.Count == 9
+                && FifthColumnDisplayedValues.Count == 9 && SixthColumnDisplayedValues.Count == 9
+                && SeventhColumnDisplayedValues.Count == 9 && EighthColumnDisplayedValues.Count == 9
+                && NinthColumnDisplayedValues.Count == 9 && FirstRegionDisplayedValues.Count == 9
+                && SecondRegionDisplayedValues.Count == 9 && ThirdRegionDisplayedValues.Count == 9
+                && FourthRegionDisplayedValues.Count == 9 && FifthRegionDisplayedValues.Count == 9
+                && SixthRegionDisplayedValues.Count == 9 && SeventhRegionDisplayedValues.Count == 9
+                && EighthRegionDisplayedValues.Count == 9 && NinthRegionDisplayedValues.Count == 9
+                && FirstRowDisplayedValues.Count == 9 && SecondRowDisplayedValues.Count == 9
+                && ThirdRowDisplayedValues.Count == 9 && FourthRowDisplayedValues.Count == 9
+                && FifthRowDisplayedValues.Count == 9 && SixthRowDisplayedValues.Count == 9
+                && SeventhRowDisplayedValues.Count == 9 && EighthRowDisplayedValues.Count == 9
+                && NinthRowDisplayedValues.Count == 9)
             {
-
-                if (solution[i] != usersAnsweres[i])
-                {
-
-                    result = false;
-                }
+                return true;
             }
-
-            return result;
+            else
+            {
+                return false;
+            }
         }
 
         public List<int> ToIntList()
@@ -364,7 +488,7 @@ namespace SudokuCollective.Core.Models
 
             foreach (var SudokuCell in SudokuCells)
             {
-                result.Add(SudokuCell.DisplayValue);
+                result.Add(SudokuCell.DisplayedValue);
             }
 
             return result;
@@ -386,53 +510,184 @@ namespace SudokuCollective.Core.Models
         {
             foreach (var SudokuCell in SudokuCells)
             {
-                SudokuCell.Obscured = true;
+                SudokuCell.Hidden = true;
             }
 
             Difficulty = (Difficulty)difficulty;
-            DifficultyId = difficulty.Id;
 
-            int index;
+            var patterns = new List<List<int>>();
+
+            var pattern = new List<int>();
 
             if (Difficulty.DifficultyLevel == DifficultyLevel.EASY)
             {
-                index = 35;
-            }
-            else if (Difficulty.DifficultyLevel == DifficultyLevel.MEDIUM)
-            {
-                index = 29;
-            }
-            else if (Difficulty.DifficultyLevel == DifficultyLevel.HARD)
-            {
-                index = 23;
-            }
-            else
-            {
-                index = 17;
-            }
+                patterns.Add(new List<int> { 1, 2, 5, 8, 11, 12, 16, 18, 20, 22, 25, 27, 28, 30, 32, 34, 35, 40, 42, 47, 48, 50, 52, 54, 55, 57, 60, 62, 64, 66, 70, 71, 74, 77, 80, 81 });
+                patterns.Add(new List<int> { 1, 2, 5, 6, 7, 8, 11, 14, 15, 17, 19, 25, 29, 32, 37, 38, 41, 44, 45, 50, 53, 57, 63, 65, 67, 68, 71, 74, 75, 76, 77, 80, 81 });
+                patterns.Add(new List<int> { 1, 3, 5, 6, 7, 15, 18, 19, 21, 24, 25, 31, 34, 37, 38, 39, 40, 42, 43, 44, 45, 48, 51, 57, 58, 61, 63, 64, 67, 75, 76, 77, 79, 81 });
+                patterns.Add(new List<int> { 1, 3, 5, 9, 10, 11, 15, 17, 22, 24, 25, 28, 29, 32, 37, 38, 41, 44, 45, 50, 53, 54, 57, 58, 60, 65, 67, 71, 72, 73, 77, 79, 81 });
+                patterns.Add(new List<int> { 1, 3, 7, 10, 11, 12, 14, 17, 18, 20, 22, 24, 26, 28, 29, 33, 35, 39, 43, 47, 49, 53, 54, 56, 58, 60, 62, 64, 65, 68, 70, 71, 72, 75, 79, 81 });
+                patterns.Add(new List<int> { 1, 4, 5, 6, 11, 14, 15, 16, 20, 22, 25, 26, 29, 32, 34, 37, 39, 43, 45, 48, 50, 53, 56, 57, 60, 62, 66, 67, 68, 71, 76, 77, 78, 81 });
+                patterns.Add(new List<int> { 1, 4, 6, 9, 11, 12, 16, 19, 20, 21, 23, 26, 27, 28, 29, 33, 36, 39, 43, 46, 49, 53, 54, 55, 56, 59, 61, 62, 63, 66, 70, 71, 73, 76, 78, 81 });
+                patterns.Add(new List<int> { 1, 5, 6, 8, 11, 13, 17, 20, 21, 22, 24, 25, 27, 31, 32, 33, 36, 46, 49, 50, 51, 55, 57, 58, 60, 61, 62, 65, 69, 71, 74, 76, 77, 81 });
+                patterns.Add(new List<int> { 1, 10, 11, 12, 14, 16, 17, 19, 22, 24, 25, 26, 30, 33, 35, 40, 41, 42, 47, 49, 52, 56, 57, 58, 60, 63, 65, 66, 55, 70, 71, 72, 81 });
+                patterns.Add(new List<int> { 2, 3, 5, 6, 7, 10, 15, 16, 18, 19, 22, 23, 25, 34, 37, 38, 39, 40, 42, 43, 44, 45, 48, 57, 59, 60, 63, 64, 66, 67, 72, 75, 76, 77, 79, 80 });
+                patterns.Add(new List<int> { 2, 3, 9, 11, 13, 14, 16, 17, 18, 21, 26, 32, 33, 35, 36, 37, 40, 42, 45, 46, 47, 49, 50, 56, 61, 64, 65, 66, 68, 69, 71, 73, 79, 80 });
+                patterns.Add(new List<int> { 2, 3, 10, 11, 15, 16, 17, 19, 21, 23, 24, 26, 30, 31, 32, 38, 39, 40, 42, 43, 44, 50, 51, 52, 56, 58, 59, 61, 63, 65, 66, 67, 71, 72, 79, 80 });
+                patterns.Add(new List<int> { 2, 4, 6, 14, 16, 17, 19, 22, 23, 25, 26, 29, 30, 31, 36, 37, 38, 40, 42, 44, 45, 46, 51, 52, 53, 56, 57, 59, 60, 63, 65, 66, 68, 76, 78, 80 });
+                patterns.Add(new List<int> { 2, 6, 7, 8, 9, 10, 12, 13, 14, 17, 19, 23, 28, 31, 32, 34, 37, 45, 48, 50, 51, 54, 59, 63, 65, 68, 69, 70, 72, 73, 74, 75, 76, 80 });
+                patterns.Add(new List<int> { 3, 4, 10, 11, 13, 14, 16, 18, 22, 25, 30, 31, 33, 35, 36, 38, 41, 44, 46, 47, 49, 51, 52, 57, 60, 64, 66, 68, 69, 71, 72, 78, 79 });
+                patterns.Add(new List<int> { 3, 5, 9, 10, 11, 13, 18, 20, 24, 25, 26, 29, 30, 31, 32, 34, 35, 47, 48, 50, 51, 52, 53, 56, 57, 58, 62, 64, 69, 71, 72, 73, 77, 79 });
+                patterns.Add(new List<int> { 3, 5, 11, 12, 13, 17, 18, 19, 20, 22, 23, 27, 29, 30, 31, 37, 38, 39, 43, 44, 45, 51, 52, 53, 55, 59, 60, 62, 63, 64, 65, 69, 70, 71, 77, 79 });
+                patterns.Add(new List<int> { 4, 6, 11, 12, 17, 18, 20, 21, 23, 24, 26, 28, 32, 33, 38, 39, 43, 44, 49, 50, 54, 56, 58, 59, 61, 62, 64, 65, 70, 71, 76, 78 });
+                patterns.Add(new List<int> { 5, 6, 9, 10, 11, 14, 16, 17, 20, 24, 25, 26, 28, 29, 31, 39, 40, 42, 43, 51, 53, 54, 56, 57, 58, 62, 65, 66, 68, 71, 72, 73, 76, 77 });
+                patterns.Add(new List<int> { 9, 11, 12, 14, 16, 18, 19, 21, 24, 26, 29, 32, 33, 34, 35, 37, 38, 44, 45, 47, 48, 49, 50, 53, 56, 58, 61, 63, 64, 66, 68, 70, 71, 73 });
 
-            if (Difficulty.DifficultyLevel != DifficultyLevel.TEST)
-            {
-                List<int> indexerList = new List<int>();
+                var indexes = new List<int>();
 
-                for (var i = 0; i < SudokuCells.Count; i++)
+                for (var i = 0; i < patterns.Count; i++)
                 {
-                    indexerList.Add(i);
+                    indexes.Add(i);
                 }
 
                 Random random = new Random();
-                CoreExtensions.Shuffle(indexerList, random);
 
-                for (var i = 0; i < index; i++)
+                CoreExtensions.Shuffle(indexes, random);
+
+                pattern = patterns[indexes.FirstOrDefault()];
+            }
+            else if (Difficulty.DifficultyLevel == DifficultyLevel.MEDIUM)
+            {
+                patterns.Add(new List<int> { 1, 2, 3, 4, 8, 13, 16, 19, 22, 24, 26, 29, 34, 36, 39, 43, 46, 48, 53, 56, 58, 60, 63, 66, 69, 74, 78, 79, 80, 81 });
+                patterns.Add(new List<int> { 1, 2, 4, 5, 6, 10, 11, 18, 21, 22, 27, 28, 33, 37, 38, 41, 44, 45, 49, 54, 55, 60, 61, 64, 71, 72, 76, 77, 78, 80, 81 });
+                patterns.Add(new List<int> { 1, 3, 4, 8, 12, 13, 16, 17, 20, 23, 25, 27, 34, 36, 38, 44, 46, 48, 55, 57, 59, 62, 65, 66, 69, 70, 74, 78, 79, 81 });
+                patterns.Add(new List<int> { 1, 2, 4, 11, 14, 17, 18, 19, 24, 26, 29, 32, 33, 36, 39, 43, 46, 49, 50, 53, 56, 58, 63, 64, 65, 68, 71, 78, 80, 81 });
+                patterns.Add(new List<int> { 1, 3, 6, 7, 11, 12, 13, 17, 19, 23, 25, 29, 32, 35, 40, 41, 42, 47, 50, 53, 57, 59, 63, 65, 69, 70, 71, 75, 76, 79, 81 });
+                patterns.Add(new List<int> { 1, 4, 11, 12, 14, 19, 21, 22, 24, 28, 31, 35, 39, 40, 41, 42, 43, 47, 51, 54, 58, 60, 61, 63, 68, 70, 71, 78, 81 });
+                patterns.Add(new List<int> { 1, 5, 7, 12, 19, 20, 22, 24, 26, 28, 31, 35, 38, 39, 43, 44, 47, 51, 54, 56, 58, 60, 62, 63, 70, 75, 77, 81 });
+                patterns.Add(new List<int> { 1, 8, 9, 10, 12, 13, 15, 21, 22, 24, 34, 36, 39, 40, 41, 42, 43, 46, 48, 58, 60, 61, 67, 69, 70, 72, 73, 74, 81 });
+                patterns.Add(new List<int> { 2, 3, 5, 11, 15, 18, 24, 26, 28, 30, 31, 33, 36, 37, 38, 41, 44, 45, 46, 49, 51, 52, 54, 56, 58, 64, 67, 71, 77, 79, 80 });
+                patterns.Add(new List<int> { 2, 3, 6, 8, 10, 11, 13, 18, 21, 23, 26, 28, 32, 36, 40, 41, 42, 46, 50, 54, 56, 59, 61, 64, 69, 71, 72, 74, 76, 79, 80 });
+                patterns.Add(new List<int> { 2, 6, 9, 11, 13, 14, 16, 22, 24, 25, 28, 30, 31, 38, 40, 41, 42, 44, 51, 52, 54, 57, 58, 60, 66, 68, 69, 71, 73, 76, 80 });
+                patterns.Add(new List<int> { 2, 8, 11, 12, 13, 14, 15, 16, 20, 24, 25, 31, 32, 35, 36, 40, 42, 46, 47, 50, 51, 57, 58, 62, 66, 67, 68, 69, 70, 71, 74, 80 });
+                patterns.Add(new List<int> { 3, 4, 7, 9, 12, 15, 17, 23, 24, 25, 28, 29, 31, 33, 34, 41, 48, 49, 51, 53, 54, 57, 58, 59, 65, 67, 70, 73, 75, 78, 79 });
+                patterns.Add(new List<int> { 4, 8, 9, 10, 11, 15, 21, 24, 25, 27, 31, 34, 35, 37, 41, 45, 47, 48, 51, 55, 57, 58, 61, 67, 71, 72, 73, 74, 78 });
+                patterns.Add(new List<int> { 3, 5, 6, 9, 12, 13, 16, 20, 26, 29, 30, 31, 36, 37, 41, 45, 46, 51, 52, 53, 56, 62, 66, 69, 70, 73, 76, 77, 79 });
+                patterns.Add(new List<int> { 5, 7, 8, 18, 19, 21, 23, 24, 25, 26, 29, 31, 35, 36, 38, 41, 44, 46, 47, 51, 53, 56, 57, 58, 59, 61, 63, 64, 74, 75, 77 });
+                patterns.Add(new List<int> { 5, 8, 11, 15, 16, 19, 21, 25, 26, 31, 32, 33, 34, 37, 41, 45, 48, 49, 50, 51, 56, 57, 61, 63, 66, 67, 71, 74, 77 });
+                patterns.Add(new List<int> { 5, 8, 9, 15, 16, 17, 19, 23, 26, 29, 30, 31, 34, 36, 40, 42, 46, 48, 51, 52, 53, 56, 59, 63, 65, 66, 67, 73, 74, 77 });
+                patterns.Add(new List<int> { 5, 8, 9, 10, 11, 15, 16, 18, 21, 24, 25, 34, 35, 36, 37, 40, 42, 45, 46, 47, 48, 57, 58, 61, 64, 66, 67, 71, 72, 73, 74, 77 });
+                patterns.Add(new List<int> { 6, 7, 9, 10, 13, 18, 21, 25, 26, 31, 33, 34, 36, 38, 41, 44, 46, 48, 49, 51, 56, 57, 61, 64, 69, 72, 73, 75, 76 });
+
+                var indexes = new List<int>();
+
+                for (var i = 0; i < patterns.Count; i++)
                 {
-                    SudokuCells[indexerList[i]].Obscured = false;
+                    indexes.Add(i);
+                }
+
+                Random random = new Random();
+
+                CoreExtensions.Shuffle(indexes, random);
+
+                pattern = patterns[indexes.FirstOrDefault()];
+            }
+            else if (Difficulty.DifficultyLevel == DifficultyLevel.HARD)
+            {
+                patterns.Add(new List<int> { 1, 2, 4, 5, 9, 10, 13, 24, 25, 26, 28, 29, 38, 41, 44, 52, 54, 56, 57, 58, 69, 72, 73, 77, 78, 80, 81 });
+                patterns.Add(new List<int> { 1, 2, 6, 9, 12, 15, 16, 23, 26, 28, 31, 32, 40, 42, 50, 51, 54, 56, 59, 66, 67, 70, 73, 76, 80, 81 });
+                patterns.Add(new List<int> { 1, 3, 5, 11, 14, 17, 19, 24, 25, 31, 34, 36, 37, 38, 44, 45, 46, 48, 51, 57, 58, 63, 65, 68, 71, 77, 79, 81 });
+                patterns.Add(new List<int> { 1, 3, 8, 11, 14, 16, 20, 23, 24, 25, 30, 36, 40, 41, 42, 46, 52, 57, 58, 59, 62, 66, 68, 71, 74, 79, 81 });
+                patterns.Add(new List<int> { 1, 4, 8, 14, 16, 20, 23, 24, 30, 33, 34, 35, 37, 41, 45, 47, 48, 49, 52, 58, 59, 62, 66, 68, 74, 78, 81 });
+                patterns.Add(new List<int> { 1, 4, 19, 11, 15, 24, 25, 27, 31, 33, 35, 36, 39, 43, 46, 47, 49, 51, 55, 57, 58, 67, 71, 72, 78, 81 });
+                patterns.Add(new List<int> { 1, 5, 12, 15, 22, 26, 27, 28, 30, 33, 34, 36, 38, 40, 42, 44, 46, 48, 49, 52, 54, 55, 56, 60, 67, 70, 77, 81 });
+                patterns.Add(new List<int> { 1, 7, 8, 10, 12, 14, 20, 23, 26, 31, 34, 36, 37, 38, 44, 45, 46, 48, 51, 56, 59, 62, 68, 70, 72, 75, 76, 81 });
+                patterns.Add(new List<int> { 1, 8, 10, 13, 16, 17, 18, 20, 24, 28, 32, 38, 40, 41, 42, 44, 50, 54, 58, 62, 64, 65, 66, 69, 72, 74, 81 });
+                patterns.Add(new List<int> { 2, 4, 6, 12, 14, 17, 22, 26, 28, 31, 32, 34, 36, 40, 42, 46, 48, 50, 51, 54, 56, 60, 65, 68, 70, 76, 78, 80 });
+                patterns.Add(new List<int> { 2, 5, 6, 10, 17, 21, 23, 24, 26, 30, 31, 33, 34, 35, 47, 48, 49, 51, 52, 56, 58, 59, 61, 65, 72, 76, 77, 80 });
+                patterns.Add(new List<int> { 2, 5, 9, 10, 16, 19, 21, 24, 27, 31, 34, 35, 40, 42, 47, 48, 51, 55, 58, 61, 63, 65, 72, 73, 77, 80 });
+                patterns.Add(new List<int> { 2, 5, 18, 20, 22, 26, 27, 31, 32, 35, 38, 39, 40, 42, 43, 44, 47, 50, 51, 55, 56, 60, 62, 64, 77, 80 });
+                patterns.Add(new List<int> { 2, 9, 14, 16, 18, 19, 20, 21, 24, 29, 30, 31, 35, 37, 45, 47, 51, 52, 53, 58, 61, 62, 63, 64, 66, 68, 73, 80 });
+                patterns.Add(new List<int> { 3, 5, 6, 7, 8, 11, 16, 22, 26, 30, 33, 35, 39, 40, 42, 43, 47, 49, 52, 56, 60, 66, 71, 74, 75, 76, 77, 79 });
+                patterns.Add(new List<int> { 4, 6, 7, 9, 10, 11, 18, 19, 23, 30, 33, 35, 37, 45, 47, 49, 52, 59, 63, 64, 71, 72, 73, 75, 76, 78 });
+                patterns.Add(new List<int> { 5, 7, 10, 11, 12, 15, 21, 22, 25, 26, 29, 32, 36, 37, 45, 46, 50, 53, 56, 57, 61, 62, 67, 70, 71, 72, 75, 77 });
+                patterns.Add(new List<int> { 5, 9, 12, 14, 16, 20, 21, 22, 26, 31, 34, 36, 39, 43, 46, 48, 51, 56, 60, 61, 62, 66, 68, 70, 73, 77 });
+                patterns.Add(new List<int> { 6, 9, 13, 14, 15, 17, 19, 27, 29, 30, 31, 34, 38, 44, 48, 51, 52, 53, 55, 63, 65, 67, 68, 69, 73, 76 });
+                patterns.Add(new List<int> { 7, 9, 10, 14, 17, 21, 23, 24, 27, 30, 31, 32, 33, 39, 43, 49, 50, 51, 52, 55, 58, 59, 61, 65, 68, 72, 73, 75 });
+
+                var indexes = new List<int>();
+
+                for (var i = 0; i < patterns.Count; i++)
+                {
+                    indexes.Add(i);
+                }
+
+                Random random = new Random();
+
+                CoreExtensions.Shuffle(indexes, random);
+
+                pattern = patterns[indexes.FirstOrDefault()];
+            }
+            else if (Difficulty.DifficultyLevel == DifficultyLevel.EVIL)
+            {
+                patterns.Add(new List<int> { 1, 2, 3, 6, 12, 25, 26, 27, 30, 31, 32, 33, 35, 47, 49, 50, 51, 52, 55, 56, 57, 70, 76, 79, 80, 81 });
+                patterns.Add(new List<int> { 1, 3, 4, 8, 14, 15, 17, 21, 24, 28, 35, 37, 39, 43, 45, 47, 54, 58, 61, 65, 67, 68, 74, 78, 79, 81 });
+                patterns.Add(new List<int> { 1, 4, 5, 6, 10, 12, 21, 24, 28, 32, 35, 39, 41, 43, 47, 50, 54, 58, 61, 70, 72, 76, 77, 78, 81 });
+                patterns.Add(new List<int> { 1, 4, 7, 12, 13, 16, 19, 22, 24, 27, 29, 30, 40, 42, 52, 53, 55, 58, 60, 63, 66, 69, 70, 75, 78, 81 });
+                patterns.Add(new List<int> { 1, 6, 10, 15, 16, 18, 19, 22, 26, 29, 30, 31, 34, 48, 51, 52, 53, 56, 60, 63, 64, 66, 67, 72, 76, 81 });
+                patterns.Add(new List<int> { 1, 6, 11, 13, 21, 23, 25, 26, 27, 33, 35, 36, 39, 43, 46, 47, 49, 55, 56, 57, 59, 61, 69, 71, 76, 81 });
+                patterns.Add(new List<int> { 1, 7, 8, 14, 19, 22, 24, 25, 28, 29, 31, 33, 34, 48, 49, 51, 53, 54, 57, 58, 60, 63, 68, 74, 75, 81 });
+                patterns.Add(new List<int> { 2, 3, 4, 6, 10, 11, 13, 14, 16, 28, 30, 32, 35, 47, 50, 52, 54, 66, 68, 69, 71, 72, 76, 78, 79, 80 });
+                patterns.Add(new List<int> { 2, 5, 7, 9, 11, 13, 24, 27, 28, 29, 30, 35, 41, 47, 52, 53, 54, 55, 58, 69, 71, 73, 75, 77, 80 });
+                patterns.Add(new List<int> { 2, 6, 9, 11, 15, 17, 18, 23, 26, 28, 30, 32, 40, 42, 50, 52, 54, 56, 59, 64, 65, 67, 71, 73, 76, 80 });
+                patterns.Add(new List<int> { 2, 7, 9, 10, 13, 19, 20, 23, 31, 36, 39, 40, 41, 42, 43, 46, 51, 59, 62, 63, 69, 72, 73, 75, 80 });
+                patterns.Add(new List<int> { 3, 4, 5, 6, 10, 12, 19, 24, 30, 32, 35, 37, 41, 45, 47, 50, 52, 58, 63, 70, 72, 76, 77, 78, 79 });
+                patterns.Add(new List<int> { 3, 4, 5, 7, 8, 15, 19, 23, 26, 28, 29, 36, 37, 45, 46, 53, 54, 56, 59, 63, 67, 74, 75, 77, 78, 79 });
+                patterns.Add(new List<int> { 3, 4, 7, 8, 15, 18, 23, 26, 34, 36, 37, 39, 41, 43, 45, 46, 48, 56, 59, 64, 67, 74, 75, 78, 79 });
+                patterns.Add(new List<int> { 3, 4, 8, 10, 24, 25, 26, 27, 32, 33, 35, 36, 38, 44, 46, 47, 49, 50, 55, 56, 57, 58, 72, 74, 78, 79 });
+                patterns.Add(new List<int> { 3, 6, 8, 10, 11, 14, 16, 21, 25, 27, 33, 36, 38, 44, 46, 49, 55, 57, 61, 66, 68, 71, 72, 74, 76, 79 });
+                patterns.Add(new List<int> { 3, 10, 13, 14, 18, 21, 22, 26, 27, 29, 31, 32, 50, 51, 53, 55, 56, 60, 61, 64, 68, 69, 72, 79 });
+                patterns.Add(new List<int> { 5, 9, 10, 12, 19, 21, 22, 25, 32, 33, 34, 38, 41, 44, 48, 49, 50, 57, 60, 61, 63, 70, 72, 73, 77 });
+                patterns.Add(new List<int> { 5, 10, 11, 12, 15, 22, 24, 25, 27, 30, 31, 35, 37, 45, 47, 51, 52, 55, 57, 58, 60, 67, 70, 71, 72, 77 });
+                patterns.Add(new List<int> { 6, 8, 9, 10, 16, 18, 23, 26, 29, 30, 32, 36, 40, 42, 46, 50, 52, 53, 56, 59, 64, 66, 72, 73, 74, 76 });
+
+                var indexes = new List<int>();
+
+                for (var i = 0; i < patterns.Count; i++)
+                {
+                    indexes.Add(i);
+                }
+
+                Random random = new Random();
+
+                CoreExtensions.Shuffle(indexes, random);
+
+                pattern = patterns[indexes.FirstOrDefault()];
+            }
+            else
+            {
+                // do nothing...
+            }
+
+            if (Difficulty.DifficultyLevel == DifficultyLevel.TEST || 
+                Difficulty.DifficultyLevel == DifficultyLevel.NULL)
+            {
+                foreach (var SudokuCell in SudokuCells)
+                {
+                    SudokuCell.Hidden = false;
                 }
             }
             else
             {
-                foreach (var SudokuCell in SudokuCells)
+                foreach (var sudokuCell in SudokuCells)
                 {
-                    SudokuCell.Obscured = false;
+                    if (pattern.Contains(sudokuCell.Index))
+                    {
+                        sudokuCell.Hidden = false;
+                    }
+                    else
+                    {
+                        sudokuCell.Hidden = true;
+                    }
                 }
             }
         }

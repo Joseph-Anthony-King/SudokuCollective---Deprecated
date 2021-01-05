@@ -166,9 +166,9 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var savedCell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
                             {
-                                if (savedCell.Id == cell.Id && savedCell.Obscured)
+                                if (savedCell.Id == cell.Id && savedCell.Hidden)
                                 {
-                                    savedCell.DisplayValue = cell.DisplayValue;
+                                    savedCell.DisplayedValue = cell.DisplayedValue;
                                 }
                             }
                         }
@@ -426,7 +426,10 @@ namespace SudokuCollective.Data.Services
                                         }
 
                                         result.Games = result.Games
-                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue && !g.ContinueGame)
+                                            .Where(g => g.Score != 0 && 
+                                                g.Score != int.MaxValue && 
+                                                g.Score != 0 &&
+                                                !g.ContinueGame)
                                             .OrderByDescending(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
@@ -440,7 +443,10 @@ namespace SudokuCollective.Data.Services
                                         }
 
                                         result.Games = result.Games
-                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue && !g.ContinueGame)
+                                            .Where(g => g.Score != 0 &&
+                                                g.Score != int.MaxValue &&
+                                                g.Score != 0 &&
+                                                !g.ContinueGame)
                                             .OrderBy(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
@@ -709,7 +715,10 @@ namespace SudokuCollective.Data.Services
                                         }
 
                                         result.Games = result.Games
-                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue && !g.ContinueGame)
+                                            .Where(g => g.Score != 0 &&
+                                                g.Score != int.MaxValue &&
+                                                g.Score != 0 &&
+                                                !g.ContinueGame)
                                             .OrderByDescending(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
@@ -723,7 +732,10 @@ namespace SudokuCollective.Data.Services
                                         }
 
                                         result.Games = result.Games
-                                            .Where(g => g.Score != 0 && g.Score != double.MaxValue && !g.ContinueGame)
+                                            .Where(g => g.Score != 0 &&
+                                                g.Score != int.MaxValue &&
+                                                g.Score != 0 &&
+                                                !g.ContinueGame)
                                             .OrderBy(g => g.Score)
                                             .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
                                             .Take(request.PageListModel.ItemsPerPage)
@@ -932,9 +944,9 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var savedCell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
                             {
-                                if (savedCell.Id == cell.Id && savedCell.Obscured)
+                                if (savedCell.Id == cell.Id && savedCell.Hidden)
                                 {
-                                    savedCell.DisplayValue = cell.DisplayValue;
+                                    savedCell.DisplayedValue = cell.DisplayedValue;
                                 }
                             }
                         }

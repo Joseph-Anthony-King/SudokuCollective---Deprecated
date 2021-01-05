@@ -153,8 +153,11 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<double>("Score")
-                        .HasColumnType("double precision");
+                    b.Property<bool>("KeepScore")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
 
                     b.Property<int>("SudokuMatrixId")
                         .HasColumnType("integer");
@@ -234,14 +237,14 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<int>("Column")
                         .HasColumnType("integer");
 
-                    b.Property<int>("DisplayValue")
+                    b.Property<int>("DisplayedValue")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("Hidden")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Index")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("Obscured")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("Region")
                         .HasColumnType("integer");

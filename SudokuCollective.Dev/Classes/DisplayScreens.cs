@@ -19,7 +19,7 @@ namespace SudokuCollective.ConsoleDev.Classes
 
         internal static void ProgramPrompt()
         {
-            Console.WriteLine("\nWould you like to generate solutions or solve a solution:\n");
+            Console.WriteLine("\nWould you like to generate solutions, solve a solution, or play a game:\n");
             Console.WriteLine("Enter 1 to generate solutions");
             Console.WriteLine("Enter 2 to solve a solution");
             Console.WriteLine("Enter 3 to play a game");
@@ -33,10 +33,13 @@ namespace SudokuCollective.ConsoleDev.Classes
             Console.Write("\n  Sudoku Collective\n");
             Console.Write("\n   1 2 3 4 5 6 7 8 9\n");
             var i = 1;
-            foreach (var row in matrix.Rows)
+
+            var m = (SudokuMatrix)matrix;
+
+            foreach (var row in m.Rows)
             {
                 Console.Write(string.Format("\n{0}  ", i));
-                DisplayRow(row);
+                DisplayRow(row.Value);
                 i++;
             }
         }
@@ -45,7 +48,7 @@ namespace SudokuCollective.ConsoleDev.Classes
         {
             foreach (var cell in row)
             {
-                if (!cell.Obscured)
+                if (!cell.Hidden)
                 {
                     var _previousColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;

@@ -57,11 +57,11 @@ namespace SudokuCollective.Core.Models
                 _value = value;
             }
         }
-        public int DisplayValue
+        public int DisplayedValue
         {
             get
             {
-                if (!Obscured)
+                if (!Hidden)
                 {
                     return _value;
                 }
@@ -75,7 +75,7 @@ namespace SudokuCollective.Core.Models
                 _displayValue = value;
             }
         }
-        public bool Obscured { get; set; }
+        public bool Hidden { get; set; }
         public int SudokuMatrixId { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }
         [JsonIgnore]
@@ -131,7 +131,7 @@ namespace SudokuCollective.Core.Models
             Row = 0;
             Value = 0;
             SudokuMatrixId = 0;
-            Obscured = true;
+            Hidden = true;
             AvailableValues = new List<IAvailableValue>();
 
             for (var i = 1; i <= 9; i++)
@@ -155,7 +155,7 @@ namespace SudokuCollective.Core.Models
             int row,
             int value,
             int displayValue,
-            bool obscured,
+            bool hidden,
             int sudokuMatrixId)
         {
             Id = id;
@@ -164,8 +164,8 @@ namespace SudokuCollective.Core.Models
             Region = region;
             Row = row;
             _value = value;
-            DisplayValue = displayValue;
-            Obscured = obscured;
+            DisplayedValue = displayValue;
+            Hidden = hidden;
             SudokuMatrixId = sudokuMatrixId;
             AvailableValues = new List<IAvailableValue>();
 
@@ -190,9 +190,9 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Methods
-        public int ToInt32() => DisplayValue;
+        public int ToInt32() => DisplayedValue;
 
-        public override string ToString() => DisplayValue.ToString();
+        public override string ToString() => DisplayedValue.ToString();
 
         public void UpdateAvailableValues(int i)
         {

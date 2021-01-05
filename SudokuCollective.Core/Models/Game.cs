@@ -17,7 +17,8 @@ namespace SudokuCollective.Core.Models
         public SudokuSolution SudokuSolution { get; set; }
         public int AppId { get; set; }
         public bool ContinueGame { get; set; }
-        public double Score { get; set; }
+        public int Score { get; set; }
+        public bool KeepScore { get; set; }
         public TimeSpan TimeToSolve { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
@@ -33,6 +34,7 @@ namespace SudokuCollective.Core.Models
             DateCompleted = DateTime.MinValue;
             ContinueGame = true;
             Score = 0;
+            KeepScore = false;
             SudokuSolution = new SudokuSolution();
             AppId = 0;
             TimeToSolve = new TimeSpan();
@@ -61,7 +63,8 @@ namespace SudokuCollective.Core.Models
             int sudokuSolutionId,
             int appId,
             bool continueGame,
-            double score,
+            int score,
+            bool keepScore,
             long timeToSolve,
             DateTime dateCreated,
             DateTime dateUpdated,
@@ -74,6 +77,7 @@ namespace SudokuCollective.Core.Models
             AppId = appId;
             ContinueGame = continueGame;
             Score = score;
+            KeepScore = keepScore;
             TimeToSolve = new TimeSpan(timeToSolve);
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
@@ -93,27 +97,35 @@ namespace SudokuCollective.Core.Models
                         SudokuMatrix.Stopwatch.Stop();
                     }
 
-                    TimeToSolve = SudokuMatrix.Stopwatch.Elapsed;
+                    foreach (var sudokuCell in SudokuMatrix.SudokuCells)
+                    {
+                        sudokuCell.Value = sudokuCell.DisplayedValue;
+                    }
 
-                    if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.EASY)
+                    if (KeepScore)
                     {
-                        Score = TimeToSolve.Ticks * .80;
-                    }
-                    else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.MEDIUM)
-                    {
-                        Score = TimeToSolve.Ticks * .60;
-                    }
-                    else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.HARD)
-                    {
-                        Score = TimeToSolve.Ticks * .40;
-                    }
-                    else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.EVIL)
-                    {
-                        Score = TimeToSolve.Ticks * 20;
-                    }
-                    else
-                    {
-                        Score = double.MaxValue;
+                        TimeToSolve = SudokuMatrix.Stopwatch.Elapsed;
+
+                        if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.EASY)
+                        {
+                            Score = Convert.ToInt32((TimeToSolve.Ticks * .80) / 1000000);
+                        }
+                        else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.MEDIUM)
+                        {
+                            Score = Convert.ToInt32((TimeToSolve.Ticks * .60) / 1000000);
+                        }
+                        else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.HARD)
+                        {
+                            Score = Convert.ToInt32((TimeToSolve.Ticks * .40) / 1000000);
+                        }
+                        else if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.EVIL)
+                        {
+                            Score = Convert.ToInt32((TimeToSolve.Ticks * 20) / 1000000);
+                        }
+                        else
+                        {
+                            Score = int.MaxValue;
+                        }
                     }
 
                     var solvedDate = DateTime.UtcNow;

@@ -219,7 +219,8 @@ namespace SudokuCollective.Api.Migrations
                     SudokuSolutionId = table.Column<int>(nullable: false),
                     AppId = table.Column<int>(nullable: false),
                     ContinueGame = table.Column<bool>(nullable: false),
-                    Score = table.Column<double>(nullable: false),
+                    Score = table.Column<int>(nullable: false),
+                    KeepScore = table.Column<bool>(nullable: false),
                     TimeToSolve = table.Column<long>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
@@ -259,8 +260,8 @@ namespace SudokuCollective.Api.Migrations
                     Region = table.Column<int>(nullable: false),
                     Row = table.Column<int>(nullable: false),
                     Value = table.Column<int>(nullable: false),
-                    DisplayValue = table.Column<int>(nullable: false),
-                    Obscured = table.Column<bool>(nullable: false),
+                    DisplayedValue = table.Column<int>(nullable: false),
+                    Hidden = table.Column<bool>(nullable: false),
                     SudokuMatrixId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
