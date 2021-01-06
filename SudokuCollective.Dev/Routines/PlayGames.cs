@@ -216,7 +216,15 @@ namespace SudokuCollective.ConsoleDev.Routines
                 }
                 else if (command.Equals("4") || command.Equals("EXIT"))
                 {
-                    game.ContinueGame = false;
+
+                    Console.Write("\n{0}, are you sure you want to exit to the main menu (yes/no): ", user.NickName);
+
+                    var exitCommand = Console.ReadLine();
+
+                    if (exitCommand.ToLower().Equals("yes") || exitCommand.ToLower().Equals("y"))
+                    {
+                        game.ContinueGame = false;
+                    }                    
                 }
 
             } while (game.ContinueGame);

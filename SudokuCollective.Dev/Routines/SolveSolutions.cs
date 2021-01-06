@@ -86,13 +86,14 @@ namespace SudokuCollective.ConsoleDev.Routines
 
                 if (matrix.IsValid())
                 {
-                    matrix.SetDifficulty(new Difficulty()
-                    {
-                        Name = "Test",
-                        DifficultyLevel = DifficultyLevel.TEST
-                    });
+                    var displayMatrix = new SudokuMatrix(matrix.ToIntList());
 
-                    DisplayScreens.DisplayMatix(matrix);
+                    displayMatrix.SetDifficulty(
+                        new Difficulty { 
+                            Name = "Test", 
+                            DifficultyLevel = DifficultyLevel.TEST });
+
+                    DisplayScreens.DisplayMatix(displayMatrix);
 
                     // Format and display the TimeSpan value.
                     string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",

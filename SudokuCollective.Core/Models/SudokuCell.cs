@@ -43,15 +43,18 @@ namespace SudokuCollective.Core.Models
                         availableValue.Available = false;
                     }
 
-                    OnSuccessfulSudokuCellUpdate(
-                        new SudokuCellEventArgs(
-                            Index,
-                            value,
-                            Column,
-                            Region,
-                            Row
-                        )
-                    );
+                    if (SudokuCellEvent != null)
+                    {
+                        OnSuccessfulSudokuCellUpdate(
+                            new SudokuCellEventArgs(
+                                Index,
+                                value,
+                                Column,
+                                Region,
+                                Row
+                            )
+                        );
+                    }
                 }
 
                 _value = value;
@@ -154,7 +157,7 @@ namespace SudokuCollective.Core.Models
             int region,
             int row,
             int value,
-            int displayValue,
+            int displayedValue,
             bool hidden,
             int sudokuMatrixId)
         {
@@ -164,7 +167,7 @@ namespace SudokuCollective.Core.Models
             Region = region;
             Row = row;
             _value = value;
-            DisplayedValue = displayValue;
+            DisplayedValue = displayedValue;
             Hidden = hidden;
             SudokuMatrixId = sudokuMatrixId;
             AvailableValues = new List<IAvailableValue>();

@@ -185,7 +185,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
         [Test]
         [Category("Models")]
-        public void Have35VisibleCellsOnEasyDifficulty()
+        public void HaveHiddenCellsIfDifficultyIsNotTest()
         {
             // Arrange
             populatedTestMatrix.SetDifficulty(new Difficulty()
@@ -196,99 +196,45 @@ namespace SudokuCollective.Test.TestCases.Models
 
             // Act
             var sut = populatedTestMatrix;
-            var result = 0;
+            var result = false;
 
             foreach (var cell in sut.SudokuCells)
             {
                 if (cell.Hidden == false)
                 {
-                    result++;
+                    result = true;
                 }
             }
 
             // Assert
-            Assert.That(result, Is.EqualTo(35));
+            Assert.That(result, Is.True); ;
         }
 
         [Test]
         [Category("Models")]
-        public void Have29VisibleCellsOnMediumDifficulty()
+        public void HaveNoHiddenCellsIfDifficultyIsTest()
         {
             // Arrange
             populatedTestMatrix.SetDifficulty(new Difficulty()
             {
-                Name = "Medium",
-                DifficultyLevel = DifficultyLevel.MEDIUM
+                Name = "Test",
+                DifficultyLevel = DifficultyLevel.TEST
             });
 
             // Act
             var sut = populatedTestMatrix;
-            var result = 0;
+            var result = false;
 
             foreach (var cell in sut.SudokuCells)
             {
-                if (cell.Hidden == false)
+                if (cell.Hidden == true)
                 {
-                    result++;
+                    result = true;
                 }
             }
 
             // Assert
-            Assert.That(result, Is.EqualTo(29));
-        }
-
-        [Test]
-        [Category("Models")]
-        public void Have23VisibleCellsOnHardDifficulty()
-        {
-            // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty()
-            {
-                Name = "Hard",
-                DifficultyLevel = DifficultyLevel.HARD
-            });
-
-            // Act
-            var sut = populatedTestMatrix;
-            var result = 0;
-
-            foreach (var cell in sut.SudokuCells)
-            {
-                if (cell.Hidden == false)
-                {
-                    result++;
-                }
-            }
-
-            // Assert
-            Assert.That(result, Is.EqualTo(23));
-        }
-
-        [Test]
-        [Category("Models")]
-        public void Have17VisibleCellsOnEvilDifficulty()
-        {
-            // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty()
-            {
-                Name = "Evil",
-                DifficultyLevel = DifficultyLevel.EVIL
-            });
-
-            // Act
-            var sut = populatedTestMatrix;
-            var result = 0;
-
-            foreach (var cell in sut.SudokuCells)
-            {
-                if (cell.Hidden == false)
-                {
-                    result++;
-                }
-            }
-
-            // Assert
-            Assert.That(result, Is.EqualTo(17));
+            Assert.That(result, Is.False); ;
         }
 
         [Test]
