@@ -99,7 +99,10 @@ namespace SudokuCollective.Core.Models
 
                     foreach (var sudokuCell in SudokuMatrix.SudokuCells)
                     {
-                        sudokuCell.Value = sudokuCell.DisplayedValue;
+                        if (sudokuCell.DisplayedValue > 0)
+                        {
+                            sudokuCell.Value = sudokuCell.DisplayedValue;
+                        }
                     }
 
                     if (KeepScore)

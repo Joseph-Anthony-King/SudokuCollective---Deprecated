@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
-using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Repositories;
 using SudokuCollective.Test.TestData;
