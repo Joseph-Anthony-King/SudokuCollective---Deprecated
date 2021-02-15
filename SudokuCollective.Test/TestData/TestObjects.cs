@@ -501,5 +501,31 @@ namespace SudokuCollective.Test.TestData
                 Email = "TestUser@example.com"
             };
         }
+
+        public static SudokuCollective.Api.Models.PasswordReset GetPasswordReset()
+        {
+            return new SudokuCollective.Api.Models.PasswordReset
+            {
+                Success = true,
+                UserId = 1,
+                UserName = "UserName",
+                NewPassword = "NewPassword",
+                ConfirmNewPassword = "NewPassword",
+                AppTitle = "AppTItle",
+                Url = "https://localhost:5001",
+                Message = "Message"
+            };
+        }
+
+        public static LicenseRequest GetLicenseRequest()
+        {
+            return new LicenseRequest
+            {
+                Name = "My New App",
+                OwnerId = 1,
+                DevUrl = "https://localhost:5001",
+                LiveUrl = "https://MyNewApp.com"
+            };
+        }
     }
 }

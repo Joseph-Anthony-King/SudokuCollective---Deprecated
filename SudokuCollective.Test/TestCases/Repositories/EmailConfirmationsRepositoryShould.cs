@@ -56,40 +56,6 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task GetEmailConfirmationsById()
-        {
-            // Arrange
-            var token = context
-                .EmailConfirmations
-                .Where(ec => ec.Id == 1)
-                .Select(ec => ec.Token)
-                .FirstOrDefault();
-
-            // Act
-            var result = await sut.Get(token);
-
-            // Assert
-            Assert.That(result.Success, Is.True);
-            Assert.That((EmailConfirmation)result.Object, Is.InstanceOf<EmailConfirmation>());
-        }
-
-        [Test]
-        [Category("Repository")]
-        public async Task ReturnFalseIfGetByIdFails()
-        {
-            // Arrange
-            var token = Guid.NewGuid().ToString();
-
-            // Act
-            var result = await sut.Get(token);
-
-            // Assert
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Object, Is.Null);
-        }
-
-        [Test]
-        [Category("Repository")]
         public async Task GetEmailConfirmationsByToken()
         {
             // Arrange
@@ -128,7 +94,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Objects.ConvertAll(a => (EmailConfirmation)a), Is.InstanceOf<List<EmailConfirmation>>());
+            Assert.That(result.Objects.ConvertAll(ec => (EmailConfirmation)ec), Is.InstanceOf<List<EmailConfirmation>>());
         }
 
         [Test]

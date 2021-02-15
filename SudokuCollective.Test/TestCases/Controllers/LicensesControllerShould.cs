@@ -8,6 +8,8 @@ using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -78,6 +80,43 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
             Assert.That(message, Is.EqualTo("Status Code 404: App Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyPostLicenses()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.PostApp(TestObjects.GetLicenseRequest());
+            var app = ((AppResult)((OkObjectResult)result.Result.Result).Value).App;
+            var message = ((AppResult)((OkObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
+            Assert.That(message, Is.EqualTo("Status Code 200: App Created"));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(app, Is.InstanceOf<IApp>());
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldPostLicenseFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutFailure.PostApp(TestObjects.GetLicenseRequest());
+            var message = ((AppResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
+            Assert.That(message, Is.EqualTo("Status Code 404: App Not Created"));
+            Assert.That(statusCode, Is.EqualTo(404));
+
         }
     }
 }

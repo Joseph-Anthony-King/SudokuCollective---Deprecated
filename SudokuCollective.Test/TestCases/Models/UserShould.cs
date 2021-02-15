@@ -8,12 +8,14 @@ namespace SudokuCollective.Test.TestCases.Models
 {
     public class UserShould
     {
+        private IUser sut;
+
         [Test]
         [Category("Models")]
         public void ImplementIDBEntry()
         {
             // Arrange and Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut, Is.InstanceOf<IEntityBase>());
@@ -24,7 +26,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAnID()
         {
             // Arrange and Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.Id, Is.TypeOf<int>());
@@ -36,7 +38,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void AcceptFirstAndLastName()
         {
             // Arrange and Act
-            var sut = new User(
+            sut = new User(
                 "John",
                 "Doe",
                 "Password");
@@ -53,7 +55,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveWorkingProperties()
         {
             // Arrange
-            var sut = new User();
+            sut = new User();
 
             // Act
             sut.NickName = "Johnny";
@@ -69,7 +71,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveMinimumDateTimeValueWhenCreated()
         {
             // Arrange and Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.DateCreated, Is.EqualTo(DateTime.MinValue));
@@ -80,7 +82,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAGameList()
         {
             // Arrange and Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.Games.Count, Is.EqualTo(0));
@@ -92,7 +94,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveARolesList()
         {
             // Arrange and Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.Roles.Count, Is.EqualTo(0));
@@ -104,7 +106,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAnAppList()
         {
             // Arrange and Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.Apps.Count, Is.EqualTo(0));
@@ -116,7 +118,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAPassword()
         {
             // Arrange and Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.Password, Is.TypeOf<string>());
@@ -127,7 +129,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAnActiveStatus()
         {
             // Arrange and Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.IsActive, Is.TypeOf<bool>());
@@ -138,7 +140,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAMethodToActivate()
         {
             // Arrange
-            var sut = new User();
+            sut = new User();
 
             // Act
             sut.ActivateUser();
@@ -152,7 +154,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAMethodToDeactivate()
         {
             // Arrange
-            var sut = new User();
+            sut = new User();
 
             // Act
             sut.DeactiveUser();
@@ -166,7 +168,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAUserNameThatAcceptsAlphaNumericCharacters()
         {
             // Arrange
-            var sut = new User();
+            sut = new User();
 
             // Act
             sut.UserName = "Good.User-Name";
@@ -180,7 +182,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAUserNameThatAcceptsSpecialCharacters()
         {
             // Arrange
-            var sut = new User();
+            sut = new User();
 
             // Act
             sut.UserName = "G@@dUs3rN$m#";
@@ -194,7 +196,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void ProvideSuperUserStatus()
         {
             // Arrange
-            var sut = new User();
+            sut = new User();
 
             // Act
 
@@ -209,7 +211,7 @@ namespace SudokuCollective.Test.TestCases.Models
             // Arrange
 
             // Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.IsAdmin, Is.False);
@@ -222,7 +224,7 @@ namespace SudokuCollective.Test.TestCases.Models
             // Arrange
 
             // Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.EmailConfirmed, Is.InstanceOf<bool>());
@@ -235,7 +237,7 @@ namespace SudokuCollective.Test.TestCases.Models
             // Arrange
 
             // Act
-            var sut = new User();
+            sut = new User();
 
             // Assert
             Assert.That(sut.EmailConfirmed, Is.False);
@@ -246,7 +248,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void ResetEmailTrackingValueIfEmailChanges()
         {
             // Arrange
-            var sut = new User();
+            sut = new User();
             sut.Email = "test@example.com";
             sut.EmailConfirmed = true;
 

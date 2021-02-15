@@ -28,7 +28,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = new EmailConfirmation()
+                        Object = new PasswordReset()
                     } as IRepositoryResponse));
 
             PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>

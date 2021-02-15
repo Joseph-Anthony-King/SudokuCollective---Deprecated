@@ -9,6 +9,7 @@ namespace SudokuCollective.Test.TestCases.Models
 {
     public class SudokuCellShould
     {
+        private ISudokuCell sut;
         private List<int> intList;
         private int firstInt;
         private SudokuMatrix populatedTestMatrix;
@@ -27,7 +28,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void ImplementIDBEntry()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix.SudokuCells[0];
+            sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut, Is.InstanceOf<IEntityBase>());
@@ -38,7 +39,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAnID()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix.SudokuCells[0];
+            sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut.Id, Is.TypeOf<int>());
@@ -51,10 +52,12 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange and Act
             var testMatrix = new SudokuMatrix();
-            var sut = testMatrix.SudokuCells[0];
+            sut = testMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut.SudokuMatrixId, Is.TypeOf<int>());
+            Assert.That(testMatrix.Id, Is.EqualTo(sut.SudokuMatrixId));
+            Assert.That(testMatrix, Is.TypeOf<SudokuMatrix>());
         }
 
         [Test]
@@ -62,7 +65,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void SetCoordinatesInConstructor()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix.SudokuCells[0];
+            sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut.Index, Is.EqualTo(1));
@@ -77,7 +80,7 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange and Act
             var testMatrix = new SudokuMatrix();
-            var sut = testMatrix.SudokuCells[0];
+            sut = testMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut.Value, Is.EqualTo(0));
@@ -88,7 +91,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void BeObscuredByDefault()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix.SudokuCells[0];
+            sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut.Hidden, Is.EqualTo(true));
@@ -101,7 +104,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void BeVisibleIfObscuredIsFalse()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix.SudokuCells[0];
+            sut = populatedTestMatrix.SudokuCells[0];
             sut.Hidden = false;
 
             // Assert
@@ -116,7 +119,7 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange and Act
             var testMatrix = new SudokuMatrix();
-            var sut = testMatrix.SudokuCells[0];
+            sut = testMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut.AvailableValues.Count, Is.EqualTo(9));
@@ -127,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAvailableValuesZeroCountIfValueNonZero()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix.SudokuCells[0];
+            sut = populatedTestMatrix.SudokuCells[0];
 
             // Assert
             Assert.That(sut.AvailableValues.Where(a => a.Available).Count, Is.EqualTo(0));
@@ -138,7 +141,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveToInt32OutputValueAsInt()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix.SudokuCells[0];
+            sut = populatedTestMatrix.SudokuCells[0];
             sut.Hidden = false;
 
             // Assert
@@ -151,7 +154,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveToStringOutputValueAsString()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix.SudokuCells[0];
+            sut = populatedTestMatrix.SudokuCells[0];
             sut.Hidden = false;
 
             // Assert

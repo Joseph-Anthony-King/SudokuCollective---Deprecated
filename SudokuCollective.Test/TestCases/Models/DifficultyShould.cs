@@ -8,7 +8,7 @@ namespace SudokuCollective.Test.TestCases.Models
 {
     public class DifficultyShould
     {
-        private Difficulty sut;
+        private IDifficulty sut;
 
         [SetUp]
         public void Setup()

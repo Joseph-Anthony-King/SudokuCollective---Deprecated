@@ -11,8 +11,8 @@ namespace SudokuCollective.Test.TestCases.Models
 {
     public class EmailConfirmationShould
     {
-        private DatabaseContext context;
         private IEmailConfirmation sut;
+        private DatabaseContext context;
 
         [SetUp]
         public async Task Setup()

@@ -10,6 +10,7 @@ using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Test.MockRepositories;
 using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 
 namespace SudokuCollective.Test.MockServices
 {
@@ -88,6 +89,25 @@ namespace SudokuCollective.Test.MockServices
                         .Objects
                         .ConvertAll(a => (IApp)a)
                 } as IAppsResult));
+
+            AppsServiceSuccessfulRequest.Setup(appsService =>
+                appsService.CreateApp(It.IsAny<ILicenseRequest>()))
+                .Returns(Task.FromResult(new AppResult() 
+                { 
+                    Success = MockAppsRepository
+                        .AppsRepositorySuccessfulRequest
+                        .Object
+                        .Create(It.IsAny<App>())
+                        .Result
+                        .Success,
+                    Message = AppsMessages.AppCreatedMessage,
+                    App = (App)MockAppsRepository
+                        .AppsRepositorySuccessfulRequest
+                        .Object
+                        .Create(It.IsAny<App>())
+                        .Result
+                        .Object
+                } as IAppResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.IsRequestValidOnThisLicense(
@@ -271,6 +291,20 @@ namespace SudokuCollective.Test.MockServices
                     Message = AppsMessages.AppsNotFoundMessage,
                     Apps = null
                 } as IAppsResult));
+
+            AppsServiceFailedRequest.Setup(appsService =>
+                appsService.CreateApp(It.IsAny<ILicenseRequest>()))
+                .Returns(Task.FromResult(new AppResult()
+                {
+                    Success = MockAppsRepository
+                        .AppsRepositoryFailedRequest
+                        .Object
+                        .Create(It.IsAny<App>())
+                        .Result
+                        .Success,
+                    Message = AppsMessages.AppNotCreatedMessage,
+                    App = null
+                } as IAppResult));
 
             AppsServiceFailedRequest.Setup(appService =>
                 appService.IsRequestValidOnThisLicense(

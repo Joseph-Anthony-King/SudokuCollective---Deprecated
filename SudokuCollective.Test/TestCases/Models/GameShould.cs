@@ -11,7 +11,7 @@ namespace SudokuCollective.Test.TestCases.Models
 {
     public class GameShould
     {
-        private Game sut;
+        private IGame sut;
         private Mock<User> user;
         private Mock<SudokuMatrix> matrix;
 

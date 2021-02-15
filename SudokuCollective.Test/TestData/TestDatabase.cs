@@ -394,6 +394,16 @@ namespace SudokuCollective.Test.TestData
                 await databaseContext.SaveChangesAsync();
             }
 
+            if (await databaseContext.PasswordResets.CountAsync() <= 0)
+            {
+                databaseContext.PasswordResets.AddRange(
+
+                    new PasswordReset(1, 1)
+                );
+
+                await databaseContext.SaveChangesAsync();
+            }
+
             return databaseContext;
         }
     }

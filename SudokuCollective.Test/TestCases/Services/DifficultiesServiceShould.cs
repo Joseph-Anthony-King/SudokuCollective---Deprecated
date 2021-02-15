@@ -18,6 +18,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private DatabaseContext context;
         private MockDifficultiesRepository MockDifficultiesRepository;
         private IDifficultiesService sut;
+        private IDifficultiesService sutCreateDifficulty;
         private string license;
         private PageListModel pageListModel;
 
@@ -28,6 +29,8 @@ namespace SudokuCollective.Test.TestCases.Services
             MockDifficultiesRepository = new MockDifficultiesRepository(context);
             sut = new DifficultiesService(
                 MockDifficultiesRepository.DifficultiesRepositorySuccessfulRequest.Object);
+            sutCreateDifficulty = new DifficultiesService(
+                MockDifficultiesRepository.DifficultiesRepositoryCreateDifficultyRequest.Object);
             license = TestObjects.GetLicense();
             pageListModel = TestObjects.GetPageListModel();
         }
@@ -117,6 +120,22 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("Difficulty Deleted"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task CreateADifficulty()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutCreateDifficulty
+                .CreateDifficulty("Test", "Test", DifficultyLevel.TEST);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Difficulty Created"));
+            Assert.That(result.Difficulty, Is.InstanceOf<Difficulty>());
         }
     }
 }

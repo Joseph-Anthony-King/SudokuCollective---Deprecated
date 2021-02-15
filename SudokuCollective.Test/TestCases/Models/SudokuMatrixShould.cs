@@ -11,6 +11,7 @@ namespace SudokuCollective.Test.TestCases.Models
 {
     public class SudokuMatrixShould
     {
+        private ISudokuMatrix sut;
         private List<int> intList;
         private string stringList;
         private SudokuMatrix populatedTestMatrix;
@@ -37,7 +38,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void ImplementIDBEntry()
         {
             // Arrange and Act
-            var sut = new SudokuMatrix(stringList);
+            sut = new SudokuMatrix(stringList);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<IEntityBase>());
@@ -48,7 +49,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAnID()
         {
             // Arrange and Act
-            var sut = new SudokuMatrix(stringList);
+            sut = new SudokuMatrix(stringList);
 
             // Assert
             Assert.That(sut.Id, Is.TypeOf<int>());
@@ -60,7 +61,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void AcceptStringInConstructor()
         {
             // Arrange and Act
-            var sut = new SudokuMatrix(stringList);
+            sut = new SudokuMatrix(stringList);
 
             // Assert
             Assert.That(stringList, Is.TypeOf<string>());
@@ -73,7 +74,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void AcceptIntListInConstructor()
         {
             // Arrange and Act
-            var sut = new SudokuMatrix(intList);
+            sut = new SudokuMatrix(intList);
 
             // Assert
             Assert.That(intList, Is.TypeOf<List<int>>());
@@ -86,7 +87,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void CreateZeroedListWithBlankConstructor()
         {
             // Arrange and Act
-            var sut = new SudokuMatrix();
+            sut = new SudokuMatrix();
 
             // Assert
             Assert.That(sut.SudokuCells[0].Value, Is.EqualTo(0));
@@ -105,7 +106,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void ReturnTrueIfValid()
         {
             // Arrange and Act
-            var sut = populatedTestMatrix;
+            sut = populatedTestMatrix;
 
             // Assert
             Assert.That(sut.IsValid(), Is.True);
@@ -116,7 +117,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void OutputValuesAsIntListWithToInt32List()
         {
             // Arrange
-            var sut = populatedTestMatrix;
+            sut = populatedTestMatrix;
 
             // Act
             var result = sut.ToIntList();
@@ -131,7 +132,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void OutputValuesAsIntListWithToDisplayedValuesList()
         {
             // Arrange
-            var sut = populatedTestMatrix;
+            sut = populatedTestMatrix;
 
             // Act
             var result = sut.ToDisplayedValuesList();
@@ -146,7 +147,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void OutputValuesAsStringWithToString()
         {
             // Arrange
-            var sut = populatedTestMatrix;
+            sut = populatedTestMatrix;
 
             // Act
             var result = sut.ToString();
@@ -168,7 +169,8 @@ namespace SudokuCollective.Test.TestCases.Models
             });
 
             // Act
-            var sut = populatedTestMatrix;
+            sut = populatedTestMatrix;
+
             var result = 0;
 
             foreach (var cell in sut.SudokuCells)
@@ -195,7 +197,8 @@ namespace SudokuCollective.Test.TestCases.Models
             });
 
             // Act
-            var sut = populatedTestMatrix;
+            sut = populatedTestMatrix;
+
             var result = false;
 
             foreach (var cell in sut.SudokuCells)
@@ -222,7 +225,8 @@ namespace SudokuCollective.Test.TestCases.Models
             });
 
             // Act
-            var sut = populatedTestMatrix;
+            sut = populatedTestMatrix;
+
             var result = false;
 
             foreach (var cell in sut.SudokuCells)
@@ -255,7 +259,8 @@ namespace SudokuCollective.Test.TestCases.Models
                 };
 
             // Act
-            var sut = new SudokuMatrix(intList);
+            sut = new SudokuMatrix(intList);
+
             sut.SetDifficulty(new Difficulty()
             {
                 Name = "Test",
@@ -271,7 +276,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void GenerateValidSolutions()
         {
             // Arrange
-            var sut = new SudokuMatrix();
+            sut = new SudokuMatrix();
 
             // Act
             sut.GenerateSolution();
@@ -297,7 +302,8 @@ namespace SudokuCollective.Test.TestCases.Models
                     9, 4, 2, 6, 5, 1, 8, 7, 3
                 };
 
-            var sut = new SudokuMatrix(intList);
+            sut = new SudokuMatrix(intList);
+
             sut.SetDifficulty(new Difficulty()
             {
                 Name = "Easy",

@@ -8,7 +8,7 @@ namespace SudokuCollective.Test.TestCases.Models
 {
     public class AppShould
     {
-        private App sut;
+        private IApp sut;
 
         [SetUp]
         public void Setup()
@@ -21,7 +21,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void ImplementIDBEntry()
         {
             // Arrange and Act
-            sut = new App();
 
             // Assert
             Assert.That(sut, Is.InstanceOf<IEntityBase>());
@@ -32,7 +31,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAnID()
         {
             // Arrange and Act
-            sut = new App();
 
             // Assert
             Assert.That(sut.Id, Is.TypeOf<int>());
@@ -44,7 +42,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveExpectedProperties()
         {
             // Arrange and Act
-            sut = new App();
 
             // Assert
             Assert.That(sut.Name, Is.TypeOf<string>());
@@ -63,7 +60,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void DefaultToDeactiveStatus()
         {
             // Arrange and Act
-            sut = new App();
 
             // Assert
             Assert.That(sut.IsActive, Is.False);
@@ -74,7 +70,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void ProvideLicenseByCallingGetLicense()
         {
             // Arrange and Act
-            sut = new App();
 
             // Assert
             Assert.That(sut.GetLicense(0, 0), Is.TypeOf<string>());
@@ -86,7 +81,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveATrueActiveStatusIfActivateAppCalled()
         {
             // Arrange
-            sut = new App();
 
             // Act
             sut.ActivateApp();
@@ -100,7 +94,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAFalseActiveStatusIfDeactivateAppCalled()
         {
             // Arrange
-            sut = new App();
 
             // Act
             sut.DeactivateApp();
@@ -114,7 +107,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveAFieldToTrackAppDevelopmentStatusThatDefaultsToTrue()
         {
             // Arrange
-            sut = new App();
 
             // Act
 
@@ -128,7 +120,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveTheAbilityToDisableCustomUrlsThatDefaultsToTrue()
         {
             // Arrange
-            sut = new App();
 
             // Act
 
@@ -142,7 +133,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void UseCustomEmailConfirmationDevUrlIfInDevelopmentAndValueSet()
         {
             // Arrange
-            sut = new App();
             var customUrl = "http://example.com/customurl";
 
             // Act
@@ -159,7 +149,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void UseCustomEmailConfirmationLiveUrlIfInProductionAndValueSet()
         {
             // Arrange
-            sut = new App();
             var customUrl = "http://example.com/customurl";
 
             // Act
@@ -177,7 +166,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void UseCustomPasswordResetDevUrllIfInDevelopmentAndValueSet()
         {
             // Arrange
-            sut = new App();
             var customUrl = "http://example.com/customurl";
 
             // Act
@@ -194,7 +182,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void UseCustomPasswordResetLiveUrlIfInProductionAndValueSet()
         {
             // Arrange
-            sut = new App();
             var customUrl = "http://example.com/customurl";
 
             // Act
@@ -212,7 +199,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void TrackGameCountThatDefaultsToZero()
         {
             // Arrange
-            sut = new App();
 
             // Act
 
@@ -227,14 +213,12 @@ namespace SudokuCollective.Test.TestCases.Models
         public void TrackGameCount()
         {
             // Arrange
-            sut = new App();
-
 
             // Act
             var initialGameCount = sut.GameCount;
 
             var user = new User();
-            sut.Users.Add(new UserApp { App = sut, User = user });
+            sut.Users.Add(new UserApp { App = (App)sut, User = user });
             _ = new Game(user, new SudokuMatrix(), new Difficulty(), 0);
 
             var finalGameCount = sut.GameCount;
@@ -250,7 +234,6 @@ namespace SudokuCollective.Test.TestCases.Models
         public void TrackUserCountThatDefaultsToZero()
         {
             // Arrange
-            sut = new App();
 
             // Act
 
@@ -265,14 +248,12 @@ namespace SudokuCollective.Test.TestCases.Models
         public void TrackUserCount()
         {
             // Arrange
-            sut = new App();
-
 
             // Act
             var initialUserCount = sut.UserCount;
 
             var user = new User();
-            sut.Users.Add(new UserApp { App = sut, User = user });
+            sut.Users.Add(new UserApp { App = (App)sut, User = user });
 
             var finalUserCount = sut.UserCount;
 

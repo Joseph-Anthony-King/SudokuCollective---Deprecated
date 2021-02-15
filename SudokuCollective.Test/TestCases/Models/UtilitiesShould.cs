@@ -16,6 +16,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
             // Act
             var result = new SudokuMatrix(sut);
+
             result.SetDifficulty(new Difficulty()
                 {
                     Name = "Test",
