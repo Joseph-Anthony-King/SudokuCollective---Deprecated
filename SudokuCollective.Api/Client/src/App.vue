@@ -1,6 +1,18 @@
 <template>
   <v-app>
     <v-navigation-drawer app color="secondary" v-if="user.isLoggedIn">
+      <v-list>
+        <v-list-item>
+          <v-list-item-content>
+              <v-icon x-large color="white">mdi-account-circle</v-icon>   
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+              <span class="user-profile-item">{{ user.userName }}</span>     
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
       <v-list v-if="navMenuItems.length > 1">
         <v-list-item v-for="(navItem, index) in navMenuItems" :key="index">
           <v-list-item-content>
@@ -145,7 +157,7 @@
     </v-main>
 
     <v-footer app>
-      <!-- -->
+      <FooterForm />
     </v-footer>
   </v-app>
 </template>
@@ -165,6 +177,12 @@
   text-transform: uppercase;
   color: #ffffff;
 }
+.user-profile-item {
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  color: #ffffff;
+}
 </style>
 
 <script>
@@ -172,6 +190,7 @@ import { mapActions } from "vuex";
 import { userService } from "@/services/userService/user.service";
 import LoginForm from "@/components/LoginForm";
 import SignUpForm from "@/components/SignUpForm";
+import FooterForm from "@/components/FooterForm";
 import User from "@/models/user";
 import MenuItem from "@/models/viewModels/menuItem";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -183,7 +202,8 @@ export default {
 
   components: {
     LoginForm,
-    SignUpForm
+    SignUpForm,
+    FooterForm
   },
 
   data: () => ({
