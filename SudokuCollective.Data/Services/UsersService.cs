@@ -415,6 +415,12 @@ namespace SudokuCollective.Data.Services
                         }
                     }
 
+                    // Filter out user emails from the frontend...
+                    foreach (var user in result.Users)
+                    {
+                        user.Email = null;
+                    }
+
                     result.Success = response.Success;
                     result.Message = UsersMessages.UsersFoundMessage;
 
