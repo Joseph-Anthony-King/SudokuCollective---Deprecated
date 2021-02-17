@@ -450,11 +450,11 @@ namespace SudokuCollective.Test.TestData
         {
             return new EmailMetaData()
             {
-                SmtpServer = "smtp.gmail.com",
+                SmtpServer = "smtp.mail.yahoo.com",
                 Port = 465,
-                UserName = "sudokucollectivetesting@gmail.com",
-                Password = "password",
-                FromEmail = "SudokuCollectivetesting@gmail.com"
+                UserName = "sudokucollectivetesting@yahoo.com",
+                Password = "P@ssw0rd1",
+                FromEmail = "SudokuCollectivetesting@yahoo.com"
             };
         }
 
