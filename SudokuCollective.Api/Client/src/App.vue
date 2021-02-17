@@ -7,11 +7,12 @@
               <v-icon x-large color="white">mdi-account-circle</v-icon>   
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-              <span class="user-profile-item">{{ user.userName }}</span>     
-          </v-list-item-content>
-        </v-list-item>
+        <v-container class="navigation-status-indicator">
+          <span class="user-profile-item">{{ user.userName }}</span> 
+        </v-container>
+        <v-container class="navigation-status-indicator">
+          <span class="user-profile-subscript">(Logged In)</span>
+        </v-container>
       </v-list>
       <v-list v-if="navMenuItems.length > 1">
         <v-list-item v-for="(navItem, index) in navMenuItems" :key="index">
@@ -182,6 +183,16 @@
   text-transform: uppercase;
   text-align: center;
   color: #ffffff;
+}
+.user-profile-subscript {
+  font-size: small;
+  text-align: center;
+  color: #ffffff;
+}
+.navigation-status-indicator {
+  text-align: center;
+  padding: 0;
+  margin: 0;
 }
 </style>
 
