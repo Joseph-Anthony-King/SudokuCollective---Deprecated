@@ -75,7 +75,10 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.GetUsers(It.IsAny<PageListModel>(), It.IsAny<bool>()))
+                userService.GetUsers(
+                    It.IsAny<int>(),
+                    It.IsAny<PageListModel>(), 
+                    It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockUsersRepository
@@ -315,7 +318,10 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.GetUsers(It.IsAny<PageListModel>(), It.IsAny<bool>()))
+                userService.GetUsers(
+                    It.IsAny<int>(),
+                    It.IsAny<PageListModel>(), 
+                    It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockUsersRepository

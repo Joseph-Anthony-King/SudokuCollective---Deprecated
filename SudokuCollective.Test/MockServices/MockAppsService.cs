@@ -143,7 +143,11 @@ namespace SudokuCollective.Test.MockServices
                 } as IAppResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
-                appService.GetAppUsers(It.IsAny<int>(), It.IsAny<PageListModel>(), It.IsAny<bool>()))
+                appService.GetAppUsers(
+                    It.IsAny<int>(), 
+                    It.IsAny<int>(),
+                    It.IsAny<PageListModel>(), 
+                    It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockAppsRepository
@@ -340,7 +344,11 @@ namespace SudokuCollective.Test.MockServices
                 } as IAppResult));
 
             AppsServiceFailedRequest.Setup(appService =>
-                appService.GetAppUsers(It.IsAny<int>(), It.IsAny<PageListModel>(), It.IsAny<bool>()))
+                appService.GetAppUsers(
+                    It.IsAny<int>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<PageListModel>(), 
+                    It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockAppsRepository

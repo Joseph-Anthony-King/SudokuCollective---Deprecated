@@ -170,6 +170,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 var result = await appsService
                     .GetAppUsers(
                         request.AppId,
+                        request.RequestorId,
                         request.PageListModel, 
                         fullRecord);
 

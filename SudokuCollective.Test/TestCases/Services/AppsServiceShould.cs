@@ -217,7 +217,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetAppUsers(1, pageListModel);
+            var result = await sut.GetAppUsers(1, 1, pageListModel);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -276,7 +276,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.RemoveAppUser(2, baseRequest);
-            var appUsers = (await sut.GetAppUsers(1, pageListModel)).Users;
+            var appUsers = (await sut.GetAppUsers(1, 1, pageListModel)).Users;
 
             // Assert
             Assert.That(result.Success, Is.True);

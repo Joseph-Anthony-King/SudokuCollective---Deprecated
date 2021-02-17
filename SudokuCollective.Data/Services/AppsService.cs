@@ -410,6 +410,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IUsersResult> GetAppUsers(
             int id,
+            int requestorId,
             IPageListModel pageListModel,
             bool fullRecord = true)
         {
@@ -660,10 +661,15 @@ namespace SudokuCollective.Data.Services
                             }
                         }
 
-                        // Filter out user emails from the frontend...
-                        foreach (var user in result.Users)
+                        var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
+
+                        if (!requestor.IsSuperUser)
                         {
-                            user.Email = null;
+                            // Filter out user emails from the frontend...
+                            foreach (var user in result.Users)
+                            {
+                                user.Email = null;
+                            }
                         }
 
                         result.Success = response.Success;

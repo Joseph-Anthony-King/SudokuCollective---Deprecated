@@ -126,7 +126,9 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetUsers(baseRequest.PageListModel);
+            var result = await sut.GetUsers(
+                baseRequest.RequestorId, 
+                baseRequest.PageListModel);
 
             // Assert
             Assert.That(result.Success, Is.True);

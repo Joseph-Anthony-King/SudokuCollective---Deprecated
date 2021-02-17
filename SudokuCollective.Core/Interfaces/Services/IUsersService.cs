@@ -10,7 +10,10 @@ namespace SudokuCollective.Core.Interfaces.Services
     public interface IUsersService : IService
     {
         Task<IUserResult> GetUser(int id, bool fullRecord = true);
-        Task<IUsersResult> GetUsers(IPageListModel pageListModel, bool fullRecord = true);
+        Task<IUsersResult> GetUsers(
+            int requestorId,
+            IPageListModel pageListModel, 
+            bool fullRecord = true);
         Task<IUserResult> CreateUser(
             IRegisterRequest request,
             string baseUrl,
