@@ -262,6 +262,47 @@ namespace SudokuCollective.Data.Repositories
 
             return result;
         }
+
+        async public Task<bool> HasOutstandingEmailConfirmation(int userId, int appid)
+        {
+            var result = await context.EmailConfirmations.AnyAsync(ec => ec.UserId == userId && ec.AppId == appid);
+
+            return result;
+        }
+
+        async public Task<IRepositoryResponse> RetrieveEmailConfirmation(int userId, int appid)
+        {
+            var result = new RepositoryResponse();
+            var query = new EmailConfirmation();
+
+            try
+            {
+                query = await context
+                    .EmailConfirmations
+                    .FirstOrDefaultAsync(ec => 
+                        ec.UserId == userId && 
+                        ec.AppId == appid);
+
+                if (query == null)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
+                result.Success = true;
+                result.Object = query;
+
+                return result;
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
         #endregion
     }
 }

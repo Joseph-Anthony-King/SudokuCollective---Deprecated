@@ -19,11 +19,11 @@ namespace SudokuCollective.Core.Interfaces.Services
             int id, 
             IUpdateUserRequest request,
             string baseUrl,
-            string emailtTemplatePath);
+            string emailTemplatePath);
         Task<IBaseResult> RequestPasswordReset(
             IRequestPasswordResetRequest request,
             string baseUrl,
-            string emailtTemplatePath);
+            string emailTemplatePath);
         Task<IInitiatePasswordResetResult> InitiatePasswordReset(string token);
         Task<IBaseResult> UpdatePassword(IPasswordResetRequest request);
         Task<IBaseResult> DeleteUser(int id);
@@ -35,5 +35,10 @@ namespace SudokuCollective.Core.Interfaces.Services
             string token,
             string baseUrl,
             string emailtTemplatePath);
+        Task<IUserResult> ResendEmailConfirmation(
+            int userId, 
+            int appId,
+            string baseUrl,
+            string emailTemplatePath);
     }
 }

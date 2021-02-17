@@ -21,7 +21,7 @@ namespace SudokuCollective.Test.MockServices
         private MockUsersRepository MockUsersRepository { get; set; }
         private MockAppsRepository MockAppsRepository { get; set; }
         private MockPasswordResetsRepository MockPasswordResetsRepository { get; set; }
-        private MockEmailService MockEmailService { get; set; }
+        private MockEmailConfirmationsRepository MockEmailConfirmationsRepository { get; set; }
 
         internal Mock<IUsersService> UsersServiceSuccessfulRequest { get; set; }
         internal Mock<IUsersService> UsersServiceFailedRequest { get; set; }
@@ -31,6 +31,7 @@ namespace SudokuCollective.Test.MockServices
             MockUsersRepository = new MockUsersRepository(context);
             MockAppsRepository = new MockAppsRepository(context);
             MockPasswordResetsRepository = new MockPasswordResetsRepository(context);
+            MockEmailConfirmationsRepository = new MockEmailConfirmationsRepository(context);
 
             UsersServiceSuccessfulRequest = new Mock<IUsersService>();
             UsersServiceFailedRequest = new Mock<IUsersService>();
@@ -246,6 +247,23 @@ namespace SudokuCollective.Test.MockServices
                         .Object
                 } as IInitiatePasswordResetResult));
 
+            UsersServiceSuccessfulRequest.Setup(usersService =>
+                usersService.ResendEmailConfirmation(
+                    It.IsAny<int>(), 
+                    It.IsAny<int>(), 
+                    It.IsAny<string>(), 
+                    It.IsAny<string>()))
+                .Returns(Task.FromResult(new UserResult() 
+                { 
+                    Success = MockEmailConfirmationsRepository
+                        .EmailConfirmationsRepositorySuccessfulRequest
+                        .Object
+                        .HasOutstandingEmailConfirmation(It.IsAny<int>(), It.IsAny<int>())
+                        .Result,
+                    Message = UsersMessages.EmailConfirmationSuccessfullyResent,
+                    ConfirmationEmailSuccessfullySent = true
+                } as IUserResult));
+
             UsersServiceFailedRequest.Setup(userService =>
                 userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
@@ -440,6 +458,23 @@ namespace SudokuCollective.Test.MockServices
                     App = new App(),
                     User = new User()
                 } as IInitiatePasswordResetResult));
+
+            UsersServiceFailedRequest.Setup(usersService =>
+                usersService.ResendEmailConfirmation(
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Returns(Task.FromResult(new UserResult()
+                {
+                    Success = MockEmailConfirmationsRepository
+                        .EmailConfirmationsRepositoryFailedRequest
+                        .Object
+                        .HasOutstandingEmailConfirmation(It.IsAny<int>(), It.IsAny<int>())
+                        .Result,
+                    Message = UsersMessages.EmailConfirmationNotSuccessfullyResent,
+                    ConfirmationEmailSuccessfullySent = false
+                } as IUserResult));
         }
     }
 }

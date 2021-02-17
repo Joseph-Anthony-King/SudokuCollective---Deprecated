@@ -447,7 +447,7 @@ namespace SudokuCollective.Data.Services
         public async Task<IUserResult> CreateUser(
             IRegisterRequest request,
             string baseUrl,
-            string emailtTemplatePath)
+            string emailTemplatePath)
         {
             var result = new UserResult();
 
@@ -583,7 +583,7 @@ namespace SudokuCollective.Data.Services
                                         emailConfirmation.Token);
                                 }
 
-                                var html = File.ReadAllText(emailtTemplatePath);
+                                var html = File.ReadAllText(emailTemplatePath);
                                 var appTitle = app.Name;
                                 var url = string.Empty;
 
@@ -674,7 +674,7 @@ namespace SudokuCollective.Data.Services
             int id, 
             IUpdateUserRequest request,
             string baseUrl,
-            string emailtTemplatePath)
+            string emailTemplatePath)
         {
             var result = new UserResult();
 
@@ -784,7 +784,7 @@ namespace SudokuCollective.Data.Services
                                         ((EmailConfirmation)emailConfirmationResponse.Object).Token);
                                 }
 
-                                var html = File.ReadAllText(emailtTemplatePath);
+                                var html = File.ReadAllText(emailTemplatePath);
                                 var appTitle = app.Name;
                                 var url = string.Empty;
 
@@ -1700,6 +1700,154 @@ namespace SudokuCollective.Data.Services
                 {
                     result.Success = false;
                     result.Message = UsersMessages.EmailNotConfirmedMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IUserResult> ResendEmailConfirmation(
+            int userId, 
+            int appId,
+            string baseUrl,
+            string emailTemplatePath)
+        {
+            var result = new UserResult();
+
+            try
+            {
+                if (await usersRepository.HasEntity(userId))
+                {
+                    var user = (User)((await usersRepository.GetById(userId)).Object);
+
+                    if (!user.EmailConfirmed)
+                    {
+                        if (await appsRepository.HasEntity(appId))
+                        {
+                            var app = (App)((await appsRepository.GetById(appId)).Object);
+
+                            if (await emailConfirmationsRepository.HasOutstandingEmailConfirmation(userId, appId))
+                            {
+                                var emailConfirmationResponse = await emailConfirmationsRepository.RetrieveEmailConfirmation(userId, appId);
+
+                                if (emailConfirmationResponse.Success)
+                                {
+                                    var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.Object;
+
+                                    string emailConfirmationUrl;
+
+                                    if (app.UseCustomEmailConfirmationUrl)
+                                    {
+                                        if (app.InDevelopment)
+                                        {
+                                            emailConfirmationUrl = string.Format("{0}{1}",
+                                                app.CustomEmailConfirmationDevUrl,
+                                                emailConfirmation.Token);
+                                        }
+                                        else
+                                        {
+                                            emailConfirmationUrl = string.Format("{0}{1}",
+                                                app.CustomPasswordResetLiveUrl,
+                                                emailConfirmation.Token);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
+                                            baseUrl,
+                                            ((EmailConfirmation)emailConfirmationResponse.Object).Token);
+                                    }
+
+                                    var html = File.ReadAllText(emailTemplatePath);
+                                    var appTitle = app.Name;
+                                    var url = string.Empty;
+
+                                    if (app.InDevelopment)
+                                    {
+                                        url = app.DevUrl;
+                                    }
+                                    else
+                                    {
+                                        url = app.LiveUrl;
+                                    }
+
+                                    html = html.Replace("{{USER_NAME}}", user.UserName);
+                                    html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
+                                    html = html.Replace("{{APP_TITLE}}", appTitle);
+                                    html = html.Replace("{{URL}}", url);
+
+                                    var emailSubject = string.Format("Greetings from {0}: Please Confirm Old Email", appTitle);
+
+                                    result.ConfirmationEmailSuccessfullySent = emailService
+                                        .Send(user.Email, emailSubject, html);
+
+                                    if ((bool)result.ConfirmationEmailSuccessfullySent)
+                                    {
+                                        result.Success = true;
+                                        result.Message = UsersMessages.EmailConfirmationSuccessfullyResent;
+
+                                        return result;
+                                    }
+                                    else
+                                    {
+                                        result.Success = false;
+                                        result.Message = UsersMessages.EmailConfirmationNotSuccessfullyResent;
+
+                                        return result;
+                                    }
+
+                                }
+                                else if (!emailConfirmationResponse.Success && emailConfirmationResponse.Exception != null)
+                                {
+                                    result.Success = emailConfirmationResponse.Success;
+                                    result.Message = emailConfirmationResponse.Exception.Message;
+
+                                    return result;
+                                }
+                                else
+                                {
+                                    result.Success = false;
+                                    result.Message = UsersMessages.EmailConfirmationRequestNotFound;
+
+                                    return result;
+                                }
+
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = UsersMessages.EmailConfirmationRequestNotFound;
+
+                                return result;
+                            }
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.AppNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = UsersMessages.EmailConfirmedMessage;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }

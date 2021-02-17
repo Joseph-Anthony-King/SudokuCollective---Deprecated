@@ -54,7 +54,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Difficulties.FirstOrDefault(ec => ec.Id == 1)
+                        Object = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
                     } as IRepositoryResponse));
 
             EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
@@ -67,6 +67,18 @@ namespace SudokuCollective.Test.MockRepositories
             EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
                 emailConfirmationsRepo.HasEntity(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
+
+            EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.HasOutstandingEmailConfirmation(It.IsAny<int>(), It.IsAny<int>()))
+                    .Returns(Task.FromResult(true));
+
+            EmailConfirmationsRepositorySuccessfulRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.RetrieveEmailConfirmation(It.IsAny<int>(), It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse() 
+                    {
+                        Success = true,
+                        Object = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
+                    } as IRepositoryResponse));
 
             EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
                 emailConfirmationsRepo.Create(It.IsAny<EmailConfirmation>()))
@@ -106,6 +118,17 @@ namespace SudokuCollective.Test.MockRepositories
             EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
                 emailConfirmationsRepo.HasEntity(It.IsAny<int>()))
                     .Returns(Task.FromResult(false));
+
+            EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.HasOutstandingEmailConfirmation(It.IsAny<int>(), It.IsAny<int>()))
+                    .Returns(Task.FromResult(false));
+
+            EmailConfirmationsRepositoryFailedRequest.Setup(emailConfirmationsRepo =>
+                emailConfirmationsRepo.RetrieveEmailConfirmation(It.IsAny<int>(), It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse() 
+                    {
+                        Success = false
+                    } as IRepositoryResponse));
         }
     }
 }

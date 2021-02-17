@@ -22,6 +22,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockUsersService mockUsersService;
         private MockAuthenticateService mockAuthenticateService;
         private RegisterRequest registerRequest;
+        private BaseRequest baseRequest;
         private Mock<IWebHostEnvironment> mockWebHostEnvironment;
 
         [SetUp]
@@ -54,6 +55,8 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 RequestorId = 1,
                 PageListModel = new PageListModel()
             };
+
+            baseRequest = TestObjects.GetBaseRequest();
         }
 
         [Test]
@@ -89,6 +92,42 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
             Assert.That(errorMessage, Is.EqualTo("Status Code 404: User Not Created"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyResendEmailConfirmation()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.ResendEmailConfirmation(baseRequest);
+            var message = ((UserResult)((ObjectResult)result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result).StatusCode;
+            var emailResent = ((UserResult)((ObjectResult)result.Result).Value).ConfirmationEmailSuccessfullySent;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Email Confirmation Successfully Resent"));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(emailResent, Is.True);
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyResendEmailConfirmationFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutFailure.ResendEmailConfirmation(baseRequest);
+            var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Email Confirmation Not Successfully Resent"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

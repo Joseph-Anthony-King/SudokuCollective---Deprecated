@@ -167,5 +167,48 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result, Is.True);
         }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ConfirmEmailConfirmationsByUserAndAppId()
+        {
+            // Arrange
+            var emailConfirmation = context.EmailConfirmations.FirstOrDefault();
+
+            // Act
+            var result = await sut.HasOutstandingEmailConfirmation(emailConfirmation.UserId, emailConfirmation.AppId);
+
+            // Assert
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetEmailConfirmationsByUserAndAppId()
+        {
+            // Arrange
+            var emailConfirmation = context.EmailConfirmations.FirstOrDefault();
+
+            // Act
+            var result = await sut.RetrieveEmailConfirmation(emailConfirmation.UserId, emailConfirmation.AppId);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That((EmailConfirmation)result.Object, Is.InstanceOf<EmailConfirmation>());
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfGetEmailConfirmationsByUserAndAppIdFails()
+        {
+            // Arrange
+            var emailConfirmation = context.EmailConfirmations.FirstOrDefault();
+
+            // Act
+            var result = await sut.RetrieveEmailConfirmation(emailConfirmation.UserId + 3, emailConfirmation.AppId);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
     }
 }

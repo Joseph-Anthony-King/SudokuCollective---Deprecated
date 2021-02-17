@@ -36,7 +36,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
+                        Object = context.PasswordResets.FirstOrDefault(pr => pr.Id == 1)
                     } as IRepositoryResponse));
 
             PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
@@ -44,7 +44,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Objects = context.EmailConfirmations
+                        Objects = context.PasswordResets
                             .ToList()
                             .ConvertAll(d => (IEntityBase)d)
                     } as IRepositoryResponse));

@@ -97,10 +97,10 @@ namespace SudokuCollective.Test.TestData
                         "User2",
                         "Test User 2",
                         "TestUser2@example.com",
-                        true,
+                        false,
                         false,
                         BCrypt.Net.BCrypt.HashPassword("password1", salt),
-                        false,
+                        true,
                         true,
                         dateCreated,
                         DateTime.MinValue)

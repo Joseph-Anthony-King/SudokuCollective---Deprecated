@@ -29,6 +29,8 @@ namespace SudokuCollective.Test.TestCases.Services
         private IUsersService sut;
         private IUsersService sutFailure;
         private IUsersService sutEmailFailure;
+        private IUsersService sutResetPassword;
+        private IUsersService sutResendEmailConfirmation;
         private BaseRequest baseRequest;
 
         [SetUp]
@@ -64,6 +66,22 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
+                MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
+                MockEmailService.EmailServiceSuccessfulRequest.Object);
+
+            sutResetPassword = new UsersService(
+                MockUsersRepository.UsersRepositoryInitiatePasswordSuccessful.Object,
+                MockAppsRepository.AppsRepositoryInitiatePasswordSuccessfulRequest.Object,
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
+                MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
+                MockEmailService.EmailServiceSuccessfulRequest.Object);
+
+            sutResendEmailConfirmation = new UsersService(
+                MockUsersRepository.UsersRepositoryResendEmailConfirmationSuccessful.Object,
+                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
                 MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
@@ -336,6 +354,58 @@ namespace SudokuCollective.Test.TestCases.Services
 
         [Test]
         [Category("Services")]
+        public async Task RequestPasswordReset()
+        {
+            // Arrange
+            var requestPasswordReset = new RequestPasswordResetRequest
+            {
+                License = context.Apps.Select(a => a.License).FirstOrDefault(),
+                Email = context.Users.Select(u => u.Email).FirstOrDefault()
+            };
+
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
+            // Act
+            var result = await sut.RequestPasswordReset(
+                requestPasswordReset, 
+                baseUrl, 
+                html);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Processed Password Reset Request"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnsFalseIfRequestPasswordResetFails()
+        {
+            // Arrange
+            var requestPasswordReset = new RequestPasswordResetRequest
+            {
+                License = context.Apps.Select(a => a.License).FirstOrDefault(),
+                Email = "bademai@example.com"
+            };
+
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
+            // Act
+            var result = await sutFailure.RequestPasswordReset(
+                requestPasswordReset,
+                baseUrl,
+                html);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("No User Is Using This Email"));
+        }
+
+        [Test]
+        [Category("Services")]
         public async Task RequireUniqueUserNameForUpdates()
         {
             // Arrange
@@ -598,6 +668,70 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("User Deactivated"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task InitiatePasswordReset()
+        {
+            // Arrange
+            var passwordReset = context.PasswordResets.FirstOrDefault();
+
+            // Act
+            var result = await sutResetPassword.InitiatePasswordReset(passwordReset.Token);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("User Found"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnsFalseIfInitiatePasswordResetFails()
+        {
+            // Arrange
+            var passwordReset = context.PasswordResets.FirstOrDefault();
+
+            // Act
+            var result = await sutFailure.InitiatePasswordReset(passwordReset.Token);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ResendEmailConfirmations()
+        {
+            // Arrange
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
+            // Act
+            var result = await sutResendEmailConfirmation.ResendEmailConfirmation(3, 1, baseUrl, html);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Email Confirmation Successfully Resent"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnsFalseForResendEmailConfirmationsIfUserEmailConfirmed()
+        {
+            // Arrange
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
+            // Act
+            var result = await sut.ResendEmailConfirmation(3, 1, baseUrl, html);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Email Confirmed"));
         }
     }
 }

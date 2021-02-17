@@ -41,5 +41,8 @@
         public static string UserEmailNotConfirmed = "User Email Not Confirmed";
         public static string ProcessPasswordResetRequestNotFound = "Process Password Reset Request Not Found";
         public static string NoOutstandingRequestToResetPassword = "No Outstanding Request To Reset Password";
+        public static string EmailConfirmationSuccessfullyResent = "Email Confirmation Successfully Resent";
+        public static string EmailConfirmationNotSuccessfullyResent = "Email Confirmation Not Successfully Resent";
+        public static string EmailConfirmationRequestNotFound = "No Outstanding Email Confirmation Request Found";
     }
 }
