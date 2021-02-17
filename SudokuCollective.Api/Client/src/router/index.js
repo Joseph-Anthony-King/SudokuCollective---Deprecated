@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Home from "@/views/Home.vue";
+import store from "@/store";
 
 Vue.use(VueRouter);
 
@@ -25,6 +26,16 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
+});
+
+router.beforeEach((to, from, next) => {
+    var user = store.getters["userModule/getUser"];
+    if (to.fullPath !== "/") {
+        if (!user.isLoggedIn) {
+            next("/");
+        }
+    }
+    next();
 });
 
 export default router;
