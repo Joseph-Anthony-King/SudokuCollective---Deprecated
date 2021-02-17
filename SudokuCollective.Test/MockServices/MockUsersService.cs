@@ -125,7 +125,19 @@ namespace SudokuCollective.Test.MockServices
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = true,
-                    Message = UsersMessages.ProcessedPasswordResetRequest
+                    Message = UsersMessages.ProcessedPasswordResetRequesMessage
+                } as IBaseResult));
+
+            UsersServiceSuccessfulRequest.Setup(userService =>
+                userService.ResendPasswordReset(
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Returns(Task.FromResult(new BaseResult()
+                {
+                    Success = true,
+                    Message = UsersMessages.PasswordResetEmailResentMessage
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
@@ -260,7 +272,7 @@ namespace SudokuCollective.Test.MockServices
                         .Object
                         .HasOutstandingEmailConfirmation(It.IsAny<int>(), It.IsAny<int>())
                         .Result,
-                    Message = UsersMessages.EmailConfirmationSuccessfullyResent,
+                    Message = UsersMessages.EmailConfirmationEmailResentMessage,
                     ConfirmationEmailSuccessfullySent = true
                 } as IUserResult));
 
@@ -347,7 +359,19 @@ namespace SudokuCollective.Test.MockServices
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = false,
-                    Message = UsersMessages.UnableToProcessPasswordResetRequest
+                    Message = UsersMessages.UnableToProcessPasswordResetRequesMessage
+                } as IBaseResult));
+
+            UsersServiceFailedRequest.Setup(userService =>
+                userService.ResendPasswordReset(
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Returns(Task.FromResult(new BaseResult()
+                {
+                    Success = false,
+                    Message = UsersMessages.UserNotFoundMessage
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>
@@ -472,7 +496,7 @@ namespace SudokuCollective.Test.MockServices
                         .Object
                         .HasOutstandingEmailConfirmation(It.IsAny<int>(), It.IsAny<int>())
                         .Result,
-                    Message = UsersMessages.EmailConfirmationNotSuccessfullyResent,
+                    Message = UsersMessages.EmailConfirmationEmailNotResentMessage,
                     ConfirmationEmailSuccessfullySent = false
                 } as IUserResult));
         }

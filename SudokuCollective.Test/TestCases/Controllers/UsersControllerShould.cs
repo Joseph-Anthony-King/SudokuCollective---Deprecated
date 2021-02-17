@@ -398,5 +398,39 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(message, Is.EqualTo("Status Code 404: User Not Deactivated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyResendPasswordResetEmails()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.ResendRequestPasswordReset(baseRequest);
+            var message = ((BaseResult)((ObjectResult)result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Password Reset Email Resent"));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyResendEmailConfirmationFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutFailure.ResendRequestPasswordReset(baseRequest);
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: User Not Found"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
     }
 }

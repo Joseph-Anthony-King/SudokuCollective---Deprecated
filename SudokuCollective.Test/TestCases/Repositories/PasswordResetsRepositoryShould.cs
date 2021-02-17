@@ -141,5 +141,48 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result, Is.True);
         }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ConfirmPasswordResetsByUserAndAppId()
+        {
+            // Arrange
+            var passwordReset = context.PasswordResets.FirstOrDefault();
+
+            // Act
+            var result = await sut.HasOutstandingPasswordReset(passwordReset.UserId, passwordReset.AppId);
+
+            // Assert
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetPasswordResetsByUserAndAppId()
+        {
+            // Arrange
+            var passwordReset = context.PasswordResets.FirstOrDefault();
+
+            // Act
+            var result = await sut.RetrievePasswordReset(passwordReset.UserId, passwordReset.AppId);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That((PasswordReset)result.Object, Is.InstanceOf<PasswordReset>());
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfGetPasswordResetsByUserAndAppIdFails()
+        {
+            // Arrange
+            var passwordReset = context.PasswordResets.FirstOrDefault();
+
+            // Act
+            var result = await sut.RetrievePasswordReset(passwordReset.UserId + 3, passwordReset.AppId);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
     }
 }

@@ -871,7 +871,7 @@ namespace SudokuCollective.Data.Services
         public async Task<IBaseResult> RequestPasswordReset(
             IRequestPasswordResetRequest request,
             string baseUrl,
-            string emailtTemplatePath)
+            string emailTemplatePath)
         {
             var result = new BaseResult();
 
@@ -893,7 +893,7 @@ namespace SudokuCollective.Data.Services
                             if (!user.EmailConfirmed)
                             {
                                 result.Success = false;
-                                result.Message = UsersMessages.UserEmailNotConfirmed;
+                                result.Message = UsersMessages.UserEmailNotConfirmedMessage;
 
                                 return result;
                             }
@@ -934,7 +934,7 @@ namespace SudokuCollective.Data.Services
                                         passwordReset.Token);
                                 }
 
-                                var html = File.ReadAllText(emailtTemplatePath);
+                                var html = File.ReadAllText(emailTemplatePath);
                                 var appTitle = app.Name;
                                 var url = string.Empty;
 
@@ -959,13 +959,13 @@ namespace SudokuCollective.Data.Services
 
                                 if (result.Success)
                                 {
-                                    result.Message = UsersMessages.ProcessedPasswordResetRequest;
+                                    result.Message = UsersMessages.ProcessedPasswordResetRequesMessage;
 
                                     return result;
                                 }
                                 else
                                 {
-                                    result.Message = UsersMessages.UnableToProcessPasswordResetRequest;
+                                    result.Message = UsersMessages.UnableToProcessPasswordResetRequesMessage;
 
                                     return result;
                                 }
@@ -980,7 +980,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = userResult.Success;
-                                result.Message = UsersMessages.UnableToProcessPasswordResetRequest;
+                                result.Message = UsersMessages.UnableToProcessPasswordResetRequesMessage;
 
                                 return result;
                             }
@@ -988,7 +988,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = AppsMessages.UserNotSignedUpToApp;
+                            result.Message = AppsMessages.UserNotSignedUpToAppMessage;
 
                             return result;
                         }
@@ -1003,7 +1003,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = userResult.Success;
-                        result.Message = UsersMessages.NoUserIsUsingThisEmail;
+                        result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
 
                         return result;
                     }
@@ -1070,7 +1070,7 @@ namespace SudokuCollective.Data.Services
                                 else
                                 {
                                     result.Success = false;
-                                    result.Message = UsersMessages.NoOutstandingRequestToResetPassword;
+                                    result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
 
                                     return result;
                                 }
@@ -1078,7 +1078,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = AppsMessages.UserNotSignedUpToApp;
+                                result.Message = AppsMessages.UserNotSignedUpToAppMessage;
 
                                 return result;
                             }
@@ -1123,7 +1123,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = passwordResetResult.Success;
-                    result.Message = UsersMessages.ProcessPasswordResetRequestNotFound;
+                    result.Message = UsersMessages.ProcessPasswordResetRequestNotFoundMessage;
 
                     return result;
                 }
@@ -1188,7 +1188,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = UsersMessages.NoOutstandingRequestToResetPassword;
+                            result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
 
                             return result;
                         }
@@ -1494,7 +1494,7 @@ namespace SudokuCollective.Data.Services
         public async Task<IConfirmEmailResult> ConfirmEmail(
             string token,
             string baseUrl,
-            string emailtTemplatePath)
+            string emailTemplatePath)
         {
             var result = new ConfirmEmailResult();
 
@@ -1573,7 +1573,7 @@ namespace SudokuCollective.Data.Services
 
                         if (response.Success)
                         {
-                            var html = File.ReadAllText(emailtTemplatePath);
+                            var html = File.ReadAllText(emailTemplatePath);
                             var emailConfirmationUrl = string.Format("https://{0}/confirmEmail/{1}",
                                 baseUrl,
                                 emailConfirmation.Token);
@@ -1791,14 +1791,14 @@ namespace SudokuCollective.Data.Services
                                     if ((bool)result.ConfirmationEmailSuccessfullySent)
                                     {
                                         result.Success = true;
-                                        result.Message = UsersMessages.EmailConfirmationSuccessfullyResent;
+                                        result.Message = UsersMessages.EmailConfirmationEmailResentMessage;
 
                                         return result;
                                     }
                                     else
                                     {
                                         result.Success = false;
-                                        result.Message = UsersMessages.EmailConfirmationNotSuccessfullyResent;
+                                        result.Message = UsersMessages.EmailConfirmationEmailNotResentMessage;
 
                                         return result;
                                     }
@@ -1814,7 +1814,7 @@ namespace SudokuCollective.Data.Services
                                 else
                                 {
                                     result.Success = false;
-                                    result.Message = UsersMessages.EmailConfirmationRequestNotFound;
+                                    result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
 
                                     return result;
                                 }
@@ -1823,7 +1823,7 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 result.Success = false;
-                                result.Message = UsersMessages.EmailConfirmationRequestNotFound;
+                                result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
 
                                 return result;
                             }
@@ -1843,6 +1843,134 @@ namespace SudokuCollective.Data.Services
 
                         return result;
                     }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IBaseResult> ResendPasswordReset(
+            int userId,
+            int appId,
+            string baseUrl, 
+            string emailTamplatePath)
+        {
+            var result = new BaseResult();
+
+            try
+            {
+                if (await usersRepository.HasEntity(userId))
+                {
+                    var user = (User)((await usersRepository.GetById(userId)).Object);
+
+                    if (user.ReceivedRequestToUpdatePassword)
+                    {
+                        if (await appsRepository.HasEntity(appId))
+                        {
+                            var app = (App)((await appsRepository.GetById(appId)).Object);
+
+                            if (await passwordResetsRepository.HasOutstandingPasswordReset(userId, appId))
+                            {
+                                var passwordReset = (PasswordReset)
+                                    ((await passwordResetsRepository.RetrievePasswordReset(userId, appId)).Object);
+
+                                string emailConfirmationUrl;
+
+                                if (app.UseCustomPasswordResetUrl)
+                                {
+                                    if (app.InDevelopment)
+                                    {
+                                        emailConfirmationUrl = string.Format("{0}{1}",
+                                            app.CustomPasswordResetDevUrl,
+                                            passwordReset.Token);
+                                    }
+                                    else
+                                    {
+                                        emailConfirmationUrl = string.Format("{0}{1}",
+                                            app.CustomPasswordResetLiveUrl,
+                                            passwordReset.Token);
+                                    }
+                                }
+                                else
+                                {
+                                    emailConfirmationUrl = string.Format("https://{0}/passwordReset/{1}",
+                                        baseUrl,
+                                        passwordReset.Token);
+                                }
+
+                                var html = File.ReadAllText(emailTamplatePath);
+                                var appTitle = app.Name;
+                                var url = string.Empty;
+
+                                if (app.InDevelopment)
+                                {
+                                    url = app.DevUrl;
+                                }
+                                else
+                                {
+                                    url = app.LiveUrl;
+                                }
+
+                                html = html.Replace("{{USER_NAME}}", user.UserName);
+                                html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
+                                html = html.Replace("{{APP_TITLE}}", appTitle);
+                                html = html.Replace("{{URL}}", url);
+
+                                var emailSubject = string.Format("Greetings from {0}: Password Update Request Received", appTitle);
+
+                                result.Success = emailService
+                                    .Send(user.Email, emailSubject, html);
+
+                                if (result.Success)
+                                {
+                                    result.Message = UsersMessages.PasswordResetEmailResentMessage;
+
+                                    return result;
+                                }
+                                else
+                                {
+                                    result.Success = false;
+                                    result.Message = UsersMessages.PasswordResetEmailNotResentMessage;
+
+                                    return result;
+                                }
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
+
+                                return result;
+                            }
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.AppNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
+
+                        return result;
+                    }
+
                 }
                 else
                 {

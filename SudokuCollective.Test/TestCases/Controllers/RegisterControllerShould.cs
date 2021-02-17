@@ -109,7 +109,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Email Confirmation Successfully Resent"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Email Confirmation Email Resent"));
             Assert.That(statusCode, Is.EqualTo(200));
             Assert.That(emailResent, Is.True);
         }
@@ -127,7 +127,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Email Confirmation Not Successfully Resent"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Email Confirmation Email Not Resent"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

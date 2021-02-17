@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -714,7 +713,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Email Confirmation Successfully Resent"));
+            Assert.That(result.Message, Is.EqualTo("Email Confirmation Email Resent"));
         }
 
         [Test]
@@ -732,6 +731,40 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("Email Confirmed"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ResendPasswordResetEmail()
+        {
+            // Arrange
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
+            // Act
+            var result = await sutResetPassword.ResendPasswordReset(3, 1, baseUrl, html);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Password Reset Email Resent"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnsFalseIfResendPasswordResetEmailFails()
+        {
+            // Arrange
+            var baseUrl = "https://example.com";
+
+            var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
+
+            // Act
+            var result = await sut.ResendPasswordReset(1, 1, baseUrl, html);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("No Outstanding Request To Reset Password"));
         }
     }
 }

@@ -35,6 +35,11 @@ namespace SudokuCollective.Core.Interfaces.Services
             string token,
             string baseUrl,
             string emailtTemplatePath);
+        Task<IBaseResult> ResendPasswordReset(
+            int userId,
+            int appId,
+            string baseUrl, 
+            string emailTamplatePath);
         Task<IUserResult> ResendEmailConfirmation(
             int userId, 
             int appId,

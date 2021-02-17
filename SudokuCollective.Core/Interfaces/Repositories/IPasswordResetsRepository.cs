@@ -11,5 +11,7 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<IRepositoryResponse> GetAll();
         Task<IRepositoryResponse> Delete(TEntity entity);
         Task<bool> HasEntity(int id);
+        Task<bool> HasOutstandingPasswordReset(int userId, int appid);
+        Task<IRepositoryResponse> RetrievePasswordReset(int userId, int appid);
     }
 }

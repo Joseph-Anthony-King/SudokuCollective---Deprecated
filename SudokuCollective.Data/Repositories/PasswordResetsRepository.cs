@@ -207,6 +207,47 @@ namespace SudokuCollective.Data.Repositories
 
             return result;
         }
+
+        async public Task<bool> HasOutstandingPasswordReset(int userId, int appid)
+        {
+            var result = await context.PasswordResets.AnyAsync(pw => pw.UserId == userId && pw.AppId == appid);
+
+            return result;
+        }
+
+        async public Task<IRepositoryResponse> RetrievePasswordReset(int userId, int appid)
+        {
+            var result = new RepositoryResponse();
+            var query = new PasswordReset();
+
+            try
+            {
+                query = await context
+                    .PasswordResets
+                    .FirstOrDefaultAsync(pw =>
+                        pw.UserId == userId &&
+                        pw.AppId == appid);
+
+                if (query == null)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
+                result.Success = true;
+                result.Object = query;
+
+                return result;
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
         #endregion
     }
 }

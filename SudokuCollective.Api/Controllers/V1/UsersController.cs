@@ -204,6 +204,55 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
+        // POST: api/users/resendRequestPasswordReset
+        [AllowAnonymous]
+        [HttpPost("ResendRequestPasswordReset")]
+        public async Task<IActionResult> ResendRequestPasswordReset([FromBody] BaseRequest request)
+        {
+            string baseUrl;
+
+            if (Request != null)
+            {
+                baseUrl = Request.Host.ToString();
+            }
+            else
+            {
+                baseUrl = "https://SudokuCollective.com";
+            }
+
+            string emailtTemplatePath;
+
+            if (!string.IsNullOrEmpty(hostEnvironment.WebRootPath))
+            {
+                emailtTemplatePath = Path.Combine(hostEnvironment.WebRootPath, "/Content/EmailTemplates/password-reset-requested-inlined.html");
+
+                emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
+            }
+            else
+            {
+                emailtTemplatePath = "../../Content/EmailTemplates/confirm-old-email-inlined.html";
+            }
+
+            var result = await usersService.ResendPasswordReset(
+                request.RequestorId, 
+                request.AppId, 
+                baseUrl, 
+                emailtTemplatePath);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
+            }
+        }
+
         // DELETE: api/users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("{id}")]

@@ -24,7 +24,7 @@
         public static string UserNameConfirmedMessage = "User Name Confirmed";
         public static string EmailUniqueMessage = "Email Not Unique";
         public static string EmailRequiredMessage = "Email Required";
-        public static string NoUserIsUsingThisEmail = "No User Is Using This Email";
+        public static string NoUserIsUsingThisEmailMessage = "No User Is Using This Email";
         public static string RolesAddedMessage = "Roles Added";
         public static string RolesNotAddedMessage = "Roles Not Added";
         public static string RolesRemovedMessage = "Roles Removed";
@@ -36,13 +36,15 @@
         public static string EmailNotConfirmedMessage = "Email Not Confirmed";
         public static string OldEmailConfirmedMessage = "Old Email Confirmed";
         public static string OldEmailNotConfirmedMessage = "Old Email Not Confirmed";
-        public static string ProcessedPasswordResetRequest = "Processed Password Reset Request";
-        public static string UnableToProcessPasswordResetRequest = "Unable To Process Password Reset Request";
-        public static string UserEmailNotConfirmed = "User Email Not Confirmed";
-        public static string ProcessPasswordResetRequestNotFound = "Process Password Reset Request Not Found";
-        public static string NoOutstandingRequestToResetPassword = "No Outstanding Request To Reset Password";
-        public static string EmailConfirmationSuccessfullyResent = "Email Confirmation Successfully Resent";
-        public static string EmailConfirmationNotSuccessfullyResent = "Email Confirmation Not Successfully Resent";
-        public static string EmailConfirmationRequestNotFound = "No Outstanding Email Confirmation Request Found";
+        public static string ProcessedPasswordResetRequesMessage = "Processed Password Reset Request";
+        public static string UnableToProcessPasswordResetRequesMessage = "Unable To Process Password Reset Request";
+        public static string UserEmailNotConfirmedMessage = "User Email Not Confirmed";
+        public static string ProcessPasswordResetRequestNotFoundMessage = "Process Password Reset Request Not Found";
+        public static string NoOutstandingRequestToResetPassworMessage = "No Outstanding Request To Reset Password";
+        public static string EmailConfirmationEmailResentMessage = "Email Confirmation Email Resent";
+        public static string EmailConfirmationEmailNotResentMessage = "Email Confirmation Email Not Resent";
+        public static string EmailConfirmationRequestNotFoundMessage = "No Outstanding Email Confirmation Request Found";
+        public static string PasswordResetEmailResentMessage = "Password Reset Email Resent";
+        public static string PasswordResetEmailNotResentMessage = "Password Reset Email Not Resent";
     }
 }
