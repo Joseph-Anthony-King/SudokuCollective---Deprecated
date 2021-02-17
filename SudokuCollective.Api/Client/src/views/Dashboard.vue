@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import DashboardForm from "@/components/DashboardForm.vue";
+  import DashboardForm from "@/components/pages/DashboardForm.vue";
   export default {
     name: "Dashboard",
     components: {

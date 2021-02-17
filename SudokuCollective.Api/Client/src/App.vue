@@ -1,133 +1,12 @@
 <template>
   <v-app>
-    <v-navigation-drawer app color="secondary" v-if="user.isLoggedIn">
-      <v-list>
-        <v-list-item>
-          <v-list-item-content>
-              <v-icon x-large color="white">mdi-account-circle</v-icon>   
-          </v-list-item-content>
-        </v-list-item>
-        <v-container class="navigation-status-indicator">
-          <span class="user-profile-item">{{ user.userName }}</span> 
-        </v-container>
-        <v-container class="navigation-status-indicator">
-          <span class="user-profile-subscript">(Logged In)</span>
-        </v-container>
-      </v-list>
-      <v-list v-if="navMenuItems.length > 1">
-        <v-list-item v-for="(navItem, index) in navMenuItems" :key="index">
-          <v-list-item-content>
-            <v-list-item-title>
-              <router-link :to="navItem.url" class="nav-drawer-item">{{
-                navItem.title
-              }}</router-link>
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <router-link to="/">
-          <v-img
-            alt="Vuetify Logo"
-            class="shrink mr-2"
-            contain
-            src="/logo.png"
-            transition="scale-transition"
-            width="40"
-          />
-        </router-link>
-
-        <router-link to="/">
-          <v-img
-            alt="Vuetify Name"
-            class="shrink mt-1 hidden-sm-and-down"
-            contain
-            min-width="269"
-            src="/name-logo.png"
-            width="269"
-          />
-        </router-link>
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-menu left bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" text>
-            <span class="mr-2">Menu</span>
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <!-- User Functions -->
-          <v-list-item v-if="!user.isLoggedIn">
-            <v-list-item-content>
-              <v-list-item-title>
-                <div class="menu-item" @click="userLoggingIn = true">
-                  <v-icon>mdi-login-variant</v-icon>
-                  <span class="mr-2">Login</span>
-                </div>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item v-if="!user.isLoggedIn">
-            <v-list-item-content>
-              <v-list-item-title>
-                <div class="menu-item" @click="userSigningUp = true">
-                  <v-icon>mdi-account-plus</v-icon>
-                  <span class="mr-2">Sign Up</span>
-                </div>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item v-if="user.isLoggedIn">
-            <v-list-item-content>
-              <v-list-item-title>
-                <div class="menu-item" @click="logout">
-                  <v-icon>mdi-logout-variant</v-icon>
-                  <span class="mr-2">Logout</span>
-                </div>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <!-- outside links -->
-          <hr v-if="appMenuItems.length > 1" class="mx-2" />
-          <v-list-item v-if="appMenuItems.length > 1">
-            <v-menu left bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <div class="menu-item" v-bind="attrs" v-on="on">
-                  <span class="mr-2">Links</span>
-                </div>
-              </template>
-              <v-list class="menu-link-list">
-                <!-- outside links -->
-                <v-list-item
-                  v-for="(menuItem, index) in appMenuItems"
-                  :key="index"
-                >
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <a
-                        :href="menuItem.url"
-                        target="blank"
-                        :title="menuItem.title"
-                        class="menu-item"
-                      >
-                        <v-icon>{{ menuItem.mdiIcon }}</v-icon>
-                        <span class="mr-2">{{ menuItem.title }}</span>
-                      </a>
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-app-bar>
+    <NavigationBarForm
+      :userLoggedIn="user.isLoggedIn" />
+    <AppBarForm 
+      :userLoggedIn="user.isLoggedIn"
+      v-on:user-logging-in="userLoggingIn = true"
+      v-on:user-logging-out="logout"
+      v-on:user-signing-up="userSigningUp = true"/>
 
     <!-- Sizes your content based upon application components -->
     <v-main>
@@ -172,51 +51,30 @@
 .menu-link-list {
   width: 215px;
 }
-.nav-drawer-item {
-  font-weight: bold;
-  text-decoration: none !important;
-  text-transform: uppercase;
-  color: #ffffff;
-}
-.user-profile-item {
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: center;
-  color: #ffffff;
-}
-.user-profile-subscript {
-  font-size: small;
-  text-align: center;
-  color: #ffffff;
-}
-.navigation-status-indicator {
-  text-align: center;
-  padding: 0;
-  margin: 0;
-}
 </style>
 
 <script>
 import { mapActions } from "vuex";
 import { userService } from "@/services/userService/user.service";
-import LoginForm from "@/components/LoginForm";
-import SignUpForm from "@/components/SignUpForm";
-import FooterForm from "@/components/FooterForm";
+import AppBarForm from "@/components/navigation/AppBarForm";
+import NavigationBarForm from "@/components/navigation/NavigationBarForm";
+import LoginForm from "@/components/forms/LoginForm";
+import SignUpForm from "@/components/forms/SignUpForm";
+import FooterForm from "@/components/navigation/FooterForm";
 import User from "@/models/user";
-import MenuItem from "@/models/viewModels/menuItem";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { AppMenuItems } from "@/models/arrays/appMenuItems";
 import { showToast, defaultToastOptions, actionToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "App",
-
   components: {
+    AppBarForm,
+    NavigationBarForm,
     LoginForm,
     SignUpForm,
     FooterForm
   },
-
   data: () => ({
     appMenuItems: [],
     navMenuItems: [],
@@ -224,7 +82,6 @@ export default {
     userSigningUp: false,
     user: {},
   }),
-
   methods: {
     ...mapActions("appSettingsModule", ["confirmBaseURL"]),
 
@@ -324,21 +181,12 @@ export default {
         this.$data.appMenuItems.push(route);
       });
     },
-
-    populateNavMenuItems() {
-      this.$router.options.routes.forEach((route) => {
-        this.$data.navMenuItems.push(new MenuItem(route.path, route.name, ""));
-      });
-    },
   },
-
   async created() {
     await this.confirmBaseURL();
 
-    this.populateNavMenuItems();
     this.populateAppMenuItems();
   },
-
   mounted() {
     this.$data.user = new User();
     this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
