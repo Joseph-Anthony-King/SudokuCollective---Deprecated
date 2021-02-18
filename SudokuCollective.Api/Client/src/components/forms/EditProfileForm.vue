@@ -11,7 +11,7 @@
               <v-text-field
                 v-model="user.userName"
                 label="User Name"
-                prepend-icon="mdi-account-plus"
+                prepend-icon="mdi-account-edit"
                 :rules="stringRequiredRules"
                 required
                 @click="!dirty ? (dirty = true) : null"
@@ -21,7 +21,7 @@
               <v-text-field
                 v-model="user.firstName"
                 label="First Name"
-                prepend-icon="mdi-account-plus"
+                prepend-icon="mdi-account-edit"
                 :rules="stringRequiredRules"
                 required
                 @click="!dirty ? (dirty = true) : null"
@@ -31,7 +31,7 @@
               <v-text-field
                 v-model="user.lastName"
                 label="Last Name"
-                prepend-icon="mdi-account-plus"
+                prepend-icon="mdi-account-edit"
                 :rules="stringRequiredRules"
                 required
                 @click="!dirty ? (dirty = true) : null"
@@ -41,7 +41,7 @@
               <v-text-field
                 v-model="user.nickName"
                 label="Nickname (Not Required)"
-                prepend-icon="mdi-account-plus"
+                prepend-icon="mdi-account-edit"
                 required
                 @click="!dirty ? (dirty = true) : null"
               ></v-text-field>
@@ -110,7 +110,6 @@ export default {
         );
 
         if (response.status === 200) {
-          this.$data.user.shallowClone(response.data.user);
 
           this.resetEditProfileFormStatus;
 

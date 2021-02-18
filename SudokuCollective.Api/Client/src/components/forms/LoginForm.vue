@@ -113,10 +113,10 @@
 
 <script>
 import { authenticationService } from "@/services/authenticationService/authentication.service";
-import { userService } from "@/services/userService/user.service";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
+import { passwordReset } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "LoginForm",
@@ -234,31 +234,11 @@ export default {
       }
     },
 
-    async requestPasswordReset() {
-      try {
-        const response = await userService.getRequestPasswordReset(
-          this.$data.email
-        );
+    requestPasswordReset() {
+      let result = passwordReset(this.$data.email, this);
 
-        if (response.status === 200) {
-          showToast(
-            this,
-            ToastMethods["success"],
-            `Please review ${this.$data.email} to reset your password`,
-            defaultToastOptions()
-          );
-
-          this.$data.gettingHelp = false;
-        } else {
-          showToast(
-            this,
-            ToastMethods["error"],
-            response.data.message.substring(17),
-            defaultToastOptions()
-          );
-        }
-      } catch (error) {
-        showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      if (result){
+        this.$data.gettingHelp = false;
       }
     },
 

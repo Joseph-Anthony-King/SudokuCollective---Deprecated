@@ -45,6 +45,7 @@ namespace SudokuCollective.Api
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 

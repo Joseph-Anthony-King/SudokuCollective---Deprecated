@@ -2,7 +2,8 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 style="text-align: center">User Profile</h1>
+        <h1 style="text-align: center" v-if="user.isActive">Your Account is Active</h1>
+        <h1 style="text-align: center" v-if="!user.isActive" class="account-status-warning">Your Account is Deativated, Please Contact the Administrator</h1>
       </v-col>
     </v-row>
     <v-row style="min-height: 25px"></v-row>
@@ -49,7 +50,7 @@
             {{ new Date(user.dateCreated).toLocaleString() }}
           </p>
         </v-row>
-        <v-row v-if="user.dateUpdated !== '0001-01-01T00:00:00'">
+        <v-row v-if="user.dateUpdated !== '0001-01-01T00:00:00Z'">
           <label class="label">Date Updated:</label>
           <span class="label-spacer"></span>
           <p class="userInfo">
@@ -64,10 +65,14 @@
           class="account-status"
           v-if="
             !user.receivedRequestToUpdateEmail &&
-            !user.receivedRequestToUpdatePassword
+            !user.receivedRequestToUpdatePassword &&
+            user.emailConfirmed
           "
         >
           No Outstanding Requests for this Account
+        </h2>
+        <h2 class="account-status-warning" v-if="!user.emailConfirmed">
+          Please Confirm Your Email
         </h2>
         <h2
           class="account-status-warning"
@@ -84,8 +89,14 @@
       </v-col>
     </v-row>
     <v-row>
+      <v-btn color="blue darken-1" text @click="refreshProfile">
+        Refresh Profile
+      </v-btn>
       <v-btn color="blue darken-1" text @click="editingProfile = true">
         Edit Profile
+      </v-btn>
+      <v-btn color="blue darken-1" text @click="resetPassword">
+        Reset Password
       </v-btn>
     </v-row>
 
@@ -119,8 +130,14 @@
 </style>
 
 <script>
+import { userService } from "@/services/userService/user.service";
 import EditProfileForm from "@/components/forms/EditProfileForm";
+import store from "../../store";
 import User from "@/models/user";
+import PageListModel from "@/models/viewModels/pageListModel";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import { showToast, defaultToastOptions, actionToastOptions } from "@/helpers/toastHelper";
+import { passwordReset } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "UserProfileForm",
@@ -132,6 +149,56 @@ export default {
     editingProfile: false,
   }),
   methods: {
+    async resetPassword() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+
+            toastObject.goAway(0);
+            
+            try {
+              let result = passwordReset(this.$data.user.email, this);
+
+              if (result) {
+                this.refresh();
+              }
+            } catch (error) {
+              showToast(this, ToastMethods["error"], error, defaultToastOptions());
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to reset your password?",
+        actionToastOptions(action, "lock")
+      );
+    },
+    refreshProfile(){
+      try {
+        this.refresh();
+      } catch (error) {
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      }
+    },
+    async refresh(){
+      let user = await userService.getUser(
+        this.$data.user.id,
+        new PageListModel(),
+        false
+      );
+      store.dispatch("userModule/updateUser", user);
+      this.$data.user.shallowClone(user);
+    },
     closeEditing() {
       this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
       this.$data.editingProfile = false;

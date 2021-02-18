@@ -32,7 +32,7 @@ const getUser = async function (id, pageListModel, fullRecord) {
 
         const response = await axios(config);
 
-        user = assignAPIReponseToUser(response.data);
+        user = assignAPIReponseToUser(response.data.user);
 
         return user;
 
@@ -132,8 +132,6 @@ const getRequestPasswordReset = async function (email) {
             }
         }
 
-        console.log(config);
-
         const response = await axios(config);
 
         return response;
@@ -178,6 +176,9 @@ const assignAPIReponseToUser = function (data) {
     user.nickName = data.nickName;
     user.fullName = data.fullName;
     user.email = data.email;
+    user.emailConfirmed = data.emailConfirmed;
+    user.receivedRequestToUpdateEmail = data.receivedRequestToUpdateEmail;
+    user.receivedRequestToUpdatePassword = data.receivedRequestToUpdatePassword;
     user.isActive = data.isActive;
     user.isAdmin = data.isAdmin;
     user.isSuperUser = data.isSuperUser;
