@@ -1,9 +1,11 @@
 <template>
   <v-app>
     <NavigationBarForm
-      :userLoggedIn="user.isLoggedIn" />
+      :userLoggedIn="user.isLoggedIn"
+      :profileNavigation="profileNavigation" />
     <AppBarForm 
       :userLoggedIn="user.isLoggedIn"
+      :profileNavigation="profileNavigation"
       v-on:user-logging-in="userLoggingIn = true"
       v-on:user-logging-out="logout"
       v-on:user-signing-up="userSigningUp = true"/>
@@ -81,6 +83,10 @@ export default {
     userLoggingIn: false,
     userSigningUp: false,
     user: {},
+    profileNavigation: {
+      url: "/UserProfile",
+      title: "User Profile"
+    },
   }),
   methods: {
     ...mapActions("appSettingsModule", ["confirmBaseURL"]),

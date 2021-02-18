@@ -103,9 +103,12 @@ const updateUser = async function (
 
         const response = await axios(config);
 
-        user = assignAPIReponseToUser(response.data);
+        console.log("update user response:", response);
 
-        return user;
+        user = assignAPIReponseToUser(response.data.user);
+        store.dispatch("userModule/updateUser", user);
+
+        return response;
 
     } catch (error) {
 

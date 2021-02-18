@@ -13,95 +13,6 @@
           {{ apiMsg }}
         </h1>
         <h2>{{ user.userName }} is logged in!</h2>
-        <v-row>
-          <v-col cols="12">
-            <v-text-field
-              prepend-icon="person"
-              name="user_userName"
-              label="Username"
-              disabled
-              outlined
-              v-model="user.userName"
-            ></v-text-field>
-            <v-text-field
-              prepend-icon="person"
-              name="user_firstName"
-              label="First Name"
-              disabled
-              outlined
-              v-model="user.firstName"
-            ></v-text-field>
-            <v-text-field
-              prepend-icon="person"
-              name="user_lastName"
-              label="Last Name"
-              disabled
-              outlined
-              v-model="user.lastName"
-            ></v-text-field>
-            <v-text-field
-              prepend-icon="person"
-              name="user_fullName"
-              label="Fullname"
-              disabled
-              outlined
-              v-model="user.fullName"
-            ></v-text-field>
-            <v-text-field
-              prepend-icon="person"
-              name="user_nickName"
-              label="Nickname"
-              disabled
-              outlined
-              v-model="user.nickName"
-            ></v-text-field>
-            <v-text-field
-              prepend-icon="email"
-              name="user_email"
-              label="email"
-              disabled
-              outlined
-              v-model="user.email"
-            ></v-text-field>
-            <v-checkbox
-              name="user_emailConfirmed"
-              label="Email Confirmed"
-              v-model="user.emailConfirmed"
-              disabled
-            ></v-checkbox>
-            <v-checkbox
-              name="user_receivedRequestToUpdateEmail"
-              label="Received Request to Update Email"
-              v-model="user.receivedRequestToUpdateEmail"
-              disabled
-            ></v-checkbox>
-            <v-checkbox
-              name="user_receivedRequestToUpdatePassword"
-              label="Received Request to Update Password"
-              v-model="user.receivedRequestToUpdatePassword"
-              disabled
-            ></v-checkbox>
-            <v-checkbox
-              name="user_isActive"
-              label="Is Active"
-              v-model="user.isActive"
-              disabled
-            ></v-checkbox>
-            <v-checkbox
-              name="user_isAdmin"
-              label="Is Admin"
-              v-model="user.isAdmin"
-              disabled
-            ></v-checkbox>
-            <v-checkbox
-              name="user_isSuperUser"
-              label="Is Super User"
-              v-model="user.isSuperUser"
-              disabled
-            ></v-checkbox>
-            <v-card-actions> </v-card-actions>
-          </v-col>
-        </v-row>
       </div>
     </v-container>
   </v-form>
@@ -116,14 +27,14 @@ export default {
 
   data: () => ({
     apiMsg: "",
-    user: {}
+    user: {},
   }),
 
   methods: {},
 
   computed: {
     ...mapGetters("appSettingsModule", ["getAPIMessage"]),
-    ...mapGetters("userModule", ["getUser"])
+    ...mapGetters("userModule", ["getUser"]),
   },
 
   created() {
@@ -137,6 +48,6 @@ export default {
 
   updated() {
     this.$data.apiMsg = this.$store.getters["appSettingsModule/getAPIMessage"];
-  }
+  },
 };
 </script>

@@ -1,30 +1,34 @@
 <template>
-    <v-navigation-drawer app color="secondary" v-if="userLoggedIn">
-      <v-list>
-        <v-list-item>
-          <v-list-item-content>
-              <v-icon x-large color="white">mdi-account-circle</v-icon>   
-          </v-list-item-content>
-        </v-list-item>
-        <v-container class="navigation-status-indicator">
-          <span class="user-profile-item">{{ user.userName }}</span> 
-        </v-container>
-        <v-container class="navigation-status-indicator">
-          <span class="user-profile-subscript">(Logged In)</span>
-        </v-container>
-      </v-list>
-      <v-list v-if="navMenuItems.length > 1">
-        <v-list-item v-for="(navItem, index) in navMenuItems" :key="index">
-          <v-list-item-content>
-            <v-list-item-title>
-              <router-link :to="navItem.url" class="nav-drawer-item">{{
-                navItem.title
-              }}</router-link>
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+  <v-navigation-drawer app color="secondary" v-if="userLoggedIn">
+    <v-list>
+      <v-list-item>
+        <v-list-item-content>
+          <router-link :to="profileNavigation.url" class="user-profile-item">
+            <v-icon x-large color="white">mdi-account-circle</v-icon>
+          </router-link>
+        </v-list-item-content>
+      </v-list-item>
+      <v-container class="navigation-status-indicator">
+        <router-link :to="profileNavigation.url" class="nav-drawer-item">
+          <span class="user-profile-item">{{ user.userName }}</span>
+        </router-link>
+      </v-container>
+      <v-container class="navigation-status-indicator">
+        <span class="user-profile-subscript">(Logged In)</span>
+      </v-container>
+    </v-list>
+    <v-list v-if="navMenuItems.length > 1">
+      <v-list-item v-for="(navItem, index) in navMenuItems" :key="index">
+        <v-list-item-content>
+          <v-list-item-title>
+            <router-link :to="navItem.url" class="nav-drawer-item">{{
+              navItem.title
+            }}</router-link>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <style scoped>
@@ -57,26 +61,28 @@ import MenuItem from "@/models/viewModels/menuItem";
 
 export default {
   name: "NavigationBarForm",
-  props: ["userLoggedIn"],
+  props: ["userLoggedIn", "profileNavigation"],
   data: () => ({
     navMenuItems: [],
     user: {},
   }),
   methods: {
-
     populateNavMenuItems() {
       this.$router.options.routes.forEach((route) => {
-        this.$data.navMenuItems.push(new MenuItem(route.path, route.name, ""));
+        if (route.name !== "UserProfile") {
+          this.$data.navMenuItems.push(
+            new MenuItem(route.path, route.name, "")
+          );
+        }
       });
     },
   },
   async created() {
-
     this.populateNavMenuItems();
   },
   beforeUpdate() {
     this.$data.user = new User();
     this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
   },
-}
+};
 </script>

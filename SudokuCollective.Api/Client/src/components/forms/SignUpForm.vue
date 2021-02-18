@@ -146,19 +146,14 @@ export default {
             );
           } else {
             showToast(
-              this, 
-              ToastMethods["error"], 
+              this,
+              ToastMethods["error"],
               response.data,
               defaultToastOptions()
             );
           }
         } catch (error) {
-          showToast(
-            this, 
-            ToastMethods["error"], 
-            error,
-            defaultToastOptions()
-          );
+          showToast(this, ToastMethods["error"], error, defaultToastOptions());
         }
       }
     },
@@ -166,12 +161,11 @@ export default {
     resetForm() {
       this.$refs.signUpForm.reset();
       this.$data.showPassword = false;
-    },    
+    },
 
     close() {
       this.$emit("user-signing-up-event", null, null);
-
-      this.resetForm();
+      setTimeout(this.resetForm(), 10000);
     },
   },
   computed: {

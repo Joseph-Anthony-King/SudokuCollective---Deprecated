@@ -157,7 +157,9 @@ export default {
               response.data.token
             );
           } else if (response.status === 400) {
-            if (response.data === "Status Code 400: No User Has This User Name") {
+            if (
+              response.data === "Status Code 400: No User Has This User Name"
+            ) {
               this.$data.invalidUserNames.push(this.$data.username);
               this.$refs.loginForm.validate();
               this.$data.needHelp = true;
@@ -180,8 +182,8 @@ export default {
             } else {
               this.$data.needHelp = true;
               showToast(
-                this, 
-                ToastMethods["error"], 
+                this,
+                ToastMethods["error"],
                 response.data,
                 defaultToastOptions()
               );
@@ -197,12 +199,7 @@ export default {
           }
         } catch (error) {
           this.$data.needHelp = true;
-          showToast(
-            this, 
-            ToastMethods["error"], 
-            error,
-            defaultToastOptions()
-          );
+          showToast(this, ToastMethods["error"], error, defaultToastOptions());
         }
       }
     },
@@ -225,7 +222,6 @@ export default {
 
           this.$data.gettingHelp = false;
         } else {
-
           showToast(
             this,
             ToastMethods["error"],
@@ -234,12 +230,7 @@ export default {
           );
         }
       } catch (error) {
-        showToast(
-          this, 
-          ToastMethods["error"], 
-          error,
-          defaultToastOptions()
-        );
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
     },
 
@@ -250,7 +241,6 @@ export default {
         );
 
         if (response.status === 200) {
-        
           showToast(
             this,
             ToastMethods["success"],
@@ -259,9 +249,7 @@ export default {
           );
 
           this.$data.gettingHelp = false;
-
         } else {
-
           showToast(
             this,
             ToastMethods["error"],
@@ -269,14 +257,8 @@ export default {
             defaultToastOptions()
           );
         }
-
       } catch (error) {
-        showToast(
-          this, 
-          ToastMethods["error"], 
-          error,
-          defaultToastOptions()
-        );
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
     },
 
@@ -315,9 +297,7 @@ export default {
     passwordRules() {
       return [
         (v) => !!v || "Password is required",
-        (v) =>
-          !this.$data.invalidPasswords.includes(v) ||
-          "Password Invalid",
+        (v) => !this.$data.invalidPasswords.includes(v) || "Password Invalid",
       ];
     },
 

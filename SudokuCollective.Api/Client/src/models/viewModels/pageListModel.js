@@ -1,4 +1,4 @@
-﻿import { SortValues } from "../viewModels/sortValues";
+﻿import { SortValues } from "@/models/arrays/sortValues";
 
 class PageListModel {
 
