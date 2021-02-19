@@ -49,7 +49,7 @@
         public static string PasswordResetEmailResentMessage = "Password Reset Email Resent";
         public static string PasswordResetEmailNotResentMessage = "Password Reset Email Not Resent";
         public static string PasswordResetRequestCancelledMessage = "Password Reset Request Cancelled";
-        public static string PasswordResetRequestNotCancelledMessage = "Password Request Not Cancelled";
+        public static string PasswordResetRequestNotCancelledMessage = "Password Reset Request Not Cancelled";
         public static string EmailRequestsNotFoundMessage = "Email Requests Not Found";
     }
 }

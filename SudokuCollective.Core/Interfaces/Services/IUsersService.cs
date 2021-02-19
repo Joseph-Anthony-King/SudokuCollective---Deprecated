@@ -50,6 +50,6 @@ namespace SudokuCollective.Core.Interfaces.Services
             string emailTemplatePath);
         Task<IUserResult> CancelEmailConfirmationRequest(int id, int appId);
         Task<IUserResult> CancelPasswordResetRequest(int id, int appId);
-        Task<IUserResult> CancelAllEmailRequest(int id, int appId);
+        Task<IUserResult> CancelAllEmailRequests(int id, int appId);
     }
 }

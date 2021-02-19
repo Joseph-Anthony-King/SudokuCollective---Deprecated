@@ -2159,7 +2159,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IUserResult> CancelAllEmailRequest(int id, int appId)
+        public async Task<IUserResult> CancelAllEmailRequests(int id, int appId)
         {
             var result = new UserResult();
 

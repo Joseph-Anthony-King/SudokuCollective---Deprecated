@@ -844,7 +844,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Act
-            var result = await sut.CancelAllEmailRequest(user.Id, app.Id);
+            var result = await sut.CancelAllEmailRequests(user.Id, app.Id);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -861,7 +861,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Act
-            var result = await sutFailure.CancelAllEmailRequest(user.Id, app.Id);
+            var result = await sutFailure.CancelAllEmailRequests(user.Id, app.Id);
 
             // Assert
             Assert.That(result.Success, Is.False);

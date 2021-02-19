@@ -279,6 +279,66 @@ namespace SudokuCollective.Test.MockServices
                     ConfirmationEmailSuccessfullySent = true
                 } as IUserResult));
 
+            UsersServiceSuccessfulRequest.Setup(usersService =>
+                usersService.CancelEmailConfirmationRequest(
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(new UserResult() 
+                {
+                    Success = MockEmailConfirmationsRepository
+                        .EmailConfirmationsRepositorySuccessfulRequest
+                        .Object
+                        .Delete(It.IsAny<EmailConfirmation>())
+                        .Result
+                        .Success,
+                    Message = UsersMessages.EmailConfirmationRequestCancelledMessage,
+                    User = (User)MockUsersRepository
+                        .UsersRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>())
+                        .Result
+                        .Object
+                } as IUserResult));
+
+            UsersServiceSuccessfulRequest.Setup(usersService =>
+                usersService.CancelPasswordResetRequest(
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(new UserResult()
+                {
+                    Success = MockPasswordResetsRepository
+                        .PasswordResetsRepositorySuccessfulRequest
+                        .Object
+                        .Delete(It.IsAny<PasswordReset>())
+                        .Result
+                        .Success,
+                    Message = UsersMessages.PasswordResetRequestCancelledMessage,
+                    User = (User)MockUsersRepository
+                        .UsersRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>())
+                        .Result
+                        .Object
+                } as IUserResult));
+
+            UsersServiceSuccessfulRequest.Setup(usersService =>
+                usersService.CancelAllEmailRequests(
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(new UserResult()
+                {
+                    Success = true,
+                    Message = string.Format("{0} and {1}", 
+                        UsersMessages.EmailConfirmationRequestCancelledMessage, 
+                        UsersMessages.PasswordResetRequestCancelledMessage),
+                    User = (User)MockUsersRepository
+                        .UsersRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>())
+                        .Result
+                        .Object
+                } as IUserResult));
+
             UsersServiceFailedRequest.Setup(userService =>
                 userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
@@ -504,6 +564,64 @@ namespace SudokuCollective.Test.MockServices
                         .Result,
                     Message = UsersMessages.EmailConfirmationEmailNotResentMessage,
                     ConfirmationEmailSuccessfullySent = false
+                } as IUserResult));
+
+            UsersServiceFailedRequest.Setup(usersService =>
+                usersService.CancelEmailConfirmationRequest(
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(new UserResult()
+                {
+                    Success = MockEmailConfirmationsRepository
+                        .EmailConfirmationsRepositoryFailedRequest
+                        .Object
+                        .Delete(It.IsAny<EmailConfirmation>())
+                        .Result
+                        .Success,
+                    Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage,
+                    User = (User)MockUsersRepository
+                        .UsersRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>())
+                        .Result
+                        .Object
+                } as IUserResult));
+
+            UsersServiceFailedRequest.Setup(usersService =>
+                usersService.CancelPasswordResetRequest(
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(new UserResult()
+                {
+                    Success = MockPasswordResetsRepository
+                        .PasswordResetsRepositoryFailedRequest
+                        .Object
+                        .Delete(It.IsAny<PasswordReset>())
+                        .Result
+                        .Success,
+                    Message = UsersMessages.PasswordResetRequestNotCancelledMessage,
+                    User = (User)MockUsersRepository
+                        .UsersRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>())
+                        .Result
+                        .Object
+                } as IUserResult));
+
+            UsersServiceFailedRequest.Setup(usersService =>
+                usersService.CancelAllEmailRequests(
+                    It.IsAny<int>(),
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(new UserResult()
+                {
+                    Success = false,
+                    Message = UsersMessages.EmailRequestsNotFoundMessage,
+                    User = (User)MockUsersRepository
+                        .UsersRepositorySuccessfulRequest
+                        .Object
+                        .GetById(It.IsAny<int>())
+                        .Result
+                        .Object
                 } as IUserResult));
         }
     }

@@ -36,13 +36,13 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost("{id}")]
         public async Task<ActionResult<User>> GetUser(
             int id,
-            [FromBody] BaseRequest baseRequest,
+            [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
-                baseRequest.AppId,
-                baseRequest.License,
-                baseRequest.RequestorId))
+                request.AppId,
+                request.License,
+                request.RequestorId))
             {
                 var result = await usersService.GetUser(id, fullRecord);
 
@@ -260,12 +260,12 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(
-            int id, [FromBody] BaseRequest baseRequest)
+            int id, [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
-                baseRequest.AppId,
-                baseRequest.License,
-                baseRequest.RequestorId))
+                request.AppId,
+                request.License,
+                request.RequestorId))
             {
                 var result = await usersService.DeleteUser(id);
 
@@ -293,16 +293,16 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost, Route("{id}/AddRoles")]
         public async Task<IActionResult> AddRoles(
             int id,
-            [FromBody] UpdateUserRoleRequest updateUserRoleRequest)
+            [FromBody] UpdateUserRoleRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
-                updateUserRoleRequest.AppId,
-                updateUserRoleRequest.License,
-                updateUserRoleRequest.RequestorId))
+                request.AppId,
+                request.License,
+                request.RequestorId))
             {
                 var result = await usersService.AddUserRoles(
                     id,
-                    updateUserRoleRequest.RoleIds.ToList());
+                    request.RoleIds.ToList());
 
                 if (result.Success)
                 {
@@ -328,16 +328,16 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpDelete, Route("{id}/RemoveRoles")]
         public async Task<IActionResult> RemoveRoles(
             int id,
-            [FromBody] UpdateUserRoleRequest updateUserRoleRequest)
+            [FromBody] UpdateUserRoleRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
-                updateUserRoleRequest.AppId,
-                updateUserRoleRequest.License,
-                updateUserRoleRequest.RequestorId))
+                request.AppId,
+                request.License,
+                request.RequestorId))
             {
                 var result = await usersService.RemoveUserRoles(
                     id,
-                    updateUserRoleRequest.RoleIds.ToList());
+                    request.RoleIds.ToList());
 
                 if (result.Success)
                 {
@@ -397,6 +397,102 @@ namespace SudokuCollective.Api.V1.Controllers
                 result.Message = ControllerMessages.StatusCode404(result.Message);
 
                 return NotFound(result);
+            }
+        }
+
+        // PUT: api/users/5/cancelEmailConfirmation
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPut, Route("{id}/cancelEmailConfirmation")]
+        public async Task<IActionResult> CancelEmailConfirmation(
+            int id, [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await usersService.CancelEmailConfirmationRequest(id, request.AppId);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/users/5/cancelPasswordReset
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPut, Route("{id}/cancelPasswordReset")]
+        public async Task<IActionResult> CancelPasswordReset(
+            int id, [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await usersService.CancelPasswordResetRequest(id, request.AppId);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/users/5/cancelAllEmailRequests
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPut, Route("{id}/cancelAllEmailRequests")]
+        public async Task<IActionResult> CancelAllEmailRequests(
+            int id, [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await usersService.CancelAllEmailRequests(id, request.AppId);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
     }

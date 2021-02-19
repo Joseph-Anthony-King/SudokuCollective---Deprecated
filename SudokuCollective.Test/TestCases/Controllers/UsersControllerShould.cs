@@ -432,5 +432,107 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(message, Is.EqualTo("Status Code 404: User Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyCancelEmailConfirmation()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.CancelEmailConfirmation(1, baseRequest);
+            var message = ((UserResult)((ObjectResult)result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Email Confirmation Request Cancelled"));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyCancelEmailConfirmationFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutFailure.CancelEmailConfirmation(1, baseRequest);
+            var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Email Confirmation Request Not Cancelled"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyCancelPasswordRequest()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.CancelPasswordReset(1, baseRequest);
+            var message = ((UserResult)((ObjectResult)result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Password Reset Request Cancelled"));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyCancelPasswordRequestFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutFailure.CancelPasswordReset(1, baseRequest);
+            var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Password Reset Request Not Cancelled"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyCancelAllEmailRequests()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.CancelAllEmailRequests(1, baseRequest);
+            var message = ((UserResult)((ObjectResult)result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Email Confirmation Request Cancelled and Password Reset Request Cancelled"));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyCancelAllEmailRequestsFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutFailure.CancelAllEmailRequests(1, baseRequest);
+            var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Email Requests Not Found"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
     }
 }
