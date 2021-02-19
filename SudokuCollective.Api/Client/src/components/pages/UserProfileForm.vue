@@ -85,7 +85,7 @@
         </v-card-text>
       </v-layout>
     </v-card>
-    <div class="card-spacer"></div>
+    <div class="user-card-spacer"></div>
     <v-card elevation="6">
       <v-card-title
         v-if="
@@ -192,7 +192,7 @@
 .userInfo {
   font-size: large;
 }
-.card-spacer {
+.user-card-spacer {
   min-height: 30px;
 }
 .warning {
