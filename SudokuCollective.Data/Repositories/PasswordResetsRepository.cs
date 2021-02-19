@@ -150,6 +150,64 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
+        async public Task<IRepositoryResponse> Update(TEntity entity)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                if (entity.Id == 0)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
+                if (await context.PasswordResets.AnyAsync(a => a.Id == entity.Id))
+                {
+                    context.Attach(entity);
+
+                    foreach (var entry in context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserApp)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else if (dbEntry is UserRole)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            // Otherwise do nothing...
+                        }
+                    }
+
+                    await context.SaveChangesAsync();
+
+                    result.Success = true;
+                    result.Object = entity;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
         async public Task<IRepositoryResponse> Delete(TEntity entity)
         {
             var result = new RepositoryResponse();

@@ -4,7 +4,7 @@ import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export async function passwordReset(userEmail, component) {
     try {
-      const response = await userService.getRequestPasswordReset(
+      const response = await userService.putRequestPasswordReset(
         userEmail
       );
 

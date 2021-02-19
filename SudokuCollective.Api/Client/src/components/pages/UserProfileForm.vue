@@ -102,13 +102,11 @@
         </h2>
       </v-col>
     </v-row>
-    <div style="padding: 50px 0px 0px 0px;"></div>
+    <div style="padding: 50px 0px 0px 0px"></div>
     <hr />
     <v-row>
       <v-col col="12">
-        <p class="available-actions">
-          Available Actions
-        </p>
+        <p class="available-actions">Available Actions</p>
       </v-col>
     </v-row>
     <v-row style="text-align: center">
@@ -119,8 +117,37 @@
         <v-btn color="blue darken-1" text @click="editingProfile = true">
           Edit Profile
         </v-btn>
-        <v-btn color="blue darken-1" text @click="resetPassword">
+        <v-btn
+          color="blue darken-1"
+          text
+          @click="cancelEmailConfirmation"
+          v-if="user.receivedRequestToUpdateEmail || (!user.emailConfirmed && user.dateUpdated !== '0001-01-01T00:00:00Z')"
+        >
+          Cancel Email Confirmation
+        </v-btn>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click="resetPassword"
+          v-if="!user.receivedRequestToUpdatePassword"
+        >
           Reset Password
+        </v-btn>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click="cancelResetPassword"
+          v-if="user.receivedRequestToUpdatePassword"
+        >
+          Cancel Reset Password
+        </v-btn>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click="cancelAllEmailRequests"
+          v-if="(user.receivedRequestToUpdateEmail || (!user.emailConfirmed && user.dateUpdated !== '0001-01-01T00:00:00Z')) && user.receivedRequestToUpdatePassword"
+        >
+          Cancel All Email Requests
         </v-btn>
       </v-col>
     </v-row>
@@ -190,7 +217,7 @@ export default {
             toastObject.goAway(0);
 
             try {
-              let result = passwordReset(this.$data.user.email, this);
+              let result = await passwordReset(this.$data.user.email, this);
 
               if (result) {
                 this.refresh();
@@ -218,6 +245,162 @@ export default {
         ToastMethods["show"],
         "Are you sure you want to reset your password?",
         actionToastOptions(action, "lock")
+      );
+    },
+    async cancelResetPassword() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await userService.putCancelPasswordReset(new PageListModel());
+
+              if (response.status === 200) {
+                store.dispatch("userModule/updateUser", response.data.user);
+                this.$data.user.shallowClone(response.data.user);
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to cancel your reset password request?",
+        actionToastOptions(action, "lock")
+      );
+    },
+    async cancelEmailConfirmation() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await userService.putCancelEmailConfirmation(new PageListModel());
+
+              if (response.status === 200) {
+                store.dispatch("userModule/updateUser", response.data.user);
+                this.$data.user.shallowClone(response.data.user);
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to cancel your email confirmation request?",
+        actionToastOptions(action, "mode_edit")
+      );
+    },
+    async cancelAllEmailRequests() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await userService.putCancelAllEmailRequests(new PageListModel());
+
+              if (response.status === 200) {
+                store.dispatch("userModule/updateUser", response.data.user);
+                this.$data.user.shallowClone(response.data.user);
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to cancel all email request?",
+        actionToastOptions(action, "mode_edit")
       );
     },
     refreshProfile() {

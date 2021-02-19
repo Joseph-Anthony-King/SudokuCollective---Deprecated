@@ -15,6 +15,7 @@ namespace SudokuCollective.Test.MockRepositories
         private readonly DatabaseContext context;
         internal Mock<IPasswordResetsRepository<PasswordReset>> PasswordResetsRepositorySuccessfulRequest { get; set; }
         internal Mock<IPasswordResetsRepository<PasswordReset>> PasswordResetsRepositoryFailedRequest { get; set; }
+        internal Mock<IPasswordResetsRepository<PasswordReset>> PasswordResetsRepositorySuccessfullCreateRequest { get; set; }
 
         public MockPasswordResetsRepository(DatabaseContext ctxt)
         {
@@ -22,6 +23,7 @@ namespace SudokuCollective.Test.MockRepositories
 
             PasswordResetsRepositorySuccessfulRequest = new Mock<IPasswordResetsRepository<PasswordReset>>();
             PasswordResetsRepositoryFailedRequest = new Mock<IPasswordResetsRepository<PasswordReset>>();
+            PasswordResetsRepositorySuccessfullCreateRequest = new Mock<IPasswordResetsRepository<PasswordReset>>();
 
             PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
                 passwordResetsRepo.Create(It.IsAny<PasswordReset>()))
@@ -47,6 +49,14 @@ namespace SudokuCollective.Test.MockRepositories
                         Objects = context.PasswordResets
                             .ToList()
                             .ConvertAll(d => (IEntityBase)d)
+                    } as IRepositoryResponse));
+
+            PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Update(It.IsAny<PasswordReset>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.PasswordResets.FirstOrDefault()
                     } as IRepositoryResponse));
 
             PasswordResetsRepositorySuccessfulRequest.Setup(passwordResetsRepo =>
@@ -94,6 +104,13 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             PasswordResetsRepositoryFailedRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Update(It.IsAny<PasswordReset>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+                    } as IRepositoryResponse));
+
+            PasswordResetsRepositoryFailedRequest.Setup(passwordResetsRepo =>
                 passwordResetsRepo.Delete(It.IsAny<PasswordReset>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
@@ -109,6 +126,62 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(false));
 
             PasswordResetsRepositoryFailedRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.RetrievePasswordReset(It.IsAny<int>(), It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+                    } as IRepositoryResponse));
+
+            PasswordResetsRepositorySuccessfullCreateRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Create(It.IsAny<PasswordReset>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = new PasswordReset()
+                    } as IRepositoryResponse));
+
+            PasswordResetsRepositorySuccessfullCreateRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Get(It.IsAny<string>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.PasswordResets.FirstOrDefault(pr => pr.Id == 1)
+                    } as IRepositoryResponse));
+
+            PasswordResetsRepositorySuccessfullCreateRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.GetAll())
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context.PasswordResets
+                            .ToList()
+                            .ConvertAll(d => (IEntityBase)d)
+                    } as IRepositoryResponse));
+
+            PasswordResetsRepositorySuccessfullCreateRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Update(It.IsAny<PasswordReset>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.PasswordResets.FirstOrDefault()
+                    } as IRepositoryResponse));
+
+            PasswordResetsRepositorySuccessfullCreateRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.Delete(It.IsAny<PasswordReset>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true
+                    } as IRepositoryResponse));
+
+            PasswordResetsRepositorySuccessfullCreateRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.HasEntity(It.IsAny<int>()))
+                    .Returns(Task.FromResult(true));
+
+            PasswordResetsRepositorySuccessfullCreateRequest.Setup(passwordResetsRepo =>
+                passwordResetsRepo.HasOutstandingPasswordReset(It.IsAny<int>(), It.IsAny<int>()))
+                    .Returns(Task.FromResult(false));
+
+            PasswordResetsRepositorySuccessfullCreateRequest.Setup(passwordResetsRepo =>
                 passwordResetsRepo.RetrievePasswordReset(It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {

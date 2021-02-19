@@ -45,7 +45,7 @@ namespace SudokuCollective.Data.Services
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

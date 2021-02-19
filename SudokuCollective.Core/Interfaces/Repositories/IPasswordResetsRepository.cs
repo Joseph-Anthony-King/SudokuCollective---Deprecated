@@ -9,6 +9,7 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<IRepositoryResponse> Create(TEntity entity);
         Task<IRepositoryResponse> Get(string token);
         Task<IRepositoryResponse> GetAll();
+        Task<IRepositoryResponse> Update(TEntity entity);
         Task<IRepositoryResponse> Delete(TEntity entity);
         Task<bool> HasEntity(int id);
         Task<bool> HasOutstandingPasswordReset(int userId, int appid);

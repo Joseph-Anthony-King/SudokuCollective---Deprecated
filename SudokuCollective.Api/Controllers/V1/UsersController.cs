@@ -400,18 +400,17 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/users/5/cancelEmailConfirmation
+        // PUT: api/users/cancelEmailConfirmation
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut, Route("{id}/cancelEmailConfirmation")]
-        public async Task<IActionResult> CancelEmailConfirmation(
-            int id, [FromBody] BaseRequest request)
+        [HttpPut, Route("cancelEmailConfirmation")]
+        public async Task<IActionResult> CancelEmailConfirmation([FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await usersService.CancelEmailConfirmationRequest(id, request.AppId);
+                var result = await usersService.CancelEmailConfirmationRequest(request.RequestorId, request.AppId);
 
                 if (result.Success)
                 {
@@ -432,18 +431,17 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/users/5/cancelPasswordReset
+        // PUT: api/users/cancelPasswordReset
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut, Route("{id}/cancelPasswordReset")]
-        public async Task<IActionResult> CancelPasswordReset(
-            int id, [FromBody] BaseRequest request)
+        [HttpPut, Route("cancelPasswordReset")]
+        public async Task<IActionResult> CancelPasswordReset([FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await usersService.CancelPasswordResetRequest(id, request.AppId);
+                var result = await usersService.CancelPasswordResetRequest(request.RequestorId, request.AppId);
 
                 if (result.Success)
                 {
@@ -464,18 +462,17 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/users/5/cancelAllEmailRequests
+        // PUT: api/users/cancelAllEmailRequests
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut, Route("{id}/cancelAllEmailRequests")]
-        public async Task<IActionResult> CancelAllEmailRequests(
-            int id, [FromBody] BaseRequest request)
+        [HttpPut, Route("cancelAllEmailRequests")]
+        public async Task<IActionResult> CancelAllEmailRequests([FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await usersService.CancelAllEmailRequests(id, request.AppId);
+                var result = await usersService.CancelAllEmailRequests(request.RequestorId, request.AppId);
 
                 if (result.Success)
                 {

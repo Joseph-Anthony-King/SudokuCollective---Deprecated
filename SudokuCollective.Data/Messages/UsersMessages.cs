@@ -36,7 +36,8 @@
         public static string EmailNotConfirmedMessage = "Email Not Confirmed";
         public static string OldEmailConfirmedMessage = "Old Email Confirmed";
         public static string OldEmailNotConfirmedMessage = "Old Email Not Confirmed";
-        public static string ProcessedPasswordResetRequesMessage = "Processed Password Reset Request";
+        public static string ProcessedPasswordResetRequestMessage = "Processed Password Reset Request";
+        public static string ResentPasswordResetRequestMessage = "Resent Password Reset Request";
         public static string UnableToProcessPasswordResetRequesMessage = "Unable To Process Password Reset Request";
         public static string UserEmailNotConfirmedMessage = "User Email Not Confirmed";
         public static string PasswordResetRequestNotFoundMessage = "Password Reset Request Not Found";

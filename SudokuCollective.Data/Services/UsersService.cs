@@ -16,6 +16,7 @@ using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels.UserResults;
+using SudokuCollective.Core.Interfaces.DataModels;
 
 namespace SudokuCollective.Data.Services
 {
@@ -759,18 +760,50 @@ namespace SudokuCollective.Data.Services
 
                             if (!user.Email.ToLower().Equals(request.Email.ToLower()))
                             {
-                                user.ReceivedRequestToUpdateEmail = true;
+                                if (!user.ReceivedRequestToUpdateEmail)
+                                {
+                                    user.ReceivedRequestToUpdateEmail = true;
+                                }
 
-                                var emailConfirmation = new EmailConfirmation(
-                                    user.Id, 
-                                    request.AppId, 
-                                    user.Email, 
-                                    request.Email);
+                                EmailConfirmation emailConfirmation;
+
+                                if (await emailConfirmationsRepository.HasOutstandingEmailConfirmation(user.Id, app.Id))
+                                {
+                                    emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository
+                                        .RetrieveEmailConfirmation(user.Id, app.Id)).Object;
+
+                                    if (!user.EmailConfirmed)
+                                    {
+                                        user.Email = emailConfirmation.OldEmailAddress;
+                                    }
+
+                                    emailConfirmation.OldEmailAddress = user.Email;
+                                    emailConfirmation.NewEmailAddress = request.Email;
+                                }
+                                else
+                                {
+                                    emailConfirmation = new EmailConfirmation(
+                                        user.Id,
+                                        request.AppId,
+                                        user.Email,
+                                        request.Email);
+                                }
 
                                 emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
 
-                                var emailConfirmationResponse = await emailConfirmationsRepository
-                                    .Create(emailConfirmation);
+                                IRepositoryResponse emailConfirmationResponse;
+
+                                if (emailConfirmation.Id == 0)
+                                {
+                                    emailConfirmationResponse = await emailConfirmationsRepository
+                                        .Create(emailConfirmation);
+                                }
+                                else
+                                {
+                                    emailConfirmationResponse = await emailConfirmationsRepository
+                                        .Update(emailConfirmation);
+                                }
+
 
                                 string emailConfirmationUrl;
 
@@ -899,6 +932,7 @@ namespace SudokuCollective.Data.Services
                     {
                         var app = (App)appResult.Object;
                         var user = (User)userResult.Object;
+                        PasswordReset passwordReset;
 
                         if (user.Apps.Any(ua => ua.AppId == app.Id))
                         {
@@ -910,91 +944,62 @@ namespace SudokuCollective.Data.Services
                                 return result;
                             }
 
-                            var passwordReset = new PasswordReset(user.Id, app.Id);
-
-                            passwordReset = await EnsurePasswordResetTokenIsUnique(passwordReset);
-
-                            var passwordResetResult = await passwordResetsRepository.Create(passwordReset);
-
-                            if (passwordResetResult.Success)
+                            if (await passwordResetsRepository.HasOutstandingPasswordReset(user.Id, app.Id))
                             {
-                                user.ReceivedRequestToUpdatePassword = true;
+                                passwordReset = (PasswordReset)(await passwordResetsRepository.RetrievePasswordReset(
+                                    user.Id, 
+                                    app.Id)).Object;
 
-                                user = (User)(await usersRepository.Update(user)).Object;
+                                passwordReset = await EnsurePasswordResetTokenIsUnique(passwordReset);
 
-                                string emailConfirmationUrl;
+                                passwordReset = (PasswordReset)(await passwordResetsRepository.Update(passwordReset)).Object;
 
-                                if (app.UseCustomPasswordResetUrl)
+                                return SendPasswordResetEmail(
+                                    user, 
+                                    app, 
+                                    passwordReset, 
+                                    emailTemplatePath, 
+                                    baseUrl, 
+                                    result,
+                                    false);
+                            }
+                            else
+                            {
+                                passwordReset = new PasswordReset(user.Id, app.Id);
+
+                                passwordReset = await EnsurePasswordResetTokenIsUnique(passwordReset);
+
+                                var passwordResetResult = await passwordResetsRepository.Create(passwordReset);
+
+                                if (passwordResetResult.Success)
                                 {
-                                    if (app.InDevelopment)
-                                    {
-                                        emailConfirmationUrl = string.Format("{0}{1}", 
-                                            app.CustomPasswordResetDevUrl, 
-                                            passwordReset.Token);
-                                    }
-                                    else
-                                    {
-                                        emailConfirmationUrl = string.Format("{0}{1}",
-                                            app.CustomPasswordResetLiveUrl,
-                                            passwordReset.Token);
-                                    }
-                                }
-                                else
-                                {
-                                    emailConfirmationUrl = string.Format("https://{0}/passwordReset/{1}",
+                                    user.ReceivedRequestToUpdatePassword = true;
+
+                                    user = (User)(await usersRepository.Update(user)).Object;
+
+                                    return SendPasswordResetEmail(
+                                        user,
+                                        app,
+                                        passwordReset,
+                                        emailTemplatePath,
                                         baseUrl,
-                                        passwordReset.Token);
+                                        result,
+                                        true);
                                 }
-
-                                var html = File.ReadAllText(emailTemplatePath);
-                                var appTitle = app.Name;
-                                var url = string.Empty;
-
-                                if (app.InDevelopment)
+                                else if (!passwordResetResult.Success && passwordResetResult.Exception != null)
                                 {
-                                    url = app.DevUrl;
-                                }
-                                else
-                                {
-                                    url = app.LiveUrl;
-                                }
-
-                                html = html.Replace("{{USER_NAME}}", user.UserName);
-                                html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
-                                html = html.Replace("{{APP_TITLE}}", appTitle);
-                                html = html.Replace("{{URL}}", url);
-
-                                var emailSubject = string.Format("Greetings from {0}: Password Update Request Received", appTitle);
-
-                                result.Success = emailService
-                                    .Send(user.Email, emailSubject, html);
-
-                                if (result.Success)
-                                {
-                                    result.Message = UsersMessages.ProcessedPasswordResetRequesMessage;
+                                    result.Success = passwordResetResult.Success;
+                                    result.Message = passwordResetResult.Exception.Message;
 
                                     return result;
                                 }
                                 else
                                 {
+                                    result.Success = userResult.Success;
                                     result.Message = UsersMessages.UnableToProcessPasswordResetRequesMessage;
 
                                     return result;
                                 }
-                            }
-                            else if (!passwordResetResult.Success && passwordResetResult.Exception != null)
-                            {
-                                result.Success = passwordResetResult.Success;
-                                result.Message = passwordResetResult.Exception.Message;
-
-                                return result;
-                            }
-                            else
-                            {
-                                result.Success = userResult.Success;
-                                result.Message = UsersMessages.UnableToProcessPasswordResetRequesMessage;
-
-                                return result;
                             }
                         }
                         else
@@ -2050,6 +2055,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
+                            result.User = (User)(await usersRepository.GetById(id)).Object;
                             result.Success = false;
                             result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
 
@@ -2058,6 +2064,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
+                        result.User = (User)(await usersRepository.GetById(id)).Object;
                         result.Success = false;
                         result.Message = AppsMessages.AppNotFoundMessage;
 
@@ -2128,6 +2135,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
+                            result.User = (User)(await usersRepository.GetById(id)).Object;
                             result.Success = false;
                             result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
 
@@ -2136,6 +2144,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
+                        result.User = (User)(await usersRepository.GetById(id)).Object;
                         result.Success = false;
                         result.Message = AppsMessages.AppNotFoundMessage;
 
@@ -2320,7 +2329,7 @@ namespace SudokuCollective.Data.Services
 
             if (passwordResetResponse.Success)
             {
-                bool tokenNotUnique;
+                bool tokenUnique;
 
                 var passwordResets = passwordResetResponse
                     .Objects
@@ -2329,22 +2338,118 @@ namespace SudokuCollective.Data.Services
                 do
                 {
                     if (passwordResets
-                        .Any(ec => ec.Token.ToLower()
-                        .Equals(passwordReset.Token.ToLower())))
+                        .Where(pw => pw.Id != passwordReset.Id)
+                        .ToList()
+                        .Count > 0)
                     {
-                        tokenNotUnique = true;
+                        if (passwordResets
+                            .Where(pw => pw.Id != passwordReset.Id)
+                            .Any(pw => pw.Token.ToLower().Equals(passwordReset.Token.ToLower())))
+                        {
+                            tokenUnique = false;
 
-                        passwordReset.Token = Guid.NewGuid().ToString();
+                            passwordReset.Token = Guid.NewGuid().ToString();
+                        }
+                        else
+                        {
+                            tokenUnique = true;
+                        }
                     }
                     else
                     {
-                        tokenNotUnique = false;
+                        passwordReset.Token = Guid.NewGuid().ToString();
+
+                        tokenUnique = true;
                     }
 
-                } while (tokenNotUnique);
+                } while (!tokenUnique);
+            }
+            else
+            {
+                if (passwordReset.Id != 0)
+                {
+                    passwordReset.Token = Guid.NewGuid().ToString();
+                }
             }
 
             return passwordReset;
+        }
+
+        private BaseResult SendPasswordResetEmail(
+            User user, 
+            App app, 
+            PasswordReset passwordReset, 
+            string emailTemplatePath, 
+            string baseUrl, 
+            BaseResult result,
+            bool newRequest)
+        {
+            string emailConfirmationUrl;
+
+            if (app.UseCustomPasswordResetUrl)
+            {
+                if (app.InDevelopment)
+                {
+                    emailConfirmationUrl = string.Format("{0}{1}",
+                        app.CustomPasswordResetDevUrl,
+                        passwordReset.Token);
+                }
+                else
+                {
+                    emailConfirmationUrl = string.Format("{0}{1}",
+                        app.CustomPasswordResetLiveUrl,
+                        passwordReset.Token);
+                }
+            }
+            else
+            {
+                emailConfirmationUrl = string.Format("https://{0}/passwordReset/{1}",
+                    baseUrl,
+                    passwordReset.Token);
+            }
+
+            var html = File.ReadAllText(emailTemplatePath);
+            var appTitle = app.Name;
+            string url;
+
+            if (app.InDevelopment)
+            {
+                url = app.DevUrl;
+            }
+            else
+            {
+                url = app.LiveUrl;
+            }
+
+            html = html.Replace("{{USER_NAME}}", user.UserName);
+            html = html.Replace("{{CONFIRM_EMAIL_URL}}", emailConfirmationUrl);
+            html = html.Replace("{{APP_TITLE}}", appTitle);
+            html = html.Replace("{{URL}}", url);
+
+            var emailSubject = string.Format("Greetings from {0}: Password Update Request Received", appTitle);
+
+            result.Success = emailService
+                .Send(user.Email, emailSubject, html);
+
+            if (result.Success)
+            {
+                if (newRequest)
+                {
+                    result.Message = UsersMessages.ProcessedPasswordResetRequestMessage;
+                }
+                else
+                {
+                    result.Message = UsersMessages.ResentPasswordResetRequestMessage;
+                }
+
+                return result;
+            }
+            else
+            {
+                result.Message = UsersMessages.UnableToProcessPasswordResetRequesMessage;
+
+                return result;
+            }
         }
         #endregion
     }

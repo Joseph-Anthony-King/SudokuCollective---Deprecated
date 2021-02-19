@@ -128,7 +128,7 @@ namespace SudokuCollective.Test.MockServices
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = true,
-                    Message = UsersMessages.ProcessedPasswordResetRequesMessage
+                    Message = UsersMessages.ProcessedPasswordResetRequestMessage
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>

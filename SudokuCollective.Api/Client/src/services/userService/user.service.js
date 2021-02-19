@@ -4,7 +4,13 @@ import User from "../../models/user";
 import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
 import { requestDataUpdateUser } from "../../helpers/userRequestData/userRequestData";
-import { getUserEnpoint, getRequestPasswordResetEnpoint } from "./service.endpoints";
+import { 
+    getUserEnpoint, 
+    getRequestPasswordResetEnpoint, 
+    getCancelPasswordResetEndpoint,
+    getCancelEmailConfirmationEndpoint,
+    getCancelAllEmailRequestsEndpoint,
+ } from "./service.endpoints";
 
 const getUser = async function (id, pageListModel, fullRecord) {
 
@@ -37,7 +43,7 @@ const getUser = async function (id, pageListModel, fullRecord) {
         return user;
 
     } catch (error) {
-        
+
         console.error(error.name, error.message);
         return error.response;
     }
@@ -67,7 +73,7 @@ const getUsers = async function (pageListModel, fullRecord) {
         return response;
 
     } catch (error) {
-        
+
         console.error(error.name, error.message);
         return error.response;
     }
@@ -116,8 +122,8 @@ const updateUser = async function (
     }
 }
 
-const getRequestPasswordReset = async function (email) {
-    
+const putRequestPasswordReset = async function (email) {
+
     try {
 
         const license = process.env.VUE_APP_LICENSE;
@@ -135,15 +141,78 @@ const getRequestPasswordReset = async function (email) {
         const response = await axios(config);
 
         return response;
-        
+
     } catch (error) {
-        
+
         console.error(error.name, error.message);
         return error.response;
     }
 }
 
-const loginUser = function(user, token) {
+const putCancelPasswordReset = async function (pageListModel) {
+
+    try {
+        const config = {
+            method: "put",
+            url: `${getCancelPasswordResetEndpoint}`,
+            headers: requestHeader(),
+            data: requestData(pageListModel)
+        }
+
+        const response = await axios(config);
+
+        return response;
+
+    } catch (error) {
+
+        console.error(error.name, error.message);
+        return error.response;
+    }
+}
+
+const putCancelEmailConfirmation = async function (pageListModel) {
+
+    try {
+        const config = {
+            method: "put",
+            url: `${getCancelEmailConfirmationEndpoint}`,
+            headers: requestHeader(),
+            data: requestData(pageListModel)
+        }
+
+        const response = await axios(config);
+
+        return response;
+
+    } catch (error) {
+
+        console.error(error.name, error.message);
+        return error.response;
+    }
+}
+
+const putCancelAllEmailRequests = async function (pageListModel) {
+
+    try {
+        const config = {
+            method: "put",
+            url: `${getCancelAllEmailRequestsEndpoint}`,
+            headers: requestHeader(),
+            data: requestData(pageListModel)
+        }
+
+        const response = await axios(config);
+
+        return response;
+
+    } catch (error) {
+
+        console.error(error.name, error.message);
+        return error.response;
+    }
+}
+
+const loginUser = function (user, token) {
 
     user.login();
 
@@ -154,7 +223,7 @@ const loginUser = function(user, token) {
     return user;
 }
 
-const logoutUser = function(user) {
+const logoutUser = function (user) {
 
     user.logout();
 
@@ -192,7 +261,10 @@ export const userService = {
     getUser,
     getUsers,
     updateUser,
-    getRequestPasswordReset,
+    putRequestPasswordReset,
+    putCancelPasswordReset,
+    putCancelEmailConfirmation,
+    putCancelAllEmailRequests,
     loginUser,
     logoutUser,
     assignAPIReponseToUser

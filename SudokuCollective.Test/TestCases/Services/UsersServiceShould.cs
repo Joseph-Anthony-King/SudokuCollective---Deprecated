@@ -30,6 +30,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private IUsersService sutEmailFailure;
         private IUsersService sutResetPassword;
         private IUsersService sutResendEmailConfirmation;
+        private IUsersService sutRequestPasswordReset;
         private BaseRequest baseRequest;
 
         [SetUp]
@@ -82,6 +83,14 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
                 MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
+                MockEmailService.EmailServiceSuccessfulRequest.Object);
+
+            sutRequestPasswordReset = new UsersService(
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
+                MockPasswordResetRepository.PasswordResetsRepositorySuccessfullCreateRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
 
             baseRequest = TestObjects.GetBaseRequest();
@@ -369,7 +378,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
             // Act
-            var result = await sut.RequestPasswordReset(
+            var result = await sutRequestPasswordReset.RequestPasswordReset(
                 requestPasswordReset, 
                 baseUrl, 
                 html);

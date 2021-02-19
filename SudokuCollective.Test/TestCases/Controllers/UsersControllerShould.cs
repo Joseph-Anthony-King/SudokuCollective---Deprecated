@@ -440,7 +440,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.CancelEmailConfirmation(1, baseRequest);
+            var result = sutSuccess.CancelEmailConfirmation(baseRequest);
             var message = ((UserResult)((ObjectResult)result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result).StatusCode;
 
@@ -457,7 +457,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.CancelEmailConfirmation(1, baseRequest);
+            var result = sutFailure.CancelEmailConfirmation(baseRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -474,7 +474,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.CancelPasswordReset(1, baseRequest);
+            var result = sutSuccess.CancelPasswordReset(baseRequest);
             var message = ((UserResult)((ObjectResult)result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result).StatusCode;
 
@@ -491,7 +491,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.CancelPasswordReset(1, baseRequest);
+            var result = sutFailure.CancelPasswordReset(baseRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -508,7 +508,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.CancelAllEmailRequests(1, baseRequest);
+            var result = sutSuccess.CancelAllEmailRequests(baseRequest);
             var message = ((UserResult)((ObjectResult)result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result).StatusCode;
 
@@ -525,7 +525,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.CancelAllEmailRequests(1, baseRequest);
+            var result = sutFailure.CancelAllEmailRequests(baseRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
