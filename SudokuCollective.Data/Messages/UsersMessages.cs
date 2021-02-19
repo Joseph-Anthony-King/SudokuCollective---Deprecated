@@ -39,12 +39,17 @@
         public static string ProcessedPasswordResetRequesMessage = "Processed Password Reset Request";
         public static string UnableToProcessPasswordResetRequesMessage = "Unable To Process Password Reset Request";
         public static string UserEmailNotConfirmedMessage = "User Email Not Confirmed";
-        public static string ProcessPasswordResetRequestNotFoundMessage = "Process Password Reset Request Not Found";
+        public static string PasswordResetRequestNotFoundMessage = "Password Reset Request Not Found";
         public static string NoOutstandingRequestToResetPassworMessage = "No Outstanding Request To Reset Password";
         public static string EmailConfirmationEmailResentMessage = "Email Confirmation Email Resent";
         public static string EmailConfirmationEmailNotResentMessage = "Email Confirmation Email Not Resent";
         public static string EmailConfirmationRequestNotFoundMessage = "No Outstanding Email Confirmation Request Found";
+        public static string EmailConfirmationRequestCancelledMessage = "Email Confirmation Request Cancelled";
+        public static string EmailConfirmationRequestNotCancelledMessage = "Email Confirmation Request Not Cancelled";
         public static string PasswordResetEmailResentMessage = "Password Reset Email Resent";
         public static string PasswordResetEmailNotResentMessage = "Password Reset Email Not Resent";
+        public static string PasswordResetRequestCancelledMessage = "Password Reset Request Cancelled";
+        public static string PasswordResetRequestNotCancelledMessage = "Password Request Not Cancelled";
+        public static string EmailRequestsNotFoundMessage = "Email Requests Not Found";
     }
 }

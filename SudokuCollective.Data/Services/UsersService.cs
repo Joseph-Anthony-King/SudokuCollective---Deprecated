@@ -1135,7 +1135,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = passwordResetResult.Success;
-                    result.Message = UsersMessages.ProcessPasswordResetRequestNotFoundMessage;
+                    result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
 
                     return result;
                 }
@@ -1983,6 +1983,286 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
 
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IUserResult> CancelEmailConfirmationRequest(int id, int appId)
+        {
+            var result = new UserResult();
+
+            try
+            {
+                if (await usersRepository.HasEntity(id))
+                {
+                    if (await appsRepository.HasEntity(appId))
+                    {
+                        if (await emailConfirmationsRepository.HasOutstandingEmailConfirmation(id, appId))
+                        {
+                            var user = (User)(await usersRepository.GetById(id)).Object;
+                            var emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.RetrieveEmailConfirmation(id, appId)).Object;
+
+                            var response = await emailConfirmationsRepository.Delete(emailConfirmation);
+
+                            if (response.Success)
+                            {
+                                // Role back email request
+                                user.Email = emailConfirmation.OldEmailAddress;
+                                user.ReceivedRequestToUpdateEmail = false;
+                                user.EmailConfirmed = true;
+
+                                result.User = (User)(await usersRepository.Update(user)).Object;
+                                result.Success = response.Success;
+                                result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
+
+                                return result;
+                            }
+                            else if (response.Success == false && response.Exception != null)
+                            {
+                                result.User = (User)(await usersRepository.Update(user)).Object;
+                                result.Success = response.Success;
+                                result.Message = response.Exception.Message;
+
+                                return result;
+                            }
+                            else
+                            {
+                                result.User = (User)(await usersRepository.Update(user)).Object;
+                                result.Success = false;
+                                result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
+
+                                return result;
+                            }
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = AppsMessages.AppNotFoundMessage;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IUserResult> CancelPasswordResetRequest(int id, int appId)
+        {
+            var result = new UserResult();
+
+            try
+            {
+                if (await usersRepository.HasEntity(id))
+                {
+                    if (await appsRepository.HasEntity(appId))
+                    {
+                        if (await passwordResetsRepository.HasOutstandingPasswordReset(id, appId))
+                        {
+                            var user = (User)(await usersRepository.GetById(id)).Object;
+                            var passwordReset = (PasswordReset)(await passwordResetsRepository.RetrievePasswordReset(id, appId)).Object;
+
+                            var response = await passwordResetsRepository.Delete(passwordReset);
+
+                            if (response.Success)
+                            {
+                                // Role back password reset
+                                user.ReceivedRequestToUpdatePassword = false;
+
+                                result.User = (User)(await usersRepository.Update(user)).Object;
+                                result.Success = response.Success;
+                                result.Message = UsersMessages.PasswordResetRequestCancelledMessage;
+
+                                return result;
+                            }
+                            else if (response.Success == false && response.Exception != null)
+                            {
+                                result.User = (User)(await usersRepository.Update(user)).Object;
+                                result.Success = response.Success;
+                                result.Message = response.Exception.Message;
+
+                                return result;
+                            }
+                            else
+                            {
+                                result.User = (User)(await usersRepository.Update(user)).Object;
+                                result.Success = false;
+                                result.Message = UsersMessages.PasswordResetRequestNotCancelledMessage;
+
+                                return result;
+                            }
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = AppsMessages.AppNotFoundMessage;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IUserResult> CancelAllEmailRequest(int id, int appId)
+        {
+            var result = new UserResult();
+
+            try
+            {
+                if (await usersRepository.HasEntity(id))
+                {
+                    if (await appsRepository.HasEntity(appId))
+                    {
+                        var emailConfirmationExists = await emailConfirmationsRepository.HasOutstandingEmailConfirmation(id, appId);
+                        var passwordResetExists = await passwordResetsRepository.HasOutstandingPasswordReset(id, appId);
+                        var user = (User)(await usersRepository.GetById(id)).Object;
+
+                        if (emailConfirmationExists || passwordResetExists)
+                        {
+                            if (emailConfirmationExists)
+                            {
+                                if (await emailConfirmationsRepository.HasOutstandingEmailConfirmation(id, appId))
+                                {
+                                    var emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.RetrieveEmailConfirmation(id, appId)).Object;
+
+                                    var response = await emailConfirmationsRepository.Delete(emailConfirmation);
+
+                                    if (response.Success)
+                                    {
+                                        // Role back email request
+                                        user.Email = emailConfirmation.OldEmailAddress;
+                                        user.ReceivedRequestToUpdateEmail = false;
+                                        user.EmailConfirmed = true;
+
+                                        user = (User)(await usersRepository.Update(user)).Object;
+                                        result.Success = response.Success;
+                                        result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
+                                    }
+                                    else if (response.Success == false && response.Exception != null)
+                                    {
+                                        result.Success = response.Success;
+                                        result.Message = response.Exception.Message;
+                                    }
+                                    else
+                                    {
+                                        result.Success = false;
+                                        result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
+                                    }
+                                }
+                                else
+                                {
+                                    result.Success = false;
+                                    result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
+                                }
+                            }
+
+                            if (passwordResetExists)
+                            {
+                                var passwordReset = (PasswordReset)(await passwordResetsRepository.RetrievePasswordReset(id, appId)).Object;
+
+                                var response = await passwordResetsRepository.Delete(passwordReset);
+
+                                if (response.Success)
+                                {
+                                    // Role back password reset
+                                    user.ReceivedRequestToUpdatePassword = false;
+
+                                    user = (User)(await usersRepository.Update(user)).Object;
+                                    result.Success = response.Success;
+                                    result.Message = string.IsNullOrEmpty(result.Message) ? 
+                                        UsersMessages.PasswordResetRequestCancelledMessage : 
+                                        string.Format("{0} and {1}", result.Message, UsersMessages.PasswordResetRequestCancelledMessage);
+                                }
+                                else if (response.Success == false && response.Exception != null)
+                                {
+                                    result.Success = result.Success ? result.Success : response.Success;
+                                    result.Message = string.IsNullOrEmpty(result.Message) ?
+                                        response.Exception.Message :
+                                        string.Format("{0} and {1}", result.Message, response.Exception.Message);
+                                }
+                                else
+                                {
+                                    result.Success = result.Success ? result.Success : false;
+                                    result.Message = string.IsNullOrEmpty(result.Message) ?
+                                        UsersMessages.PasswordResetRequestNotCancelledMessage :
+                                        string.Format("{0} and {1}", result.Message, UsersMessages.PasswordResetRequestNotCancelledMessage);
+                                }
+                            }
+
+                            result.User = user;
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.EmailRequestsNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = AppsMessages.AppNotFoundMessage;
+
+                        return result;
+                    }
                 }
                 else
                 {

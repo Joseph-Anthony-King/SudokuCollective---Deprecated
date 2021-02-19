@@ -737,6 +737,39 @@ namespace SudokuCollective.Test.TestCases.Services
 
         [Test]
         [Category("Services")]
+        public async Task CancelEmailConfirmationRequests()
+        {
+            // Arrange
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+
+            // Act
+            var result = await sut.CancelEmailConfirmationRequest(user.Id, app.Id);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Email Confirmation Request Cancelled"));
+            Assert.That(result.User, Is.TypeOf<User>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnsFalseIfCancelEmailConfirmationRequestsFails()
+        {
+            // Arrange
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+
+            // Act
+            var result = await sutFailure.CancelEmailConfirmationRequest(user.Id, app.Id);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+        }
+
+        [Test]
+        [Category("Services")]
         public async Task ResendPasswordResetEmail()
         {
             // Arrange
@@ -767,6 +800,73 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("No Outstanding Request To Reset Password"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task CancelPasswordResetRequests()
+        {
+            // Arrange
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+
+            // Act
+            var result = await sut.CancelPasswordResetRequest(user.Id, app.Id);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Password Reset Request Cancelled"));
+            Assert.That(result.User, Is.TypeOf<User>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnsFalseIfCancelPasswordResetRequestFails()
+        {
+            // Arrange
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+
+            // Act
+            var result = await sutFailure.CancelPasswordResetRequest(user.Id, app.Id);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task CancelAllEmailRequests()
+        {
+            // Arrange
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+
+            // Act
+            var result = await sut.CancelAllEmailRequest(user.Id, app.Id);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Email Confirmation Request Cancelled and Password Reset Request Cancelled"));
+            Assert.That(result.User, Is.TypeOf<User>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnFalseIfCancelAllEmailRequestsFails()
+        {
+            // Arrange
+            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            var app = context.Apps.FirstOrDefault(a => a.Id == 1);
+
+            // Act
+            var result = await sutFailure.CancelAllEmailRequest(user.Id, app.Id);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.That(result.User, Is.TypeOf<User>());
         }
     }
 }
