@@ -12,9 +12,10 @@
                 v-model="user.userName"
                 label="User Name"
                 prepend-icon="mdi-account-edit"
-                :rules="stringRequiredRules"
+                :rules="userNameRules"
                 required
                 @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -25,6 +26,7 @@
                 :rules="stringRequiredRules"
                 required
                 @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -35,6 +37,7 @@
                 :rules="stringRequiredRules"
                 required
                 @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -44,6 +47,7 @@
                 prepend-icon="mdi-account-edit"
                 required
                 @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -54,6 +58,7 @@
                 required
                 :rules="emailRules"
                 @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -81,7 +86,11 @@ import { userService } from "@/services/userService/user.service";
 import User from "@/models/user";
 import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
+import {
+  showToast,
+  defaultToastOptions,
+  actionToastOptions,
+} from "@/helpers/toastHelper";
 
 export default {
   name: "EditProfileForm",
@@ -90,34 +99,132 @@ export default {
     editProfileFormIsValid: true,
     user: {},
     dirty: false,
+    invalidUserNames: [],
+    invalidEmails: [],
   }),
   methods: {
     resetForm() {
+      this.$data.invalidUserNames = [];
+      this.$data.invalidEmails = [];
       this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
       this.$data.dirty = false;
     },
 
     async submit() {
-      try {
-        const response = await userService.updateUser(
-          this.$data.user.id,
-          this.$data.user.userName,
-          this.$data.user.firstName,
-          this.$data.user.lastName,
-          this.$data.user.nickName,
-          this.$data.user.email,
-          new PageListModel()
-        );
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
 
-        if (response.status === 200) {
+            try {
+              let userProfie = this.$store.getters["userModule/getUser"];
+              let updatingEmail = false;
+              let oldEmail = "";
 
-          this.resetEditProfileFormStatus;
+              if (userProfie.email !== this.$data.user.email) {
+                updatingEmail = true;
+                oldEmail = userProfie.email;
+              }
 
-          this.close();
-        }
-      } catch (error) {
-        showToast(this, ToastMethods["error"], error, defaultToastOptions());
-      }
+              const response = await userService.updateUser(
+                this.$data.user.id,
+                this.$data.user.userName,
+                this.$data.user.firstName,
+                this.$data.user.lastName,
+                this.$data.user.nickName,
+                this.$data.user.email,
+                new PageListModel()
+              );
+
+              if (response.status === 200) {
+                this.resetEditProfileFormStatus;
+
+                if (updatingEmail) {
+                  showToast(
+                    this,
+                    ToastMethods["success"],
+                    "Your profile has been updated, please review " +
+                      oldEmail +
+                      " to update your email",
+                    defaultToastOptions()
+                  );
+                } else {
+                  showToast(
+                    this,
+                    ToastMethods["success"],
+                    "Your profile has been updated",
+                    defaultToastOptions()
+                  );
+                }
+                this.close();
+              } else if (response.status === 404) {
+                if (
+                  response.data.message ===
+                    "Status Code 404: User Name Accepts Alphanumeric And Special Characters Except Double And Single Quotes" ||
+                  response.data.message === "Status Code 404: User Name Not Unique" ||
+                  response.data.message === "Status Code 404: User Name Required"
+                ) {
+                  this.$data.invalidUserNames.push(this.$data.user.userName);
+                  this.$refs.editProfileForm.validate();
+                  showToast(
+                    this,
+                    ToastMethods["error"],
+                    response.data.message.substring(17),
+                    defaultToastOptions()
+                  );
+                } else if (
+                  response.data.message === "Status Code 404: Email Not Unique" ||
+                  response.data.message === "Status Code 404: Email Required"
+                ) {
+                  this.$data.invalidEmails.push(this.$data.user.email);
+                  this.$refs.editProfileForm.validate();
+                  showToast(
+                    this,
+                    ToastMethods["error"],
+                    response.data.message.substring(17),
+                    defaultToastOptions()
+                  );
+                } else {
+                  showToast(
+                    this,
+                    ToastMethods["error"],
+                    response.data.message.substring(17),
+                    defaultToastOptions()
+                  );
+                }
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to update your profile?",
+        actionToastOptions(action, "mode_edit")
+      );
     },
 
     close() {
@@ -126,6 +233,14 @@ export default {
     },
   },
   computed: {
+    userNameRules() {
+      return [
+        (v) => !!v || "User Name is required",
+        (v) =>
+          !this.$data.invalidUserNames.includes(v) ||
+          "User Name Not Unique",
+      ];
+    },
     stringRequiredRules() {
       return [(v) => !!v || "Value is required"];
     },
@@ -137,6 +252,9 @@ export default {
           !v ||
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
           "Email must be valid",
+        (v) =>
+          !this.$data.invalidEmails.includes(v) ||
+          "Email Not Unique",
       ];
     },
 

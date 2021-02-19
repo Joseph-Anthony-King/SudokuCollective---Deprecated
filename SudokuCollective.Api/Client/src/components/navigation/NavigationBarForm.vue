@@ -40,6 +40,7 @@
 }
 .user-profile-item {
   font-weight: bold;
+  text-decoration: none !important;
   text-transform: uppercase;
   text-align: center;
   color: #ffffff;

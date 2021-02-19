@@ -2,8 +2,16 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 style="text-align: center" v-if="user.isActive">Your Account is Active</h1>
-        <h1 style="text-align: center" v-if="!user.isActive" class="account-status-warning">Your Account is Deativated, Please Contact the Administrator</h1>
+        <h1 style="text-align: center" v-if="user.isActive">
+          Your Account is Active
+        </h1>
+        <h1
+          style="text-align: center"
+          v-if="!user.isActive"
+          class="account-status-warning"
+        >
+          Your Account is Deativated, Please Contact the Administrator
+        </h1>
       </v-col>
     </v-row>
     <v-row style="min-height: 25px"></v-row>
@@ -28,6 +36,12 @@
           <label class="label">Nickname:</label>
           <span class="label-spacer"></span>
           <p class="userInfo">{{ user.nickName }}</p>
+        </v-row>
+        <v-row>
+          <label class="label">Admin Privileges:</label>
+          <span class="label-spacer"></span>
+          <v-icon v-if="user.isAdmin" color="green">mdi-check</v-icon>
+          <v-icon v-if="!user.isAdmin" color="red">mdi-close</v-icon>
         </v-row>
       </v-col>
       <v-col cols="6">
@@ -88,16 +102,27 @@
         </h2>
       </v-col>
     </v-row>
+    <div style="padding: 50px 0px 0px 0px;"></div>
+    <hr />
     <v-row>
-      <v-btn color="blue darken-1" text @click="refreshProfile">
-        Refresh Profile
-      </v-btn>
-      <v-btn color="blue darken-1" text @click="editingProfile = true">
-        Edit Profile
-      </v-btn>
-      <v-btn color="blue darken-1" text @click="resetPassword">
-        Reset Password
-      </v-btn>
+      <v-col col="12">
+        <p class="available-actions">
+          Available Actions
+        </p>
+      </v-col>
+    </v-row>
+    <v-row style="text-align: center">
+      <v-col cols="12">
+        <v-btn color="blue darken-1" text @click="refreshProfile">
+          Refresh Profile
+        </v-btn>
+        <v-btn color="blue darken-1" text @click="editingProfile = true">
+          Edit Profile
+        </v-btn>
+        <v-btn color="blue darken-1" text @click="resetPassword">
+          Reset Password
+        </v-btn>
+      </v-col>
     </v-row>
 
     <v-dialog v-model="editingProfile" persistent max-width="600px">
@@ -123,6 +148,10 @@
 .account-status {
   text-align: center;
 }
+.available-actions {
+  padding: 25px 0 0 0;
+  text-align: center;
+}
 .account-status-warning {
   text-align: center;
   color: red;
@@ -136,7 +165,11 @@ import store from "../../store";
 import User from "@/models/user";
 import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast, defaultToastOptions, actionToastOptions } from "@/helpers/toastHelper";
+import {
+  showToast,
+  defaultToastOptions,
+  actionToastOptions,
+} from "@/helpers/toastHelper";
 import { passwordReset } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
@@ -154,9 +187,8 @@ export default {
         {
           text: "Yes",
           onClick: async (e, toastObject) => {
-
             toastObject.goAway(0);
-            
+
             try {
               let result = passwordReset(this.$data.user.email, this);
 
@@ -164,7 +196,12 @@ export default {
                 this.refresh();
               }
             } catch (error) {
-              showToast(this, ToastMethods["error"], error, defaultToastOptions());
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
             }
           },
         },
@@ -183,14 +220,14 @@ export default {
         actionToastOptions(action, "lock")
       );
     },
-    refreshProfile(){
+    refreshProfile() {
       try {
         this.refresh();
       } catch (error) {
         showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
     },
-    async refresh(){
+    async refresh() {
       let user = await userService.getUser(
         this.$data.user.id,
         new PageListModel(),
