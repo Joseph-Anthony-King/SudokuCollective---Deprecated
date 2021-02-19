@@ -4,7 +4,7 @@
       <v-list-item>
         <v-list-item-content>
           <router-link :to="profileNavigation.url" class="user-profile-item">
-            <v-icon x-large color="white">mdi-account-circle</v-icon>
+            <v-icon x-large color="white">{{ profileNavigation.icon }}</v-icon>
           </router-link>
         </v-list-item-content>
       </v-list-item>

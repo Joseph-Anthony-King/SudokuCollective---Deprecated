@@ -65,7 +65,6 @@ import SignUpForm from "@/components/forms/SignUpForm";
 import FooterForm from "@/components/navigation/FooterForm";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { AppMenuItems } from "@/models/arrays/appMenuItems";
 import { showToast, defaultToastOptions, actionToastOptions } from "@/helpers/toastHelper";
 
 export default {
@@ -78,14 +77,13 @@ export default {
     FooterForm
   },
   data: () => ({
-    appMenuItems: [],
-    navMenuItems: [],
     userLoggingIn: false,
     userSigningUp: false,
     user: {},
     profileNavigation: {
       url: "/UserProfile",
-      title: "User Profile"
+      title: "User Profile",
+      icon: "mdi-account-circle"
     },
   }),
   methods: {
@@ -101,7 +99,7 @@ export default {
           this.$router.push("/dashboard");
         }
 
-        var logInMessage;
+        let logInMessage;
 
         if (this.$data.user.emailConfirmed) {
           logInMessage = "You are logged in";
@@ -181,17 +179,9 @@ export default {
       this.$data.userLoggingIn = false;
       this.$data.userSigningUp = true;
     },
-
-    populateAppMenuItems() {
-      AppMenuItems.forEach((route) => {
-        this.$data.appMenuItems.push(route);
-      });
-    },
   },
   async created() {
     await this.confirmBaseURL();
-
-    this.populateAppMenuItems();
   },
   mounted() {
     this.$data.user = new User();

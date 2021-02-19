@@ -59,7 +59,7 @@
           <v-list-item-content>
             <v-list-item-title>
               <router-link :to="profileNavigation.url" class="menu-item">
-                <v-icon>mdi-account-circle</v-icon>
+                <v-icon>{{ profileNavigation.icon }}</v-icon>
                 {{ profileNavigation.title }}
               </router-link>
             </v-list-item-title>

@@ -144,9 +144,7 @@ export default {
                   showToast(
                     this,
                     ToastMethods["success"],
-                    "Your profile has been updated, please review " +
-                      oldEmail +
-                      " to update your email",
+                    `Your profile has been updated, please review ${oldEmail} to update your email`,
                     defaultToastOptions()
                   );
                 } else {
