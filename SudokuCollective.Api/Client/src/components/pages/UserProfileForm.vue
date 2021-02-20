@@ -97,12 +97,12 @@
         >No Outstanding Requests for this Account</v-card-title
       >
       <v-card-title v-if="!user.emailConfirmed" class="justify-center warning"
-        >Please Confirm Your Email</v-card-title
+        >Please Confirm Your Email: {{ user.email }}</v-card-title
       >
       <v-card-title
         v-if="user.receivedRequestToUpdateEmail"
         class="justify-center warning"
-        >Received Request to Update Email</v-card-title
+        >Please Review Your Old Email To Begin Update Process: {{ user.email }}</v-card-title
       >
       <v-card-title
         v-if="user.receivedRequestToUpdatePassword"
