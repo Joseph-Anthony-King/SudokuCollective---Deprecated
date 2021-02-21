@@ -11,79 +11,79 @@
     </v-card>
     <hr />
     <v-card elevation="6" class="mx-auto user-card">
-      <v-layout>
-        <v-card-text>
+      <v-card-text>
+        <v-container>
           <v-row>
             <v-col col="6">
-              <v-row>
-                <label class="label">User Name:</label>
-                <span class="label-spacer"></span>
-                <p class="userInfo">{{ user.userName }}</p>
-              </v-row>
-              <v-row>
-                <label class="label">First Name:</label>
-                <span class="label-spacer"></span>
-                <p class="userInfo">{{ user.firstName }}</p>
-              </v-row>
-              <v-row>
-                <label class="label">Last Name:</label>
-                <span class="label-spacer"></span>
-                <p class="userInfo">{{ user.lastName }}</p>
-              </v-row>
-              <v-row>
-                <label class="label">Nickname:</label>
-                <span class="label-spacer"></span>
-                <p class="userInfo">{{ user.nickName }}</p>
-              </v-row>
-              <v-row>
-                <label class="label">Admin Privileges:</label>
-                <span class="label-spacer"></span>
-                <v-icon v-if="user.isAdmin" color="green">mdi-check</v-icon>
-                <v-icon v-if="!user.isAdmin" color="red">mdi-close</v-icon>
-              </v-row>
-              <v-row class="row-spacer"></v-row>
-              <v-row v-if="user.isSuperUser">
-                <label class="label">Super User Privileges:</label>
-                <span class="label-spacer"></span>
-                <v-icon v-if="user.isSuperUser" color="green">mdi-check</v-icon>
-                <v-icon v-if="!user.isSuperUser" color="red">mdi-close</v-icon>
-              </v-row>
+              <v-text-field
+                v-model="user.userName"
+                label="User Name"
+                prepend-icon="mdi-account-circle"
+                readonly="true"
+              ></v-text-field>
+              <v-text-field
+                v-model="user.firstName"
+                label="First Name"
+                prepend-icon="mdi-account-circle"
+                readonly="true"
+              ></v-text-field>
+              <v-text-field
+                v-model="user.lastName"
+                label="Last Name"
+                prepend-icon="mdi-account-circle"
+                readonly="true"
+              ></v-text-field>
+              <v-text-field
+                v-model="user.nickName"
+                label="Nickname"
+                prepend-icon="mdi-account-circle"
+                readonly="true"
+              ></v-text-field>
+              <v-checkbox
+                v-model="user.isAdmin"
+                label="Admin Privileges"
+                readonly="true"
+              ></v-checkbox>
+              <v-checkbox
+                v-if="user.isSuperUser"
+                v-model="user.isSuperUser"
+                label="Super User Privileges"
+                readonly="true"
+              ></v-checkbox>
             </v-col>
             <v-col col="6">
-              <v-row>
-                <label class="label">Email:</label>
-                <span class="label-spacer"></span>
-                <p class="userInfo">{{ user.email }}</p>
-              </v-row>
-              <v-row>
-                <label class="label">Email Confirmed:</label>
-                <span class="label-spacer"></span>
-                <v-icon v-if="user.emailConfirmed" color="green"
-                  >mdi-check</v-icon
-                >
-                <v-icon v-if="!user.emailConfirmed" color="red"
-                  >mdi-close</v-icon
-                >
-              </v-row>
-              <v-row class="row-spacer"></v-row>
-              <v-row>
-                <label class="label">Date Created:</label>
-                <span class="label-spacer"></span>
-                <p class="userInfo">
-                  {{ new Date(user.dateCreated).toLocaleString() }}
-                </p>
-              </v-row>
-              <v-row v-if="user.dateUpdated !== '0001-01-01T00:00:00Z'">
-                <label class="label">Date Updated:</label>
-                <span class="label-spacer"></span>
-                <p class="userInfo">
-                  {{ new Date(user.dateUpdated).toLocaleString() }}
-                </p>
-              </v-row>
+              <v-text-field
+                v-model="displayDateCreated"
+                label="Date Created"
+                hint="MM/DD/YYYY format"
+                persistent-hint
+                prepend-icon="mdi-calendar"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                v-if="user.dateUpdated !== '0001-01-01T00:00:00Z'"
+                v-model="displayDateUpdated"
+                label="Date Updated"
+                hint="MM/DD/YYYY format"
+                persistent-hint
+                prepend-icon="mdi-calendar"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                v-model="user.email"
+                label="Email"
+                readonly="true"
+                prepend-icon="mdi-email"
+              ></v-text-field>
+              <v-checkbox
+                v-model="user.emailConfirmed"
+                label="Email Confirmed"
+                readonly="true"
+              ></v-checkbox>
             </v-col>
           </v-row>
-        </v-card-text>
-      </v-layout>
+        </v-container>
+      </v-card-text>
     </v-card>
     <div class="user-card-spacer"></div>
     <v-card elevation="6">
@@ -102,7 +102,8 @@
       <v-card-title
         v-if="user.receivedRequestToUpdateEmail"
         class="justify-center warning"
-        >Please Review Your Old Email To Begin Update Process: {{ user.email }}</v-card-title
+        >Please Review Your Old Email To Begin Update Process:
+        {{ user.email }}</v-card-title
       >
       <v-card-title
         v-if="user.receivedRequestToUpdatePassword"
@@ -138,7 +139,7 @@
           color="blue darken-1"
           text
           @click="resetPassword"
-          v-if="!user.receivedRequestToUpdatePassword"
+          v-if="!user.receivedRequestToUpdatePassword && user.emailConfirmed"
         >
           Reset Password
         </v-btn>
@@ -191,6 +192,7 @@
 }
 .userInfo {
   font-size: large;
+  color: black !important;
 }
 .user-card-spacer {
   min-height: 30px;
@@ -212,7 +214,7 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
-import { passwordReset } from "@/helpers/commonFunctions/commonFunctions";
+import { passwordReset, convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "UserProfileForm",
@@ -443,6 +445,14 @@ export default {
     closeEditing() {
       this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
       this.$data.editingProfile = false;
+    },
+  },
+  computed: {
+    displayDateCreated: function() {
+      return convertStringToDateTime(this.$data.user.dateCreated);
+    },
+    displayDateUpdated: function() {
+      return convertStringToDateTime(this.$data.user.dateUpdated);
     },
   },
   mounted() {
