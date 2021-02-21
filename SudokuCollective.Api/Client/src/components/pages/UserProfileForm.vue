@@ -19,36 +19,36 @@
                 v-model="user.userName"
                 label="User Name"
                 prepend-icon="mdi-account-circle"
-                readonly="true"
+                readonly
               ></v-text-field>
               <v-text-field
                 v-model="user.firstName"
                 label="First Name"
                 prepend-icon="mdi-account-circle"
-                readonly="true"
+                readonly
               ></v-text-field>
               <v-text-field
                 v-model="user.lastName"
                 label="Last Name"
                 prepend-icon="mdi-account-circle"
-                readonly="true"
+                readonly
               ></v-text-field>
               <v-text-field
                 v-model="user.nickName"
                 label="Nickname"
                 prepend-icon="mdi-account-circle"
-                readonly="true"
+                readonly
               ></v-text-field>
               <v-checkbox
                 v-model="user.isAdmin"
                 label="Admin Privileges"
-                readonly="true"
+                readonly
               ></v-checkbox>
               <v-checkbox
                 v-if="user.isSuperUser"
                 v-model="user.isSuperUser"
                 label="Super User Privileges"
-                readonly="true"
+                readonly
               ></v-checkbox>
             </v-col>
             <v-col col="6">
@@ -72,13 +72,13 @@
               <v-text-field
                 v-model="user.email"
                 label="Email"
-                readonly="true"
+                readonly
                 prepend-icon="mdi-email"
               ></v-text-field>
               <v-checkbox
                 v-model="user.emailConfirmed"
                 label="Email Confirmed"
-                readonly="true"
+                readonly
               ></v-checkbox>
             </v-col>
           </v-row>
