@@ -93,7 +93,7 @@
           !user.receivedRequestToUpdatePassword &&
           user.emailConfirmed
         "
-        class="justify-center"
+        class="justify-center success"
         >No Outstanding Requests for this Account</v-card-title
       >
       <v-card-title v-if="!user.emailConfirmed" class="justify-center warning"
@@ -177,16 +177,6 @@
 </template>
 
 <style scoped>
-.label {
-  font-weight: bold;
-  font-size: large;
-}
-.label-spacer {
-  min-width: 10px;
-}
-.row-spacer {
-  min-height: 25px;
-}
 .user-card {
   padding: 10px 20px 20px 20px;
 }
@@ -196,6 +186,9 @@
 }
 .user-card-spacer {
   min-height: 30px;
+}
+.success {
+  color: white;
 }
 .warning {
   color: red;
