@@ -47,7 +47,10 @@ namespace SudokuCollective.Api
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddSessionStateTempDataProvider();
+
+            services.AddSession();
 
             services.Configure<TokenManagement>(Configuration.GetSection("TokenManagement"));
             var token = Configuration.GetSection("tokenManagement").Get<TokenManagement>();
@@ -136,6 +139,8 @@ namespace SudokuCollective.Api
             app.UseDefaultFiles(defaultFile);
 
             app.UseStaticFiles();
+
+            app.UseSession();
 
             app.UseMvc();
 
