@@ -50,6 +50,17 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.DevUrl, Is.TypeOf<string>());
             Assert.That(sut.LiveUrl, Is.TypeOf<string>());
             Assert.That(sut.IsActive, Is.TypeOf<bool>());
+            Assert.That(sut.AllowSuperUserAccess, Is.TypeOf<bool>());
+            Assert.That(sut.InDevelopment, Is.TypeOf<bool>());
+            Assert.That(sut.DisableCustomUrls, Is.TypeOf<bool>());
+            Assert.That(sut.CustomEmailConfirmationDevUrl, Is.TypeOf<string>());
+            Assert.That(sut.CustomEmailConfirmationLiveUrl, Is.TypeOf<string>());
+            Assert.That(sut.UseCustomEmailConfirmationUrl, Is.TypeOf<bool>());
+            Assert.That(sut.CustomPasswordResetDevUrl, Is.TypeOf<string>());
+            Assert.That(sut.CustomPasswordResetLiveUrl, Is.TypeOf<string>());
+            Assert.That(sut.UseCustomPasswordResetUrl, Is.TypeOf<bool>());
+            Assert.That(sut.GameCount, Is.TypeOf<int>());
+            Assert.That(sut.UserCount, Is.TypeOf<int>());
             Assert.That(sut.DateCreated, Is.TypeOf<DateTime>());
             Assert.That(sut.DateUpdated, Is.TypeOf<DateTime>());
             Assert.That(sut.Users, Is.InstanceOf<ICollection<UserApp>>());
@@ -295,6 +306,7 @@ namespace SudokuCollective.Test.TestCases.Models
                 "devUrl",
                 "liveUrl",
                 true,
+                false,
                 true,
                 true,
                 null,
@@ -306,6 +318,19 @@ namespace SudokuCollective.Test.TestCases.Models
 
             // Assert
             Assert.That(sut, Is.InstanceOf<App>());
+        }
+
+        [Test]
+        [Category("Models")]
+        public void DefaultAllowSuperUserAccessToFalse()
+        {
+            // Arrange
+
+            // Act
+
+            // Assert
+            Assert.That(sut.AllowSuperUserAccess, Is.InstanceOf<bool>());
+            Assert.That(sut.AllowSuperUserAccess, Is.False);
         }
     }
 }

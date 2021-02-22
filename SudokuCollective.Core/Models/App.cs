@@ -24,6 +24,7 @@ namespace SudokuCollective.Core.Models
         public string DevUrl { get; set; }
         public string LiveUrl { get; set; }
         public bool IsActive { get; set; }
+        public bool AllowSuperUserAccess { get; set; }
         public bool InDevelopment { get; set; }
         public bool DisableCustomUrls { get; set; }
         public string CustomEmailConfirmationDevUrl { get; set; }
@@ -128,6 +129,7 @@ namespace SudokuCollective.Core.Models
             DevUrl = string.Empty;
             LiveUrl = string.Empty;
             IsActive = false;
+            AllowSuperUserAccess = false;
             InDevelopment = true;
             DisableCustomUrls = true;
             CustomEmailConfirmationDevUrl = string.Empty;
@@ -161,6 +163,7 @@ namespace SudokuCollective.Core.Models
             string devUrl,
             string liveUrl,
             bool isActive,
+            bool allowSuperUserAccess,
             bool inDevelopment,
             bool disableCustomUrls,
             string customEmailConfirmationDevUrl,
@@ -177,6 +180,7 @@ namespace SudokuCollective.Core.Models
             DevUrl = devUrl;
             LiveUrl = liveUrl;
             IsActive = isActive;
+            AllowSuperUserAccess = allowSuperUserAccess;
             InDevelopment = inDevelopment;
             DisableCustomUrls = disableCustomUrls;
             CustomEmailConfirmationDevUrl = customEmailConfirmationDevUrl;
