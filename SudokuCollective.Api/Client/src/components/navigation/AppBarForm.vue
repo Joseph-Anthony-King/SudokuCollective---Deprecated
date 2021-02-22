@@ -1,5 +1,10 @@
 <template>
   <v-app-bar app color="primary" dark>
+    <v-app-bar-nav-icon
+      class="nav-bar-icon-status"
+      @click.stop="updateNavDrawerStatus"
+      v-if="userLoggedIn"
+    ></v-app-bar-nav-icon>
     <div class="d-flex align-center">
       <router-link to="/">
         <v-img
@@ -113,6 +118,11 @@
 </template>
 
 <style scoped>
+@media only screen and (min-width: 1265px) {
+  .nav-bar-icon-status {
+    display: none;
+  }
+}
 .menu-item {
   text-decoration: none !important;
   color: #9b9b9b;
@@ -149,6 +159,10 @@ export default {
       AppMenuItems.forEach((route) => {
         this.$data.appMenuItems.push(route);
       });
+    },
+
+    updateNavDrawerStatus() {
+      this.$emit("update-nav-drawer-status", null, null);
     },
   },
 

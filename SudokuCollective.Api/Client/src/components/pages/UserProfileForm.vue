@@ -1,20 +1,18 @@
 <template>
   <v-container fluid>
-    <v-card elevation="6">
-      <v-card-title v-if="user.isActive" class="justify-center"
-        >Your Account is Active</v-card-title
-      >
-      <v-card-title v-if="!user.isActive" class="justify-center warning"
-        >Your Account is Deativated, Please Contact the
-        Administrator</v-card-title
-      >
-    </v-card>
-    <hr />
-    <v-card elevation="6" class="mx-auto user-card">
+    <v-card elevation="6" class="mx-auto">
       <v-card-text>
-        <v-container>
+        <v-container fluid>
+          <v-card-title v-if="user.isActive" class="justify-center"
+            >Your Account is Active</v-card-title
+          >
+          <v-card-title v-if="!user.isActive" class="justify-center warning"
+            >Your Account is Deativated, Please Contact the
+            Administrator</v-card-title
+          >
+          <hr class="title-spacer" />
           <v-row>
-            <v-col col="6">
+            <v-col cols="12" lg="6" xl="6">
               <v-text-field
                 v-model="user.userName"
                 label="User Name"
@@ -51,7 +49,7 @@
                 readonly
               ></v-checkbox>
             </v-col>
-            <v-col col="6">
+            <v-col cols="12" lg="6" xl="6">
               <v-text-field
                 v-model="displayDateCreated"
                 label="Date Created"
@@ -116,54 +114,84 @@
       <v-card-title v-if="user.isActive" class="justify-center"
         >Available Actions</v-card-title
       >
-      <v-card-actions class="justify-center">
-        <v-btn color="blue darken-1" text @click="refreshProfile">
-          Refresh Profile
-        </v-btn>
-        <v-btn color="blue darken-1" text @click="editingProfile = true">
-          Edit Profile
-        </v-btn>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="cancelEmailConfirmation"
-          v-if="
-            user.receivedRequestToUpdateEmail ||
-            (!user.emailConfirmed &&
-              user.dateUpdated !== '0001-01-01T00:00:00Z')
-          "
-        >
-          Cancel Email Confirmation
-        </v-btn>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="resetPassword"
-          v-if="!user.receivedRequestToUpdatePassword && user.emailConfirmed"
-        >
-          Reset Password
-        </v-btn>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="cancelResetPassword"
-          v-if="user.receivedRequestToUpdatePassword"
-        >
-          Cancel Reset Password
-        </v-btn>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="cancelAllEmailRequests"
-          v-if="
-            (user.receivedRequestToUpdateEmail ||
-              (!user.emailConfirmed &&
-                user.dateUpdated !== '0001-01-01T00:00:00Z')) &&
-            user.receivedRequestToUpdatePassword
-          "
-        >
-          Cancel All Email Requests
-        </v-btn>
+      <v-card-actions>
+        <v-container>
+          <v-row dense>
+            <v-col>
+              <v-btn
+                class="button-full"
+                color="blue darken-1"
+                text
+                @click="refreshProfile"
+              >
+                Refresh Profile
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn
+                class="button-full"
+                color="blue darken-1"
+                text
+                @click="editingProfile = true"
+              >
+                Edit Profile
+              </v-btn>
+            </v-col>
+            <v-col
+              class="button-full"
+              v-if="
+                user.receivedRequestToUpdateEmail ||
+                (!user.emailConfirmed &&
+                  user.dateUpdated !== '0001-01-01T00:00:00Z')
+              "
+            >
+              <v-btn
+                class="button-full"
+                color="blue darken-1"
+                text
+                @click="cancelEmailConfirmation"
+              >
+                Cancel Email Confirmation
+              </v-btn>
+            </v-col>
+            <v-col
+              v-if="
+                !user.receivedRequestToUpdatePassword && user.emailConfirmed
+              "
+            >
+              <v-btn
+                class="button-full"
+                color="blue darken-1"
+                text
+                @click="resetPassword"
+              >
+                Reset Password
+              </v-btn>
+            </v-col>
+            <v-col v-if="user.receivedRequestToUpdatePassword">
+              <v-btn
+                class="button-full"
+                color="blue darken-1"
+                text
+                @click="cancelResetPassword"
+              >
+                Cancel Reset Password
+              </v-btn>
+            </v-col>
+            <v-col
+              v-if="
+                (user.receivedRequestToUpdateEmail ||
+                  (!user.emailConfirmed &&
+                    user.dateUpdated !== '0001-01-01T00:00:00Z')) &&
+                user.receivedRequestToUpdatePassword
+              "
+            >
+              <v-btn color="blue darken-1" text @click="cancelAllEmailRequests">
+                Cancel All Email Requests
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-card-actions>
     </v-card>
 
@@ -177,12 +205,8 @@
 </template>
 
 <style scoped>
-.user-card {
-  padding: 10px 20px 20px 20px;
-}
-.userInfo {
-  font-size: large;
-  color: black !important;
+.title-spacer {
+  margin: 0 0 20px 0;
 }
 .user-card-spacer {
   min-height: 30px;
@@ -207,7 +231,10 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
-import { passwordReset, convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
+import {
+  passwordReset,
+  convertStringToDateTime,
+} from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "UserProfileForm",
@@ -441,10 +468,10 @@ export default {
     },
   },
   computed: {
-    displayDateCreated: function() {
+    displayDateCreated: function () {
       return convertStringToDateTime(this.$data.user.dateCreated);
     },
-    displayDateUpdated: function() {
+    displayDateUpdated: function () {
       return convertStringToDateTime(this.$data.user.dateUpdated);
     },
   },

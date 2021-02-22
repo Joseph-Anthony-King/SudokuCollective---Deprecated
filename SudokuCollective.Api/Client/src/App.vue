@@ -2,13 +2,17 @@
   <v-app>
     <NavigationBarForm
       :userLoggedIn="user.isLoggedIn"
-      :profileNavigation="profileNavigation" />
-    <AppBarForm 
+      :profileNavigation="profileNavigation"
+      :navDrawerStatus="navDrawerStatus"
+    />
+    <AppBarForm
       :userLoggedIn="user.isLoggedIn"
       :profileNavigation="profileNavigation"
       v-on:user-logging-in="userLoggingIn = true"
       v-on:user-logging-out="logout"
-      v-on:user-signing-up="userSigningUp = true"/>
+      v-on:user-signing-up="userSigningUp = true"
+      v-on:update-nav-drawer-status="updateNavDrawer"
+    />
 
     <!-- Sizes your content based upon application components -->
     <v-main>
@@ -34,7 +38,6 @@
             v-on:user-signing-up-event="signUp"
           />
         </v-dialog>
-
       </v-container>
     </v-main>
 
@@ -53,6 +56,9 @@
 .menu-link-list {
   width: 215px;
 }
+.button-full {
+  width: 100%;
+}
 </style>
 
 <script>
@@ -65,7 +71,11 @@ import SignUpForm from "@/components/forms/SignUpForm";
 import FooterForm from "@/components/navigation/FooterForm";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast, defaultToastOptions, actionToastOptions } from "@/helpers/toastHelper";
+import {
+  showToast,
+  defaultToastOptions,
+  actionToastOptions,
+} from "@/helpers/toastHelper";
 
 export default {
   name: "App",
@@ -74,7 +84,7 @@ export default {
     NavigationBarForm,
     LoginForm,
     SignUpForm,
-    FooterForm
+    FooterForm,
   },
   data: () => ({
     userLoggingIn: false,
@@ -83,8 +93,9 @@ export default {
     profileNavigation: {
       url: "/UserProfile",
       title: "User Profile",
-      icon: "mdi-account-circle"
+      icon: "mdi-account-circle",
     },
+    navDrawerStatus: null,
   }),
   methods: {
     ...mapActions("appSettingsModule", ["confirmBaseURL"]),
@@ -108,8 +119,8 @@ export default {
         }
 
         showToast(
-          this, 
-          ToastMethods["success"], 
+          this,
+          ToastMethods["success"],
           logInMessage,
           defaultToastOptions()
         );
@@ -132,8 +143,8 @@ export default {
             }
 
             showToast(
-              this, 
-              ToastMethods["info"], 
+              this,
+              ToastMethods["info"],
               "You are logged out.",
               defaultToastOptions()
             );
@@ -166,8 +177,8 @@ export default {
         }
 
         showToast(
-          this, 
-          ToastMethods["success"], 
+          this,
+          ToastMethods["success"],
           "Thank you for signing up, please review your email to confirm your address",
           defaultToastOptions()
         );
@@ -179,7 +190,12 @@ export default {
       this.$data.userLoggingIn = false;
       this.$data.userSigningUp = true;
     },
+
+    updateNavDrawer() {
+      this.$data.navDrawerStatus = this.$data.navDrawerStatus ? false : true;
+    },
   },
+  computed: {},
   async created() {
     await this.confirmBaseURL();
   },

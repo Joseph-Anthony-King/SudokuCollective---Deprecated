@@ -1,7 +1,13 @@
 <template>
-  <v-navigation-drawer app color="secondary" v-if="userLoggedIn">
+  <v-navigation-drawer
+    absolute
+    app
+    color="secondary"
+    :value="navDrawerStatus"
+    v-if="userLoggedIn"
+  >
     <v-list>
-      <v-list-item>
+      <v-list-item class="top-list-item">
         <v-list-item-content>
           <router-link :to="profileNavigation.url" class="user-profile-item">
             <v-icon x-large color="white">{{ profileNavigation.icon }}</v-icon>
@@ -32,6 +38,11 @@
 </template>
 
 <style scoped>
+@media only screen and (max-width: 1265px) {
+  .top-list-item {
+    margin: 60px 0 0 0;
+  }
+}
 .nav-drawer-item {
   font-weight: bold;
   text-decoration: none !important;
@@ -62,7 +73,7 @@ import MenuItem from "@/models/viewModels/menuItem";
 
 export default {
   name: "NavigationBarForm",
-  props: ["userLoggedIn", "profileNavigation"],
+  props: ["userLoggedIn", "profileNavigation", "navDrawerStatus"],
   data: () => ({
     navMenuItems: [],
     user: {},
