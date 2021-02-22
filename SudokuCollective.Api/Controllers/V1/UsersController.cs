@@ -207,9 +207,9 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/users/resendRequestPasswordReset
+        // PUT: api/users/resendRequestPasswordReset
         [AllowAnonymous]
-        [HttpPost("ResendRequestPasswordReset")]
+        [HttpPut("ResendRequestPasswordReset")]
         public async Task<IActionResult> ResendRequestPasswordReset([FromBody] BaseRequest request)
         {
             string baseUrl;
