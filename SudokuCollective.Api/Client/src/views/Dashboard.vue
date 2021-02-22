@@ -9,13 +9,13 @@
 </template>
 
 <script>
-  import DashboardForm from "@/components/pages/DashboardForm.vue";
-  export default {
-    name: "Dashboard",
-    components: {
-      DashboardForm
-    }
-  }
+import DashboardForm from "@/components/pages/DashboardForm.vue";
+export default {
+  name: "Dashboard",
+  components: {
+    DashboardForm,
+  },
+};
 </script>
 
 <style scoped>

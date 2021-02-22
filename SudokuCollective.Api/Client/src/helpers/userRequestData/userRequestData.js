@@ -1,39 +1,41 @@
 ﻿import { requestData } from "../requestData";
 
-export function requestDataUpdatePassword(pageListModel, oldPassword, newPassword) {
+export function requestDataUpdatePassword(
+  pageListModel,
+  oldPassword,
+  newPassword
+) {
+  let result = requestData(pageListModel);
 
-    let result = requestData(pageListModel);
+  result["OldPassword"] = oldPassword;
+  result["NewPassword"] = newPassword;
 
-    result["OldPassword"] = oldPassword;
-    result["NewPassword"] = newPassword;
-
-    return result;
+  return result;
 }
 
 export function requestDataUpdateUser(
-    pageListModel,
-    userName,
-    firstName,
-    lastName,
-    nickName,
-    email) {
+  pageListModel,
+  userName,
+  firstName,
+  lastName,
+  nickName,
+  email
+) {
+  let result = requestData(pageListModel);
 
-    let result = requestData(pageListModel);
+  result["UserName"] = userName;
+  result["FirstName"] = firstName;
+  result["LastName"] = lastName;
+  result["NickName"] = nickName;
+  result["Email"] = email;
 
-    result["UserName"] = userName;
-    result["FirstName"] = firstName;
-    result["LastName"] = lastName;
-    result["NickName"] = nickName;
-    result["Email"] = email;
-
-    return result;
+  return result;
 }
 
 export function requestDataUpdateUserRoles(pageListModel, roleIds) {
+  let result = requestData(pageListModel);
 
-    let result = requestData(pageListModel);
+  result["RoleIds"] = roleIds;
 
-    result["RoleIds"] = roleIds;
-
-    return result;
+  return result;
 }

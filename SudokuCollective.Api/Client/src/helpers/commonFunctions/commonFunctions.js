@@ -3,38 +3,35 @@ import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export async function passwordReset(userEmail, component) {
-    try {
-      const response = await userService.putRequestPasswordReset(
-        userEmail
+  try {
+    const response = await userService.putRequestPasswordReset(userEmail);
+
+    if (response.status === 200) {
+      showToast(
+        component,
+        ToastMethods["success"],
+        `Please review ${userEmail} to reset your password`,
+        defaultToastOptions()
       );
 
-      if (response.status === 200) {
-        showToast(
-          component,
-          ToastMethods["success"],
-          `Please review ${userEmail} to reset your password`,
-          defaultToastOptions()
-        );
-
-        return true;
-
-      } else {
-        showToast(
-          component,
-          ToastMethods["error"],
-          response.data.message.substring(17),
-          defaultToastOptions()
-        );
-
-        return false;
-      }
-    } catch (error) {
-      showToast(component, ToastMethods["error"], error, defaultToastOptions());
+      return true;
+    } else {
+      showToast(
+        component,
+        ToastMethods["error"],
+        response.data.message.substring(17),
+        defaultToastOptions()
+      );
 
       return false;
     }
+  } catch (error) {
+    showToast(component, ToastMethods["error"], error, defaultToastOptions());
+
+    return false;
+  }
 }
 
 export function convertStringToDateTime(datetime) {
-  return (new Date(datetime)).toLocaleString();
+  return new Date(datetime).toLocaleString();
 }

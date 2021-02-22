@@ -11,9 +11,9 @@
 <script>
 import UserProfileForm from "@/components/pages/UserProfileForm.vue";
 export default {
-    name: "UserProfile",
-    components: {
-        UserProfileForm
-    }
-}
+  name: "UserProfile",
+  components: {
+    UserProfileForm,
+  },
+};
 </script>

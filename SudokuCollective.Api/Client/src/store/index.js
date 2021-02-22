@@ -8,14 +8,14 @@ import userModule from "./modules/userModule/userModule";
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
-    state: {},
-    mutations: {},
-    actions: {},
-    modules: {
-        appSettingsModule,
-        userModule,
-    },
-    plugins: [createPersistedState()]
+  state: {},
+  mutations: {},
+  actions: {},
+  modules: {
+    appSettingsModule,
+    userModule,
+  },
+  plugins: [createPersistedState()],
 });
 
-export default store
+export default store;

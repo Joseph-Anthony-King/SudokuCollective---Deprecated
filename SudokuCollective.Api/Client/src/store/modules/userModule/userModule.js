@@ -1,30 +1,31 @@
 ﻿import { UPDATE_USER } from "./mutation-types";
 
-import User from "../../../models/user"
+import User from "../../../models/user";
 
 const userModule = {
+  namespaced: true,
 
-    namespaced: true,
+  state: () => ({
+    User: new User(),
+  }),
 
-    state: () => ({
-        User: new User()
-    }),
-
-    mutations: {
-        [UPDATE_USER](state, user) {
-            state.User = user;
-        }
+  mutations: {
+    [UPDATE_USER](state, user) {
+      state.User = user;
     },
+  },
 
-    actions: {
-        updateUser({ commit }, user) {
-            commit(UPDATE_USER, user);
-        }
+  actions: {
+    updateUser({ commit }, user) {
+      commit(UPDATE_USER, user);
     },
+  },
 
-    getters: {
-        getUser: state => { return state.User }
-    }
-}
+  getters: {
+    getUser: (state) => {
+      return state.User;
+    },
+  },
+};
 
 export default userModule;

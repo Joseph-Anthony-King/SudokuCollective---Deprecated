@@ -10,7 +10,7 @@ import HomeForm from "@/components/pages/HomeForm.vue";
 export default {
   name: "Home",
   components: {
-    HomeForm
-  }
+    HomeForm,
+  },
 };
 </script>

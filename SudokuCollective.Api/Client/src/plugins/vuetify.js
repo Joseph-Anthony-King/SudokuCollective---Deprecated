@@ -6,19 +6,19 @@ Vue.use(Vuetify);
 
 export default new Vuetify({
   icons: {
-    iconfont: "md" // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
+    iconfont: "md", // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
   },
   theme: {
     themes: {
       light: {
-        primary: '#1976D2',
-        secondary: '#021737',
-        accent: '#82B1FF',
-        error: '#FF5252',
-        info: '#2196F3',
-        success: '#4CAF50',
-        warning: '#FFC107',
+        primary: "#1976D2",
+        secondary: "#021737",
+        accent: "#82B1FF",
+        error: "#FF5252",
+        info: "#2196F3",
+        success: "#4CAF50",
+        warning: "#FFC107",
       },
     },
-  }
+  },
 });

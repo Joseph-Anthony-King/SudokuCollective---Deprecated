@@ -161,8 +161,10 @@ export default {
                 if (
                   response.data.message ===
                     "Status Code 404: User Name Accepts Alphanumeric And Special Characters Except Double And Single Quotes" ||
-                  response.data.message === "Status Code 404: User Name Not Unique" ||
-                  response.data.message === "Status Code 404: User Name Required"
+                  response.data.message ===
+                    "Status Code 404: User Name Not Unique" ||
+                  response.data.message ===
+                    "Status Code 404: User Name Required"
                 ) {
                   this.$data.invalidUserNames.push(this.$data.user.userName);
                   this.$refs.editProfileForm.validate();
@@ -173,7 +175,8 @@ export default {
                     defaultToastOptions()
                   );
                 } else if (
-                  response.data.message === "Status Code 404: Email Not Unique" ||
+                  response.data.message ===
+                    "Status Code 404: Email Not Unique" ||
                   response.data.message === "Status Code 404: Email Required"
                 ) {
                   this.$data.invalidEmails.push(this.$data.user.email);
@@ -236,8 +239,7 @@ export default {
       return [
         (v) => !!v || "User Name is required",
         (v) =>
-          !this.$data.invalidUserNames.includes(v) ||
-          "User Name Not Unique",
+          !this.$data.invalidUserNames.includes(v) || "User Name Not Unique",
       ];
     },
     stringRequiredRules() {
@@ -251,9 +253,7 @@ export default {
           !v ||
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
           "Email must be valid",
-        (v) =>
-          !this.$data.invalidEmails.includes(v) ||
-          "Email Not Unique",
+        (v) => !this.$data.invalidEmails.includes(v) || "Email Not Unique",
       ];
     },
 

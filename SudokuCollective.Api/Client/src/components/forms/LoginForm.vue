@@ -237,7 +237,7 @@ export default {
     requestPasswordReset() {
       let result = passwordReset(this.$data.email, this);
 
-      if (result){
+      if (result) {
         this.$data.gettingHelp = false;
       }
     },
