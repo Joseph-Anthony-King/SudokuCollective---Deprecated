@@ -82,36 +82,48 @@
         </v-list-item>
         <!-- outside links -->
         <hr v-if="appMenuItems.length > 1" class="mx-2" />
-        <v-list-item v-if="appMenuItems.length > 1">
-          <v-menu left bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <div class="menu-item" v-bind="attrs" v-on="on">
-                <span class="mr-2">Links</span>
-              </div>
-            </template>
-            <v-list class="menu-link-list">
-              <!-- outside links -->
-              <v-list-item
-                v-for="(menuItem, index) in appMenuItems"
-                :key="index"
-              >
-                <v-list-item-content>
-                  <v-list-item-title>
-                    <a
-                      :href="menuItem.url"
-                      target="blank"
-                      :title="menuItem.title"
-                      class="menu-item"
-                    >
-                      <v-icon>{{ menuItem.mdiIcon }}</v-icon>
-                      <span class="mr-2">{{ menuItem.title }}</span>
-                    </a>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-list-item>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-list-item
+              v-if="appMenuItems.length > 1"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-menu left bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div class="menu-item" v-bind="attrs" v-on="on">
+                    <span class="mr-2">Links</span>
+                  </div>
+                </template>
+                <v-list class="menu-link-list">
+                  <!-- outside links -->
+                  <div v-for="(menuItem, index) in appMenuItems" :key="index">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-list-item v-bind="attrs" v-on="on">
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              <a
+                                :href="menuItem.url"
+                                target="blank"
+                                class="menu-item"
+                              >
+                                <v-icon>{{ menuItem.mdiIcon }}</v-icon>
+                                <span class="mr-2">{{ menuItem.title }}</span>
+                              </a>
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
+                      <span>{{ menuItem.tooltip }}</span>
+                    </v-tooltip>
+                  </div>
+                </v-list>
+              </v-menu>
+            </v-list-item>
+          </template>
+          <span>Links to outside sites and resources</span>
+        </v-tooltip>
       </v-list>
     </v-menu>
   </v-app-bar>
