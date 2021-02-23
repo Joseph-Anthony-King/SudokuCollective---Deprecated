@@ -260,6 +260,23 @@ namespace SudokuCollective.Api.Models
 
                     context.SaveChanges();
                 }
+
+                if (!context.AppAdmins.Any())
+                {
+                    context.AppAdmins.Add(
+
+                        new AppAdmin(1, 1)
+                    );
+
+                    context.SaveChanges();
+
+                    context.AppAdmins.Add(
+
+                        new AppAdmin(2, 2)
+                    );
+
+                    context.SaveChanges();
+                }
             }
         }
     }

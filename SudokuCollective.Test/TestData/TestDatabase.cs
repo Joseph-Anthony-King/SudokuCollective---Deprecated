@@ -181,6 +181,14 @@ namespace SudokuCollective.Test.TestData
                 await databaseContext.SaveChangesAsync();
             }
 
+            if (await databaseContext.AppAdmins.CountAsync() <= 0)
+            {
+                databaseContext.AppAdmins.AddRange(
+
+                    new AppAdmin(1, 1, 1, true),
+                    new AppAdmin(2, 2, 1, true)
+                );
+            }
             if (await databaseContext.SudokuMatrices.CountAsync() <= 0)
             {
                 databaseContext.SudokuMatrices.AddRange(

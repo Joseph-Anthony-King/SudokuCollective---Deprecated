@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -11,41 +11,37 @@ using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Repositories
 {
-    public class DifficultiesRepositoryShould
+    public class AppAdminsRepositoryShould
     {
         private DatabaseContext context;
-        private IDifficultiesRepository<Difficulty> sut;
-        private Difficulty newDifficutly;
+        private IAppAdminsRepository<AppAdmin> sut;
+        private AppAdmin newAppAdmin;
 
         [SetUp]
         public async Task Setup()
         {
             context = await TestDatabase.GetDatabaseContext();
-            sut = new DifficultiesRepository<Difficulty>(context);
+            sut = new AppAdminsRepository<AppAdmin>(context);
 
-            newDifficutly = new Difficulty()
+            newAppAdmin = new AppAdmin()
             {
-                Name = "New Test",
-                DisplayName = "New Test",
-                DifficultyLevel = DifficultyLevel.TEST
+                AppId = 2,
+                UserId = 2
             };
         }
 
         [Test]
         [Category("Repository")]
-        public async Task CreateDifficulties()
+        public async Task CreateAppAdmins()
         {
             // Arrange
-            var testDifficulty = context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST);
-            context.Difficulties.Remove(testDifficulty);
-            context.SaveChanges();
 
             // Act
-            var result = await sut.Create(newDifficutly);
+            var result = await sut.Create(newAppAdmin);
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That((Difficulty)result.Object, Is.InstanceOf<Difficulty>());
+            Assert.That((AppAdmin)result.Object, Is.InstanceOf<AppAdmin>());
         }
 
         [Test]
@@ -53,9 +49,10 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfCreateDifficutliesFails()
         {
             // Arrange
+            newAppAdmin.Id = 1;
 
             // Act
-            var result = await sut.Create(newDifficutly);
+            var result = await sut.Create(newAppAdmin);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -63,7 +60,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task GetDifficultiesById()
+        public async Task GetAppAdminsById()
         {
             // Arrange
 
@@ -72,7 +69,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That((Difficulty)result.Object, Is.InstanceOf<Difficulty>());
+            Assert.That((AppAdmin)result.Object, Is.InstanceOf<AppAdmin>());
         }
 
         [Test]
@@ -91,7 +88,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task GetAllDifficulties()
+        public async Task GetAllAppAdmins()
         {
             // Arrange
 
@@ -100,34 +97,34 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Objects.ConvertAll(d => (Difficulty)d), Is.InstanceOf<List<Difficulty>>());
+            Assert.That(result.Objects.ConvertAll(aa => (AppAdmin)aa), Is.InstanceOf<List<AppAdmin>>());
         }
 
         [Test]
         [Category("Repository")]
-        public async Task UpdateDifficulties()
+        public async Task UpdateAppAdmins()
         {
             // Arrange
-            var difficulty = context.Difficulties.FirstOrDefault(d => d.Id == 1);
-            difficulty.Name = string.Format("{0} UPDATED!", difficulty.Name);
+            var appAdmin = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1);
+            appAdmin.IsActive = !appAdmin.IsActive;
 
             // Act
-            var result = await sut.Update(difficulty);
+            var result = await sut.Update(appAdmin);
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<Difficulty>());
-            Assert.That(((Difficulty)result.Object).Name, Is.EqualTo(difficulty.Name));
+            Assert.That(result.Object, Is.InstanceOf<AppAdmin>());
+            Assert.That(((AppAdmin)result.Object).IsActive, Is.False);
         }
 
         [Test]
         [Category("Repository")]
-        public async Task ReturnFalseIfUpdateDifficultiesFails()
+        public async Task ReturnFalseIfUpdateAppAdminsFails()
         {
             // Arrange
 
             // Act
-            var result = await sut.Update(newDifficutly);
+            var result = await sut.Update(newAppAdmin);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -136,13 +133,15 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task DeleteDifficulties()
+        public async Task DeleteAppAdmins()
         {
             // Arrange
-            var difficulty = context.Difficulties.FirstOrDefault(d => d.Id == 1);
+            var appAdmin = context
+                .AppAdmins
+                .FirstOrDefault(aa => aa.Id == 1);
 
             // Act
-            var result = await sut.Delete(difficulty);
+            var result = await sut.Delete(appAdmin);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -150,12 +149,12 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task ReturnFalseIfDeleteDifficultiesFails()
+        public async Task ReturnFalseIfDeleteAppAdminsFails()
         {
             // Arrange
 
             // Act
-            var result = await sut.Delete(newDifficutly);
+            var result = await sut.Delete(newAppAdmin);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -163,7 +162,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task ConfirmItHasAnDifficulty()
+        public async Task ConfirmItHasAnAppAdmin()
         {
             // Arrange
 
@@ -176,14 +175,14 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task ReturnFalseIfConfirmItHasAnDifficultyFails()
+        public async Task ReturnFalseIfConfirmItHasAnAppAdminFails()
         {
             // Arrange
             var id = context
-                .Difficulties
+                .AppAdmins
                 .ToList()
-                .OrderBy(d => d.Id)
-                .Last<Difficulty>()
+                .OrderBy(aa => aa.Id)
+                .Last<AppAdmin>()
                 .Id + 1;
 
             // Act
@@ -195,12 +194,23 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task ConfirmItHasAnDifficultyLevel()
+        public async Task ConfirmItHasAnAdminRecord()
         {
             // Arrange
+            var userId = context
+                .Users
+                .Where(u => u.Id == 1)
+                .Select(u => u.Id)
+                .FirstOrDefault();
+
+            var appId = context
+                .Apps
+                .Where(a => a.Id == 1)
+                .Select(a => a.Id)
+                .FirstOrDefault();
 
             // Act
-            var result = await sut.HasDifficultyLevel(DifficultyLevel.TEST);
+            var result = await sut.HasAdminRecord(appId, userId);
 
             // Assert
             Assert.That(result, Is.True);
@@ -208,15 +218,23 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
         [Test]
         [Category("Repository")]
-        public async Task ReturnFalseIfConfirmItHasAnDifficultyLevelFails()
+        public async Task ReturnFalseIfConfirmItHasAnAdminRecordFails()
         {
             // Arrange
-            var testDifficulty = context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST);
-            context.Difficulties.Remove(testDifficulty);
-            context.SaveChanges();
+            var userId = context
+                .Users
+                .Where(u => u.Id == 1)
+                .Select(u => u.Id)
+                .FirstOrDefault();
+
+            var appId = context
+                .Apps
+                .Where(a => a.Id == 1)
+                .Select(a => a.Id)
+                .FirstOrDefault();
 
             // Act
-            var result = await sut.HasDifficultyLevel(DifficultyLevel.TEST);
+            var result = await sut.HasAdminRecord(appId, userId + 1);
 
             // Assert
             Assert.That(result, Is.False);

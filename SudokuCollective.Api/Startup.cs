@@ -81,6 +81,7 @@ namespace SudokuCollective.Api
 
             services.AddScoped<IAppsRepository<App>, AppsRepository<App>>();
             services.AddScoped<IUsersRepository<User>, UsersRepository<User>>();
+            services.AddScoped<IAppAdminsRepository<AppAdmin>, AppAdminsRepository<AppAdmin>>();
             services.AddScoped<IGamesRepository<Game>, GamesRepository<Game>>();
             services.AddScoped<IDifficultiesRepository<Difficulty>, DifficultiesRepository<Difficulty>>();
             services.AddScoped<IRolesRepository<Role>, RolesRepository<Role>>();

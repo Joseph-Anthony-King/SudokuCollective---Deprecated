@@ -9,6 +9,21 @@ namespace SudokuCollective.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AppAdmins",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AppId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppAdmins", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Apps",
                 columns: table => new
                 {
@@ -338,6 +353,9 @@ namespace SudokuCollective.Api.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AppAdmins");
+
             migrationBuilder.DropTable(
                 name: "EmailConfirmations");
 

@@ -78,6 +78,27 @@ namespace SudokuCollective.Api.Migrations
                     b.ToTable("Apps");
                 });
 
+            modelBuilder.Entity("SudokuCollective.Core.Models.AppAdmin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AppId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppAdmins");
+                });
+
             modelBuilder.Entity("SudokuCollective.Core.Models.Difficulty", b =>
                 {
                     b.Property<int>("Id")

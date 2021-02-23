@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210222163251_InitializeDatabase")]
+    [Migration("20210223231037_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,6 +78,27 @@ namespace SudokuCollective.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Apps");
+                });
+
+            modelBuilder.Entity("SudokuCollective.Core.Models.AppAdmin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AppId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppAdmins");
                 });
 
             modelBuilder.Entity("SudokuCollective.Core.Models.Difficulty", b =>
