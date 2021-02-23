@@ -154,7 +154,7 @@ namespace SudokuCollective.Data.Services
                         RoleLevel = roleLevel
                     };
 
-                    var response = await rolesRepository.Create(role);
+                    var response = await rolesRepository.Add(role);
 
                     if (response.Success)
                     {

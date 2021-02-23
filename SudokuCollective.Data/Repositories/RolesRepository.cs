@@ -27,7 +27,7 @@ namespace SudokuCollective.Data.Repositories
         #endregion
 
         #region Methods
-        async public Task<IRepositoryResponse> Create(TEntity entity)
+        async public Task<IRepositoryResponse> Add(TEntity entity)
         {
             var result = new RepositoryResponse();
 

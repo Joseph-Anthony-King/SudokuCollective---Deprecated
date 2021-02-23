@@ -43,14 +43,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<User>())
+                        .Add(It.IsAny<User>())
                         .Result
                         .Success,
                     Message = UsersMessages.UserCreatedMessage,
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<User>())
+                        .Add(It.IsAny<User>())
                         .Result
                         .Object
                 } as IUserResult));
@@ -346,14 +346,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<User>())
+                        .Add(It.IsAny<User>())
                         .Result
                         .Success,
                     Message = UsersMessages.UserNotCreatedMessage,
                     User = (User)MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<User>())
+                        .Add(It.IsAny<User>())
                         .Result
                         .Object
                 } as IUserResult));

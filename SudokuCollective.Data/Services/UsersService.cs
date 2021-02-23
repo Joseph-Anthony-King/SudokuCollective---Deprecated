@@ -557,7 +557,7 @@ namespace SudokuCollective.Data.Services
                                     App = app,
                                     AppId = app.Id });
 
-                            var userResponse = await usersRepository.Create(user);
+                            var userResponse = await usersRepository.Add(user);
 
                             if (userResponse.Success)
                             {

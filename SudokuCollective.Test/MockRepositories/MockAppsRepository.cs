@@ -30,7 +30,7 @@ namespace SudokuCollective.Test.MockRepositories
             AppsRepositoryInitiatePasswordSuccessfulRequest = new Mock<IAppsRepository<App>>();
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.Create(It.IsAny<App>()))
+                appsRepo.Add(It.IsAny<App>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -174,7 +174,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.Create(It.IsAny<App>()))
+                appsRepo.Add(It.IsAny<App>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -298,7 +298,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(false));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
-                appsRepo.Create(It.IsAny<App>()))
+                appsRepo.Add(It.IsAny<App>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

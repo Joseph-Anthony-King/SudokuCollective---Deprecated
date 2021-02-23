@@ -26,7 +26,7 @@ namespace SudokuCollective.Test.MockRepositories
             RolesRepositoryFailedRequest = new Mock<IRolesRepository<Role>>();
 
             RolesRepositorySuccessfulRequest.Setup(rolesRepo =>
-                rolesRepo.Create(It.IsAny<Role>()))
+                rolesRepo.Add(It.IsAny<Role>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -94,7 +94,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             RolesRepositoryFailedRequest.Setup(rolesRepo =>
-                rolesRepo.Create(It.IsAny<Role>()))
+                rolesRepo.Add(It.IsAny<Role>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false

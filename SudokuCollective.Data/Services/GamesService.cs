@@ -66,7 +66,7 @@ namespace SudokuCollective.Data.Services
 
                                 game.SudokuMatrix.GenerateSolution();
 
-                                var gameResponse = await gamesRepository.Create(game);
+                                var gameResponse = await gamesRepository.Add(game);
 
                                 if (gameResponse.Success)
                                 {

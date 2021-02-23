@@ -41,7 +41,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             context.SaveChanges();
 
             // Act
-            var result = await sut.Create(newDifficutly);
+            var result = await sut.Add(newDifficutly);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -55,7 +55,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
 
             // Act
-            var result = await sut.Create(newDifficutly);
+            var result = await sut.Add(newDifficutly);
 
             // Assert
             Assert.That(result.Success, Is.False);

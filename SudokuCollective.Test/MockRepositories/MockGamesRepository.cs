@@ -30,7 +30,7 @@ namespace SudokuCollective.Test.MockRepositories
             GamesRepositoryUpdateFailedRequest = new Mock<IGamesRepository<Game>>();
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.Create(It.IsAny<Game>()))
+                gamesRepo.Add(It.IsAny<Game>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -131,7 +131,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.Create(It.IsAny<Game>()))
+                gamesRepo.Add(It.IsAny<Game>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -219,7 +219,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.Create(It.IsAny<Game>()))
+                gamesRepo.Add(It.IsAny<Game>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

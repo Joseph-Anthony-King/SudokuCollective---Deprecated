@@ -257,7 +257,7 @@ namespace SudokuCollective.Data.Services
                         DifficultyLevel = difficultyLevel
                     };
 
-                    var response = await difficultiesRepository.Create(difficulty);
+                    var response = await difficultiesRepository.Add(difficulty);
 
                     if (response.Success)
                     {

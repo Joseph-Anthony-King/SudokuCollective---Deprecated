@@ -28,7 +28,7 @@ namespace SudokuCollective.Test.MockRepositories
             DifficultiesRepositoryCreateDifficultyRequest = new Mock<IDifficultiesRepository<Difficulty>>();
 
             DifficultiesRepositorySuccessfulRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.Create(It.IsAny<Difficulty>()))
+                difficultiesRepo.Add(It.IsAny<Difficulty>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -93,7 +93,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             DifficultiesRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.Create(It.IsAny<Difficulty>()))
+                difficultiesRepo.Add(It.IsAny<Difficulty>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -150,7 +150,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(false));
 
             DifficultiesRepositoryCreateDifficultyRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.Create(It.IsAny<Difficulty>()))
+                difficultiesRepo.Add(It.IsAny<Difficulty>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

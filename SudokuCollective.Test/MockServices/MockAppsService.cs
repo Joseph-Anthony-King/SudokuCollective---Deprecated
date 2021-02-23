@@ -97,14 +97,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<App>())
+                        .Add(It.IsAny<App>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppCreatedMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<App>())
+                        .Add(It.IsAny<App>())
                         .Result
                         .Object
                 } as IAppResult));
@@ -303,7 +303,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<App>())
+                        .Add(It.IsAny<App>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppNotCreatedMessage,

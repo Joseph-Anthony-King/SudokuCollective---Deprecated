@@ -49,7 +49,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             newGame.SudokuMatrix.GenerateSolution();
 
             // Act
-            var result = await sut.Create(newGame);
+            var result = await sut.Add(newGame);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -64,7 +64,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             newGame.Id = 10;
 
             // Act
-            var result = await sut.Create(newGame);
+            var result = await sut.Add(newGame);
 
             // Assert
             Assert.That(result.Success, Is.False);

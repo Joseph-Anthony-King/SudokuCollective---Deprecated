@@ -746,7 +746,7 @@ namespace SudokuCollective.Data.Services
                         request.DevUrl,
                         request.LiveUrl);
 
-                    var addAppResponse = await appsRepository.Create(app);
+                    var addAppResponse = await appsRepository.Add(app);
 
                     if (addAppResponse.Success)
                     {

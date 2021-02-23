@@ -33,7 +33,7 @@ namespace SudokuCollective.Test.MockRepositories
             UsersRepositoryResendEmailConfirmationSuccessful = new Mock<IUsersRepository<User>>();
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.Create(It.IsAny<User>()))
+                usersRepo.Add(It.IsAny<User>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -190,7 +190,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.Create(It.IsAny<User>()))
+                usersRepo.Add(It.IsAny<User>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -310,7 +310,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(false));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.Create(It.IsAny<User>()))
+                usersRepo.Add(It.IsAny<User>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -457,7 +457,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(false));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
-                usersRepo.Create(It.IsAny<User>()))
+                usersRepo.Add(It.IsAny<User>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -614,7 +614,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
-                usersRepo.Create(It.IsAny<User>()))
+                usersRepo.Add(It.IsAny<User>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

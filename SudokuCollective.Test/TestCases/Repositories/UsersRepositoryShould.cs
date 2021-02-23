@@ -43,7 +43,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             newUser.Apps.Add(userApp);
 
             // Act
-            var result = await sut.Create(newUser);
+            var result = await sut.Add(newUser);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -59,7 +59,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             newUser.Id = 1;
 
             // Act
-            var result = await sut.Create(newUser);
+            var result = await sut.Add(newUser);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -83,7 +83,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             newUser.Apps.Add(userApp);
 
             // Act
-            var result = await sut.Create(newUser);
+            var result = await sut.Add(newUser);
 
             // Assert
             Assert.That(result.Success, Is.True);

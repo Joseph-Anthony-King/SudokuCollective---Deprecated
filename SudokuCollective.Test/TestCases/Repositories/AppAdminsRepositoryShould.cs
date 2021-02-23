@@ -37,7 +37,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
 
             // Act
-            var result = await sut.Create(newAppAdmin);
+            var result = await sut.Add(newAppAdmin);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -52,7 +52,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             newAppAdmin.Id = 1;
 
             // Act
-            var result = await sut.Create(newAppAdmin);
+            var result = await sut.Add(newAppAdmin);
 
             // Assert
             Assert.That(result.Success, Is.False);

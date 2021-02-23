@@ -73,14 +73,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockRolesRepository
                         .RolesRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<Role>())
+                        .Add(It.IsAny<Role>())
                         .Result
                         .Success,
                     Message = RolesMessages.RoleCreatedMessage,
                     Role = (Role)MockRolesRepository
                         .RolesRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<Role>())
+                        .Add(It.IsAny<Role>())
                         .Result
                         .Object
                 } as IRoleResult));
@@ -151,14 +151,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockRolesRepository
                         .RolesRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<Role>())
+                        .Add(It.IsAny<Role>())
                         .Result
                         .Success,
                     Message = RolesMessages.RoleNotCreatedMessage,
                     Role = (Role)MockRolesRepository
                         .RolesRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<Role>())
+                        .Add(It.IsAny<Role>())
                         .Result
                         .Object
                 } as IRoleResult));

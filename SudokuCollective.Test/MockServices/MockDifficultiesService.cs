@@ -74,14 +74,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<Difficulty>())
+                        .Add(It.IsAny<Difficulty>())
                         .Result
                         .Success,
                     Message = DifficultiesMessages.DifficultyCreatedMessage,
                     Difficulty = (Difficulty)MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<Difficulty>())
+                        .Add(It.IsAny<Difficulty>())
                         .Result
                         .Object
                 } as IDifficultyResult));
@@ -119,14 +119,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<Difficulty>())
+                        .Add(It.IsAny<Difficulty>())
                         .Result
                         .Success,
                     Message = DifficultiesMessages.DifficultyNotFoundMessage,
                     Difficulty = (Difficulty)MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<Difficulty>())
+                        .Add(It.IsAny<Difficulty>())
                         .Result
                         .Object
                 } as IDifficultyResult));
@@ -152,14 +152,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<Difficulty>())
+                        .Add(It.IsAny<Difficulty>())
                         .Result
                         .Success,
                     Message = DifficultiesMessages.DifficultyNotCreatedMessage,
                     Difficulty = (Difficulty)MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<Difficulty>())
+                        .Add(It.IsAny<Difficulty>())
                         .Result
                         .Object
                 } as IDifficultyResult));

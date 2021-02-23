@@ -40,7 +40,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             context.SaveChanges();
 
             // Act
-            var result = await sut.Create(newRole);
+            var result = await sut.Add(newRole);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -54,7 +54,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
 
             // Act
-            var result = await sut.Create(newRole);
+            var result = await sut.Add(newRole);
 
             // Assert
             Assert.That(result.Success, Is.False);

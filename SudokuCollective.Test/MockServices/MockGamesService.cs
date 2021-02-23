@@ -35,14 +35,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<Game>())
+                        .Add(It.IsAny<Game>())
                         .Result
                         .Success,
                     Message = GamesMessages.GameCreatedMessage,
                     Game = (Game)MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<Game>())
+                        .Add(It.IsAny<Game>())
                         .Result
                         .Object
                 } as IGameResult));
@@ -196,14 +196,14 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<Game>())
+                        .Add(It.IsAny<Game>())
                         .Result
                         .Success,
                     Message = GamesMessages.GameNotCreatedMessage,
                     Game = (Game)MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<Game>())
+                        .Add(It.IsAny<Game>())
                         .Result
                         .Object,
                 } as IGameResult));
