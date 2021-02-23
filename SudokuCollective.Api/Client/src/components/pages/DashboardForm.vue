@@ -20,7 +20,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import User from "@/models/user";
 
 export default {
   name: "DashboardForm",
@@ -42,7 +41,7 @@ export default {
   },
 
   mounted() {
-    this.$data.user = new User();
+    this.$data.user = this.$store.getters["userModule/getUser"];
     this.$data.user.shallowClone(this.getUser);
   },
 

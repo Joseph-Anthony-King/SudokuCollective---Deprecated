@@ -36,32 +36,79 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="gettingHelp = true"
-          v-show="needHelp"
-        >
-          Help
-        </v-btn>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="redirectToSignUp"
-          v-show="needHelp"
-        >
-          Sign Up
-        </v-btn>
-        <v-btn color="blue darken-1" text @click="resetForm"> Reset </v-btn>
-        <v-btn color="blue darken-1" text @click="close"> Close </v-btn>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="authenticate"
-          :disabled="!loginFormIsValid"
-        >
-          Login
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="gettingHelp = true"
+              v-show="needHelp"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Help
+            </v-btn>
+          </template>
+          <span>Having trouble logging in?  Confirm your email or obtain your user name if your email has been confirmed</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="redirectToSignUp"
+              v-show="needHelp"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Sign Up
+            </v-btn>
+          </template>
+          <span>Please sign up if you haven't done so already</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="resetForm"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Reset
+            </v-btn>
+          </template>
+          <span>Reset the login form</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="close"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Close
+            </v-btn>
+          </template>
+          <span>Close the login form</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="authenticate"
+              :disabled="!loginFormIsValid"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Login
+            </v-btn>
+          </template>
+          <span>Submit the login form</span>
+        </v-tooltip>
       </v-card-actions>
     </v-form>
     <v-form
@@ -86,26 +133,67 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="requestPasswordReset"
-          :disabled="!userNameFormIsValid"
-        >
-          Reset Password
-        </v-btn>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="confirmUserName"
-          :disabled="!userNameFormIsValid"
-        >
-          Confirm User Name
-        </v-btn>
-        <v-btn color="blue darken-1" text @click="close"> Close </v-btn>
-        <v-btn color="blue darken-1" text @click="gettingHelp = false">
-          Go Back
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="requestPasswordReset"
+              :disabled="!userNameFormIsValid"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Reset Password
+            </v-btn>
+          </template>
+          <span
+            >Send a link to your email to reset your password if your email has
+            been confirmed</span
+          >
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="confirmUserName"
+              :disabled="!userNameFormIsValid"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Confirm User Name
+            </v-btn>
+          </template>
+          <span>Obtain your user name if your email has been confirmed</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="gettingHelp = false"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Go Back
+            </v-btn>
+          </template>
+          <span>Go back to the login form</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="close"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Close
+            </v-btn>
+          </template>
+          <span>Close the login form</span>
+        </v-tooltip>
       </v-card-actions>
     </v-form>
   </v-card>
