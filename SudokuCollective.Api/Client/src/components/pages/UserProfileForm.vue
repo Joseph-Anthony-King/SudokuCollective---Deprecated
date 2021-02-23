@@ -118,90 +118,137 @@
         <v-container>
           <v-row dense>
             <v-col>
-              <v-btn
-                class="button-full"
-                color="blue darken-1"
-                text
-                @click="refreshProfile"
-              >
-                Refresh Profile
-              </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="refreshProfile"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Refresh
+                  </v-btn>
+                </template>
+                <span>Get your latest profile data from the api</span>
+              </v-tooltip>
             </v-col>
             <v-col>
-              <v-btn
-                class="button-full"
-                color="blue darken-1"
-                text
-                @click="editingProfile = true"
-              >
-                Edit Profile
-              </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="editingProfile = true"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Edit Profile
+                  </v-btn>
+                </template>
+                <span>Edit your profile</span>
+              </v-tooltip>
             </v-col>
             <v-col
-              class="button-full"
-              v-if="
-                !user.receivedRequestToUpdateEmail && !user.emailConfirmed
-              "
+              v-if="!user.receivedRequestToUpdateEmail && !user.emailConfirmed"
             >
-              <v-btn
-                class="button-full"
-                color="blue darken-1"
-                text
-                @click="resendEmailConfirmation"
-              >
-                Resend Email Confirmation
-              </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="resendEmailConfirmation"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Resend Email Confirmation
+                  </v-btn>
+                </template>
+                <span
+                  >Resend the email confirmation to confirm your new email</span
+                >
+              </v-tooltip>
             </v-col>
             <v-col
-              class="button-full"
               v-if="
                 user.receivedRequestToUpdateEmail ||
                 (!user.emailConfirmed &&
                   user.dateUpdated !== '0001-01-01T00:00:00Z')
               "
             >
-              <v-btn
-                class="button-full"
-                color="blue darken-1"
-                text
-                @click="cancelEmailConfirmation"
-              >
-                Cancel Email Confirmation
-              </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="cancelEmailConfirmation"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Cancel Email Confirmation
+                  </v-btn>
+                </template>
+                <span>Cancel your email confirmation request</span>
+              </v-tooltip>
             </v-col>
             <v-col
               v-if="
                 !user.receivedRequestToUpdatePassword && user.emailConfirmed
               "
             >
-              <v-btn
-                class="button-full"
-                color="blue darken-1"
-                text
-                @click="resetPassword"
-              >
-                Reset Password
-              </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="resetPassword"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Reset Password
+                  </v-btn>
+                </template>
+                <span>Send a link to your email to reset your password</span>
+              </v-tooltip>
             </v-col>
             <v-col v-if="user.receivedRequestToUpdatePassword">
-              <v-btn
-                class="button-full"
-                color="blue darken-1"
-                text
-                @click="resendResetPassword"
-              >
-                Resend Reset Password
-              </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="resendResetPassword"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Resend Reset Password
+                  </v-btn>
+                </template>
+                <span>Resend the password reset request to your email</span>
+              </v-tooltip>
             </v-col>
             <v-col v-if="user.receivedRequestToUpdatePassword">
-              <v-btn
-                class="button-full"
-                color="blue darken-1"
-                text
-                @click="cancelResetPassword"
-              >
-                Cancel Reset Password
-              </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="cancelResetPassword"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Cancel Reset Password
+                  </v-btn>
+                </template>
+                <span>Cancel your password reset request</span>
+              </v-tooltip>
             </v-col>
             <v-col
               v-if="
@@ -211,9 +258,21 @@
                 user.receivedRequestToUpdatePassword
               "
             >
-              <v-btn color="blue darken-1" text @click="cancelAllEmailRequests">
-                Cancel All Email Requests
-              </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="cancelAllEmailRequests"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Cancel All Email Requests
+                  </v-btn>
+                </template>
+                <span>Cancel your email confirmation and password reset request</span>
+              </v-tooltip>
             </v-col>
           </v-row>
         </v-container>
