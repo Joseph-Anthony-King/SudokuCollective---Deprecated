@@ -121,7 +121,7 @@ export default {
     async register() {
       if (this.getSignUpFormStatus) {
         try {
-          const response = await registerService.signUp(
+          const response = await registerService.postSignUp(
             new SignUpModel(
               this.$data.username,
               this.$data.firstname,

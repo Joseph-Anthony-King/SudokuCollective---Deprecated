@@ -954,6 +954,13 @@ namespace SudokuCollective.Data.Services
 
                                 passwordReset = (PasswordReset)(await passwordResetsRepository.Update(passwordReset)).Object;
 
+                                if (!user.ReceivedRequestToUpdatePassword)
+                                {
+                                    user.ReceivedRequestToUpdatePassword = true;
+
+                                    user = (User)(await usersRepository.Update(user)).Object;
+                                }
+
                                 return SendPasswordResetEmail(
                                     user, 
                                     app, 

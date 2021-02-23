@@ -140,6 +140,21 @@
             <v-col
               class="button-full"
               v-if="
+                !user.receivedRequestToUpdateEmail && !user.emailConfirmed
+              "
+            >
+              <v-btn
+                class="button-full"
+                color="blue darken-1"
+                text
+                @click="resendEmailConfirmation"
+              >
+                Resend Email Confirmation
+              </v-btn>
+            </v-col>
+            <v-col
+              class="button-full"
+              v-if="
                 user.receivedRequestToUpdateEmail ||
                 (!user.emailConfirmed &&
                   user.dateUpdated !== '0001-01-01T00:00:00Z')
@@ -166,6 +181,16 @@
                 @click="resetPassword"
               >
                 Reset Password
+              </v-btn>
+            </v-col>
+            <v-col v-if="user.receivedRequestToUpdatePassword">
+              <v-btn
+                class="button-full"
+                color="blue darken-1"
+                text
+                @click="resendResetPassword"
+              >
+                Resend Reset Password
               </v-btn>
             </v-col>
             <v-col v-if="user.receivedRequestToUpdatePassword">
@@ -221,6 +246,7 @@
 
 <script>
 import { userService } from "@/services/userService/user.service";
+import { registerService } from "@/services/registerService/register.service";
 import EditProfileForm from "@/components/forms/EditProfileForm";
 import store from "../../store";
 import User from "@/models/user";
@@ -246,6 +272,130 @@ export default {
     editingProfile: false,
   }),
   methods: {
+    async refresh() {
+      let user = await userService.getUser(
+        this.$data.user.id,
+        new PageListModel(),
+        false
+      );
+      this.$data.user.shallowClone(user);
+      store.dispatch("userModule/updateUser", this.$data.user);
+    },
+    async refreshProfile() {
+      try {
+        await this.refresh();
+      } catch (error) {
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      }
+    },
+    async resendEmailConfirmation() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await registerService.putResendEmailConfirmation(
+                new PageListModel()
+              );
+
+              if (response.status === 200) {
+                this.$data.user.shallowClone(response.data.user);
+                store.dispatch("userModule/updateUser", this.$data.user);
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to resend your email confirmation request?",
+        actionToastOptions(action, "email")
+      );
+    },
+    async cancelEmailConfirmation() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await userService.putCancelEmailConfirmation(
+                new PageListModel()
+              );
+
+              if (response.status === 200) {
+                this.$data.user.shallowClone(response.data.user);
+                store.dispatch("userModule/updateUser", this.$data.user);
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to cancel your email confirmation request?",
+        actionToastOptions(action, "email")
+      );
+    },
     async resetPassword() {
       const action = [
         {
@@ -257,7 +407,7 @@ export default {
               let result = await passwordReset(this.$data.user.email, this);
 
               if (result) {
-                this.refresh();
+                await this.refresh();
               }
             } catch (error) {
               showToast(
@@ -284,6 +434,60 @@ export default {
         actionToastOptions(action, "lock")
       );
     },
+    async resendResetPassword() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await userService.putResendPasswordReset(
+                new PageListModel()
+              );
+
+              if (response.status === 200) {
+                this.$data.user.shallowClone(response.data.user);
+                store.dispatch("userModule/updateUser", this.$data.user);
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to resend your password reset request?",
+        actionToastOptions(action, "lock")
+      );
+    },
     async cancelResetPassword() {
       const action = [
         {
@@ -297,8 +501,8 @@ export default {
               );
 
               if (response.status === 200) {
-                store.dispatch("userModule/updateUser", response.data.user);
                 this.$data.user.shallowClone(response.data.user);
+                store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -338,60 +542,6 @@ export default {
         actionToastOptions(action, "lock")
       );
     },
-    async cancelEmailConfirmation() {
-      const action = [
-        {
-          text: "Yes",
-          onClick: async (e, toastObject) => {
-            toastObject.goAway(0);
-
-            try {
-              const response = await userService.putCancelEmailConfirmation(
-                new PageListModel()
-              );
-
-              if (response.status === 200) {
-                store.dispatch("userModule/updateUser", response.data.user);
-                this.$data.user.shallowClone(response.data.user);
-                showToast(
-                  this,
-                  ToastMethods["success"],
-                  response.data.message.substring(17),
-                  defaultToastOptions()
-                );
-              } else {
-                showToast(
-                  this,
-                  ToastMethods["error"],
-                  response.data.message.substring(17),
-                  defaultToastOptions()
-                );
-              }
-            } catch (error) {
-              showToast(
-                this,
-                ToastMethods["error"],
-                error,
-                defaultToastOptions()
-              );
-            }
-          },
-        },
-        {
-          text: "No",
-          onClick: (e, toastObject) => {
-            toastObject.goAway(0);
-          },
-        },
-      ];
-
-      showToast(
-        this,
-        ToastMethods["show"],
-        "Are you sure you want to cancel your email confirmation request?",
-        actionToastOptions(action, "mode_edit")
-      );
-    },
     async cancelAllEmailRequests() {
       const action = [
         {
@@ -405,8 +555,8 @@ export default {
               );
 
               if (response.status === 200) {
-                store.dispatch("userModule/updateUser", response.data.user);
                 this.$data.user.shallowClone(response.data.user);
+                store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -445,22 +595,6 @@ export default {
         "Are you sure you want to cancel all email request?",
         actionToastOptions(action, "mode_edit")
       );
-    },
-    refreshProfile() {
-      try {
-        this.refresh();
-      } catch (error) {
-        showToast(this, ToastMethods["error"], error, defaultToastOptions());
-      }
-    },
-    async refresh() {
-      let user = await userService.getUser(
-        this.$data.user.id,
-        new PageListModel(),
-        false
-      );
-      store.dispatch("userModule/updateUser", user);
-      this.$data.user.shallowClone(user);
     },
     closeEditing() {
       this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);

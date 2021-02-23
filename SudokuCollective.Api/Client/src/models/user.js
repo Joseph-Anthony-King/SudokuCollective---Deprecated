@@ -49,7 +49,7 @@
       this.isSuperUser = issuperuser;
       this.dateCreated = new Date(datecreated);
       this.dateUpdated = new Date(dateupdated);
-      this.isLoggedIn = false;
+      this.isLoggedIn = true;
     }
   }
 
@@ -94,7 +94,7 @@
       this.isSuperUser = data.isSuperUser;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;
-      this.isLoggedIn = data.isLoggedIn;
+      this.isLoggedIn = true;
     }
   }
 }

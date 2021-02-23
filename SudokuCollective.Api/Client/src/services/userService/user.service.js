@@ -7,6 +7,7 @@ import { requestDataUpdateUser } from "../../helpers/userRequestData/userRequest
 import {
   getUserEnpoint,
   getRequestPasswordResetEnpoint,
+  getResendRequestPasswordResetEndpoint,
   getCancelPasswordResetEndpoint,
   getCancelEmailConfirmationEndpoint,
   getCancelAllEmailRequestsEndpoint,
@@ -107,7 +108,7 @@ const updateUser = async function (
   }
 };
 
-const putRequestPasswordReset = async function (email) {
+const postRequestPasswordReset = async function (email) {
   try {
     const license = process.env.VUE_APP_LICENSE;
 
@@ -119,6 +120,24 @@ const putRequestPasswordReset = async function (email) {
         License: license,
         Email: email,
       },
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+};
+
+const putResendPasswordReset = async function (pageListModel) {
+  try {
+    const config = {
+      method: "put",
+      url: `${getResendRequestPasswordResetEndpoint}`,
+      headers: requestHeader(),
+      data: requestData(pageListModel),
     };
 
     const response = await axios(config);
@@ -205,7 +224,7 @@ const logoutUser = function (user) {
 };
 
 const assignAPIReponseToUser = function (data) {
-  let user = new User();
+  let user = store.getters["userModule/getUser"];
 
   user.id = data.id;
   user.userName = data.userName;
@@ -230,7 +249,8 @@ export const userService = {
   getUser,
   getUsers,
   updateUser,
-  putRequestPasswordReset,
+  postRequestPasswordReset,
+  putResendPasswordReset,
   putCancelPasswordReset,
   putCancelEmailConfirmation,
   putCancelAllEmailRequests,

@@ -1,18 +1,34 @@
 import * as axios from "axios";
 import { requestHeader } from "../../helpers/requestHeader";
-import { getRegisterEndpoint } from "./service.endpoints";
+import { requestData } from "../../helpers/requestData";
+import { getRegisterEndpoint, getResendEmailConfirmationEndpoint } from "./service.endpoints";
 
-const signUp = async function (signUpModel) {
-  const headers = requestHeader();
+const postSignUp = async function (signUpModel) {
 
   const config = {
     method: "post",
     url: getRegisterEndpoint,
-    headers: headers,
+    headers: requestHeader(),
     data: signUpModel,
   };
 
-  console.log("config:", config);
+  try {
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+const putResendEmailConfirmation = async function (pageListModel) {
+
+  const config = {
+    method: "put",
+    url: getResendEmailConfirmationEndpoint,
+    headers: requestHeader(),
+    data: requestData(pageListModel),
+  };
 
   try {
     const response = await axios(config);
@@ -24,5 +40,6 @@ const signUp = async function (signUpModel) {
 };
 
 export const registerService = {
-  signUp,
+  postSignUp,
+  putResendEmailConfirmation,
 };
