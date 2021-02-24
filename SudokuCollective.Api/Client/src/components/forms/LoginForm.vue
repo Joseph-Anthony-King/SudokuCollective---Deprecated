@@ -49,7 +49,7 @@
               Help
             </v-btn>
           </template>
-          <span>Having trouble logging in?  Confirm your email or obtain your user name if your email has been confirmed</span>
+          <span>Having trouble logging in? If your email has been confirmed you can reset your password or confirm your user name</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">

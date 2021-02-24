@@ -83,7 +83,7 @@
         </v-container>
       </v-card-text>
     </v-card>
-    <div class="user-card-spacer"></div>
+    <div class="card-spacer"></div>
     <v-card elevation="6">
       <v-card-title
         v-if="
@@ -117,6 +117,27 @@
       <v-card-actions>
         <v-container>
           <v-row dense>
+            <v-col
+              v-if="!user.isAdmin"
+            >
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="obtainAdminPrivileges"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Obtain Admin Privileges
+                  </v-btn>
+                </template>
+                <span
+                  >Add admin privileges to your account</span
+                >
+              </v-tooltip>
+            </v-col>
             <v-col>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -292,12 +313,11 @@
 .title-spacer {
   margin: 0 0 20px 0;
 }
-.user-card-spacer {
-  min-height: 30px;
-}
+
 .success {
   color: white;
 }
+
 .warning {
   color: red;
 }
@@ -306,6 +326,7 @@
 <script>
 import { userService } from "@/services/userService/user.service";
 import { registerService } from "@/services/registerService/register.service";
+import { appService } from "@/services/appService/app.service";
 import EditProfileForm from "@/components/forms/EditProfileForm";
 import store from "../../store";
 import User from "@/models/user";
@@ -652,6 +673,60 @@ export default {
         this,
         ToastMethods["show"],
         "Are you sure you want to cancel all email request?",
+        actionToastOptions(action, "mode_edit")
+      );
+    },
+    async obtainAdminPrivileges() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await appService.postObtainAdminPrivileges(
+                new PageListModel()
+              );
+
+              if (response.status === 200) {
+                this.$data.user.shallowClone(response.data.user);
+                store.dispatch("userModule/updateUser", this.$data.user);
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to add admin privileges to your account?",
         actionToastOptions(action, "mode_edit")
       );
     },

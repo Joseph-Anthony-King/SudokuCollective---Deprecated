@@ -362,5 +362,36 @@ namespace SudokuCollective.Api.V1.Controllers
                 return BadRequest(ControllerMessages.NotOwnerMessage);
             }
         }
+
+        // POST: api/apps/obtainAdminPrivileges
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPost, Route("ObtainAdminPrivileges")]
+        public async Task<ActionResult> ObtainAdminPrivileges([FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.PromoteToAdmin(request);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.NotOwnerMessage);
+            }
+        }
     }
 }

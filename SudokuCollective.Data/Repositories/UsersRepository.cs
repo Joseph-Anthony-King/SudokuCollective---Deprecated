@@ -378,11 +378,25 @@ namespace SudokuCollective.Data.Repositories
 
                         if (dbEntry is UserApp)
                         {
-                            entry.State = EntityState.Modified;
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
                         }
                         else if (dbEntry is UserRole)
                         {
-                            entry.State = EntityState.Modified;
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
                         }
                         else
                         {

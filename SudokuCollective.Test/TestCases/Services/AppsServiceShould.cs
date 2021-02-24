@@ -19,9 +19,11 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockAppsRepository MockAppsRepository;
         private MockUsersRepository MockUsersRepository;
         private MockAppAdminsRepository MockAppAdminsRepository;
+        private MockRolesRepository MockRolesRepository;
         private IAppsService sut;
         private IAppsService sutAppRepoFailure;
         private IAppsService sutUserRepoFailure;
+        private IAppsService sutPromoteUser;
         private DateTime dateCreated;
         private string license;
         private BaseRequest baseRequest;
@@ -37,21 +39,31 @@ namespace SudokuCollective.Test.TestCases.Services
             MockAppsRepository = new MockAppsRepository(context);
             MockUsersRepository = new MockUsersRepository(context);
             MockAppAdminsRepository = new MockAppAdminsRepository(context);
+            MockRolesRepository = new MockRolesRepository(context);
 
             sut = new AppsService(
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object);
+                MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object,
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
 
             sutAppRepoFailure = new AppsService(
                 MockAppsRepository.AppsRepositoryFailedRequest.Object,
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object);
+                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
+                MockRolesRepository.RolesRepositoryFailedRequest.Object);
 
             sutUserRepoFailure = new AppsService(
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockUsersRepository.UsersRepositoryFailedRequest.Object,
-                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object);
+                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+
+            sutPromoteUser = new AppsService(
+                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositoryPromoteUser.Object,
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
 
             dateCreated = DateTime.UtcNow;
             license = TestObjects.GetLicense();
@@ -439,6 +451,34 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result, Is.False);
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task PromoteUsersToAdmin()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutPromoteUser.PromoteToAdmin(TestObjects.GetBaseRequest());
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("User Has Been Promoted To Admin"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnFalseIfPromoteUsersToAdminFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutAppRepoFailure.PromoteToAdmin(TestObjects.GetBaseRequest());
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("App Not Found"));
         }
     }
 }

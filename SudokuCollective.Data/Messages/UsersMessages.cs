@@ -52,5 +52,8 @@
         public static string PasswordResetRequestCancelledMessage = "Password Reset Request Cancelled";
         public static string PasswordResetRequestNotCancelledMessage = "Password Reset Request Not Cancelled";
         public static string EmailRequestsNotFoundMessage = "Email Requests Not Found";
+        public static string UserIsAlreadyAnAdminMessage = "User Is Already An Admin";
+        public static string UserHasBeenPromotedToAdminMessage = "User Has Been Promoted To Admin";
+        public static string UserHasNotBeenPromotedToAdminMessage = "User Has Not Been Promoted To Admin";
     }
 }

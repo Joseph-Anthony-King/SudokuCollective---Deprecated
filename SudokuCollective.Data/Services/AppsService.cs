@@ -22,17 +22,20 @@ namespace SudokuCollective.Data.Services
         private readonly IAppsRepository<App> appsRepository;
         private readonly IUsersRepository<User> usersRepository;
         private readonly IAppAdminsRepository<AppAdmin> appAdminsRepository;
+        private readonly IRolesRepository<Role> rolesRepository;
         #endregion
 
         #region Constructor
         public AppsService(
             IAppsRepository<App> appRepo, 
             IUsersRepository<User> userRepo,
-            IAppAdminsRepository<AppAdmin> appAdminsRepo)
+            IAppAdminsRepository<AppAdmin> appAdminsRepo,
+            IRolesRepository<Role> rolesRepo)
         {
             appsRepository = appRepo;
             usersRepository = userRepo;
             appAdminsRepository = appAdminsRepo;
+            rolesRepository = rolesRepo;
         }
         #endregion
 
@@ -1302,6 +1305,115 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
+                    result.Message = AppsMessages.AppNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IUserResult> PromoteToAdmin(IBaseRequest request)
+        {
+            var result = new UserResult();
+
+            try
+            {
+                var appResult = await appsRepository.GetByLicense(request.License);
+
+                if (appResult.Success)
+                {
+                    var userResult = await usersRepository.GetById(request.RequestorId);
+
+                    if (userResult.Success)
+                    {
+                        var app = (App)appResult.Object;
+                        var user = (User)userResult.Object;
+
+                        if (await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
+                        {
+                            result.Success = appResult.Success;
+                            result.Message = UsersMessages.UserIsAlreadyAnAdminMessage;
+
+                            return result;
+                        }
+
+                        if (!user.IsAdmin)
+                        {
+                            var adminRole = (await rolesRepository.GetAll())
+                                .Objects
+                                .ConvertAll(r => (Role)r)
+                                .FirstOrDefault(r => r.RoleLevel == RoleLevel.ADMIN);
+
+                            user.Roles.Add(new UserRole {
+                                UserId = user.Id,
+                                User = user,
+                                RoleId = adminRole.Id,
+                                Role = adminRole}) ;
+
+                            user = (User)(await usersRepository.Update(user)).Object;
+                        }
+
+                        var appAdmin = new AppAdmin(app.Id, user.Id);
+
+                        var appAdminResult = await appAdminsRepository.Add(appAdmin);
+
+                        if (appAdminResult.Success)
+                        {
+                            result.User = (User)
+                                (await usersRepository.GetById(request.RequestorId))
+                                .Object;
+                            result.Success = appAdminResult.Success;
+                            result.Message = UsersMessages.UserHasBeenPromotedToAdminMessage;
+
+                            return result;
+                        }
+                        else if (!appAdminResult.Success && appAdminResult.Exception != null)
+                        {
+                            result.Success = appAdminResult.Success;
+                            result.Message = appAdminResult.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.UserHasNotBeenPromotedToAdminMessage;
+
+                            return result;
+                        }
+                    }
+                    else if (!userResult.Success && userResult.Exception != null)
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = userResult.Exception.Message;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
+
+                        return result;
+                    }
+                }
+                else if (!appResult.Success && appResult.Exception != null)
+                {
+                    result.Success = appResult.Success;
+                    result.Message = appResult.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = appResult.Success;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;

@@ -12,8 +12,9 @@
                 v-model="username"
                 label="User Name"
                 prepend-icon="mdi-account-plus"
-                :rules="stringRequiredRules"
+                :rules="userNameRules"
                 required
+                autocomplete="new-password"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -23,6 +24,7 @@
                 prepend-icon="mdi-account-plus"
                 :rules="stringRequiredRules"
                 required
+                autocomplete="new-password"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -32,6 +34,7 @@
                 prepend-icon="mdi-account-plus"
                 :rules="stringRequiredRules"
                 required
+                autocomplete="new-password"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -40,6 +43,7 @@
                 label="Nickname (Not Required)"
                 prepend-icon="mdi-account-plus"
                 required
+                autocomplete="new-password"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -48,6 +52,7 @@
                 label="Email"
                 prepend-icon="mdi-email"
                 required
+                autocomplete="new-password"
                 :rules="emailRules"
               ></v-text-field>
             </v-col>
@@ -73,6 +78,7 @@
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="showPassword = !showPassword"
                 :rules="confirmPasswordRules"
+                autocomplete="new-password"
                 required
               ></v-text-field>
             </v-col>
@@ -152,6 +158,8 @@ export default {
     signUpFormIsValid: true,
     showPassword: false,
     user: {},
+    invalidUserNames: [],
+    invalidEmails: [],
   }),
   methods: {
     async register() {
@@ -180,11 +188,46 @@ export default {
               this.$data.user,
               response.data.token
             );
+          } else if (response.status === 404) {
+            if (
+              response.data === "Status Code 404: User Name Accepts Alphanumeric And Special Characters Except Double And Single Quotes"
+            ) {
+              this.$data.invalidUserNames.push(this.$data.username);
+              showToast(
+                this,
+                ToastMethods["error"],
+                response.data.message.substring(17),
+                defaultToastOptions()
+              );
+            } else if (response.data === "Status Code 404: User Name Not Unique") {
+              this.$data.invalidPasswords.push(this.$data.username);
+              showToast(
+                this,
+                ToastMethods["error"],
+                response.data.message.substring(17),
+                defaultToastOptions()
+              );
+            } else if (response.data === "Status Code 404: Email Not Unique") {
+              this.$data.invalidEmails.push(this.$data.email);
+              showToast(
+                this,
+                ToastMethods["error"],
+                response.data.message.substring(17),
+                defaultToastOptions()
+              );
+            }  else {
+              showToast(
+                this,
+                ToastMethods["error"],
+                response.data.message.substring(17),
+                defaultToastOptions()
+              );
+            }
           } else {
             showToast(
               this,
               ToastMethods["error"],
-              response.data,
+              response.data.message,
               defaultToastOptions()
             );
           }
@@ -196,6 +239,8 @@ export default {
 
     resetForm() {
       this.$refs.signUpForm.reset();
+      this.$data.invalidUserNames = [];
+      this.$data.invalidEmails = [];
       this.$data.showPassword = false;
     },
 
@@ -205,6 +250,15 @@ export default {
     },
   },
   computed: {
+    userNameRules() {
+      return [
+        (v) => !!v || "User Name is required",
+        (v) =>
+          !this.$data.invalidUserNames.includes(v) ||
+          "User Name is not unique",
+      ];
+    },
+
     stringRequiredRules() {
       return [(v) => !!v || "Value is required"];
     },
@@ -225,6 +279,9 @@ export default {
           !v ||
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
           "Email must be valid",
+        (v) =>
+          !this.$data.invalidEmails.includes(v) ||
+          `Email is not unique`,
       ];
     },
 

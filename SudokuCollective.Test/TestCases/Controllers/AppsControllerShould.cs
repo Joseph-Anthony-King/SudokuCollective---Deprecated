@@ -19,6 +19,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private AppsController sutSuccess;
         private AppsController sutFailure;
         private AppsController sutInvalid;
+        private AppsController sutPromoteUserFailure;
         private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
         private AppRequest appRequest;
@@ -36,6 +37,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             sutSuccess = new AppsController(mockAppsService.AppsServiceSuccessfulRequest.Object);
             sutFailure = new AppsController(mockAppsService.AppsServiceFailedRequest.Object);
             sutInvalid = new AppsController(mockAppsService.AppsServiceInvalidRequest.Object);
+            sutPromoteUserFailure = new AppsController(mockAppsService.AppsServicePromoteUserFailsRequest.Object);
         }
 
         [Test]
@@ -481,6 +483,40 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
             Assert.That(message, Is.EqualTo("Status Code 400: You Are Not The Owner Of This App"));
             Assert.That(statusCode, Is.EqualTo(400));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyPromoteUserToAppAdmin()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.ObtainAdminPrivileges(baseRequest);
+            var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: User Has Been Promoted To Admin"));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyPromoteUserToAppAdminFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutPromoteUserFailure.ObtainAdminPrivileges(baseRequest);
+            var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: User Has Not Been Promoted To Admin"));
+            Assert.That(statusCode, Is.EqualTo(404));
         }
     }
 }

@@ -116,8 +116,9 @@ namespace SudokuCollective.Test.TestData
                     new UserRole(1, 1, 2),
                     new UserRole(2, 1, 3),
                     new UserRole(3, 1, 4),
-                    new UserRole(4, 2, 4),
-                    new UserRole(5, 3, 4)
+                    new UserRole(4, 2, 3),
+                    new UserRole(5, 2, 4),
+                    new UserRole(6, 3, 4)
                 );
 
                 await databaseContext.SaveChangesAsync();
