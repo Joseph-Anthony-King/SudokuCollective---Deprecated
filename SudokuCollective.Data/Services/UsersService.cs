@@ -108,7 +108,8 @@ namespace SudokuCollective.Data.Services
                             {
                                 if (!appAdmins.Any(aa => 
                                     aa.AppId == app.Id && 
-                                    aa.UserId == result.User.Id))
+                                    aa.UserId == result.User.Id &&
+                                    aa.IsActive))
                                 {
                                     var adminRole = result
                                         .User
@@ -117,6 +118,29 @@ namespace SudokuCollective.Data.Services
                                             ur.Role.RoleLevel == RoleLevel.ADMIN);
                                     
                                     result.User.Roles.Remove(adminRole);
+                                }
+                            }
+                            else
+                            {
+                                if (!app.PermitSuperUserAccess)
+                                {
+                                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                                    {
+                                        var superUserRole = user
+                                            .Roles
+                                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+
+                                        user.Roles.Remove(superUserRole);
+                                    }
+
+                                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                    {
+                                        var adminRole = user
+                                            .Roles
+                                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                        user.Roles.Remove(adminRole);
+                                    }
                                 }
                             }
                         }
@@ -446,7 +470,8 @@ namespace SudokuCollective.Data.Services
                             {
                                 if (!appAdmins.Any(aa => 
                                     aa.AppId == app.Id && 
-                                    aa.UserId == user.Id))
+                                    aa.UserId == user.Id &&
+                                    aa.IsActive))
                                 {
                                     var adminRole = user
                                         .Roles
@@ -454,6 +479,29 @@ namespace SudokuCollective.Data.Services
                                             ur.Role.RoleLevel == RoleLevel.ADMIN);
                                     
                                     user.Roles.Remove(adminRole);
+                                }
+                            }
+                            else
+                            {
+                                if (!app.PermitSuperUserAccess)
+                                {
+                                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                                    {
+                                        var superUserRole = user
+                                            .Roles
+                                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+
+                                        user.Roles.Remove(superUserRole);
+                                    }
+
+                                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                    {
+                                        var adminRole = user
+                                            .Roles
+                                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                        user.Roles.Remove(adminRole);
+                                    }
                                 }
                             }
                         }

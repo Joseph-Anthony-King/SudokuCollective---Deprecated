@@ -75,7 +75,8 @@ namespace SudokuCollective.Data.Services
                                     {
                                         if (!appAdmins.Any(aa =>
                                             aa.AppId == app.Id &&
-                                            aa.UserId == userApp.User.Id))
+                                            aa.UserId == userApp.User.Id &&
+                                            aa.IsActive))
                                         {
                                             var adminRole = userApp
                                                 .User
@@ -84,6 +85,31 @@ namespace SudokuCollective.Data.Services
                                                     ur.Role.RoleLevel == RoleLevel.ADMIN);
 
                                             userApp.User.Roles.Remove(adminRole);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!app.PermitSuperUserAccess)
+                                        {
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                                            {
+                                                var superUserRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+
+                                                userApp.User.Roles.Remove(superUserRole);
+                                            }
+
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                            {
+                                                var adminRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                                userApp.User.Roles.Remove(adminRole);
+                                            }
                                         }
                                     }
                                 }
@@ -163,7 +189,8 @@ namespace SudokuCollective.Data.Services
                                     {
                                         if (!appAdmins.Any(aa =>
                                             aa.AppId == app.Id &&
-                                            aa.UserId == userApp.User.Id))
+                                            aa.UserId == userApp.User.Id &&
+                                            aa.IsActive))
                                         {
                                             var adminRole = userApp
                                                 .User
@@ -172,6 +199,31 @@ namespace SudokuCollective.Data.Services
                                                     ur.Role.RoleLevel == RoleLevel.ADMIN);
 
                                             userApp.User.Roles.Remove(adminRole);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!app.PermitSuperUserAccess)
+                                        {
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                                            {
+                                                var superUserRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+
+                                                userApp.User.Roles.Remove(superUserRole);
+                                            }
+
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                            {
+                                                var adminRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                                userApp.User.Roles.Remove(adminRole);
+                                            }
                                         }
                                     }
                                 }
@@ -454,7 +506,8 @@ namespace SudokuCollective.Data.Services
                                     {
                                         if (!appAdmins.Any(aa =>
                                             aa.AppId == app.Id &&
-                                            aa.UserId == userApp.User.Id))
+                                            aa.UserId == userApp.User.Id &&
+                                            aa.IsActive))
                                         {
                                             var adminRole = userApp
                                                 .User
@@ -463,6 +516,31 @@ namespace SudokuCollective.Data.Services
                                                     ur.Role.RoleLevel == RoleLevel.ADMIN);
 
                                             userApp.User.Roles.Remove(adminRole);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!app.PermitSuperUserAccess)
+                                        {
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                                            {
+                                                var superUserRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+
+                                                userApp.User.Roles.Remove(superUserRole);
+                                            }
+
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                            {
+                                                var adminRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                                userApp.User.Roles.Remove(adminRole);
+                                            }
                                         }
                                     }
                                 }
@@ -511,6 +589,7 @@ namespace SudokuCollective.Data.Services
             {
                 if (await appsRepository.HasEntity(id))
                 {
+                    var app = (App)(await appsRepository.GetById(id)).Object;
                     var response = await appsRepository.GetAppUsers(id, fullRecord);
 
                     if (response.Success)
@@ -753,7 +832,8 @@ namespace SudokuCollective.Data.Services
                                         {
                                             if (!appAdmins.Any(aa =>
                                                 aa.AppId == id &&
-                                                aa.UserId == userApp.User.Id))
+                                                aa.UserId == userApp.User.Id &&
+                                                aa.IsActive))
                                             {
                                                 var adminRole = userApp
                                                     .User
@@ -762,6 +842,31 @@ namespace SudokuCollective.Data.Services
                                                         ur.Role.RoleLevel == RoleLevel.ADMIN);
 
                                                 userApp.User.Roles.Remove(adminRole);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!app.PermitSuperUserAccess)
+                                            {
+                                                if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                                                {
+                                                    var superUserRole = userApp
+                                                        .User
+                                                        .Roles
+                                                        .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+
+                                                    userApp.User.Roles.Remove(superUserRole);
+                                                }
+
+                                                if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                                {
+                                                    var adminRole = userApp
+                                                        .User
+                                                        .Roles
+                                                        .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                                    userApp.User.Roles.Remove(adminRole);
+                                                }
                                             }
                                         }
                                     }
@@ -968,7 +1073,10 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).PermitSuperUserAccess = request.PermitSuperUserAccess;
                         ((IApp)getAppResponse.Object).PermitCollectiveLogins = request.PermitCollectiveLogins;
                         ((IApp)getAppResponse.Object).DisableCustomUrls = request.DisableCustomUrls;
-                        ((IApp)getAppResponse.Object).DisableCustomUrls = request.DisableCustomUrls;
+                        ((IApp)getAppResponse.Object).CustomEmailConfirmationDevUrl = request.CustomEmailConfirmationDevUrl;
+                        ((IApp)getAppResponse.Object).CustomEmailConfirmationLiveUrl = request.CustomEmailConfirmationLiveUrl;
+                        ((IApp)getAppResponse.Object).CustomPasswordResetDevUrl = request.CustomPasswordResetDevUrl;
+                        ((IApp)getAppResponse.Object).CustomPasswordResetLiveUrl = request.CustomPasswordResetLiveUrl;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
                         var updateAppResponse = await appsRepository
