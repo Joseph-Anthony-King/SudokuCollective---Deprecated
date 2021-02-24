@@ -23,7 +23,7 @@ namespace SudokuCollective.Test.MockRepositories
             context = ctxt;
 
             AppAdminsRepositorySuccessfulRequest = new Mock<IAppAdminsRepository<AppAdmin>>();
-            AppAdminsRepositorySuccessfulRequest = new Mock<IAppAdminsRepository<AppAdmin>>();
+            AppAdminsRepositoryFailedRequest = new Mock<IAppAdminsRepository<AppAdmin>>();
 
             AppAdminsRepositorySuccessfulRequest.Setup(appAdminsRepo =>
                 appAdminsRepo.Add(It.IsAny<AppAdmin>()))

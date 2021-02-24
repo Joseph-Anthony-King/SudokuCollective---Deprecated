@@ -17,7 +17,7 @@ namespace SudokuCollective.Data.Models.DataModels
             Success = false;
             Exception = null;
             Object = null;
-            Objects = null;
+            Objects = new List<IEntityBase>();
         }
     }
 }
