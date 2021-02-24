@@ -42,7 +42,7 @@ namespace SudokuCollective.Api.V1.Controllers
         }
 
         // POST: api/licenses
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost]
         public async Task<ActionResult<App>> PostApp(
             [FromBody] LicenseRequest request)

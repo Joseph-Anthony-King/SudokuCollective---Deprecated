@@ -869,6 +869,17 @@ namespace SudokuCollective.Data.Services
 
                     if (addAppResponse.Success)
                     {
+                        var user = (User)
+                            (await usersRepository.GetById(request.OwnerId))
+                            .Object;
+
+                        if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                        {
+                            var appAdmin = new AppAdmin(app.Id, user.Id);
+
+                            _ = await appAdminsRepository.Add(appAdmin);
+                        }
+
                         result.Success = addAppResponse.Success;
                         result.Message = AppsMessages.AppCreatedMessage;
                         result.App = (IApp)addAppResponse.Object;
