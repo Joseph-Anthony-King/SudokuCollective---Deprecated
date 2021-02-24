@@ -1551,6 +1551,216 @@ namespace SudokuCollective.Data.Services
             }
         }
 
+        public async Task<IUserResult> ActivateAdminPrivileges(IBaseRequest request)
+        {
+            var result = new UserResult();
+
+            try
+            {
+                var appResult = await appsRepository.GetByLicense(request.License);
+
+                if (appResult.Success)
+                {
+                    var userResult = await usersRepository.GetById(request.RequestorId);
+
+                    if (userResult.Success)
+                    {
+                        var app = (App)appResult.Object;
+                        var user = (User)userResult.Object;
+
+                        if (!user.IsAdmin)
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.UserDoesNotHaveAdminPrivilegesMessage;
+
+                            return result;
+                        }
+
+                        if (!await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
+                        {
+                            result.Success = appResult.Success;
+                            result.Message = AppsMessages.UserIsNotAnAssignedAdminMessage;
+
+                            return result;
+                        }
+
+                        var appAdmin = (AppAdmin)
+                            (await appAdminsRepository.GetAdminRecord(app.Id, user.Id))
+                            .Object;
+
+                        appAdmin.IsActive = true;
+
+                        var appAdminResult = await appAdminsRepository.Update(appAdmin);
+
+                        if (appAdminResult.Success)
+                        {
+                            result.User = (User)
+                                (await usersRepository.GetById(user.Id))
+                                .Object;
+                            result.Success = appAdminResult.Success;
+                            result.Message = AppsMessages.AdminPrivilegesActivatedMessage;
+
+                            return result;
+                        }
+                        else if (!appAdminResult.Success && appAdminResult.Exception != null)
+                        {
+                            result.Success = appAdminResult.Success;
+                            result.Message = appAdminResult.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.ActivationOfAdminPrivilegesFailedMessage;
+
+                            return result;
+                        }
+                    }
+                    else if (!userResult.Success && userResult.Exception != null)
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = userResult.Exception.Message;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
+
+                        return result;
+                    }
+                }
+                else if (!appResult.Success && appResult.Exception != null)
+                {
+                    result.Success = appResult.Success;
+                    result.Message = appResult.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = appResult.Success;
+                    result.Message = AppsMessages.AppNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IUserResult> DeactivateAdminPrivileges(IBaseRequest request)
+        {
+            var result = new UserResult();
+
+            try
+            {
+                var appResult = await appsRepository.GetByLicense(request.License);
+
+                if (appResult.Success)
+                {
+                    var userResult = await usersRepository.GetById(request.RequestorId);
+
+                    if (userResult.Success)
+                    {
+                        var app = (App)appResult.Object;
+                        var user = (User)userResult.Object;
+
+                        if (!user.IsAdmin)
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.UserDoesNotHaveAdminPrivilegesMessage;
+
+                            return result;
+                        }
+
+                        if (!await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
+                        {
+                            result.Success = appResult.Success;
+                            result.Message = AppsMessages.UserIsNotAnAssignedAdminMessage;
+
+                            return result;
+                        }
+
+                        var appAdmin = (AppAdmin)
+                            (await appAdminsRepository.GetAdminRecord(app.Id, user.Id))
+                            .Object;
+
+                        appAdmin.IsActive = false;
+
+                        var appAdminResult = await appAdminsRepository.Update(appAdmin);
+
+                        if (appAdminResult.Success)
+                        {
+                            result.User = (User)
+                                (await usersRepository.GetById(user.Id))
+                                .Object;
+                            result.Success = appAdminResult.Success;
+                            result.Message = AppsMessages.AdminPrivilegesDeactivatedMessage;
+
+                            return result;
+                        }
+                        else if (!appAdminResult.Success && appAdminResult.Exception != null)
+                        {
+                            result.Success = appAdminResult.Success;
+                            result.Message = appAdminResult.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.DeactivationOfAdminPrivilegesFailedMessage;
+
+                            return result;
+                        }
+                    }
+                    else if (!userResult.Success && userResult.Exception != null)
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = userResult.Exception.Message;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = userResult.Success;
+                        result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
+
+                        return result;
+                    }
+                }
+                else if (!appResult.Success && appResult.Exception != null)
+                {
+                    result.Success = appResult.Success;
+                    result.Message = appResult.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = appResult.Success;
+                    result.Message = AppsMessages.AppNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
         public async Task<bool> IsRequestValidOnThisLicense(int id, string license, int userId)
         {
             if (await usersRepository.HasEntity(userId))

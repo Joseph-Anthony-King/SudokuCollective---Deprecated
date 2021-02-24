@@ -20,6 +20,8 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IBaseResult> ActivateApp(int id);
         Task<IBaseResult> DeactivateApp(int id);
         Task<IUserResult> PromoteToAdmin(IBaseRequest request);
+        Task<IUserResult> ActivateAdminPrivileges(IBaseRequest request);
+        Task<IUserResult> DeactivateAdminPrivileges(IBaseRequest request);
         Task<bool> IsRequestValidOnThisLicense(int id, string license, int userId);
         Task<bool> IsOwnerOfThisLicense(int id, string license, int userId);
     }

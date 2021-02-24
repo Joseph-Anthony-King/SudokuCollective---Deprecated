@@ -494,12 +494,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Act
             var result = sutSuccess.ObtainAdminPrivileges(baseRequest);
             var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
+            var user = ((UserResult)((OkObjectResult)result.Result).Value).User;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
             Assert.That(message, Is.EqualTo("Status Code 200: User Has Been Promoted To Admin"));
             Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(user, Is.InstanceOf<User>());
         }
 
         [Test]
@@ -516,6 +518,78 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
             Assert.That(message, Is.EqualTo("Status Code 404: User Has Not Been Promoted To Admin"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyActivateAdminPrivileges()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.ActivateAdminPrivileges(baseRequest);
+            var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
+            var user = ((UserResult)((OkObjectResult)result.Result).Value).User;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Admin Privileges Activated"));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(user, Is.InstanceOf<User>());
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyActivateAdminPrivilegesFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutPromoteUserFailure.ActivateAdminPrivileges(baseRequest);
+            var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Activation Of Admin Privileges Failed"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyDeactivateAdminPrivileges()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.DeactivateAdminPrivileges(baseRequest);
+            var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
+            var user = ((UserResult)((OkObjectResult)result.Result).Value).User;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Admin Privileges Deactivated"));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(user, Is.InstanceOf<User>());
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyDeactivateAdminPrivilegesFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutPromoteUserFailure.DeactivateAdminPrivileges(baseRequest);
+            var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Deactivation Of Admin Privileges Failed"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

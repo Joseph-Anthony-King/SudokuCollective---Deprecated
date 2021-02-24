@@ -55,5 +55,6 @@
         public static string UserIsAlreadyAnAdminMessage = "User Is Already An Admin";
         public static string UserHasBeenPromotedToAdminMessage = "User Has Been Promoted To Admin";
         public static string UserHasNotBeenPromotedToAdminMessage = "User Has Not Been Promoted To Admin";
+        public static string UserDoesNotHaveAdminPrivilegesMessage = "User Does Not Have Admin Privileges";
     }
 }

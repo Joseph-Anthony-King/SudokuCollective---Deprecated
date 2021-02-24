@@ -7,6 +7,7 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Services;
 using SudokuCollective.Test.MockRepositories;
 using SudokuCollective.Test.TestData;
@@ -479,6 +480,78 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("App Not Found"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ActivateUserAdminPrivileges()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut
+                .ActivateAdminPrivileges(TestObjects.GetBaseRequest());
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<UserResult>());
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Admin Privileges Activated"));
+            Assert.That(result.User, Is.TypeOf<User>());
+
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnFalseIfActivateUserAdminPrivilegesFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutAppRepoFailure
+                .ActivateAdminPrivileges(TestObjects.GetBaseRequest());
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<UserResult>());
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("App Not Found"));
+            Assert.That(result.User, Is.TypeOf<User>());
+
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task DeactivateUserAdminPrivileges()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut
+                .DeactivateAdminPrivileges(TestObjects.GetBaseRequest());
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<UserResult>());
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Admin Privileges Deactivated"));
+            Assert.That(result.User, Is.TypeOf<User>());
+
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnFalseIfDeactivateUserAdminPrivilegesFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutAppRepoFailure
+                .DeactivateAdminPrivileges(TestObjects.GetBaseRequest());
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<UserResult>());
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("App Not Found"));
+            Assert.That(result.User, Is.TypeOf<User>());
+
         }
     }
 }

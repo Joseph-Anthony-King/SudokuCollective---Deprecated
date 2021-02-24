@@ -24,5 +24,10 @@
         public static string AppNotDeactivatedMessage = "App Not Deactivated";
         public static string UserNotSignedUpToAppMessage = "User Is Not Signed Up To This App";
         public static string UserIsNotARegisteredUserOfThisAppMessage = "User Is Not A Registered User Of This App";
+        public static string UserIsNotAnAssignedAdminMessage = "User Is Not An Assigned Admin";
+        public static string AdminPrivilegesActivatedMessage = "Admin Privileges Activated";
+        public static string ActivationOfAdminPrivilegesFailedMessage = "Activation Of Admin Privileges Failed";
+        public static string AdminPrivilegesDeactivatedMessage = "Admin Privileges Deactivated";
+        public static string DeactivationOfAdminPrivilegesFailedMessage = "Deactivation Of Admin Privileges Failed";
     }
 }

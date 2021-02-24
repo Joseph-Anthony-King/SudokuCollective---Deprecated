@@ -393,5 +393,67 @@ namespace SudokuCollective.Api.V1.Controllers
                 return BadRequest(ControllerMessages.NotOwnerMessage);
             }
         }
+
+        // PUT: api/apps/activateAdminPrivileges
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("ActivateAdminPrivileges")]
+        public async Task<ActionResult> ActivateAdminPrivileges([FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.ActivateAdminPrivileges(request);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.NotOwnerMessage);
+            }
+        }
+
+        // PUT: api/apps/deactivateAdminPrivileges
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("DeactivateAdminPrivileges")]
+        public async Task<ActionResult> DeactivateAdminPrivileges([FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.DeactivateAdminPrivileges(request);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.NotOwnerMessage);
+            }
+        }
     }
 }
