@@ -169,7 +169,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Object reference not set to an instance of an object."));
+            Assert.That(result.Message, Is.EqualTo("Solutions Not Added"));
         }
     }
 }

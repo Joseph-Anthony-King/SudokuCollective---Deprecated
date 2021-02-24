@@ -18,6 +18,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private DatabaseContext context;
         private MockAppsRepository MockAppsRepository;
         private MockUsersRepository MockUsersRepository;
+        private MockAppAdminsRepository MockAppAdminsRepository;
         private IAppsService sut;
         private IAppsService sutAppRepoFailure;
         private IAppsService sutUserRepoFailure;
@@ -35,18 +36,22 @@ namespace SudokuCollective.Test.TestCases.Services
 
             MockAppsRepository = new MockAppsRepository(context);
             MockUsersRepository = new MockUsersRepository(context);
+            MockAppAdminsRepository = new MockAppAdminsRepository(context);
 
             sut = new AppsService(
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object);
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object);
 
             sutAppRepoFailure = new AppsService(
                 MockAppsRepository.AppsRepositoryFailedRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object);
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object);
 
             sutUserRepoFailure = new AppsService(
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockUsersRepository.UsersRepositoryFailedRequest.Object);
+                MockUsersRepository.UsersRepositoryFailedRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object);
 
             dateCreated = DateTime.UtcNow;
             license = TestObjects.GetLicense();

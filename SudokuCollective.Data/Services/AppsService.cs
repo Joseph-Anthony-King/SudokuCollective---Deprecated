@@ -21,13 +21,18 @@ namespace SudokuCollective.Data.Services
         #region Fields
         private readonly IAppsRepository<App> appsRepository;
         private readonly IUsersRepository<User> usersRepository;
+        private readonly IAppAdminsRepository<AppAdmin> appAdminsRepository;
         #endregion
 
         #region Constructor
-        public AppsService(IAppsRepository<App> appRepo, IUsersRepository<User> userRepo)
+        public AppsService(
+            IAppsRepository<App> appRepo, 
+            IUsersRepository<User> userRepo,
+            IAppAdminsRepository<AppAdmin> appAdminsRepo)
         {
             appsRepository = appRepo;
             usersRepository = userRepo;
+            appAdminsRepository = appAdminsRepo;
         }
         #endregion
 
@@ -48,10 +53,37 @@ namespace SudokuCollective.Data.Services
 
                         if (fullRecord)
                         {
+                            var appAdmins = (await appAdminsRepository.GetAll())
+                                .Objects
+                                .ConvertAll(aa => (AppAdmin)aa)
+                                .ToList();
+
                             foreach (var userApp in app.Users)
                             {
                                 userApp.App = null;
                                 userApp.User.Apps = new List<UserApp>();
+
+                                if (app.Id != 1 && userApp
+                                    .User
+                                    .Roles
+                                    .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                {
+                                    if (!userApp.User.IsSuperUser)
+                                    {
+                                        if (!appAdmins.Any(aa =>
+                                            aa.AppId == app.Id &&
+                                            aa.UserId == userApp.User.Id))
+                                        {
+                                            var adminRole = userApp
+                                                .User
+                                                .Roles
+                                                .FirstOrDefault(ur =>
+                                                    ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                            userApp.User.Roles.Remove(adminRole);
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -109,9 +141,37 @@ namespace SudokuCollective.Data.Services
 
                         if (fullRecord)
                         {
+                            var appAdmins = (await appAdminsRepository.GetAll())
+                                .Objects
+                                .ConvertAll(aa => (AppAdmin)aa)
+                                .ToList();
+
                             foreach (var userApp in app.Users)
                             {
                                 userApp.App = null;
+                                userApp.User.Apps = new List<UserApp>();
+
+                                if (app.Id != 1 && userApp
+                                    .User
+                                    .Roles
+                                    .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                {
+                                    if (!userApp.User.IsSuperUser)
+                                    {
+                                        if (!appAdmins.Any(aa =>
+                                            aa.AppId == app.Id &&
+                                            aa.UserId == userApp.User.Id))
+                                        {
+                                            var adminRole = userApp
+                                                .User
+                                                .Roles
+                                                .FirstOrDefault(ur =>
+                                                    ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                            userApp.User.Roles.Remove(adminRole);
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -370,11 +430,39 @@ namespace SudokuCollective.Data.Services
 
                     if (fullRecord)
                     {
+                        var appAdmins = (await appAdminsRepository.GetAll())
+                            .Objects
+                            .ConvertAll(aa => (AppAdmin)aa)
+                            .ToList();
+
                         foreach (var app in result.Apps)
                         {
                             foreach (var userApp in app.Users)
                             {
                                 userApp.App = null;
+                                userApp.User.Apps = new List<UserApp>();
+
+                                if (app.Id != 1 && userApp
+                                    .User
+                                    .Roles
+                                    .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                {
+                                    if (!userApp.User.IsSuperUser)
+                                    {
+                                        if (!appAdmins.Any(aa =>
+                                            aa.AppId == app.Id &&
+                                            aa.UserId == userApp.User.Id))
+                                        {
+                                            var adminRole = userApp
+                                                .User
+                                                .Roles
+                                                .FirstOrDefault(ur =>
+                                                    ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                            userApp.User.Roles.Remove(adminRole);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -641,11 +729,39 @@ namespace SudokuCollective.Data.Services
 
                         if (fullRecord)
                         {
+                            var appAdmins = (await appAdminsRepository.GetAll())
+                                .Objects
+                                .ConvertAll(aa => (AppAdmin)aa)
+                                .ToList();
+
                             foreach (var user in result.Users)
                             {
                                 foreach (var userApp in user.Apps)
                                 {
-                                    userApp.App.Users = new List<UserApp>();
+                                    userApp.App = null;
+                                    userApp.User.Apps = new List<UserApp>();
+
+                                    if (id != 1 && userApp
+                                        .User
+                                        .Roles
+                                        .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                    {
+                                        if (!userApp.User.IsSuperUser)
+                                        {
+                                            if (!appAdmins.Any(aa =>
+                                                aa.AppId == id &&
+                                                aa.UserId == userApp.User.Id))
+                                            {
+                                                var adminRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur =>
+                                                        ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                                userApp.User.Roles.Remove(adminRole);
+                                            }
+                                        }
+                                    }
                                 }
 
                                 foreach (var userRole in user.Roles)

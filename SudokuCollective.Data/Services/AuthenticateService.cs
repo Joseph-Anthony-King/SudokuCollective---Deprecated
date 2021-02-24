@@ -14,6 +14,8 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Messages;
+using System.Linq;
+using SudokuCollective.Core.Enums;
 
 namespace SudokuCollective.Data.Services
 {
@@ -21,17 +23,23 @@ namespace SudokuCollective.Data.Services
     {
         private readonly IUsersRepository<User> usersRepository;
         private readonly IRolesRepository<Role> rolesRepository;
+        private readonly IAppsRepository<App> appsRepository;
+        private readonly IAppAdminsRepository<AppAdmin> appAdminsRepository;
         private readonly IUserManagementService userManagementService;
         private readonly ITokenManagement tokenManagement;
 
         public AuthenticateService(
             IUsersRepository<User> usersRepo,
             IRolesRepository<Role> rolesRepo,
+            IAppsRepository<App> appsRepo,
+            IAppAdminsRepository<AppAdmin> appsAdminRepo,
             IUserManagementService userManagementServ,
             IOptions<TokenManagement> tokenManage)
         {
             usersRepository = usersRepo;
             rolesRepository = rolesRepo;
+            appsRepository = appsRepo;
+            appAdminsRepository = appsAdminRepo;
             userManagementService = userManagementServ;
             tokenManagement = tokenManage.Value;
         }
@@ -53,6 +61,28 @@ namespace SudokuCollective.Data.Services
             }
 
             var user = (User)(await usersRepository.GetByUserName(request.UserName, true)).Object;
+
+            var app = (App)(await appsRepository.GetByLicense(request.License)).Object;
+
+            var appAdmins = (await appAdminsRepository.GetAll()).Objects.ConvertAll(aa => (AppAdmin)aa);
+
+            if (app.Id != 1)
+            {
+                if (!user.IsSuperUser)
+                {
+                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                    {
+                        if (!appAdmins.Any(aa => aa.AppId == app.Id && aa.UserId == user.Id))
+                        {
+                            var adminRole = user
+                                .Roles
+                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                            user.Roles.Remove(adminRole);
+                        }
+                    }
+                }
+            }
 
             result.User.UpdateWithUserInfo(user);
 

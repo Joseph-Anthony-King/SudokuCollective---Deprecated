@@ -15,6 +15,7 @@ const authenticateUser = async function (username, password) {
     data: {
       UserName: `${username}`,
       Password: `${password}`,
+      License: `${process.env.VUE_APP_LICENSE}`
     },
   };
 

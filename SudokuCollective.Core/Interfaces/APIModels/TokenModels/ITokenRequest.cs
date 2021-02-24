@@ -4,5 +4,6 @@
     {
         string UserName { get; set; }
         string Password { get; set; }
+        string License { get; set; }
     }
 }

@@ -57,8 +57,6 @@ namespace SudokuCollective.Data.Repositories
                     } 
                 };
 
-                AppAdmin appAdmin = null;
-
                 if (entity.Apps.FirstOrDefault().AppId == 1)
                 {
                     var adminRole = await context
@@ -73,11 +71,6 @@ namespace SudokuCollective.Data.Repositories
                             RoleId = adminRole.Id,
                             Role = adminRole
                         });
-
-                    appAdmin = new AppAdmin(
-                        entity.Apps.FirstOrDefault().AppId,
-                        entity.Id
-                    );
                 }
 
                 entity.Roles = userRoles
@@ -85,11 +78,6 @@ namespace SudokuCollective.Data.Repositories
                     .ToList();
 
                 context.AddRange(entity.Roles);
-
-                if (appAdmin != null)
-                {
-                    context.Attach(appAdmin);
-                }
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {

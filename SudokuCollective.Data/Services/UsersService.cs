@@ -627,6 +627,13 @@ namespace SudokuCollective.Data.Services
                             {
                                 user = (User)userResponse.Object;
 
+                                if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                {
+                                    var appAdmin = new AppAdmin(app.Id, user.Id);
+
+                                    _ = await appAdminsRepository.Add(appAdmin);
+                                }
+
                                 var emailConfirmation = new EmailConfirmation(
                                     user.Id,
                                     app.Id);

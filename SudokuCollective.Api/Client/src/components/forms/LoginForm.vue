@@ -341,9 +341,9 @@ export default {
     },
 
     redirectToSignUp() {
-      this.$emit("redirect-to-sign-up", null, null);
-
       this.resetForm();
+
+      this.$emit("redirect-to-sign-up", null, null);
     },
 
     close() {

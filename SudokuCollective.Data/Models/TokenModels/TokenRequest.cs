@@ -13,5 +13,9 @@ namespace SudokuCollective.Data.Models.TokenModels
         [Required]
         [JsonProperty("Password")]
         public string Password { get; set; }
+
+        [Required]
+        [JsonProperty("License")]
+        public string License { get; set; }
     }
 }

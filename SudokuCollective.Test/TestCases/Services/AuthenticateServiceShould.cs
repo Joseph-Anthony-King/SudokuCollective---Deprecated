@@ -17,6 +17,8 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockUsersRepository MockUsersRepository;
         private MockRolesRepository MockRolesRepository;
         private MockUserManagementService MockUserManagementService;
+        private MockAppsRepository MockAppsRepository;
+        private MockAppAdminsRepository MockAppAdminsRepository;
         private TokenManagement tokenManagement;
         private IAuthenticateService sutValid;
         private IAuthenticateService sutInvalid;
@@ -33,6 +35,8 @@ namespace SudokuCollective.Test.TestCases.Services
 
             MockUsersRepository = new MockUsersRepository(context);
             MockRolesRepository = new MockRolesRepository(context);
+            MockAppsRepository = new MockAppsRepository(context);
+            MockAppAdminsRepository = new MockAppAdminsRepository(context);
 
             MockUserManagementService = new MockUserManagementService();
 
@@ -49,12 +53,16 @@ namespace SudokuCollective.Test.TestCases.Services
 
             sutValid = new AuthenticateService(
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object, 
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object, 
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object,
                 MockUserManagementService.UserManagementServiceSuccssfulRequest.Object,
                 options);
             sutInvalid = new AuthenticateService(
                 MockUsersRepository.UsersRepositoryFailedRequest.Object,
                 MockRolesRepository.RolesRepositoryFailedRequest.Object,
+                MockAppsRepository.AppsRepositoryFailedRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
                 MockUserManagementService.UserManagementServiceFailedRequest.Object, 
                 options);
         }

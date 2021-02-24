@@ -60,6 +60,7 @@
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="showPassword = !showPassword"
                 :rules="stringRequiredRules"
+                autocomplete="new-password"
                 required
               ></v-text-field>
             </v-col>
@@ -134,10 +135,12 @@ import SignUpModel from "@/models/viewModels/signUpModel";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
+import isChrome from "@/mixins/isChrome";
 
 export default {
   name: "SignUpForm",
   props: ["signUpFormStatus"],
+  mixins: [isChrome],
   data: () => ({
     username: "",
     firstname: "",
