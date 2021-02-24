@@ -12,10 +12,14 @@ namespace SudokuCollective.Api.Controllers
     public class PasswordResetController : Controller
     {
         private readonly IUsersService usersService;
+        private readonly IAppsService appsService;
 
-        public PasswordResetController(IUsersService usersServ)
+        public PasswordResetController(
+            IUsersService usersServ,
+            IAppsService appsServ)
         {
             usersService = usersServ;
+            appsService = appsServ;
         }
 
         [AllowAnonymous]
@@ -32,6 +36,7 @@ namespace SudokuCollective.Api.Controllers
                     UserId = result.User.Id,
                     UserName = result.User.UserName,
                     AppTitle = result.App.Name,
+                    AppId = result.App.Id,
                     Url = result.App.InDevelopment ? result.App.DevUrl : result.App.LiveUrl
                 };
 
@@ -50,14 +55,19 @@ namespace SudokuCollective.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Result(PasswordReset passwordReset)
+        public async Task<IActionResult> Result(
+            PasswordReset passwordReset)
         {
             if (!ModelState.IsValid)
             {
                 return View("Index", passwordReset);
             }
 
-            var userResut = await usersService.GetUser(passwordReset.UserId);
+            var app = (await appsService.GetApp(passwordReset.AppId)).App;
+
+            var userResut = await usersService.GetUser(
+                passwordReset.UserId, 
+                app.License);
 
             if (userResut.Success)
             {

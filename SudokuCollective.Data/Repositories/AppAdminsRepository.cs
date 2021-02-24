@@ -378,6 +378,38 @@ namespace SudokuCollective.Data.Repositories
 
             return result;
         }
+
+        async public Task<IRepositoryResponse> GetAdminRecord(int appId, int userId)
+        {
+            var result = new RepositoryResponse();
+            var query = new AppAdmin();
+
+            try
+            {
+                query = await context
+                    .AppAdmins
+                    .FirstOrDefaultAsync(aa => aa.AppId == appId && aa.UserId == userId);
+
+                if (query == null)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
+                result.Success = true;
+                result.Object = query;
+
+                return result;
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
         #endregion
     }
 }

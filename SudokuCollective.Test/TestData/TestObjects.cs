@@ -512,6 +512,7 @@ namespace SudokuCollective.Test.TestData
                 NewPassword = "NewPassword",
                 ConfirmNewPassword = "NewPassword",
                 AppTitle = "AppTItle",
+                AppId = 1,
                 Url = "https://localhost:5001",
                 Message = "Message"
             };

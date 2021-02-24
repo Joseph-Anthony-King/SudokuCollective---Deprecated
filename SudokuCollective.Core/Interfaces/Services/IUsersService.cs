@@ -9,9 +9,13 @@ namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface IUsersService : IService
     {
-        Task<IUserResult> GetUser(int id, bool fullRecord = true);
+        Task<IUserResult> GetUser(
+            int id,
+            string license,
+            bool fullRecord = true);
         Task<IUsersResult> GetUsers(
             int requestorId,
+            string license,
             IPageListModel pageListModel, 
             bool fullRecord = true);
         Task<IUserResult> CreateUser(
@@ -30,8 +34,14 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IInitiatePasswordResetResult> InitiatePasswordReset(string token);
         Task<IBaseResult> UpdatePassword(IPasswordResetRequest request);
         Task<IBaseResult> DeleteUser(int id);
-        Task<IBaseResult> AddUserRoles(int userid, List<int> roleIds);
-        Task<IBaseResult> RemoveUserRoles(int userid, List<int> roleIds);
+        Task<IRolesResult> AddUserRoles(
+            int userid,
+            List<int> roleIds,
+            string license);
+        Task<IBaseResult> RemoveUserRoles(
+            int userid,
+            List<int> roleIds,
+            string license);
         Task<IBaseResult> ActivateUser(int id);
         Task<IBaseResult> DeactivateUser(int id);
         Task<IConfirmEmailResult> ConfirmEmail(

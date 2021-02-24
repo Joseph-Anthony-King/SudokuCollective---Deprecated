@@ -55,9 +55,17 @@ namespace SudokuCollective.Data.Repositories
                     AppId = entity.Id
                 };
 
+                var appAdmin = new AppAdmin
+                {
+                    AppId = entity.Id,
+                    UserId = user.Id
+                };
+
                 entity.Users.Add(userApp);
 
                 context.Attach(userApp);
+
+                context.Attach(appAdmin);
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {

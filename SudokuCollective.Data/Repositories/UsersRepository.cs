@@ -57,6 +57,8 @@ namespace SudokuCollective.Data.Repositories
                     } 
                 };
 
+                AppAdmin appAdmin = null;
+
                 if (entity.Apps.FirstOrDefault().AppId == 1)
                 {
                     var adminRole = await context
@@ -71,6 +73,11 @@ namespace SudokuCollective.Data.Repositories
                             RoleId = adminRole.Id,
                             Role = adminRole
                         });
+
+                    appAdmin = new AppAdmin(
+                        entity.Apps.FirstOrDefault().AppId,
+                        entity.Id
+                    );
                 }
 
                 entity.Roles = userRoles
@@ -78,6 +85,11 @@ namespace SudokuCollective.Data.Repositories
                     .ToList();
 
                 context.AddRange(entity.Roles);
+
+                if (appAdmin != null)
+                {
+                    context.Attach(appAdmin);
+                }
 
                 foreach (var entry in context.ChangeTracker.Entries())
                 {
@@ -104,6 +116,18 @@ namespace SudokuCollective.Data.Repositories
                         }
 
                         if (entity.Roles.Any(ur => ur.Id == userRole.Id))
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else if (dbEntry is AppAdmin userAdmin)
+                    {
+                        if (userAdmin.AppId == entity.Apps.FirstOrDefault().AppId 
+                            && userAdmin.UserId == entity.Id)
                         {
                             entry.State = EntityState.Added;
                         }
@@ -693,6 +717,7 @@ namespace SudokuCollective.Data.Repositories
                         await context.SaveChangesAsync();
 
                         result.Success = true;
+                        result.Object = userRole;
 
                         return result;
                     }
@@ -748,6 +773,9 @@ namespace SudokuCollective.Data.Repositories
                             };
 
                             context.Attach(userRole);
+
+                            result.Objects.Add(userRole);
+
                             newUserRoleIds.Add(userRole.Id);
                         }
                         else
@@ -891,6 +919,8 @@ namespace SudokuCollective.Data.Repositories
                                 && roleIds.Contains(userRole.RoleId))
                             {
                                 entry.State = EntityState.Deleted;
+
+                                result.Objects.Add(userRole);
                             }
                             else
                             {

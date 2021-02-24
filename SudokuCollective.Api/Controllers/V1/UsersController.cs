@@ -44,7 +44,10 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await usersService.GetUser(id, fullRecord);
+                var result = await usersService.GetUser(
+                    id, 
+                    request.License, 
+                    fullRecord);
 
                 if (result.Success)
                 {
@@ -79,6 +82,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await usersService.GetUsers(
                     request.RequestorId, 
+                    request.License,
                     request.PageListModel, 
                     fullRecord);
 
@@ -302,7 +306,8 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await usersService.AddUserRoles(
                     id,
-                    request.RoleIds.ToList());
+                    request.RoleIds.ToList(),
+                    request.License);
 
                 if (result.Success)
                 {
@@ -337,7 +342,8 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await usersService.RemoveUserRoles(
                     id,
-                    request.RoleIds.ToList());
+                    request.RoleIds.ToList(),
+                    request.License);
 
                 if (result.Success)
                 {

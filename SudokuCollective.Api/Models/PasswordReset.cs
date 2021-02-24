@@ -13,6 +13,7 @@ namespace SudokuCollective.Api.Models
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please confirm your new password")]
         public string ConfirmNewPassword { get; set; }
         public string AppTitle { get; set; }
+        public int AppId { get; set; }
         public string Url { get; set; }
         public string Message { get; set; }
     }

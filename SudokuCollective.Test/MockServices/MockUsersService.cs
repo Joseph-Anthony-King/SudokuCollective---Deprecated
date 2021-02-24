@@ -56,7 +56,10 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.GetUser(It.IsAny<int>(), It.IsAny<bool>()))
+                userService.GetUser(
+                    It.IsAny<int>(),
+                    It.IsAny<string>(), 
+                    It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRepository
@@ -77,6 +80,7 @@ namespace SudokuCollective.Test.MockServices
             UsersServiceSuccessfulRequest.Setup(userService =>
                 userService.GetUsers(
                     It.IsAny<int>(),
+                    It.IsAny<string>(), 
                     It.IsAny<PageListModel>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
@@ -170,8 +174,11 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.AddUserRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
-                .Returns(Task.FromResult(new BaseResult()
+                userService.AddUserRoles(
+                    It.IsAny<int>(), 
+                    It.IsAny<List<int>>(),
+                    It.IsAny<string>()))
+                .Returns(Task.FromResult(new RolesResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
@@ -179,11 +186,15 @@ namespace SudokuCollective.Test.MockServices
                         .AddRoles(It.IsAny<int>(), It.IsAny<List<int>>())
                         .Result
                         .Success,
-                    Message = UsersMessages.RolesAddedMessage
-                } as IBaseResult));
+                    Message = UsersMessages.RolesAddedMessage,
+                    Roles = new List<IRole>()
+                } as IRolesResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.RemoveUserRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
+                userService.RemoveUserRoles(
+                    It.IsAny<int>(), 
+                    It.IsAny<List<int>>(),
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
@@ -359,7 +370,10 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.GetUser(It.IsAny<int>(), It.IsAny<bool>()))
+                userService.GetUser(
+                    It.IsAny<int>(), 
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRepository
@@ -380,6 +394,7 @@ namespace SudokuCollective.Test.MockServices
             UsersServiceFailedRequest.Setup(userService =>
                 userService.GetUsers(
                     It.IsAny<int>(),
+                    It.IsAny<string>(),
                     It.IsAny<PageListModel>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
@@ -467,8 +482,11 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.AddUserRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
-                .Returns(Task.FromResult(new BaseResult()
+                userService.AddUserRoles(
+                    It.IsAny<int>(), 
+                    It.IsAny<List<int>>(),
+                    It.IsAny<string>()))
+                .Returns(Task.FromResult(new RolesResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositoryFailedRequest
@@ -476,11 +494,15 @@ namespace SudokuCollective.Test.MockServices
                         .AddRoles(It.IsAny<int>(), It.IsAny<List<int>>())
                         .Result
                         .Success,
-                    Message = UsersMessages.RolesNotAddedMessage
-                } as IBaseResult));
+                    Message = UsersMessages.RolesNotAddedMessage,
+                    Roles = new List<IRole>()
+                } as IRolesResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.RemoveUserRoles(It.IsAny<int>(), It.IsAny<List<int>>()))
+                userService.RemoveUserRoles(
+                    It.IsAny<int>(), 
+                    It.IsAny<List<int>>(),
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository

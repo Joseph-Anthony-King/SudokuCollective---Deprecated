@@ -239,5 +239,55 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result, Is.False);
         }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetAppAdminsRecords()
+        {
+            // Arrange
+            var userId = context
+                .Users
+                .Where(u => u.Id == 1)
+                .Select(u => u.Id)
+                .FirstOrDefault();
+
+            var appId = context
+                .Apps
+                .Where(a => a.Id == 1)
+                .Select(a => a.Id)
+                .FirstOrDefault();
+
+            // Act
+            var result = await sut.GetAdminRecord(appId, userId);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That((AppAdmin)result.Object, Is.InstanceOf<AppAdmin>());
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfGetRecordsFails()
+        {
+            // Arrange
+            var userId = context
+                .Users
+                .Where(u => u.Id == 1)
+                .Select(u => u.Id)
+                .FirstOrDefault();
+
+            var appId = context
+                .Apps
+                .Where(a => a.Id == 1)
+                .Select(a => a.Id)
+                .FirstOrDefault();
+
+            // Act
+            var result = await sut.GetAdminRecord(appId, userId + 1);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Object, Is.Null);
+        }
     }
 }

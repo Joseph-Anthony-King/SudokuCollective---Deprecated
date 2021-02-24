@@ -264,7 +264,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.AddRoles(userId, updateUserRoleRequest);
-            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var message = ((RolesResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
@@ -282,7 +282,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.AddRoles(userId, updateUserRoleRequest);
-            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var message = ((RolesResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert

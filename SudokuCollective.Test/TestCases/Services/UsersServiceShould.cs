@@ -23,6 +23,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockUsersRepository MockUsersRepository;
         private MockAppsRepository MockAppsRepository;
         private MockRolesRepository MockRolesRepository;
+        private MockAppAdminsRepository MockAppAdminsRepository;
         private MockEmailConfirmationsRepository MockEmailConfirmationsRepository;
         private MockPasswordResetsRepository MockPasswordResetRepository;
         private IUsersService sut;
@@ -42,6 +43,7 @@ namespace SudokuCollective.Test.TestCases.Services
             MockUsersRepository = new MockUsersRepository(context);
             MockAppsRepository = new MockAppsRepository(context);
             MockRolesRepository = new MockRolesRepository(context);
+            MockAppAdminsRepository = new MockAppAdminsRepository(context);
             MockEmailConfirmationsRepository = new MockEmailConfirmationsRepository(context);
             MockPasswordResetRepository = new MockPasswordResetsRepository(context);
 
@@ -49,6 +51,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
                 MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
@@ -57,6 +60,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockUsersRepository.UsersRepositoryFailedRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
                 MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
@@ -65,6 +69,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockUsersRepository.UsersRepositoryEmailFailedRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
                 MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
@@ -73,6 +78,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockUsersRepository.UsersRepositoryInitiatePasswordSuccessful.Object,
                 MockAppsRepository.AppsRepositoryInitiatePasswordSuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
                 MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
@@ -81,6 +87,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockUsersRepository.UsersRepositoryResendEmailConfirmationSuccessful.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
                 MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
@@ -89,6 +96,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositorySuccessfulRequest.Object,
                 MockPasswordResetRepository.PasswordResetsRepositorySuccessfullCreateRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object);
@@ -102,9 +110,10 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             // Arrange
             var userId = 1;
+            var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sut.GetUser(userId);
+            var result = await sut.GetUser(userId, license);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -118,9 +127,10 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             // Arrange
             var userId = 5;
+            var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sutFailure.GetUser(userId);
+            var result = await sutFailure.GetUser(userId, license);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -133,10 +143,12 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task GetUsers()
         {
             // Arrange
+            var license = TestObjects.GetLicense();
 
             // Act
             var result = await sut.GetUsers(
-                baseRequest.RequestorId, 
+                baseRequest.RequestorId,
+                license, 
                 baseRequest.PageListModel);
 
             // Assert
@@ -619,9 +631,13 @@ namespace SudokuCollective.Test.TestCases.Services
 
             var updateUserRoleRequest = new UpdateUserRoleRequest();
             updateUserRoleRequest.RoleIds.Add(3);
+            var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sut.AddUserRoles(userId, updateUserRoleRequest.RoleIds);
+            var result = await sut.AddUserRoles(
+                userId, 
+                updateUserRoleRequest.RoleIds,
+                license);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -641,9 +657,13 @@ namespace SudokuCollective.Test.TestCases.Services
 
             var updateUserRoleRequest = new UpdateUserRoleRequest();
             updateUserRoleRequest.RoleIds.Add(3);
+            var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sut.RemoveUserRoles(userId, updateUserRoleRequest.RoleIds);
+            var result = await sut.RemoveUserRoles(
+                userId, 
+                updateUserRoleRequest.RoleIds,
+                license);
 
             // Assert
             Assert.That(result.Success, Is.True);

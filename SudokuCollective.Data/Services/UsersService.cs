@@ -26,6 +26,7 @@ namespace SudokuCollective.Data.Services
         private readonly IUsersRepository<User> usersRepository;
         private readonly IAppsRepository<App> appsRepository;
         private readonly IRolesRepository<Role> rolesRepository;
+        private readonly IAppAdminsRepository<AppAdmin> appAdminsRepository;
         private readonly IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepository;
         private readonly IPasswordResetsRepository<PasswordReset> passwordResetsRepository;
         private readonly IEmailService emailService;
@@ -36,6 +37,7 @@ namespace SudokuCollective.Data.Services
             IUsersRepository<User> usersRepo,
             IAppsRepository<App> appsRepo,
             IRolesRepository<Role> rolesRepo,
+            IAppAdminsRepository<AppAdmin> appAdminsRepo,
             IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepo,
             IPasswordResetsRepository<PasswordReset> passwordResetsRepo,
             IEmailService emailServ)
@@ -43,6 +45,7 @@ namespace SudokuCollective.Data.Services
             usersRepository = usersRepo;
             appsRepository = appsRepo;
             rolesRepository = rolesRepo;
+            appAdminsRepository = appAdminsRepo;
             emailConfirmationsRepository = emailConfirmationsRepo;
             passwordResetsRepository = passwordResetsRepo;
             emailService = emailServ;
@@ -50,7 +53,10 @@ namespace SudokuCollective.Data.Services
         #endregion
 
         #region Methods
-        public async Task<IUserResult> GetUser(int id, bool fullRecord = true)
+        public async Task<IUserResult> GetUser(
+            int id,
+            string license,
+            bool fullRecord = true)
         {
             var result = new UserResult();
 
@@ -86,6 +92,34 @@ namespace SudokuCollective.Data.Services
                         result.Success = response.Success;
                         result.Message = UsersMessages.UserFoundMessage;
                         result.User = user;
+
+                        var app = (App)(await appsRepository.GetByLicense(license)).Object;
+                        var appAdmins = (await appAdminsRepository.GetAll())
+                            .Objects
+                            .ConvertAll(aa => (AppAdmin)aa)
+                            .ToList();
+
+                        if (app.Id != 1 && result
+                            .User
+                            .Roles
+                            .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                        {
+                            if (!user.IsSuperUser)
+                            {
+                                if (!appAdmins.Any(aa => 
+                                    aa.AppId == app.Id && 
+                                    aa.UserId == result.User.Id))
+                                {
+                                    var adminRole = result
+                                        .User
+                                        .Roles
+                                        .FirstOrDefault(ur => 
+                                            ur.Role.RoleLevel == RoleLevel.ADMIN);
+                                    
+                                    result.User.Roles.Remove(adminRole);
+                                }
+                            }
+                        }
 
                         return result;
                     }
@@ -123,6 +157,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IUsersResult> GetUsers(
             int requestorId,
+            string license,
             IPageListModel pageListModel,
             bool fullRecord = true)
         {
@@ -393,6 +428,35 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Users = response.Objects.ConvertAll(u => (IUser)u);
+                    }
+
+                    var app = (App)(await appsRepository.GetByLicense(license)).Object;
+                    var appAdmins = (await appAdminsRepository.GetAll())
+                        .Objects
+                        .ConvertAll(aa => (AppAdmin)aa)
+                        .ToList();
+
+                    foreach (var user in result.Users)
+                    {
+                        if (app.Id != 1 && user
+                            .Roles
+                            .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                        {
+                            if (!user.IsSuperUser)
+                            {
+                                if (!appAdmins.Any(aa => 
+                                    aa.AppId == app.Id && 
+                                    aa.UserId == user.Id))
+                                {
+                                    var adminRole = user
+                                        .Roles
+                                        .FirstOrDefault(ur => 
+                                            ur.Role.RoleLevel == RoleLevel.ADMIN);
+                                    
+                                    user.Roles.Remove(adminRole);
+                                }
+                            }
+                        }
                     }
 
                     if (fullRecord)
@@ -1265,6 +1329,14 @@ namespace SudokuCollective.Data.Services
 
                         if (deletionResponse.Success)
                         {
+                            var admins = (await appAdminsRepository.GetAll())
+                                .Objects
+                                .ConvertAll(aa => (AppAdmin)aa)
+                                .Where(aa => aa.UserId == id)
+                                .ToList();
+
+                            _ = await appAdminsRepository.DeleteRange(admins);
+
                             result.Success = true;
                             result.Message = UsersMessages.UserDeletedMessage;
 
@@ -1317,9 +1389,12 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> AddUserRoles(int userid, List<int> roleIds)
+        public async Task<IRolesResult> AddUserRoles(
+            int userid, 
+            List<int> roleIds,
+            string license)
         {
-            var result = new BaseResult();
+            var result = new RolesResult();
 
             try
             {
@@ -1330,7 +1405,24 @@ namespace SudokuCollective.Data.Services
                         var response = await usersRepository.AddRoles(userid, roleIds);
 
                         if (response.Success)
-                        {
+                        {                            
+                            var roles = response
+                                .Objects
+                                .ConvertAll(ur => (UserRole)ur)
+                                .ToList();
+
+                            var app = (App)(await appsRepository.GetByLicense(license)).Object;
+
+                            foreach (var role in roles)
+                            {
+                                if (role.Role.RoleLevel == RoleLevel.ADMIN)
+                                {
+                                    var appAdmin = (AppAdmin)(await appAdminsRepository.Add(new AppAdmin(app.Id, userid))).Object;
+                                }
+
+                                result.Roles.Add(role.Role);
+                            }
+
                             result.Success = response.Success;
                             result.Message = UsersMessages.RolesAddedMessage;
 
@@ -1376,7 +1468,10 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> RemoveUserRoles(int userid, List<int> roleIds)
+        public async Task<IBaseResult> RemoveUserRoles(
+            int userid, 
+            List<int> roleIds,
+            string license)
         {
             var result = new BaseResult();
 
@@ -1389,7 +1484,26 @@ namespace SudokuCollective.Data.Services
                         var response = await usersRepository.RemoveRoles(userid, roleIds);
 
                         if (response.Success)
-                        {
+                        {                            
+                            var roles = response
+                                .Objects
+                                .ConvertAll(ur => (UserRole)ur)
+                                .ToList();
+
+                            var app = (App)(await appsRepository.GetByLicense(license)).Object;
+
+                            foreach (var role in roles)
+                            {
+                                if (role.Role.RoleLevel == RoleLevel.ADMIN)
+                                {
+                                    var appAdmin = (AppAdmin)
+                                        (await appAdminsRepository.GetAdminRecord(app.Id, userid))
+                                        .Object;
+
+                                    _ = await appAdminsRepository.Delete(appAdmin);
+                                }
+                            }
+
                             result.Success = response.Success;
                             result.Message = UsersMessages.RolesRemovedMessage;
 

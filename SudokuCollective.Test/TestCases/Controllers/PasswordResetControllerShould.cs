@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
@@ -14,6 +15,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private DatabaseContext context;
         private PasswordResetController sut;
         private MockUsersService mockUsersService;
+        private MockAppsService mockAppsService;
         private string passwordResetToken;
 
         [SetUp]
@@ -22,9 +24,11 @@ namespace SudokuCollective.Test.TestCases.Controllers
             context = await TestDatabase.GetDatabaseContext();
 
             mockUsersService = new MockUsersService(context);
+            mockAppsService = new MockAppsService(context);
 
             sut = new PasswordResetController(
-                mockUsersService.UsersServiceSuccessfulRequest.Object);
+                mockUsersService.UsersServiceSuccessfulRequest.Object,
+                mockAppsService.AppsServiceSuccessfulRequest.Object);
 
             passwordResetToken = Guid.NewGuid().ToString();
         }
@@ -47,9 +51,11 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public void SuccessfullyProcessResetPasswordRequests()
         {
             // Arrange
+            var appId = context.Apps.Where(a => a.Id == 1).Select(a => a.Id);
 
             // Act
-            var result = sut.Result(TestObjects.GetPasswordReset());
+            var result = sut.Result(
+                TestObjects.GetPasswordReset());
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
