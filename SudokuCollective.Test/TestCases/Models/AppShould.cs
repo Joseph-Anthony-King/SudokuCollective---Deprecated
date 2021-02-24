@@ -50,7 +50,8 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.DevUrl, Is.TypeOf<string>());
             Assert.That(sut.LiveUrl, Is.TypeOf<string>());
             Assert.That(sut.IsActive, Is.TypeOf<bool>());
-            Assert.That(sut.AllowSuperUserAccess, Is.TypeOf<bool>());
+            Assert.That(sut.PermitSuperUserAccess, Is.TypeOf<bool>());
+            Assert.That(sut.PermitCollectiveLogins, Is.TypeOf<bool>());
             Assert.That(sut.InDevelopment, Is.TypeOf<bool>());
             Assert.That(sut.DisableCustomUrls, Is.TypeOf<bool>());
             Assert.That(sut.CustomEmailConfirmationDevUrl, Is.TypeOf<string>());
@@ -309,6 +310,7 @@ namespace SudokuCollective.Test.TestCases.Models
                 false,
                 true,
                 true,
+                true,
                 null,
                 null,
                 null,
@@ -329,8 +331,8 @@ namespace SudokuCollective.Test.TestCases.Models
             // Act
 
             // Assert
-            Assert.That(sut.AllowSuperUserAccess, Is.InstanceOf<bool>());
-            Assert.That(sut.AllowSuperUserAccess, Is.False);
+            Assert.That(sut.PermitSuperUserAccess, Is.InstanceOf<bool>());
+            Assert.That(sut.PermitSuperUserAccess, Is.False);
         }
     }
 }

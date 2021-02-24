@@ -23,5 +23,6 @@
         public static string AppDeactivatedMessage = "App Deactivated";
         public static string AppNotDeactivatedMessage = "App Not Deactivated";
         public static string UserNotSignedUpToAppMessage = "User Is Not Signed Up To This App";
+        public static string UserIsNotARegisteredUserOfThisAppMessage = "User Is Not A Registered User Of This App";
     }
 }

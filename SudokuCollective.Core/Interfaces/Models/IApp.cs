@@ -12,15 +12,16 @@ namespace SudokuCollective.Core.Interfaces.Models
         string DevUrl { get; set; }
         string LiveUrl { get; set; }
         bool IsActive { get; set; }
-        bool AllowSuperUserAccess { get; set; }
         bool InDevelopment { get; set; }
+        bool PermitSuperUserAccess { get; set; }
+        bool PermitCollectiveLogins { get; set; }
+        bool UseCustomEmailConfirmationUrl { get; }
+        bool UseCustomPasswordResetUrl { get; }
         bool DisableCustomUrls { get; set; }
         string CustomEmailConfirmationDevUrl { get; set; }
         string CustomEmailConfirmationLiveUrl { get; set; }
-        bool UseCustomEmailConfirmationUrl { get; }
         string CustomPasswordResetDevUrl { get; set; }
         string CustomPasswordResetLiveUrl { get; set; }
-        bool UseCustomPasswordResetUrl { get; }
         int GameCount { get; }
         int UserCount { get; }
         DateTime DateCreated { get; set; }

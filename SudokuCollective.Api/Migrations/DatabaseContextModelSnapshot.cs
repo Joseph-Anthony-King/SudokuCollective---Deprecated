@@ -26,9 +26,6 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<bool>("AllowSuperUserAccess")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("CustomEmailConfirmationDevUrl")
                         .HasColumnType("text");
 
@@ -72,6 +69,12 @@ namespace SudokuCollective.Api.Migrations
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("PermitCollectiveLogins")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("PermitSuperUserAccess")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

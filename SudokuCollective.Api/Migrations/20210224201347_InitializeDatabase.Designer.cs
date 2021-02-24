@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210223231037_InitializeDatabase")]
+    [Migration("20210224201347_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,6 @@ namespace SudokuCollective.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<bool>("AllowSuperUserAccess")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("CustomEmailConfirmationDevUrl")
                         .HasColumnType("text");
@@ -74,6 +71,12 @@ namespace SudokuCollective.Api.Migrations
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("PermitCollectiveLogins")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("PermitSuperUserAccess")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

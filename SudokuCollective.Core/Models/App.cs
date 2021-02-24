@@ -24,13 +24,11 @@ namespace SudokuCollective.Core.Models
         public string DevUrl { get; set; }
         public string LiveUrl { get; set; }
         public bool IsActive { get; set; }
-        public bool AllowSuperUserAccess { get; set; }
         public bool InDevelopment { get; set; }
-        public bool DisableCustomUrls { get; set; }
-        public string CustomEmailConfirmationDevUrl { get; set; }
-        public string CustomEmailConfirmationLiveUrl { get; set; }
+        public bool PermitSuperUserAccess { get; set; }
+        public bool PermitCollectiveLogins { get; set; }
         [JsonIgnore]
-        public bool UseCustomEmailConfirmationUrl 
+        public bool UseCustomEmailConfirmationUrl
         {
             get
             {
@@ -48,8 +46,6 @@ namespace SudokuCollective.Core.Models
                 }
             }
         }
-        public string CustomPasswordResetDevUrl { get; set; }
-        public string CustomPasswordResetLiveUrl { get; set; }
         [JsonIgnore]
         public bool UseCustomPasswordResetUrl
         {
@@ -69,6 +65,11 @@ namespace SudokuCollective.Core.Models
                 }
             }
         }
+        public bool DisableCustomUrls { get; set; }
+        public string CustomEmailConfirmationDevUrl { get; set; }
+        public string CustomEmailConfirmationLiveUrl { get; set; }
+        public string CustomPasswordResetDevUrl { get; set; }
+        public string CustomPasswordResetLiveUrl { get; set; }
         public int GameCount
         {
             get
@@ -129,7 +130,8 @@ namespace SudokuCollective.Core.Models
             DevUrl = string.Empty;
             LiveUrl = string.Empty;
             IsActive = false;
-            AllowSuperUserAccess = false;
+            PermitSuperUserAccess = false;
+            PermitCollectiveLogins = true;
             InDevelopment = true;
             DisableCustomUrls = true;
             CustomEmailConfirmationDevUrl = string.Empty;
@@ -163,7 +165,8 @@ namespace SudokuCollective.Core.Models
             string devUrl,
             string liveUrl,
             bool isActive,
-            bool allowSuperUserAccess,
+            bool permitSuperUserAccess,
+            bool permitCollectiveLogins,
             bool inDevelopment,
             bool disableCustomUrls,
             string customEmailConfirmationDevUrl,
@@ -180,7 +183,8 @@ namespace SudokuCollective.Core.Models
             DevUrl = devUrl;
             LiveUrl = liveUrl;
             IsActive = isActive;
-            AllowSuperUserAccess = allowSuperUserAccess;
+            PermitSuperUserAccess = permitSuperUserAccess;
+            PermitCollectiveLogins = permitCollectiveLogins;
             InDevelopment = inDevelopment;
             DisableCustomUrls = disableCustomUrls;
             CustomEmailConfirmationDevUrl = customEmailConfirmationDevUrl;

@@ -954,6 +954,10 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).DevUrl = request.DevUrl;
                         ((IApp)getAppResponse.Object).LiveUrl = request.LiveUrl;
                         ((IApp)getAppResponse.Object).InDevelopment = request.InDevelopment;
+                        ((IApp)getAppResponse.Object).PermitSuperUserAccess = request.PermitSuperUserAccess;
+                        ((IApp)getAppResponse.Object).PermitCollectiveLogins = request.PermitCollectiveLogins;
+                        ((IApp)getAppResponse.Object).DisableCustomUrls = request.DisableCustomUrls;
+                        ((IApp)getAppResponse.Object).DisableCustomUrls = request.DisableCustomUrls;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
                         var updateAppResponse = await appsRepository
