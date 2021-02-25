@@ -1,9 +1,11 @@
 ﻿import { apiURLConfirmationService } from "../../../services/apiURLConfirmationService/apiURLConfirmation.service";
+import App from "@/models/app";
 import {
   CONFIRM_API_URL,
   UPDATE_AUTH_TOKEN,
   UPDATE_REQUESTOR_ID,
   UPDATE_TOAST_DURATION,
+  UPDATE_APP,
 } from "./mutation-types";
 
 const settingsModule = {
@@ -14,6 +16,7 @@ const settingsModule = {
     authToken: "",
     requestorId: 0,
     toastDuration: 500,
+    app: new App(),
   }),
 
   mutations: {
@@ -28,6 +31,9 @@ const settingsModule = {
     },
     [UPDATE_TOAST_DURATION](state, duration) {
       state.toastDuration = duration;
+    },
+    [UPDATE_APP](state, app) {
+      state.app = app;
     },
   },
 
@@ -48,6 +54,10 @@ const settingsModule = {
     updateToastDuration({ commit }, duration) {
       commit(UPDATE_TOAST_DURATION, duration);
     },
+    
+    updateApp({ commit }, app) {
+      commit(UPDATE_APP, app);
+    },
   },
 
   getters: {
@@ -62,6 +72,9 @@ const settingsModule = {
     },
     getToastDuration: (state) => {
       return state.toastDuration;
+    },
+    getApp: (state) => {
+      return state.app;
     },
   },
 };

@@ -40,7 +40,7 @@ export default {
   }),
   created() {
     this.$data.adminApp = new App();
-    this.$data.adminApp.clone(this.$store.getters["adminAppModule/getAdminApp"]);
+    this.$data.adminApp.clone(this.$store.getters["settingsModule/getApp"]);
   },
 };
 </script>

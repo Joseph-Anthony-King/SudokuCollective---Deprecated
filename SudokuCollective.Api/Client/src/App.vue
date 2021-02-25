@@ -101,8 +101,9 @@ export default {
     navDrawerStatus: null,
   }),
   methods: {
-    ...mapActions("adminAppModule", ["updateAdminApp"]),
-    ...mapActions("settingsModule", ["confirmBaseURL"]),
+    ...mapActions("settingsModule", [
+      "confirmBaseURL",
+      "updateApp"]),
 
     login(user, token) {
       if (user !== null && token !== null) {
@@ -211,7 +212,7 @@ export default {
     
     app.updateLicense(process.env.VUE_APP_LICENSE);
 
-    this.updateAdminApp(app);
+    this.updateApp(app);
   },
   mounted() {
     this.$data.user = new User();
