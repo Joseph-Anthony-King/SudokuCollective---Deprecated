@@ -200,6 +200,12 @@ export default {
       this.$data.navDrawerStatus = this.$data.navDrawerStatus ? false : true;
     },
   },
+  watch: {
+    "$store.state.userModule.User": function () {
+      this.$data.user = new User();
+      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+    },
+  },
   computed: {},
   async created() {
     await this.confirmBaseURL();

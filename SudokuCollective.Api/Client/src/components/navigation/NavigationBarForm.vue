@@ -89,16 +89,17 @@ export default {
       });
     },
   },
+  watch: {
+    "$store.state.userModule.User": function () {
+      this.$data.user = new User();
+      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+    },
+  },
   async created() {
     this.populateNavMenuItems();
-  },
-  mounted() {
+
     this.$data.user = new User();
     this.$data.user.clone(this.$store.getters["userModule/getUser"]);
   },
-  beforeUpdate() {
-    this.$data.user = new User();
-    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
-  }
 };
 </script>

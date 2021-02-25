@@ -299,7 +299,13 @@ export default {
       return this.editProfileFormStatus;
     },
   },
-  mounted() {
+  watch: {
+    "$store.state.userModule.User": function () {
+      this.$data.user = new User();
+      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+    },
+  },
+  created() {
     this.$data.user = new User();
     this.$data.user.clone(this.$store.getters["userModule/getUser"]);
   },

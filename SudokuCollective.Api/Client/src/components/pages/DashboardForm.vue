@@ -12,6 +12,9 @@
           <hr class="title-spacer" />
           <v-row>
             <CreateAppButton v-on:create-app-event="openCreateAppDialog" />
+            <span class="no-apps-message" v-if="myApps.length === 0"
+              >Time to Get Coding!</span
+            >
             <SelectAppButton
               v-for="myApp in myApps"
               :key="myApp.id"
@@ -30,6 +33,33 @@
     </v-dialog>
   </v-container>
 </template>
+
+<style scoped>
+@media only screen and (min-width: 1297px) {
+  .no-apps-message {
+    margin: 85px 0 0 425px;
+    font-size: xx-large;
+  }
+}
+@media only screen and (max-width: 1296px) {
+  .no-apps-message {
+    margin: 85px 0 0 200px;
+    font-size: xx-large;
+  }
+}
+@media only screen and (max-width: 1259px) {
+  .no-apps-message {
+    margin: 85px 0 0 50px;
+    font-size: xx-large;
+  }
+}
+@media only screen and (max-width: 699px) {
+  .no-apps-message {
+    margin: 85px 0 0 5px;
+    font-size: medium;
+  }
+}
+</style>
 
 <script>
 import { mapActions } from "vuex";
