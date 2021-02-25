@@ -26,7 +26,7 @@ namespace SudokuCollective.Data.Repositories
         #endregion
 
         #region Methods
-        async public Task<IRepositoryResponse> Create(TEntity entity)
+        public async Task<IRepositoryResponse> Create(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -75,7 +75,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new SudokuSolution();
@@ -122,7 +122,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetAll(bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new List<SudokuSolution>();
@@ -168,7 +168,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> AddSolutions(List<ISudokuSolution> solutions)
+        public async Task<IRepositoryResponse> AddSolutions(List<ISudokuSolution> solutions)
         {
             var result = new RepositoryResponse();
 
@@ -209,7 +209,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetSolvedSolutions()
+        public async Task<IRepositoryResponse> GetSolvedSolutions()
         {
             var result = new RepositoryResponse();
             var query = new List<SudokuSolution>();

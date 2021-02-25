@@ -27,7 +27,7 @@ namespace SudokuCollective.Data.Repositories
         #endregion
 
         #region Methods
-        async public Task<IRepositoryResponse> Add(TEntity entity)
+        public async Task<IRepositoryResponse> Add(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -76,7 +76,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new Role();
@@ -119,7 +119,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetAll(bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new List<Role>();
@@ -170,7 +170,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Update(TEntity entity)
+        public async Task<IRepositoryResponse> Update(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -228,7 +228,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
+        public async Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
         {
             var result = new RepositoryResponse();
 
@@ -288,7 +288,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Delete(TEntity entity)
+        public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -346,7 +346,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
+        public async Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
         {
             var result = new RepositoryResponse();
 
@@ -416,21 +416,21 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> HasEntity(int id)
+        public async Task<bool> HasEntity(int id)
         {
             var result = await context.Roles.AnyAsync(r => r.Id == id);
 
             return result;
         }
 
-        async public Task<bool> HasRoleLevel(RoleLevel level)
+        public async Task<bool> HasRoleLevel(RoleLevel level)
         {
             var result = await context.Roles.AnyAsync(r => r.RoleLevel == level);
 
             return result;
         }
 
-        async public Task<bool> IsListValid(List<int> ids)
+        public async Task<bool> IsListValid(List<int> ids)
         {
             var result = true;
 

@@ -26,7 +26,7 @@ namespace SudokuCollective.Data.Repositories
         #endregion
 
         #region Methods
-        async public Task<IRepositoryResponse> Create(TEntity entity)
+        public async Task<IRepositoryResponse> Create(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -83,7 +83,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Get(string token)
+        public async Task<IRepositoryResponse> Get(string token)
         {
             var result = new RepositoryResponse();
             var query = new PasswordReset();
@@ -115,7 +115,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetAll()
+        public async Task<IRepositoryResponse> GetAll()
         {
             var result = new RepositoryResponse();
             var query = new List<PasswordReset>();
@@ -150,7 +150,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Update(TEntity entity)
+        public async Task<IRepositoryResponse> Update(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -208,7 +208,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Delete(TEntity entity)
+        public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -259,21 +259,21 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> HasEntity(int id)
+        public async Task<bool> HasEntity(int id)
         {
             var result = await context.PasswordResets.AnyAsync(ec => ec.Id == id);
 
             return result;
         }
 
-        async public Task<bool> HasOutstandingPasswordReset(int userId, int appid)
+        public async Task<bool> HasOutstandingPasswordReset(int userId, int appid)
         {
             var result = await context.PasswordResets.AnyAsync(pw => pw.UserId == userId && pw.AppId == appid);
 
             return result;
         }
 
-        async public Task<IRepositoryResponse> RetrievePasswordReset(int userId, int appid)
+        public async Task<IRepositoryResponse> RetrievePasswordReset(int userId, int appid)
         {
             var result = new RepositoryResponse();
             var query = new PasswordReset();

@@ -44,7 +44,7 @@ namespace SudokuCollective.Data.Services
             tokenManagement = tokenManage.Value;
         }
 
-        async public Task<IAuthenticatedUserResult> IsAuthenticated(ITokenRequest request)
+        public async Task<IAuthenticatedUserResult> IsAuthenticated(ITokenRequest request)
         {
             var result = new AuthenticatedUserResult();
 

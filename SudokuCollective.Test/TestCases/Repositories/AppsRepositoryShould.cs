@@ -505,5 +505,19 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result, Is.Null);
         }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetMyApps()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetMyApps(1);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Objects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace SudokuCollective.Data.Repositories
         #endregion
 
         #region Methods
-        async public Task<IRepositoryResponse> Add(TEntity entity)
+        public async Task<IRepositoryResponse> Add(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -76,7 +76,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new Game();
@@ -131,7 +131,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetAll(bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new List<Game>();
@@ -185,7 +185,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Update(TEntity entity)
+        public async Task<IRepositoryResponse> Update(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -245,7 +245,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
+        public async Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
         {
             var result = new RepositoryResponse();
 
@@ -309,7 +309,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Delete(TEntity entity)
+        public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -359,7 +359,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
+        public async Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
         {
             var result = new RepositoryResponse();
 
@@ -417,12 +417,12 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> HasEntity(int id)
+        public async Task<bool> HasEntity(int id)
         {
             return await context.Games.AnyAsync(g => g.Id == id);
         }
 
-        async public Task<IRepositoryResponse> GetAppGame(int id, int appid, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAppGame(int id, int appid, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new Game();
@@ -484,7 +484,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetAppGames(int appid, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAppGames(int appid, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
 
@@ -548,7 +548,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetMyGame(int userid, int gameid, int appid, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetMyGame(int userid, int gameid, int appid, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
 
@@ -618,7 +618,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetMyGames(int userid, int appid, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetMyGames(int userid, int appid, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
 
@@ -700,7 +700,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> DeleteMyGame(int userid, int gameid, int appid)
+        public async Task<IRepositoryResponse> DeleteMyGame(int userid, int gameid, int appid)
         {
             var result = new RepositoryResponse();
 

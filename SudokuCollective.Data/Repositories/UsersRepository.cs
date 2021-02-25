@@ -27,7 +27,7 @@ namespace SudokuCollective.Data.Repositories
         #endregion
 
         #region Methods
-        async public Task<IRepositoryResponse> Add(TEntity entity)
+        public async Task<IRepositoryResponse> Add(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -146,7 +146,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new User();
@@ -196,7 +196,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetByUserName(string username, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetByUserName(string username, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new User();
@@ -248,7 +248,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetByEmail(string email, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetByEmail(string email, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new User();
@@ -299,7 +299,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> GetAll(bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new List<User>();
@@ -353,7 +353,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Update(TEntity entity)
+        public async Task<IRepositoryResponse> Update(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -427,7 +427,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
+        public async Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
         {
             var result = new RepositoryResponse();
 
@@ -492,7 +492,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> Delete(TEntity entity)
+        public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
             var result = new RepositoryResponse();
 
@@ -574,7 +574,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
+        public async Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
         {
             var result = new RepositoryResponse();
 
@@ -662,12 +662,12 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> HasEntity(int id)
+        public async Task<bool> HasEntity(int id)
         {
             return await context.Users.AnyAsync(u => u.Id == id);
         }
 
-        async public Task<IRepositoryResponse> AddRole(int userId, int roleId)
+        public async Task<IRepositoryResponse> AddRole(int userId, int roleId)
         {
             var result = new RepositoryResponse();
 
@@ -746,7 +746,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> AddRoles(int userId, List<int> roleIds)
+        public async Task<IRepositoryResponse> AddRoles(int userId, List<int> roleIds)
         {
             var result = new RepositoryResponse();
 
@@ -831,7 +831,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> RemoveRole(int userId, int roleId)
+        public async Task<IRepositoryResponse> RemoveRole(int userId, int roleId)
         {
             var result = new RepositoryResponse();
 
@@ -887,7 +887,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> RemoveRoles(int userId, List<int> roleIds)
+        public async Task<IRepositoryResponse> RemoveRoles(int userId, List<int> roleIds)
         {
             var result = new RepositoryResponse();
 
@@ -957,7 +957,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> ConfirmEmail(IEmailConfirmation emailConfirmation)
+        public async Task<IRepositoryResponse> ConfirmEmail(IEmailConfirmation emailConfirmation)
         {
             var result = new RepositoryResponse();
 
@@ -1036,7 +1036,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<IRepositoryResponse> UpdateUserEmail(IEmailConfirmation emailConfirmation)
+        public async Task<IRepositoryResponse> UpdateUserEmail(IEmailConfirmation emailConfirmation)
         {
             var result = new RepositoryResponse();
 
@@ -1116,7 +1116,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> ActivateUser(int id)
+        public async Task<bool> ActivateUser(int id)
         {
             try
             {
@@ -1157,7 +1157,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> DeactivateUser(int id)
+        public async Task<bool> DeactivateUser(int id)
         {
             try
             {
@@ -1198,7 +1198,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> PromoteUserToAdmin(int id)
+        public async Task<bool> PromoteUserToAdmin(int id)
         {
             try
             {
@@ -1249,7 +1249,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> IsUserRegistered(int id)
+        public async Task<bool> IsUserRegistered(int id)
         {
             if (id == 0)
             {
@@ -1261,7 +1261,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        async public Task<bool> IsUserNameUnique(string username)
+        public async Task<bool> IsUserNameUnique(string username)
         {
             var names = await context.Users.Select(u => u.UserName).ToListAsync();
 
@@ -1278,7 +1278,7 @@ namespace SudokuCollective.Data.Repositories
             return result;
         }
 
-        async public Task<bool> IsEmailUnique(string email)
+        public async Task<bool> IsEmailUnique(string email)
         {
             var emails = await context.Users.Select(u => u.Email).ToListAsync();
 
@@ -1295,7 +1295,7 @@ namespace SudokuCollective.Data.Repositories
             return result;
         }
 
-       async public Task<bool> IsUpdatedUserNameUnique(int userId, string username)
+       public async Task<bool> IsUpdatedUserNameUnique(int userId, string username)
         {
             var names = await context
                 .Users
@@ -1316,7 +1316,7 @@ namespace SudokuCollective.Data.Repositories
             return result;
         }
 
-        async public Task<bool> IsUpdatedEmailUnique(int userId, string email)
+        public async Task<bool> IsUpdatedEmailUnique(int userId, string email)
         {
             var emails = await context
                 .Users
