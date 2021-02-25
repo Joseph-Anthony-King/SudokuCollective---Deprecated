@@ -309,10 +309,6 @@
 </template>
 
 <style scoped>
-.title-spacer {
-  margin: 0 0 20px 0;
-}
-
 .success {
   color: white;
 }

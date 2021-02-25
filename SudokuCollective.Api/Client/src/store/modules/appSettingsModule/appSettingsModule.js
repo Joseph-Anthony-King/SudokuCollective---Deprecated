@@ -1,7 +1,6 @@
 ﻿import { apiURLConfirmationService } from "../../../services/apiURLConfirmationService/apiURLConfirmation.service";
 import {
   CONFIRM_API_URL,
-  UPDATE_API_MESSAGE,
   UPDATE_AUTH_TOKEN,
   UPDATE_REQUESTOR_ID,
   UPDATE_TOAST_DURATION,
@@ -12,7 +11,6 @@ const appSettingsModule = {
 
   state: () => ({
     apiURL: "",
-    apiMessage: "",
     authToken: "",
     requestorId: 0,
     toastDuration: 500,
@@ -21,12 +19,6 @@ const appSettingsModule = {
   mutations: {
     [CONFIRM_API_URL](state, confirmedURL) {
       state.apiURL = confirmedURL;
-    },
-    [UPDATE_API_MESSAGE](state, updatedAPIMessage) {
-      state.apiMessage = updatedAPIMessage.message.substring(
-        17,
-        updatedAPIMessage.message.length
-      );
     },
     [UPDATE_AUTH_TOKEN](state, token) {
       state.authToken = token;
@@ -43,7 +35,6 @@ const appSettingsModule = {
     async confirmBaseURL({ commit }, apiURL) {
       const response = await apiURLConfirmationService.confirm(apiURL);
       commit(CONFIRM_API_URL, response.url);
-      commit(UPDATE_API_MESSAGE, response.message);
     },
 
     updateAuthToken({ commit }, token) {
@@ -62,9 +53,6 @@ const appSettingsModule = {
   getters: {
     getApiURL: (state) => {
       return state.apiURL;
-    },
-    getAPIMessage: (state) => {
-      return state.apiMessage;
     },
     getAuthToken: (state) => {
       return state.authToken;
