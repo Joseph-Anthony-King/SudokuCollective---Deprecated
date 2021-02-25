@@ -393,9 +393,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(resultOne.Result, Is.InstanceOf<ActionResult<App>>());
             Assert.That(messageOne, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeOne, Is.EqualTo(400));
-            Assert.That(resultTwo.Result, Is.InstanceOf<ActionResult<App>>());
-            Assert.That(messageTwo, Is.EqualTo("Status Code 400: Invalid Request On This License"));
-            Assert.That(statusCodeTwo, Is.EqualTo(400));
             Assert.That(resultTwo.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
             Assert.That(messageTwo, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeTwo, Is.EqualTo(400));
