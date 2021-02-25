@@ -93,7 +93,12 @@
 
 <script>
 /* eslint-disable no-useless-escape */
+import { mapActions } from "vuex";
+import { appService } from "@/services/appService/app.service";
+import CreateAppModel from "@/models/viewModels/createAppModel";
 import App from "@/models/app";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "CreateAppForm",
@@ -103,16 +108,55 @@ export default {
     dirty: false,
   }),
   methods: {
+    ...mapActions("appModule", ["addApp"]),
     resetForm() {
       this.$data.app.clone(this.$store.getters["appModule/getApp"]);
       this.$data.dirty = false;
     },
     close() {
-      this.$emit("app-created-event", null, null);
+      this.$emit("app-creat-form-closed-event", null, null);
       this.resetForm();
     },
-    submit() {
-      console.log("app values:", this.$data.app);
+    async submit() {
+      if (this.getCreateAppFormIsValid) {
+        try {
+          const response = await appService.postLicense(new CreateAppModel(
+            this.$data.app.name,
+            this.$data.app.devUrl,
+            this.$data.app.liveUrl
+          ));
+
+          if (response.status === 201) {
+            this.$data.app.clone(response.data.app);
+
+            this.addApp(this.$data.app);
+
+            this.resetCreateAppFormIsValid;
+            
+            this.resetForm();
+      
+            this.$emit("app-created-event", this.$data.app.name, null);
+
+          } else if (response.status === 404) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                response.data.message.substring(17),
+                defaultToastOptions()
+              );
+          } else {
+            showToast(
+              this,
+              ToastMethods["error"],
+              response.data.message,
+              defaultToastOptions()
+            );
+          }
+          
+        } catch (error) {
+          showToast(this, ToastMethods["error"], error, defaultToastOptions());
+        }
+      }
     },
   },
   computed: {

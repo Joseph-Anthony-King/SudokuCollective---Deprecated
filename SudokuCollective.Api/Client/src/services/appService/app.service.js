@@ -47,6 +47,24 @@ const getAppByLicense = async function(pageListModel) {
   }
 }
 
+const postLicense = async function(createAppModel) {
+
+  try {
+    const config = {
+      method: "post",
+      url: getAppEnpoint,
+      headers: requestHeader(),
+      data: createAppModel,
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+}
+
 const getLicense = async function(id) {
   try {
     let params = `/${id}`;
@@ -106,6 +124,7 @@ const postObtainAdminPrivileges = async function (pageListModel) {
 export const appService = {
   getApp,
   getAppByLicense,
+  postLicense,
   getLicense,
   getMyApps,
   postObtainAdminPrivileges,

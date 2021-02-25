@@ -11,7 +11,9 @@
           >
           <hr class="title-spacer" />
           <v-row>
-            <CreateAppButton v-on:create-app-event="openCreateAppDialog" />
+            <CreateAppButton 
+              v-on:app-creat-form-closed-event="openCreateAppDialog"
+              v-on:app-created-event="appCreatedEvent"  />
             <span class="no-apps-message" v-if="myApps.length === 0"
               >Time to Get Coding!</span
             >
@@ -63,6 +65,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
@@ -70,7 +73,8 @@ import { appService } from "@/services/appService/app.service";
 import User from "@/models/user";
 import App from "@/models/app";
 import PageListModel from "@/models/viewModels/pageListModel";
-import { mapGetters } from "vuex";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "DashboardForm",
@@ -95,6 +99,14 @@ export default {
     closeCreateApp() {
       this.$data.creatingApp = false;
     },
+    appCreatedEvent(appName) {
+      showToast(
+        this,
+        ToastMethods["success"],
+        `License successfully created for ${appName}`,
+        defaultToastOptions()
+      );
+    }
   },
   computed: {
     ...mapGetters("userModule", ["getUser"]),

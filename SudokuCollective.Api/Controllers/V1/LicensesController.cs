@@ -1,3 +1,4 @@
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,9 +52,9 @@ namespace SudokuCollective.Api.V1.Controllers
 
             if (result.Success)
             {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                return Ok(result);
+                result.Message = ControllerMessages.StatusCode201(result.Message);
+                
+                return StatusCode((int)HttpStatusCode.Created, result);
             }
             else
             {

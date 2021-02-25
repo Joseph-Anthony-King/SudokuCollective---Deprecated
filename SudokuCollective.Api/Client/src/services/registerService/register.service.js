@@ -5,14 +5,14 @@ import { getRegisterEndpoint, getResendEmailConfirmationEndpoint } from "./servi
 
 const postSignUp = async function (signUpModel) {
 
-  const config = {
-    method: "post",
-    url: getRegisterEndpoint,
-    headers: requestHeader(),
-    data: signUpModel,
-  };
-
   try {
+    const config = {
+      method: "post",
+      url: getRegisterEndpoint,
+      headers: requestHeader(),
+      data: signUpModel,
+    };
+
     const response = await axios(config);
 
     return response;
@@ -23,14 +23,14 @@ const postSignUp = async function (signUpModel) {
 
 const putResendEmailConfirmation = async function (pageListModel) {
 
-  const config = {
-    method: "put",
-    url: getResendEmailConfirmationEndpoint,
-    headers: requestHeader(),
-    data: requestData(pageListModel),
-  };
-
   try {
+    const config = {
+      method: "put",
+      url: getResendEmailConfirmationEndpoint,
+      headers: requestHeader(),
+      data: requestData(pageListModel),
+    };
+
     const response = await axios(config);
 
     return response;
