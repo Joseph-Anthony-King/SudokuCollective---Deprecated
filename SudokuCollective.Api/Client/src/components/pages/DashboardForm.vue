@@ -1,21 +1,22 @@
 <template>
-  <v-form>
-    <v-container>
-      <div v-if="!user.isLoggedIn">
-        <v-row>
-          <v-col cols="12">
-            <h1>Please Login</h1>
-          </v-col>
-        </v-row>
-      </div>
-      <div v-if="user.isLoggedIn">
-        <h1 class="display-2 font-weight-bold mb-3">
-          {{ apiMsg }}
-        </h1>
-        <h2>{{ user.userName }} is logged in!</h2>
-      </div>
-    </v-container>
-  </v-form>
+  <v-container fluid>
+    <v-card elevation="6" class="mx-auto">
+      <v-card-text>
+        <v-container fluid>
+          <v-card-title v-if="user.isLoggedIn" class="justify-center"
+            >Dashboard</v-card-title
+          >
+          <v-card-title v-if="!user.isLoggedIn" class="justify-center warning"
+            >Please Log In</v-card-title
+          >
+          <hr class="title-spacer" />
+          <v-row>
+            <v-card-text>Info will go here...</v-card-text>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script>

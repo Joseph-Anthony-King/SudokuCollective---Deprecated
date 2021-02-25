@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <v-row class="text-center">
-      <v-col class="mb-4">
+    <v-row>
+      <v-col cols="12">
         <DashboardForm />
       </v-col>
     </v-row>
@@ -17,9 +17,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.container {
-  width: 50%;
-}
-</style>
