@@ -92,7 +92,7 @@ export default {
   async created() {
     this.populateNavMenuItems();
   },
-  beforeUpdate() {
+  mounted() {
     this.$data.user = new User();
     this.$data.user.clone(this.$store.getters["userModule/getUser"]);
   },

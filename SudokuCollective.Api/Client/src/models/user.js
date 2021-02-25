@@ -93,6 +93,10 @@
       this.isSuperUser = data.isSuperUser;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;
+
+      if (data.isLoggedIn) {
+        this.isLoggedIn = data.isLoggedIn;
+      }
     }
   }
 }
