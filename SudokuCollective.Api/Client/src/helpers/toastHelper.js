@@ -1,7 +1,7 @@
 import store from "@/store";
 
 export function showToast(component, type, message, options) {
-  const timeout = store.getters["appSettingsModule/getToastDuration"];
+  const timeout = store.getters["settingsModule/getToastDuration"];
 
   if (type === "show") {
     setTimeout(function () {

@@ -102,7 +102,7 @@ export default {
   }),
   methods: {
     ...mapActions("adminAppModule", ["updateAdminApp"]),
-    ...mapActions("appSettingsModule", ["confirmBaseURL"]),
+    ...mapActions("settingsModule", ["confirmBaseURL"]),
 
     login(user, token) {
       if (user !== null && token !== null) {

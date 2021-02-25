@@ -3,7 +3,7 @@
 export function requestData(pageListModel) {
   const license = process.env.VUE_APP_LICENSE;
   const requestorId = parseInt(
-    store.getters["appSettingsModule/getRequestorId"]
+    store.getters["settingsModule/getRequestorId"]
   );
   const appId = parseInt(process.env.VUE_APP_ID);
 

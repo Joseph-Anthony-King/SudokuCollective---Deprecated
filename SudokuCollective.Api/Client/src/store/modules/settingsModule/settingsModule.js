@@ -6,7 +6,7 @@ import {
   UPDATE_TOAST_DURATION,
 } from "./mutation-types";
 
-const appSettingsModule = {
+const settingsModule = {
   namespaced: true,
 
   state: () => ({
@@ -66,4 +66,4 @@ const appSettingsModule = {
   },
 };
 
-export default appSettingsModule;
+export default settingsModule;

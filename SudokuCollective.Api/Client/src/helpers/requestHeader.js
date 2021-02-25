@@ -1,7 +1,7 @@
 ﻿import store from "../store";
 
 export function requestHeader() {
-  const token = store.getters["appSettingsModule/getAuthToken"];
+  const token = store.getters["settingsModule/getAuthToken"];
 
   if (token !== "") {
     return {

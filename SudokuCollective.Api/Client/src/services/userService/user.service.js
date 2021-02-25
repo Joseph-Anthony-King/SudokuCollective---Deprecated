@@ -207,8 +207,8 @@ const loginUser = function (user, token) {
   user.login();
 
   store.dispatch("userModule/updateUser", user);
-  store.dispatch("appSettingsModule/updateAuthToken", token);
-  store.dispatch("appSettingsModule/updateRequestorId", user.id);
+  store.dispatch("settingsModule/updateAuthToken", token);
+  store.dispatch("settingsModule/updateRequestorId", user.id);
 
   return user;
 };
@@ -216,9 +216,11 @@ const loginUser = function (user, token) {
 const logoutUser = function (user) {
   user.logout();
 
+  user = new User();
+
   store.dispatch("userModule/updateUser", user);
-  store.dispatch("appSettingsModule/updateAuthToken", "");
-  store.dispatch("appSettingsModule/updateRequestorId", 0);
+  store.dispatch("settingsModule/updateAuthToken", "");
+  store.dispatch("settingsModule/updateRequestorId", 0);
 
   return user;
 };
