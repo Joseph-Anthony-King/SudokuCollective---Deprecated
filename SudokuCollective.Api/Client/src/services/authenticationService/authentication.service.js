@@ -1,4 +1,5 @@
 ﻿import * as axios from "axios";
+import store from "../../store";
 import { requestHeader } from "../../helpers/requestHeader";
 import {
   authenticateEndpoint,
@@ -15,7 +16,7 @@ const authenticateUser = async function (username, password) {
     data: {
       UserName: `${username}`,
       Password: `${password}`,
-      License: `${process.env.VUE_APP_LICENSE}`
+      License: `${store.getters["settingsModule/getLicense"]}`
     },
   };
 

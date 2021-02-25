@@ -1,3 +1,5 @@
+import store from "../../store";
+
 class SignUpModel {
   constructor(username, firstname, lastname, nickname, email, password) {
     this.userName = username;
@@ -6,7 +8,7 @@ class SignUpModel {
     this.nickName = nickname;
     this.email = email;
     this.password = password;
-    this.license = process.env.VUE_APP_LICENSE;
+    this.license = store.getters["settingsModule/getLicense"];
   }
 }
 

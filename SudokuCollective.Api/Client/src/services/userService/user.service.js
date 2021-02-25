@@ -110,7 +110,7 @@ const updateUser = async function (
 
 const postRequestPasswordReset = async function (email) {
   try {
-    const license = process.env.VUE_APP_LICENSE;
+    const license = store.getters["settingsModule/getLicense"];
 
     const config = {
       method: "post",

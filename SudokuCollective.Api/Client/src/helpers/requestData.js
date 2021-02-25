@@ -1,7 +1,7 @@
 ﻿import store from "../store";
 
 export function requestData(pageListModel) {
-  const license = process.env.VUE_APP_LICENSE;
+  const license = store.getters["settingsModule/getLicense"];
   const requestorId = parseInt(
     store.getters["settingsModule/getRequestorId"]
   );

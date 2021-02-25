@@ -73,6 +73,9 @@ const settingsModule = {
     getToastDuration: (state) => {
       return state.toastDuration;
     },
+    getLicense: (state) => {
+      return state.app.license;
+    },
     getApp: (state) => {
       return state.app;
     },
