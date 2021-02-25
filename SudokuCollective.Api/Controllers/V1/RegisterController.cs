@@ -69,7 +69,8 @@ namespace SudokuCollective.Api.V1.Controllers
                 var tokenRequest = new TokenRequest
                 {
                     UserName = request.UserName,
-                    Password = request.Password
+                    Password = request.Password,
+                    License = request.License
                 };
 
                 var authenticateResult = await authService.IsAuthenticated(tokenRequest);
