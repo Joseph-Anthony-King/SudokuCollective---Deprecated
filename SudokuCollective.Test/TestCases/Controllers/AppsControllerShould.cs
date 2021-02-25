@@ -369,29 +369,25 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var messageOne = ((BadRequestObjectResult)resultOne.Result.Result).Value;
             var statusCodeOne = ((BadRequestObjectResult)resultOne.Result.Result).StatusCode;
 
-            var resultTwo = sutInvalid.GetAppByLicense(baseRequest, true);
+            var resultTwo = sutInvalid.GetApps(baseRequest, true);
             var messageTwo = ((BadRequestObjectResult)resultTwo.Result.Result).Value;
             var statusCodeTwo = ((BadRequestObjectResult)resultTwo.Result.Result).StatusCode;
 
-            var resultThree = sutInvalid.GetApps(baseRequest, true);
-            var messageThree = ((BadRequestObjectResult)resultThree.Result.Result).Value;
-            var statusCodeThree = ((BadRequestObjectResult)resultThree.Result.Result).StatusCode;
+            var resultThree = sutInvalid.UpdateApp(appRequest);
+            var messageThree = ((BadRequestObjectResult)resultThree.Result).Value;
+            var statusCodeThree = ((BadRequestObjectResult)resultThree.Result).StatusCode;
 
-            var resultFour = sutInvalid.UpdateApp(appRequest);
-            var messageFour = ((BadRequestObjectResult)resultFour.Result).Value;
-            var statusCodeFour = ((BadRequestObjectResult)resultFour.Result).StatusCode;
+            var resultFour = sutInvalid.GetUsers(baseRequest, true);
+            var messageFour = ((BadRequestObjectResult)resultFour.Result.Result).Value;
+            var statusCodeFour = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
-            var resultFive = sutInvalid.GetUsers(baseRequest, true);
-            var messageFive = ((BadRequestObjectResult)resultFive.Result.Result).Value;
-            var statusCodeFive = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
+            var resultFive = sutInvalid.AddUser(3, baseRequest);
+            var messageFive = ((BadRequestObjectResult)resultFive.Result).Value;
+            var statusCodeFive = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
-            var resultSix = sutInvalid.AddUser(3, baseRequest);
+            var resultSix = sutInvalid.RemoveUser(3, baseRequest);
             var messageSix = ((BadRequestObjectResult)resultSix.Result).Value;
-            var statusCodeSix = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
-
-            var resultSeven = sutInvalid.RemoveUser(3, baseRequest);
-            var messageSeven = ((BadRequestObjectResult)resultSeven.Result).Value;
-            var statusCodeSeven = ((BadRequestObjectResult)resultFive.Result.Result).StatusCode;
+            var statusCodeSix = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
             // Assert
             Assert.That(resultOne.Result, Is.InstanceOf<ActionResult<App>>());
@@ -400,21 +396,21 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(resultTwo.Result, Is.InstanceOf<ActionResult<App>>());
             Assert.That(messageTwo, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeTwo, Is.EqualTo(400));
-            Assert.That(resultThree.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
+            Assert.That(resultTwo.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
+            Assert.That(messageTwo, Is.EqualTo("Status Code 400: Invalid Request On This License"));
+            Assert.That(statusCodeTwo, Is.EqualTo(400));
+            Assert.That(resultThree.Result, Is.InstanceOf<ActionResult>());
             Assert.That(messageThree, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeThree, Is.EqualTo(400));
-            Assert.That(resultFour.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(resultFour.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
             Assert.That(messageFour, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeFour, Is.EqualTo(400));
-            Assert.That(resultFive.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
+            Assert.That(resultFive.Result, Is.InstanceOf<ActionResult>());
             Assert.That(messageFive, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeFive, Is.EqualTo(400));
             Assert.That(resultSix.Result, Is.InstanceOf<ActionResult>());
             Assert.That(messageSix, Is.EqualTo("Status Code 400: Invalid Request On This License"));
             Assert.That(statusCodeSix, Is.EqualTo(400));
-            Assert.That(resultSeven.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(messageSeven, Is.EqualTo("Status Code 400: Invalid Request On This License"));
-            Assert.That(statusCodeSeven, Is.EqualTo(400));
         }
 
         [Test]
