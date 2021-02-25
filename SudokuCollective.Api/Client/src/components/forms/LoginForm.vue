@@ -49,7 +49,10 @@
               Help
             </v-btn>
           </template>
-          <span>Having trouble logging in? If your email has been confirmed you can reset your password or confirm your user name</span>
+          <span
+            >Having trouble logging in? If your email has been confirmed you can
+            reset your password or confirm your user name</span
+          >
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -233,7 +236,7 @@ export default {
           );
 
           if (response.status === 200) {
-            this.$data.user.shallowClone(response.data.user);
+            this.$data.user.clone(response.data.user);
 
             this.resetLoginFormStatus;
 
@@ -400,7 +403,7 @@ export default {
     });
 
     this.$data.user = new User();
-    this.$data.user.shallowClone(this.$props.userForAuthentication);
+    this.$data.user.clone(this.$props.userForAuthentication);
   },
 };
 </script>

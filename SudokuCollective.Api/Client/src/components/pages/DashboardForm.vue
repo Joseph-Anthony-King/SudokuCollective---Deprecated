@@ -42,7 +42,7 @@ export default {
 
   mounted() {
     this.$data.user = this.$store.getters["userModule/getUser"];
-    this.$data.user.shallowClone(this.getUser);
+    this.$data.user.clone(this.getUser);
   },
 
   updated() {

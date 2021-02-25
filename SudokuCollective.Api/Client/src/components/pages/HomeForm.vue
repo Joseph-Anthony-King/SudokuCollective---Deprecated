@@ -7,7 +7,7 @@
 
       <v-col class="ml-16 pl-16 mr-16 pr-16">
         <h1 class="display-2 font-weight-bold">
-          Welcome to Sudoku Collective Admin Vue
+          Welcome to {{ adminApp.name }}
         </h1>
 
         <p class="subheading font-weight-regular">
@@ -31,7 +31,16 @@
 </template>
 
 <script>
+import App from "@/models/app";
+
 export default {
   name: "HomeForm",
+  data: () => ({
+    adminApp: {}
+  }),
+  created() {
+    this.$data.adminApp = new App();
+    this.$data.adminApp.clone(this.$store.getters["adminAppModule/getAdminApp"]);
+  },
 };
 </script>

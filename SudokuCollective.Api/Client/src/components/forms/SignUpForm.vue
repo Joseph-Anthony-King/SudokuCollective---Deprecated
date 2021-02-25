@@ -177,7 +177,7 @@ export default {
           );
 
           if (response.status === 201) {
-            this.$data.user.shallowClone(response.data.user);
+            this.$data.user.clone(response.data.user);
 
             this.resetSignUpFormStatus;
 
@@ -190,7 +190,8 @@ export default {
             );
           } else if (response.status === 404) {
             if (
-              response.data === "Status Code 404: User Name Accepts Alphanumeric And Special Characters Except Double And Single Quotes"
+              response.data ===
+              "Status Code 404: User Name Accepts Alphanumeric And Special Characters Except Double And Single Quotes"
             ) {
               this.$data.invalidUserNames.push(this.$data.username);
               showToast(
@@ -199,7 +200,9 @@ export default {
                 response.data.message.substring(17),
                 defaultToastOptions()
               );
-            } else if (response.data === "Status Code 404: User Name Not Unique") {
+            } else if (
+              response.data === "Status Code 404: User Name Not Unique"
+            ) {
               this.$data.invalidPasswords.push(this.$data.username);
               showToast(
                 this,
@@ -215,7 +218,7 @@ export default {
                 response.data.message.substring(17),
                 defaultToastOptions()
               );
-            }  else {
+            } else {
               showToast(
                 this,
                 ToastMethods["error"],
@@ -254,8 +257,7 @@ export default {
       return [
         (v) => !!v || "User Name is required",
         (v) =>
-          !this.$data.invalidUserNames.includes(v) ||
-          "User Name is not unique",
+          !this.$data.invalidUserNames.includes(v) || "User Name is not unique",
       ];
     },
 
@@ -279,9 +281,7 @@ export default {
           !v ||
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
           "Email must be valid",
-        (v) =>
-          !this.$data.invalidEmails.includes(v) ||
-          `Email is not unique`,
+        (v) => !this.$data.invalidEmails.includes(v) || `Email is not unique`,
       ];
     },
 

@@ -140,7 +140,7 @@ export default {
     resetForm() {
       this.$data.invalidUserNames = [];
       this.$data.invalidEmails = [];
-      this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
+      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
       this.$data.dirty = false;
     },
 
@@ -300,7 +300,7 @@ export default {
   },
   mounted() {
     this.$data.user = new User();
-    this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
+    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
   },
 };
 </script>

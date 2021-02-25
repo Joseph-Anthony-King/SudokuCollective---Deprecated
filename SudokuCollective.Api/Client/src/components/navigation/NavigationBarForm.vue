@@ -94,7 +94,7 @@ export default {
   },
   beforeUpdate() {
     this.$data.user = new User();
-    this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
+    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
   },
 };
 </script>

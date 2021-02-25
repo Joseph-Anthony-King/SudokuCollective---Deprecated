@@ -117,9 +117,7 @@
       <v-card-actions>
         <v-container>
           <v-row dense>
-            <v-col
-              v-if="!user.isAdmin"
-            >
+            <v-col v-if="!user.isAdmin">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -133,9 +131,7 @@
                     Obtain Admin Privileges
                   </v-btn>
                 </template>
-                <span
-                  >Add admin privileges to your account</span
-                >
+                <span>Add admin privileges to your account</span>
               </v-tooltip>
             </v-col>
             <v-col>
@@ -292,7 +288,10 @@
                     Cancel All Email Requests
                   </v-btn>
                 </template>
-                <span>Cancel your email confirmation and password reset request</span>
+                <span
+                  >Cancel your email confirmation and password reset
+                  request</span
+                >
               </v-tooltip>
             </v-col>
           </v-row>
@@ -358,7 +357,7 @@ export default {
         new PageListModel(),
         false
       );
-      this.$data.user.shallowClone(user);
+      this.$data.user.clone(user);
       store.dispatch("userModule/updateUser", this.$data.user);
     },
     async refreshProfile() {
@@ -381,7 +380,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.shallowClone(response.data.user);
+                this.$data.user.clone(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -435,7 +434,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.shallowClone(response.data.user);
+                this.$data.user.clone(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -527,7 +526,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.shallowClone(response.data.user);
+                this.$data.user.clone(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -581,7 +580,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.shallowClone(response.data.user);
+                this.$data.user.clone(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -635,7 +634,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.shallowClone(response.data.user);
+                this.$data.user.clone(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -689,7 +688,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.shallowClone(response.data.user);
+                this.$data.user.clone(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -731,7 +730,7 @@ export default {
       );
     },
     closeEditing() {
-      this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
+      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
       this.$data.editingProfile = false;
     },
   },
@@ -743,9 +742,9 @@ export default {
       return convertStringToDateTime(this.$data.user.dateUpdated);
     },
   },
-  mounted() {
+  created() {
     this.$data.user = new User();
-    this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
+    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
   },
 };
 </script>

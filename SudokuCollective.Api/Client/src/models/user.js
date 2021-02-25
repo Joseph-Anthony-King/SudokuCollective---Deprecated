@@ -75,7 +75,7 @@
     this.isLoggedIn = false;
   }
 
-  shallowClone(data) {
+  clone(data) {
     if (data !== undefined) {
       this.id = data.id;
       this.userName = data.userName;

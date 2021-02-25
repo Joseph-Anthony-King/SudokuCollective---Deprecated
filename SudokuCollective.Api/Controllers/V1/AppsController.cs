@@ -55,37 +55,27 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/apps/GetByLicense
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        // POST: api/apps/getByLicense
+        [AllowAnonymous]
         [HttpPost, Route("GetByLicense")]
         public async Task<ActionResult<App>> GetAppByLicense(
             [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            var result = await appsService
+                .GetAppByLicense(request.License, fullRecord);
+
+            if (result.Success)
             {
-                var result = await appsService
-                    .GetAppByLicense(request.License, fullRecord);
+                result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
+                return Ok(result);
             }
             else
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
             }
         }
 

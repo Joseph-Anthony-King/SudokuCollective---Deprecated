@@ -64,12 +64,15 @@
 <script>
 import { mapActions } from "vuex";
 import { userService } from "@/services/userService/user.service";
+import { appService } from "@/services/appService/app.service";
 import AppBarForm from "@/components/navigation/AppBarForm";
 import NavigationBarForm from "@/components/navigation/NavigationBarForm";
 import LoginForm from "@/components/forms/LoginForm";
 import SignUpForm from "@/components/forms/SignUpForm";
 import FooterForm from "@/components/navigation/FooterForm";
+import App from "@/models/app";
 import User from "@/models/user";
+import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -98,6 +101,7 @@ export default {
     navDrawerStatus: null,
   }),
   methods: {
+    ...mapActions("adminAppModule", ["updateAdminApp"]),
     ...mapActions("appSettingsModule", ["confirmBaseURL"]),
 
     login(user, token) {
@@ -198,10 +202,20 @@ export default {
   computed: {},
   async created() {
     await this.confirmBaseURL();
+
+    let response = await appService.getAppByLicense(new PageListModel());
+
+    let app = new App();
+
+    app.clone(response.data.app);
+    
+    app.updateLicense(process.env.VUE_APP_LICENSE);
+
+    this.updateAdminApp(app);
   },
   mounted() {
     this.$data.user = new User();
-    this.$data.user.shallowClone(this.$store.getters["userModule/getUser"]);
+    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
   },
 };
 </script>

@@ -1,6 +1,6 @@
 ﻿import { UPDATE_USER } from "./mutation-types";
 
-import User from "../../../models/user";
+import User from "@/models/user";
 
 const userModule = {
   namespaced: true,
