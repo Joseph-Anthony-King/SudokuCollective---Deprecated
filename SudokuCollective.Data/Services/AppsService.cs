@@ -577,6 +577,328 @@ namespace SudokuCollective.Data.Services
             }
         }
 
+        public async Task<IAppsResult> GetMyApps(
+            int ownerId, 
+            IPageListModel pageListModel, 
+            bool fullRecord = true)
+        {
+            var result = new AppsResult();
+
+            try
+            {
+                var response = await appsRepository.GetAll(fullRecord);
+
+                if (response.Success)
+                {
+                    if (pageListModel != null)
+                    {
+                        if (StaticDataHelpers.IsPageValid(pageListModel, response.Objects))
+                        {
+                            if (pageListModel.SortBy == SortValue.NULL)
+                            {
+                                result.Apps = response.Objects.ConvertAll(a => (IApp)a);
+                            }
+                            else if (pageListModel.SortBy == SortValue.ID)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderBy(a => a.Id)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderByDescending(a => a.Id)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.GAMECOUNT)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderBy(a => a.GameCount)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderByDescending(a => a.GameCount)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.USERCOUNT)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderBy(a => a.UserCount)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderByDescending(a => a.UserCount)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.NAME)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderBy(a => a.Name)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderByDescending(a => a.Name)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.DATECREATED)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderBy(a => a.DateCreated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderByDescending(a => a.DateCreated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (pageListModel.SortBy == SortValue.DATEUPDATED)
+                            {
+                                if (!pageListModel.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderBy(a => a.DateUpdated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .Where(a => a.OwnerId == ownerId)
+                                        .OrderByDescending(a => a.DateUpdated)
+                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
+                                        .Take(pageListModel.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = ServicesMesages.SortValueNotImplementedMessage;
+
+                                return result;
+                            }
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = ServicesMesages.PageNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.Apps = response.Objects.ConvertAll(a => (IApp)a);
+                    }
+
+                    if (fullRecord)
+                    {
+                        var appAdmins = (await appAdminsRepository.GetAll())
+                            .Objects
+                            .ConvertAll(aa => (AppAdmin)aa)
+                            .ToList();
+
+                        foreach (var app in result.Apps)
+                        {
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.App = null;
+                                userApp.User.Apps = new List<UserApp>();
+
+                                if (app.Id != 1 && userApp
+                                    .User
+                                    .Roles
+                                    .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                {
+                                    if (!userApp.User.IsSuperUser)
+                                    {
+                                        if (!appAdmins.Any(aa =>
+                                            aa.AppId == app.Id &&
+                                            aa.UserId == userApp.User.Id &&
+                                            aa.IsActive))
+                                        {
+                                            var adminRole = userApp
+                                                .User
+                                                .Roles
+                                                .FirstOrDefault(ur =>
+                                                    ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                            userApp.User.Roles.Remove(adminRole);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!app.PermitSuperUserAccess)
+                                        {
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                                            {
+                                                var superUserRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+
+                                                userApp.User.Roles.Remove(superUserRole);
+                                            }
+
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                            {
+                                                var adminRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                                userApp.User.Roles.Remove(adminRole);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    result.Success = response.Success;
+                    result.Message = AppsMessages.AppsFoundMessage;
+
+                    return result;
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = AppsMessages.AppsNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
         public async Task<IUsersResult> GetAppUsers(
             int id,
             int requestorId,

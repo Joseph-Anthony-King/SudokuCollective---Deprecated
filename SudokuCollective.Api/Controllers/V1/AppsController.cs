@@ -79,9 +79,9 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/apps
+        // PUT: api/apps
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPost]
+        [HttpPut]
         public async Task<ActionResult<IEnumerable<App>>> GetApps(
             [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
@@ -93,6 +93,43 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await appsService
                     .GetApps(request.PageListModel, fullRecord);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/apps/GetMyApps
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("GetMyApps")]
+        public async Task<ActionResult<IEnumerable<App>>> GetMyApps(
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = true)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService
+                    .GetMyApps(
+                    request.RequestorId,
+                    request.PageListModel,
+                    fullRecord);
 
                 if (result.Success)
                 {

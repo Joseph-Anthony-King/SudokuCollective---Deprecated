@@ -592,5 +592,41 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(message, Is.EqualTo("Status Code 404: Deactivation Of Admin Privileges Failed"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyGetMyApps()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.GetMyApps(baseRequest, true);
+            var apps = ((AppsResult)((OkObjectResult)result.Result.Result).Value).Apps;
+            var message = ((AppsResult)((OkObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Apps Found"));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(apps, Is.InstanceOf<List<IApp>>());
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyGetMyAppsFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutFailure.GetMyApps(baseRequest, true);
+            var message = ((AppsResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Apps Not Found"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
     }
 }

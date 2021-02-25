@@ -519,5 +519,18 @@ namespace SudokuCollective.Test.TestCases.Repositories
             Assert.That(result.Success, Is.True);
             Assert.That(result.Objects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
         }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIgGetMyAppsFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetMyApps(4);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+        }
     }
 }

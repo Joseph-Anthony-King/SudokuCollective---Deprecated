@@ -9,6 +9,7 @@ namespace SudokuCollective.Core.Interfaces.Services
     {
         Task<IAppResult> GetApp(int id, bool fullRecord = true);
         Task<IAppsResult> GetApps(IPageListModel pageListModel, bool fullRecord = true);
+        Task<IAppsResult> GetMyApps(int ownerId, IPageListModel pageListModel, bool fullRecord = true);
         Task<IAppResult> CreateApp(ILicenseRequest request);
         Task<IAppResult> GetAppByLicense(string license, bool fullRecord = true);
         Task<ILicenseResult> GetLicense(int id);

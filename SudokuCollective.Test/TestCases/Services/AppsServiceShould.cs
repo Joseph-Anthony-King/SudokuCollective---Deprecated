@@ -106,7 +106,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
         [Test]
         [Category("Services")]
-        public async Task GetMultipleApps()
+        public async Task GetApps()
         {
             // Arrange
 
@@ -552,6 +552,35 @@ namespace SudokuCollective.Test.TestCases.Services
             Assert.That(result.Message, Is.EqualTo("App Not Found"));
             Assert.That(result.User, Is.TypeOf<User>());
 
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task GetMyApps()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetMyApps(1, new PageListModel());
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Apps Found"));
+            Assert.That(result.Apps.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnFalseIfGetMyAppsFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutAppRepoFailure.GetMyApps(1, new PageListModel());
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Apps Not Found"));
         }
     }
 }

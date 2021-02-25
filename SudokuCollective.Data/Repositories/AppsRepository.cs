@@ -363,7 +363,7 @@ namespace SudokuCollective.Data.Repositories
                         .ToListAsync();
                 }
 
-                if (query == null)
+                if (query.Count == 0)
                 {
                     result.Success = false;
 
@@ -386,7 +386,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetMyApps(int userId, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetMyApps(int ownerId, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
             var query = new List<App>();
@@ -397,7 +397,7 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Apps
-                        .Where(a => a.OwnerId == userId)
+                        .Where(a => a.OwnerId == ownerId)
                         .Include(a => a.Users)
                             .ThenInclude(ua => ua.User)
                                 .ThenInclude(u => u.Roles)
@@ -431,12 +431,12 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Apps
-                        .Where(a => a.OwnerId == userId)
+                        .Where(a => a.OwnerId == ownerId)
                         .OrderBy(a => a.Id)
                         .ToListAsync();
                 }
 
-                if (query == null)
+                if (query.Count == 0)
                 {
                     result.Success = false;
 
