@@ -5,6 +5,7 @@ import {
   getAppEnpoint,
   getAppByLicenseEnpoint,
   getLicenseEndpoint,
+  getMyAppsEndpoint,
   getObtainAdminPrivilegesEnpoint
 } from "./service.endpoints";
 
@@ -66,6 +67,24 @@ const getLicense = async function(id) {
   }
 }
 
+const getMyApps = async function(pageListModel) {
+  try {
+    const config = {
+      method: "put",
+      url: `${getMyAppsEndpoint}`,
+      headers: requestHeader(),
+      data: requestData(pageListModel),
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
 const postObtainAdminPrivileges = async function (pageListModel) {
   try {
     const config = {
@@ -88,5 +107,6 @@ export const appService = {
   getApp,
   getAppByLicense,
   getLicense,
+  getMyApps,
   postObtainAdminPrivileges,
 };

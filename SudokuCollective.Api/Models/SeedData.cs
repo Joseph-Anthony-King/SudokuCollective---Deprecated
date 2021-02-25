@@ -175,7 +175,7 @@ namespace SudokuCollective.Api.Models
                             0,
                             config.GetValue<string>("DefaultClientApp:Name"),
                             config.GetValue<string>("DefaultClientApp:License"),
-                            1,
+                            2,
                             config.GetValue<string>("DefaultClientApp:DevUrl"),
                             config.GetValue<string>("DefaultClientApp:LiveUrl"),
                             true,

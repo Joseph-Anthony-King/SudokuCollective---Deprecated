@@ -596,7 +596,11 @@ namespace SudokuCollective.Data.Services
                         {
                             if (pageListModel.SortBy == SortValue.NULL)
                             {
-                                result.Apps = response.Objects.ConvertAll(a => (IApp)a);
+                                result.Apps = response
+                                    .Objects
+                                    .ConvertAll(a => (IApp)a)
+                                    .Where(a => a.OwnerId == ownerId)
+                                    .ToList();
                             }
                             else if (pageListModel.SortBy == SortValue.ID)
                             {

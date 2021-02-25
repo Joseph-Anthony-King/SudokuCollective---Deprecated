@@ -280,11 +280,12 @@ export default {
     },
 
     emailRules() {
+      const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return [
         (v) => !!v || "Email is required",
         (v) =>
           !v ||
-          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          regex.test(v) ||
           "Email must be valid",
         (v) => !this.$data.invalidEmails.includes(v) || "Email Not Unique",
       ];

@@ -9,3 +9,11 @@
 .button-full {
     width: 100%;
 }
+
+.app-button {
+  min-height: 200px;
+  max-height: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  margin-right: 10px;
+}
