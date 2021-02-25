@@ -20,20 +20,19 @@
 </template>
 
 <script>
+import User from "@/models/user";
 import { mapGetters } from "vuex";
 
 export default {
   name: "DashboardForm",
 
   data: () => ({
-    apiMsg: "",
     user: {},
   }),
 
   methods: {},
 
   computed: {
-    ...mapGetters("appSettingsModule", ["getAPIMessage"]),
     ...mapGetters("userModule", ["getUser"]),
   },
 
@@ -42,12 +41,12 @@ export default {
   },
 
   mounted() {
+    this.$data.user = new User();
     this.$data.user = this.$store.getters["userModule/getUser"];
     this.$data.user.clone(this.getUser);
   },
 
   updated() {
-    this.$data.apiMsg = this.$store.getters["appSettingsModule/getAPIMessage"];
   },
 };
 </script>
