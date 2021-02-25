@@ -99,7 +99,7 @@ namespace SudokuCollective.Api.V1.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("ResendEmailConfirmation")]
+        [HttpPut("ResendEmailConfirmation")]
         public async Task<ActionResult> ResendEmailConfirmation([FromBody] BaseRequest request)
         {
             string baseUrl;

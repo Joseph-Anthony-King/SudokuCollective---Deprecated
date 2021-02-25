@@ -1983,6 +1983,7 @@ namespace SudokuCollective.Data.Services
 
                                     if ((bool)result.ConfirmationEmailSuccessfullySent)
                                     {
+                                        result.User = user;
                                         result.Success = true;
                                         result.Message = UsersMessages.EmailConfirmationEmailResentMessage;
 
