@@ -10,8 +10,9 @@
             >Please Log In</v-card-title
           >
           <hr class="title-spacer" />
-            <div class='buttons'>
-              <CreateAppButton v-on:create-app-event="openCreateAppDialog" />
+            <div class="app-buttons-scroll">
+              <CreateAppButton 
+                v-on:click.native="openCreateAppDialog" />
               <span class="no-apps-message" v-if="myApps.length === 0"
                 >Time to Get Coding!</span
               >
@@ -20,11 +21,17 @@
                 :app="myApp"
                 :key="index"
                 :index="index"
+                v-on:click.native="appSelected(myApp.id)"
               />
             </div>
         </v-container>
       </v-card-text>
     </v-card>
+    <div class="card-spacer"></div>
+    <AppWidget 
+      v-if="openAppWidget" 
+      :app="app"
+      v-on:close-app-widget-event="closeAppWidget"/>
 
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
@@ -61,16 +68,18 @@
     font-size: medium;
   }
 }
-.buttons {
+.app-buttons-scroll {
     display: flex;
     overflow-x: auto;
 }
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
+import AppWidget from "@/components/widgets/AppWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
 import { appService } from "@/services/appService/app.service";
@@ -84,20 +93,21 @@ export default {
   name: "DashboardForm",
   components: {
     CreateAppForm,
+    AppWidget,
     CreateAppButton,
-    SelectAppButton,
+    SelectAppButton
   },
   data: () => ({
     user: {},
-    app: {},
+    app: new App(),
     myApps: [],
     creatingApp: false,
+    openAppWidget: false,
   }),
   methods: {
     ...mapActions("appModule", ["updateApps", "removeApps"]),
-    openCreateAppDialog(app) {
-      this.$data.app = app;
-      console.log("new app:", this.$data.app);
+    openCreateAppDialog() {
+      this.$data.app = new App();
       this.$data.creatingApp = true;
     },
     closeCreateApp() {
@@ -112,6 +122,17 @@ export default {
         defaultToastOptions()
       );
     },
+    async appSelected(id) {
+      this.$data.openAppWidget = true;
+      const response = await appService.getApp(
+        id,
+        new PageListModel());
+      this.$data.app.clone(response.data.app);
+    },
+    closeAppWidget() {
+      this.$data.app = new App();
+      this.$data.openAppWidget = false;
+    }
   },
   computed: {
     ...mapGetters("userModule", ["getUser"]),
@@ -136,7 +157,6 @@ export default {
       let myTempArray = [];
 
       response.data.apps.map(function (value, key) {
-        console.log(key);
         const myApp = new App();
         myApp.clone(value);
         myTempArray.push(myApp);

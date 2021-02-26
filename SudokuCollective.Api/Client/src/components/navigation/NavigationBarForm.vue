@@ -1,6 +1,5 @@
 <template>
-  <v-navigation-drawer
-    absolute
+  <v-navigation-drawer    
     app
     color="secondary"
     :value="navDrawerStatus"

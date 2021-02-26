@@ -61,8 +61,6 @@ export default {
 
       words.forEach((word) => (formattedName = formattedName + "\n" + word));
 
-      console.log(formattedName);
-
       return formattedName;
     },
   },

@@ -1,5 +1,5 @@
 <template>
-  <v-card color="primary" class="app-button" @click="createApp">
+  <v-card color="primary" class="app-button">
     <v-card-title>
       <span class="headline">Create App</span>
     </v-card-title>
@@ -17,18 +17,8 @@
 </style>
 
 <script>
-import { mapActions } from "vuex";
-import App from "@/models/app";
 
 export default {
-  name: "CreateAppButton",
-  methods: {
-    ...mapActions("appModule", ["updateApp"]),
-    createApp() {
-      let app = new App();
-      this.updateApp(app);
-      this.$emit("create-app-event", null, null);
-    }
-  }
+  name: "CreateAppButton"
 }
 </script>
