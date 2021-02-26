@@ -97,6 +97,7 @@ import { mapActions } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import CreateAppModel from "@/models/viewModels/createAppModel";
 import App from "@/models/app";
+import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
@@ -108,42 +109,55 @@ export default {
     dirty: false,
   }),
   methods: {
-    ...mapActions("appModule", ["addApp"]),
+    ...mapActions("appModule", ["updateApps", "removeApps"]),
     resetForm() {
       this.$data.app.clone(this.$store.getters["appModule/getApp"]);
       this.$data.dirty = false;
     },
     close() {
-      this.$emit("app-creat-form-closed-event", null, null);
+      this.$emit("create-form-closed-event", null, null);
       this.resetForm();
     },
     async submit() {
       if (this.getCreateAppFormIsValid) {
         try {
-          const response = await appService.postLicense(new CreateAppModel(
-            this.$data.app.name,
-            this.$data.app.devUrl,
-            this.$data.app.liveUrl
-          ));
+          const response = await appService.postLicense(
+            new CreateAppModel(
+              this.$data.app.name,
+              this.$data.app.devUrl,
+              this.$data.app.liveUrl
+            )
+          );
 
           if (response.status === 201) {
-            this.$data.app.clone(response.data.app);
+            const response = await appService.getMyApps(new PageListModel());
 
-            this.addApp(this.$data.app);
+            if (response.data.success) {
+              this.removeApps();
+              let myTempArray = [];
+
+              response.data.apps.map(function (value, key) {
+                console.log(key);
+                const myApp = new App();
+                myApp.clone(value);
+                myTempArray.push(myApp);
+              });
+
+              this.updateApps(myTempArray);
+            }
 
             this.resetCreateAppFormIsValid;
-            
-            this.resetForm();
-      
-            this.$emit("app-created-event", this.$data.app.name, null);
 
+            this.resetForm();
+
+            this.$emit("app-created-event", null, null);
           } else if (response.status === 404) {
-              showToast(
-                this,
-                ToastMethods["error"],
-                response.data.message.substring(17),
-                defaultToastOptions()
-              );
+            showToast(
+              this,
+              ToastMethods["error"],
+              response.data.message.substring(17),
+              defaultToastOptions()
+            );
           } else {
             showToast(
               this,
@@ -152,7 +166,6 @@ export default {
               defaultToastOptions()
             );
           }
-          
         } catch (error) {
           showToast(this, ToastMethods["error"], error, defaultToastOptions());
         }
@@ -166,12 +179,7 @@ export default {
 
     urlRules() {
       const regex = /https?:[0-9]*\/\/[\w!?/\+\-_~=;\.,*&@#$%\(\)\'\[\]]+/;
-      return [
-        (v) =>
-          !v ||
-          regex.test(v) ||
-          "Must be a valid url",
-      ];
+      return [(v) => !v || regex.test(v) || "Must be a valid url"];
     },
 
     resetCreateAppFormIsValid() {

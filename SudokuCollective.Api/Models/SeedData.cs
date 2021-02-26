@@ -191,6 +191,28 @@ namespace SudokuCollective.Api.Models
                             DateTime.MinValue)
                     );
 
+                    context.Apps.Add(
+
+                        new App(
+                            0,
+                            config.GetValue<string>("DefaultPostmanApp:Name"),
+                            config.GetValue<string>("DefaultPostmanApp:License"),
+                            1,
+                            config.GetValue<string>("DefaultPostmanApp:DevUrl"),
+                            config.GetValue<string>("DefaultPostmanApp:LiveUrl"),
+                            false,
+                            true,
+                            true,
+                            true,
+                            true,
+                            string.Empty,
+                            string.Empty,
+                            string.Empty,
+                            string.Empty,
+                            createdDate,
+                            DateTime.MinValue)
+                    );
+
                     context.SaveChanges();
                 }
 
@@ -220,6 +242,20 @@ namespace SudokuCollective.Api.Models
                     context.UsersApps.Add(
 
                         new UserApp(0, 2, 2)
+                    );
+
+                    context.SaveChanges();
+
+                    context.UsersApps.Add(
+
+                        new UserApp(0, 1, 3)
+                    );
+
+                    context.SaveChanges();
+
+                    context.UsersApps.Add(
+
+                        new UserApp(0, 2, 3)
                     );
 
                     context.SaveChanges();
@@ -267,14 +303,21 @@ namespace SudokuCollective.Api.Models
                 {
                     context.AppAdmins.Add(
 
-                        new AppAdmin(1, 1)
+                        new AppAdmin(0, 1, 1, true)
                     );
 
                     context.SaveChanges();
 
                     context.AppAdmins.Add(
 
-                        new AppAdmin(2, 2)
+                        new AppAdmin(0, 2, 2, true)
+                    );
+
+                    context.SaveChanges();
+
+                    context.AppAdmins.Add(
+
+                        new AppAdmin(0, 3, 1, true)
                     );
 
                     context.SaveChanges();

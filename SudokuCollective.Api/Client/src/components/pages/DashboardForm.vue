@@ -11,16 +11,15 @@
           >
           <hr class="title-spacer" />
           <v-row>
-            <CreateAppButton 
-              v-on:app-creat-form-closed-event="openCreateAppDialog"
-              v-on:app-created-event="appCreatedEvent"  />
+            <CreateAppButton v-on:create-app-event="openCreateAppDialog" />
             <span class="no-apps-message" v-if="myApps.length === 0"
               >Time to Get Coding!</span
             >
             <SelectAppButton
-              v-for="myApp in myApps"
-              :key="myApp.id"
+              v-for="(myApp, index) in myApps"
               :app="myApp"
+              :key="index"
+              :index="index"
             />
           </v-row>
         </v-container>
@@ -30,7 +29,8 @@
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
         :signUpFormStatus="creatingApp"
-        v-on:app-created-event="closeCreateApp"
+        v-on:create-form-closed-event="closeCreateApp"
+        v-on:app-created-event="appCreatedEvent"
       />
     </v-dialog>
   </v-container>
@@ -99,14 +99,15 @@ export default {
     closeCreateApp() {
       this.$data.creatingApp = false;
     },
-    appCreatedEvent(appName) {
+    appCreatedEvent() {
+      this.$data.creatingApp = false;
       showToast(
         this,
         ToastMethods["success"],
-        `License successfully created for ${appName}`,
+        "Successfully created app",
         defaultToastOptions()
       );
-    }
+    },
   },
   computed: {
     ...mapGetters("userModule", ["getUser"]),

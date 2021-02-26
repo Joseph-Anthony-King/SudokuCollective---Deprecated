@@ -1,5 +1,5 @@
 <template>
-  <v-card color="secondary" class="app-button" @click="selectApp">
+  <v-card :color="evaluateColor(index)" class="app-button" @click="selectApp" v-if="app.name !== ''">
     <v-card-title>
       <span class="select-app-title" v-if="!app.isActive">{{
         formattedAppName
@@ -36,16 +36,22 @@
 .secondary {
   color: white;
 }
+.error {
+  color: white;
+}
 </style>
 
 <script>
 export default {
   name: "SelectAppButton",
-  props: ["app"],
+  props: ["app", "index"],
   methods: {
     selectApp() {
       this.$emit("select-app-event", null, null);
     },
+    evaluateColor(value) {
+      return parseInt(value) % 2 === 0 ? 'secondary' : 'error';
+    }
   },
   computed: {
     formattedAppName() {

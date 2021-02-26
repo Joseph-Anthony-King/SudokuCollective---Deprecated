@@ -52,7 +52,7 @@ const postLicense = async function(createAppModel) {
   try {
     const config = {
       method: "post",
-      url: getAppEnpoint,
+      url: getLicenseEndpoint,
       headers: requestHeader(),
       data: createAppModel,
     };

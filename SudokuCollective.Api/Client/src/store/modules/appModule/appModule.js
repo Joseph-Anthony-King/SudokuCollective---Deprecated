@@ -2,7 +2,6 @@ import {
   UPDATE_APP, 
   UPDATE_APPS,
   REMOVE_APPS,
-  ADD_APP,
 } from "./mutation-types";
 
 import App from "@/models/app";
@@ -25,9 +24,6 @@ const appModule = {
     [REMOVE_APPS](state) {
       state.Apps = [];
     },
-    [ADD_APP](state, app) {
-      state.Apps.push(app);
-    },
   },
 
   actions: {
@@ -39,9 +35,6 @@ const appModule = {
     },
     removeApps({ commit }) {
       commit(REMOVE_APPS);
-    },
-    addApp({ commit }, app) {
-      commit(ADD_APP, app);
     },
   },
 
