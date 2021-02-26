@@ -73,7 +73,7 @@
 export default {
     name: "EditAppForm",
     data: () => ({
-        dirty = false
+        dirty: false
     }),
     methods: {
         resetForm() {
