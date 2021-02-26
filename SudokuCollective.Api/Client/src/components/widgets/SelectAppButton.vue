@@ -1,25 +1,7 @@
 <template>
   <v-card :color="evaluateColor(index)" class="app-button" @click="selectApp" v-if="app.name !== ''">
     <v-card-title>
-      <span class="select-app-title" v-if="!app.isActive">{{
-        formattedAppName
-      }}</span>
-      <a
-        :href="app.devUrl"
-        target="blank"
-        class="select-app-title"
-        v-if="app.inDevelopment && app.isActive"
-      >
-        <span>{{ formattedAppName }}</span>
-      </a>
-      <a
-        :href="app.liveUrl"
-        target="blank"
-        class="select-app-title"
-        v-if="!app.inDevelopment && app.isActive"
-      >
-        <span>{{ formattedAppName }}</span>
-      </a>
+      <span class="select-app-title">{{ formattedAppName }}</span>
       <span>Users: {{ app.userCount }}</span>
       <span v-if="app.inDevelopment">In Development</span>
       <span v-if="!app.inDevelopment">In Production</span>

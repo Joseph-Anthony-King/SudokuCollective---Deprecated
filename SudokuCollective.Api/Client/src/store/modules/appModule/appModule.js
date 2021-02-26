@@ -42,6 +42,9 @@ const appModule = {
     getApp: (state) => {
       return state.App;
     },
+    getAppById: (state) => (id) => {
+      return state.Apps.find(app => app.id === id)
+    },
     getApps: (state) => {
       return state.Apps;
     },

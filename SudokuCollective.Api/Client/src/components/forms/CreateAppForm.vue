@@ -130,18 +130,21 @@ export default {
           );
 
           if (response.status === 201) {
-            const response = await appService.getMyApps(new PageListModel());
+            const appsResponse = await appService.getMyApps(new PageListModel());
 
-            if (response.data.success) {
+            if (appsResponse.data.success) {
               this.removeApps();
               let myTempArray = [];
 
-              response.data.apps.map(function (value, key) {
-                console.log(key);
+              for (const app of appsResponse.data.apps) {
                 const myApp = new App();
-                myApp.clone(value);
+                myApp.clone(app);
+                const licenseResponse = await appService.getLicense(app.id);
+                if (licenseResponse.data.success) {
+                  myApp.updateLicense(licenseResponse.data.license);
+                }
                 myTempArray.push(myApp);
-              });
+              }
 
               this.updateApps(myTempArray);
             }
@@ -150,7 +153,7 @@ export default {
 
             this.resetForm();
 
-            this.$emit("app-created-event", null, null);
+            this.$emit("app-created-event", response.data.app.id, null);
           } else if (response.status === 404) {
             showToast(
               this,

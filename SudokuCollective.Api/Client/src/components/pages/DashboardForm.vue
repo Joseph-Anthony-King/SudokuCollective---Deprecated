@@ -31,7 +31,8 @@
     <AppWidget 
       v-if="openAppWidget" 
       :app="app"
-      v-on:close-app-widget-event="closeAppWidget"/>
+      v-on:close-app-widget-event="closeAppWidget"
+      v-on:open-edit-app-dialog-event="openEditAppDialog"/>
 
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
@@ -39,6 +40,10 @@
         v-on:create-form-closed-event="closeCreateApp"
         v-on:app-created-event="appCreatedEvent"
       />
+    </v-dialog>
+
+    <v-dialog v-model="editingApp" persistent max-width="600px">
+      <EditAppForm />
     </v-dialog>
   </v-container>
 </template>
@@ -79,6 +84,7 @@
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
+import EditAppForm from "@/components/forms/EditAppForm";
 import AppWidget from "@/components/widgets/AppWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
@@ -93,6 +99,7 @@ export default {
   name: "DashboardForm",
   components: {
     CreateAppForm,
+    EditAppForm,
     AppWidget,
     CreateAppButton,
     SelectAppButton
@@ -102,19 +109,23 @@ export default {
     app: new App(),
     myApps: [],
     creatingApp: false,
-    openAppWidget: false,
+    editingApp: false,
+    openAppWidget: false,    
   }),
   methods: {
     ...mapActions("appModule", ["updateApps", "removeApps"]),
     openCreateAppDialog() {
-      this.$data.app = new App();
       this.$data.creatingApp = true;
+    },
+    openEditAppDialog() {
+      this.$data.editingApp = true;
     },
     closeCreateApp() {
       this.$data.creatingApp = false;
     },
-    appCreatedEvent() {
+    appCreatedEvent(id) {
       this.$data.creatingApp = false;
+      this.appSelected(id);
       showToast(
         this,
         ToastMethods["success"],
@@ -122,12 +133,10 @@ export default {
         defaultToastOptions()
       );
     },
-    async appSelected(id) {
+    appSelected(id) {
       this.$data.openAppWidget = true;
-      const response = await appService.getApp(
-        id,
-        new PageListModel());
-      this.$data.app.clone(response.data.app);
+      const app = this.getAppById(id);
+      this.$data.app = app;
     },
     closeAppWidget() {
       this.$data.app = new App();
@@ -136,6 +145,7 @@ export default {
   },
   computed: {
     ...mapGetters("userModule", ["getUser"]),
+    ...mapGetters("appModule", ["getAppById"]),
   },
   watch: {
     "$store.state.userModule.User": function () {
@@ -156,11 +166,15 @@ export default {
       this.removeApps();
       let myTempArray = [];
 
-      response.data.apps.map(function (value, key) {
+      for (const app of response.data.apps) {
         const myApp = new App();
-        myApp.clone(value);
+        myApp.clone(app);
+        const licenseResponse = await appService.getLicense(app.id);
+        if (licenseResponse.data.success) {
+          myApp.updateLicense(licenseResponse.data.license);
+        }
         myTempArray.push(myApp);
-      });
+      }
 
       this.updateApps(myTempArray);
     }
