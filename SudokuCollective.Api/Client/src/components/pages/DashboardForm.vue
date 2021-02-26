@@ -43,7 +43,8 @@
     </v-dialog>
 
     <v-dialog v-model="editingApp" persistent max-width="600px">
-      <EditAppForm />
+      <EditAppForm 
+        v-on:close-edit-app-event="closeEditApp"/>
     </v-dialog>
   </v-container>
 </template>
@@ -122,6 +123,9 @@ export default {
     },
     closeCreateApp() {
       this.$data.creatingApp = false;
+    },
+    closeEditApp() {
+      this.$data.editingApp = false;
     },
     appCreatedEvent(id) {
       this.$data.creatingApp = false;

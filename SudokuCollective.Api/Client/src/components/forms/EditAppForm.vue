@@ -80,8 +80,12 @@ export default {
             this.$data.dirty = false;
         },
 
+        submit() {
+          console.log("submit invoked...");
+        },
+
         close() {
-            this.$emit("edit-app-event", null, null);
+            this.$emit("close-edit-app-event", null, null);
             this.resetForm();
         },
     }
