@@ -10,18 +10,18 @@
             >Please Log In</v-card-title
           >
           <hr class="title-spacer" />
-          <v-row>
-            <CreateAppButton v-on:create-app-event="openCreateAppDialog" />
-            <span class="no-apps-message" v-if="myApps.length === 0"
-              >Time to Get Coding!</span
-            >
-            <SelectAppButton
-              v-for="(myApp, index) in myApps"
-              :app="myApp"
-              :key="index"
-              :index="index"
-            />
-          </v-row>
+            <div class='buttons'>
+              <CreateAppButton v-on:create-app-event="openCreateAppDialog" />
+              <span class="no-apps-message" v-if="myApps.length === 0"
+                >Time to Get Coding!</span
+              >
+              <SelectAppButton
+                v-for="(myApp, index) in myApps"
+                :app="myApp"
+                :key="index"
+                :index="index"
+              />
+            </div>
         </v-container>
       </v-card-text>
     </v-card>
@@ -60,6 +60,10 @@
     margin: 85px 0 0 5px;
     font-size: medium;
   }
+}
+.buttons {
+    display: flex;
+    overflow-x: auto;
 }
 </style>
 
