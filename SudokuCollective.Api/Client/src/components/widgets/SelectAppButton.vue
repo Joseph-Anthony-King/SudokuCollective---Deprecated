@@ -23,6 +23,7 @@
       <span>Users: {{ app.userCount }}</span>
       <span v-if="app.inDevelopment">In Development</span>
       <span v-if="!app.inDevelopment">In Production</span>
+      <span v-if="app.isActive && app.inDevelopment">Active</span>
       <span v-if="!app.isActive">Inactive</span>
     </v-card-title>
   </v-card>
