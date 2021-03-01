@@ -2,18 +2,18 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <UserProfileForm />
+        <UserProfilePage />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import UserProfileForm from "@/components/pages/UserProfileForm.vue";
+import UserProfilePage from "@/components/pages/UserProfilePage.vue";
 export default {
   name: "UserProfile",
   components: {
-    UserProfileForm,
+    UserProfilePage,
   },
 };
 </script>

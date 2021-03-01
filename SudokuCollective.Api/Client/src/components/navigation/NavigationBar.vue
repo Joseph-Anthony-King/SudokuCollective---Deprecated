@@ -71,7 +71,7 @@ import User from "@/models/user";
 import MenuItem from "@/models/viewModels/menuItem";
 
 export default {
-  name: "NavigationBarForm",
+  name: "NavigationBar",
   props: ["userLoggedIn", "profileNavigation", "navDrawerStatus"],
   data: () => ({
     navMenuItems: [],

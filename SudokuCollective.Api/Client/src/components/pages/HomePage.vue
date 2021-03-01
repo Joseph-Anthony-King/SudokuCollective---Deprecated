@@ -33,7 +33,7 @@
 import App from "@/models/app";
 
 export default {
-  name: "HomeForm",
+  name: "HomePage",
   data: () => ({
     app: new App(),
   }),

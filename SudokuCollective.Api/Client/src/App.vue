@@ -1,11 +1,11 @@
 <template>
   <v-app>
-    <NavigationBarForm
+    <NavigationBar
       :userLoggedIn="user.isLoggedIn"
       :profileNavigation="profileNavigation"
       :navDrawerStatus="navDrawerStatus"
     />
-    <AppBarForm
+    <AppBarNav
       :userLoggedIn="user.isLoggedIn"
       :profileNavigation="profileNavigation"
       v-on:user-logging-in="userLoggingIn = true"
@@ -42,7 +42,7 @@
     </v-main>
 
     <v-footer app>
-      <FooterForm />
+      <FooterNav />
     </v-footer>
   </v-app>
 </template>
@@ -65,11 +65,11 @@
 import { mapActions } from "vuex";
 import { userService } from "@/services/userService/user.service";
 import { appService } from "@/services/appService/app.service";
-import AppBarForm from "@/components/navigation/AppBarForm";
-import NavigationBarForm from "@/components/navigation/NavigationBarForm";
+import AppBarNav from "@/components/navigation/AppBarNav";
+import NavigationBar from "@/components/navigation/NavigationBar";
 import LoginForm from "@/components/forms/LoginForm";
 import SignUpForm from "@/components/forms/SignUpForm";
-import FooterForm from "@/components/navigation/FooterForm";
+import FooterNav from "@/components/navigation/FooterNav";
 import App from "@/models/app";
 import User from "@/models/user";
 import PageListModel from "@/models/viewModels/pageListModel";
@@ -83,11 +83,11 @@ import {
 export default {
   name: "App",
   components: {
-    AppBarForm,
-    NavigationBarForm,
+    AppBarNav,
+    NavigationBar,
     LoginForm,
     SignUpForm,
-    FooterForm,
+    FooterNav,
   },
   data: () => ({
     userLoggingIn: false,

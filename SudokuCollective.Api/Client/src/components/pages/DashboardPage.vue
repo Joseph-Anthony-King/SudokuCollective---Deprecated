@@ -95,7 +95,7 @@ import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
-  name: "DashboardForm",
+  name: "DashboardPage",
   components: {
     CreateAppForm,
     EditAppForm,

@@ -19,6 +19,6 @@
 
 <script>
 export default {
-  name: "FooterForm",
+  name: "FooterNav",
 };
 </script>

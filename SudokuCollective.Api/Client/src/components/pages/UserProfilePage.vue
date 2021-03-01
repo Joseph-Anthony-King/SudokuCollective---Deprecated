@@ -338,7 +338,7 @@ import {
 } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
-  name: "UserProfileForm",
+  name: "UserProfilePage",
   components: {
     EditProfileForm,
   },

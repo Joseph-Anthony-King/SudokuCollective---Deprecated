@@ -149,7 +149,7 @@
 import { AppMenuItems } from "@/models/arrays/appMenuItems";
 
 export default {
-  name: "AppBarForm",
+  name: "AppBarNav",
   props: ["userLoggedIn", "profileNavigation"],
   data: () => ({
     appMenuItems: [],
