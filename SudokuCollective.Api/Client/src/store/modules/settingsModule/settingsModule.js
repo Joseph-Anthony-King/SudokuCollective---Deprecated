@@ -4,7 +4,6 @@ import App from "@/models/app";
 import {
   CONFIRM_API_URL,
   UPDATE_AUTH_TOKEN,
-  UPDATE_REQUESTOR_ID,
   UPDATE_TOAST_DURATION,
   UPDATE_APP,
   UPDATE_USER
@@ -16,10 +15,9 @@ const settingsModule = {
   state: () => ({
     apiURL: "",
     authToken: "",
-    requestorId: 0,
     toastDuration: 500,
     app: new App(),
-    User: new User(),
+    user: new User(),
   }),
 
   mutations: {
@@ -29,9 +27,6 @@ const settingsModule = {
     [UPDATE_AUTH_TOKEN](state, token) {
       state.authToken = token;
     },
-    [UPDATE_REQUESTOR_ID](state, requestorId) {
-      state.requestorId = requestorId;
-    },
     [UPDATE_TOAST_DURATION](state, duration) {
       state.toastDuration = duration;
     },
@@ -39,7 +34,7 @@ const settingsModule = {
       state.app = app;
     },
     [UPDATE_USER](state, user) {
-      state.User = user;
+      state.user = user;
     },
   },
 
@@ -50,9 +45,6 @@ const settingsModule = {
     },
     updateAuthToken({ commit }, token) {
       commit(UPDATE_AUTH_TOKEN, token);
-    },
-    updateRequestorId({ commit }, id) {
-      commit(UPDATE_REQUESTOR_ID, id);
     },
     updateToastDuration({ commit }, duration) {
       commit(UPDATE_TOAST_DURATION, duration);
@@ -73,7 +65,7 @@ const settingsModule = {
       return state.authToken;
     },
     getRequestorId: (state) => {
-      return state.requestorId;
+      return state.user.id;
     },
     getToastDuration: (state) => {
       return state.toastDuration;
@@ -85,7 +77,7 @@ const settingsModule = {
       return state.app;
     },
     getUser: (state) => {
-      return state.User;
+      return state.user;
     },
   },
 };

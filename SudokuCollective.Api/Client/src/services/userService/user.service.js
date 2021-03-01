@@ -206,7 +206,6 @@ const loginUser = function (user, token) {
 
   store.dispatch("settingsModule/updateUser", user);
   store.dispatch("settingsModule/updateAuthToken", token);
-  store.dispatch("settingsModule/updateRequestorId", user.id);
 
   return user;
 };
@@ -218,7 +217,6 @@ const logoutUser = function (user) {
 
   store.dispatch("settingsModule/updateUser", user);
   store.dispatch("settingsModule/updateAuthToken", "");
-  store.dispatch("settingsModule/updateRequestorId", 0);
 
   return user;
 };

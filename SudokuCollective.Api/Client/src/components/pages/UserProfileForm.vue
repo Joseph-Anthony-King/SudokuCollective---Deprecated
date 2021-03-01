@@ -739,7 +739,7 @@ export default {
     },
   },
   watch: {
-    "$store.state.settingsModule.User": function () {
+    "$store.state.settingsModule.user": function () {
       this.$data.user = new User();
       this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
     },
