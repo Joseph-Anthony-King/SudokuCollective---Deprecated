@@ -3,7 +3,7 @@ import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
 import { 
   getAppEnpoint,
-  getAppByLicenseEnpoint,
+  getByLicenseEnpoint,
   getLicenseEndpoint,
   getMyAppsEndpoint,
   getObtainAdminPrivilegesEnpoint
@@ -29,13 +29,13 @@ const getApp = async function(id, pageListModel) {
   }
 }
 
-const getAppByLicense = async function(pageListModel) {
+const getByLicense = async function(pageListModel, license) {
   try {
     const config = {
       method: "post",
-      url: `${getAppByLicenseEnpoint}`,
+      url: `${getByLicenseEnpoint}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(pageListModel, license),
     };
 
     const response = await axios(config);
@@ -123,7 +123,7 @@ const postObtainAdminPrivileges = async function (pageListModel) {
 
 export const appService = {
   getApp,
-  getAppByLicense,
+  getByLicense,
   postLicense,
   getLicense,
   getMyApps,

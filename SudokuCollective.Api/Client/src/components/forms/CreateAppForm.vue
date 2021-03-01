@@ -111,7 +111,7 @@ export default {
   methods: {
     ...mapActions("appModule", ["updateApps", "removeApps"]),
     resetForm() {
-      this.$data.app.clone(this.$store.getters["appModule/getApp"]);
+      this.$data.app.clone(this.$store.getters["appModule/getSelectedApp"]);
       this.$data.dirty = false;
     },
     close() {
@@ -130,7 +130,9 @@ export default {
           );
 
           if (response.status === 201) {
-            const appsResponse = await appService.getMyApps(new PageListModel());
+            const appsResponse = await appService.getMyApps(
+              new PageListModel()
+            );
 
             if (appsResponse.data.success) {
               this.removeApps();
@@ -195,7 +197,7 @@ export default {
   },
   created() {
     this.$data.app = new App();
-    this.$data.app.clone(this.$store.getters["appModule/getApp"]);
+    this.$data.app.clone(this.$store.getters["appModule/getSelectedApp"]);
   },
 };
 </script>

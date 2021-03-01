@@ -92,7 +92,7 @@ export default {
   data: () => ({
     userLoggingIn: false,
     userSigningUp: false,
-    user: {},
+    user: new User(),
     profileNavigation: {
       url: "/UserProfile",
       title: "User Profile",
@@ -101,9 +101,7 @@ export default {
     navDrawerStatus: null,
   }),
   methods: {
-    ...mapActions("settingsModule", [
-      "confirmBaseURL",
-      "updateApp"]),
+    ...mapActions("settingsModule", ["confirmBaseURL", "updateApp"]),
 
     login(user, token) {
       if (user !== null && token !== null) {
@@ -201,28 +199,29 @@ export default {
     },
   },
   watch: {
-    "$store.state.userModule.User": function () {
+    "$store.state.settingsModule.User": function () {
       this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
     },
   },
-  computed: {},
-  async created() {
+  async mounted() {
     await this.confirmBaseURL();
 
-    let response = await appService.getAppByLicense(new PageListModel());
+    const response = await appService.getByLicense(
+      new PageListModel(), 
+      process.env.VUE_APP_LICENSE);
 
-    let app = new App();
+    console.log("get by license response:", response);
+
+    const app = new App();
 
     app.clone(response.data.app);
-    
+
     app.updateLicense(process.env.VUE_APP_LICENSE);
 
     this.updateApp(app);
-  },
-  mounted() {
-    this.$data.user = new User();
-    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+
+    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
   },
 };
 </script>

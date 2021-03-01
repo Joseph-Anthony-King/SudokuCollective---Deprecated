@@ -131,7 +131,7 @@ export default {
   props: ["editProfileFormStatus"],
   data: () => ({
     editProfileFormIsValid: true,
-    user: {},
+    user: new User(),
     dirty: false,
     invalidUserNames: [],
     invalidEmails: [],
@@ -140,7 +140,7 @@ export default {
     resetForm() {
       this.$data.invalidUserNames = [];
       this.$data.invalidEmails = [];
-      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
       this.$data.dirty = false;
     },
 
@@ -152,7 +152,7 @@ export default {
             toastObject.goAway(0);
 
             try {
-              let userProfie = this.$store.getters["userModule/getUser"];
+              let userProfie = this.$store.getters["settingsModule/getUser"];
               let updatingEmail = false;
               let oldEmail = "";
 
@@ -283,10 +283,7 @@ export default {
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return [
         (v) => !!v || "Email is required",
-        (v) =>
-          !v ||
-          regex.test(v) ||
-          "Email must be valid",
+        (v) => !v || regex.test(v) || "Email must be valid",
         (v) => !this.$data.invalidEmails.includes(v) || "Email Not Unique",
       ];
     },
@@ -300,14 +297,12 @@ export default {
     },
   },
   watch: {
-    "$store.state.userModule.User": function () {
-      this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+    "$store.state.settingsModule.User": function () {
+      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
     },
   },
   created() {
-    this.$data.user = new User();
-    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
   },
 };
 </script>

@@ -10,29 +10,28 @@
             >Please Log In</v-card-title
           >
           <hr class="title-spacer" />
-            <div class="app-buttons-scroll">
-              <CreateAppButton 
-                v-on:click.native="openCreateAppDialog" />
-              <span class="no-apps-message" v-if="myApps.length === 0"
-                >Time to Get Coding!</span
-              >
-              <SelectAppButton
-                v-for="(myApp, index) in myApps"
-                :app="myApp"
-                :key="index"
-                :index="index"
-                v-on:click.native="appSelected(myApp.id)"
-              />
-            </div>
+          <div class="app-buttons-scroll">
+            <CreateAppButton v-on:click.native="openCreateAppDialog" />
+            <span class="no-apps-message" v-if="myApps.length === 0"
+              >Time to Get Coding!</span
+            >
+            <SelectAppButton
+              v-for="(myApp, index) in myApps"
+              :app="myApp"
+              :key="index"
+              :index="index"
+              v-on:click.native="appSelected(myApp.id)"
+            />
+          </div>
         </v-container>
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
-    <AppWidget 
-      v-if="openAppWidget" 
-      :app="app"
+    <AppWidget
+      v-if="openAppWidget"
       v-on:close-app-widget-event="closeAppWidget"
-      v-on:open-edit-app-dialog-event="openEditAppDialog"/>
+      v-on:open-edit-app-dialog-event="openEditAppDialog"
+    />
 
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
@@ -43,8 +42,7 @@
     </v-dialog>
 
     <v-dialog v-model="editingApp" persistent max-width="600px">
-      <EditAppForm 
-        v-on:close-edit-app-event="closeEditApp"/>
+      <EditAppForm v-on:close-edit-app-event="closeEditApp" />
     </v-dialog>
   </v-container>
 </template>
@@ -75,8 +73,8 @@
   }
 }
 .app-buttons-scroll {
-    display: flex;
-    overflow-x: auto;
+  display: flex;
+  overflow-x: auto;
 }
 </style>
 
@@ -103,18 +101,22 @@ export default {
     EditAppForm,
     AppWidget,
     CreateAppButton,
-    SelectAppButton
+    SelectAppButton,
   },
   data: () => ({
-    user: {},
+    user: new User(),
     app: new App(),
     myApps: [],
     creatingApp: false,
     editingApp: false,
-    openAppWidget: false,    
+    openAppWidget: false,
   }),
   methods: {
-    ...mapActions("appModule", ["updateApps", "removeApps"]),
+    ...mapActions("appModule", [
+      "updateSelectedApp",
+      "updateApps",
+      "removeApps",
+    ]),
     openCreateAppDialog() {
       this.$data.creatingApp = true;
     },
@@ -140,29 +142,32 @@ export default {
     appSelected(id) {
       this.$data.openAppWidget = true;
       const app = this.getAppById(id);
-      this.$data.app = app;
+      this.updateSelectedApp(app);
+      console.log(
+        "currently selected app:",
+        this.$store.getters["appModule/getSelectedApp"]
+      );
     },
     closeAppWidget() {
       this.$data.app = new App();
       this.$data.openAppWidget = false;
-    }
+    },
   },
   computed: {
     ...mapGetters("userModule", ["getUser"]),
     ...mapGetters("appModule", ["getAppById"]),
   },
   watch: {
-    "$store.state.userModule.User": function () {
+    "$store.state.settingsModule.User": function () {
       this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
     },
     "$store.state.appModule.Apps": function () {
       this.$data.myApps = this.$store.getters["appModule/getApps"];
     },
   },
   async created() {
-    this.$data.user = new User();
-    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
 
     const response = await appService.getMyApps(new PageListModel());
 

@@ -343,7 +343,7 @@ export default {
     EditProfileForm,
   },
   data: () => ({
-    user: {},
+    user: new User(),
     editingProfile: false,
   }),
   methods: {
@@ -726,7 +726,7 @@ export default {
       );
     },
     closeEditing() {
-      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
       this.$data.editingProfile = false;
     },
   },
@@ -739,14 +739,13 @@ export default {
     },
   },
   watch: {
-    "$store.state.userModule.User": function () {
+    "$store.state.settingsModule.User": function () {
       this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
     },
   },
   created() {
-    this.$data.user = new User();
-    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
   },
 };
 </script>

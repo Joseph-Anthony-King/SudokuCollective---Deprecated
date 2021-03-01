@@ -3,14 +3,16 @@
     <v-card-text>
       <v-container fluid>
         <span @click="close" class="material-icons close-hover"> clear </span>
-        <v-card-title 
-          class="justify-center" 
-          v-if="app.isActive === false ||
-          ((app.devUrl === '' && app.inDevelopment === true) || 
-          (app.liveUrl === '' && app.inDevelopment === false))">{{ app.name }}</v-card-title>
-        <v-card-title 
-          class="justify-center" 
-          v-if="app.isActive">
+        <v-card-title
+          class="justify-center"
+          v-if="
+            app.isActive === false ||
+            (app.devUrl === '' && app.inDevelopment === true) ||
+            (app.liveUrl === '' && app.inDevelopment === false)
+          "
+          >{{ app.name }}</v-card-title
+        >
+        <v-card-title class="justify-center" v-if="app.isActive">
           <a
             :href="app.inDevelopment ? app.devUrl : app.liveUrl"
             target="blank"
@@ -23,55 +25,55 @@
         <v-row>
           <v-col cols="12" lg="6" xl="6">
             <v-text-field
-              v-model="getName"
+              v-model="app.name"
               label="Name"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="getDevUrl"
+              v-model="app.devUrl"
               label="Development Url"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="geLiveUrl"
+              v-model="app.liveUrl"
               label="Production Url"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="getCustomEmailConfirmationDevUrl"
+              v-model="app.customEmailConfirmationDevUrl"
               label="Custom Development Email Confirmation Url"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="getCustomEmailConfirmationDevUrl"
+              v-model="app.customEmailConfirmationDevUrl"
               label="Custom Production Email Confirmation Url"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="getCustomPasswordResetDevUrl"
+              v-model="app.customPasswordResetDevUrl"
               label="Custom Development Password Reset Url"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="getCustomPasswordResetLiveUrl"
+              v-model="app.customPasswordResetLiveUrl"
               label="Custom Production Password Reset Url"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="getUserCount"
+              v-model="app.userCount"
               label="User Count"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="getGameCount"
+              v-model="app.gameCount"
               label="Game Count"
               prepend-icon="wysiwyg"
               readonly
@@ -79,7 +81,7 @@
           </v-col>
           <v-col cols="12" lg="6" xl="6">
             <v-text-field
-              v-model="getLicense"
+              v-model="app.license"
               label="App License"
               prepend-icon="wysiwyg"
               append-icon="content_copy"
@@ -104,27 +106,27 @@
               readonly
             ></v-text-field>
             <v-checkbox
-              v-model="getIsActive"
+              v-model="app.isActive"
               label="App Is Active"
               readonly
             ></v-checkbox>
             <v-checkbox
-              v-model="getInDevelopment"
+              v-model="app.inDevelopment"
               label="App Is In Development"
               readonly
             ></v-checkbox>
             <v-checkbox
-              v-model="getPermitSuperUserAccess"
+              v-model="app.permitSuperUserAccess"
               label="The Super User has Admin Access Rights to this App"
               readonly
             ></v-checkbox>
             <v-checkbox
-              v-model="getPermitCollectiveLogins"
+              v-model="app.permitCollectiveLogins"
               label="User Registration is not Required to Gain Access to this App"
               readonly
             ></v-checkbox>
             <v-checkbox
-              v-model="getDisableCustomUrls"
+              v-model="app.disableCustomUrls"
               label="Custom Urls for Email Confirmations and Password Resets are Disabled"
               readonly
             ></v-checkbox>
@@ -133,9 +135,7 @@
       </v-container>
     </v-card-text>
     <hr />
-    <v-card-title class="justify-center"
-      >Available Actions</v-card-title
-    >
+    <v-card-title class="justify-center">Available Actions</v-card-title>
     <v-card-actions>
       <v-container>
         <v-row dense>
@@ -163,7 +163,6 @@
                   class="button-full"
                   color="blue darken-1"
                   text
-                  @click="cancelAllEmailRequests"
                   v-bind="attrs"
                   v-on="on"
                 >
@@ -191,15 +190,18 @@
 </style>
 
 <script>
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
+import App from "@/models/app";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
+import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "AppWidget",
-  props: ["app"],
+  data: () => ({
+    app: new App(),
+  }),
   methods: {
-    async copyLicenseToClipboard(){
+    async copyLicenseToClipboard() {
       try {
         await navigator.clipboard.writeText(this.getLicense);
         showToast(
@@ -208,74 +210,36 @@ export default {
           "Copied license to clipboard",
           defaultToastOptions()
         );
-        
       } catch (error) {
-        showToast(
-          this,
-          ToastMethods["error"],
-          error,
-          defaultToastOptions()
-        );
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
     },
-    openEditAppDialog(){
-      this.$emit("open-edit-app-dialog-event", null, null);    },
+    openEditAppDialog() {
+      this.$emit("open-edit-app-dialog-event", null, null);
+    },
     close() {
       this.$emit("close-app-widget-event", null, null);
     },
   },
   computed: {
-    getName() {
-      return this.$props.app.name;
-    },
-    getDevUrl() {
-      return this.$props.app.devUrl;
-    },
-    geLiveUrl() {
-      return this.$props.app.liveUrl;
-    },
-    getCustomEmailConfirmationDevUrl() {
-      return this.$props.app.customEmailConfirmationDevUrl;
-    },
-    getCustomEmailConfirmationLiveUrl() {
-      return this.$props.app.customEmailConfirmationLiveUrl;
-    },
-    getCustomPasswordResetDevUrl() {
-      return this.$props.app.customPasswordResetDevUrl;
-    },
-    getCustomPasswordResetLiveUrl() {
-      return this.$props.app.customPasswordResetLiveUrl;
-    },
-    getUserCount() {
-      return this.$props.app.userCount;
-    },
-    getGameCount() {
-      return this.$props.app.gameCount;
-    },
-    getLicense() {
-      return this.$props.app.license;
-    },
     getDateCreated() {
-      return convertStringToDateTime(this.$props.app.dateCreated);
+      return convertStringToDateTime(this.$data.app.dateCreated);
     },
     getDateUpdated() {
-      return convertStringToDateTime(this.$props.app.dateUpdated);
+      return convertStringToDateTime(this.$data.app.dateUpdated);
     },
-    getIsActive() {
-      return this.$props.app.isActive;
+  },
+  watch: {
+    "$store.state.appModule.SelectedApp": function () {
+      const selectedApp = this.$store.getters["appModule/getSelectedApp"];
+      this.$data.app.clone(selectedApp);
+      console.log("app widget app updated:", this.$data.app);
     },
-    getInDevelopment() {
-      return this.$props.app.inDevelopment;
-    },
-    getPermitSuperUserAccess() {
-      return this.$props.app.permitSuperUserAccess;
-    },
-    getPermitCollectiveLogins() {
-      return this.$props.app.permitCollectiveLogins;
-    },
-    getDisableCustomUrls() {
-      return this.$props.app.disableCustomUrls;
-    },
+  },
+  created() {
+    const selectedApp = this.$store.getters["appModule/getSelectedApp"];
+    this.$data.app.clone(selectedApp);
+    console.log("app widget app created:", this.$data.app);
   },
 };
 </script>

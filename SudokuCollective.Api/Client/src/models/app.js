@@ -1,3 +1,5 @@
+import User from "@/models/user";
+
 class App {
   constructor(
     id,
@@ -60,8 +62,13 @@ class App {
       this.userCount = userCount;
       this.dateCreated = dateCreated;
       this.dateUpdated = dateUpdated;
-      this.users = users;
       this.license = "";
+
+      for (const user of users) {
+        const u = new User();
+        u.clone(user);
+        this.users.push(u);
+      }
     }
   }
 
@@ -89,7 +96,12 @@ class App {
       this.userCount = data.userCount;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;
-      this.users = data.users;
+
+      for (const user of data.users) {
+        const u = new User();
+        u.clone(user);
+        this.users.push(u);
+      }
     }
   }
 }

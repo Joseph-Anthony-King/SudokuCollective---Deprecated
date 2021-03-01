@@ -35,7 +35,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  var user = store.getters["userModule/getUser"];
+  var user = store.getters["settingsModule/getUser"];
   if (to.fullPath !== "/") {
     if (!user.isLoggedIn) {
       next("/");

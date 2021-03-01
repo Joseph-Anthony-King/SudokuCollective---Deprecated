@@ -1,7 +1,10 @@
 ﻿import store from "../store";
 
-export function requestData(pageListModel) {
-  const license = store.getters["settingsModule/getLicense"];
+export function requestData(pageListModel, license = null) {
+
+  if (license === null) {
+    license = store.getters["settingsModule/getLicense"];
+  }
   const requestorId = parseInt(
     store.getters["settingsModule/getRequestorId"]
   );

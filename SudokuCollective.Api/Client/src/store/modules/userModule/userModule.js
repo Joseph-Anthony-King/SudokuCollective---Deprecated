@@ -1,4 +1,8 @@
-﻿import { UPDATE_USER } from "./mutation-types";
+﻿import { 
+  UPDATE_SELECTED_USER, 
+  UPDATE_USERS,
+  REMOVE_USERS,
+} from "./mutation-types";
 
 import User from "@/models/user";
 
@@ -6,24 +10,43 @@ const userModule = {
   namespaced: true,
 
   state: () => ({
-    User: new User(),
+    SelectedUser: new User(),
+    Users: []
   }),
 
   mutations: {
-    [UPDATE_USER](state, user) {
-      state.User = user;
+    [UPDATE_SELECTED_USER](state, app) {
+      state.SelectedApp = app;
+    },
+    [UPDATE_USERS](state, apps) {
+      apps.forEach(app => state.Apps.push(app));
+    },
+    [REMOVE_USERS](state) {
+      state.Apps = [];
     },
   },
 
   actions: {
-    updateUser({ commit }, user) {
-      commit(UPDATE_USER, user);
+    updateSelectedApp({ commit }, app) {
+      commit(UPDATE_SELECTED_USER, app);
+    },
+    updateApps({ commit }, apps) {
+      commit(UPDATE_USERS, apps);
+    },
+    removeApps({ commit }) {
+      commit(REMOVE_USERS);
     },
   },
 
   getters: {
-    getUser: (state) => {
-      return state.User;
+    getSelectedApp: (state) => {
+      return state.SelectedUser;
+    },
+    getAppById: (state) => (id) => {
+      return state.Users.find(user => user.id === id)
+    },
+    getApps: (state) => {
+      return state.Users;
     },
   },
 };

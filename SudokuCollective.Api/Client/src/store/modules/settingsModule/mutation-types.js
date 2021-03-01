@@ -3,3 +3,4 @@ export const UPDATE_AUTH_TOKEN = "updateAuthToken";
 export const UPDATE_REQUESTOR_ID = "updateRequestorId";
 export const UPDATE_TOAST_DURATION = "updateToastDuration";
 export const UPDATE_APP = "updateApp";
+export const UPDATE_USER = "updateUser";

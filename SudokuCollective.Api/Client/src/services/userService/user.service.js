@@ -97,10 +97,8 @@ const updateUser = async function (
 
     const response = await axios(config);
 
-    console.log("update user response:", response);
-
     user = assignAPIReponseToUser(response.data.user);
-    store.dispatch("userModule/updateUser", user);
+    store.dispatch("settingsModule/updateUser", user);
 
     return response;
   } catch (error) {
@@ -206,7 +204,7 @@ const putCancelAllEmailRequests = async function (pageListModel) {
 const loginUser = function (user, token) {
   user.login();
 
-  store.dispatch("userModule/updateUser", user);
+  store.dispatch("settingsModule/updateUser", user);
   store.dispatch("settingsModule/updateAuthToken", token);
   store.dispatch("settingsModule/updateRequestorId", user.id);
 
@@ -218,7 +216,7 @@ const logoutUser = function (user) {
 
   user = new User();
 
-  store.dispatch("userModule/updateUser", user);
+  store.dispatch("settingsModule/updateUser", user);
   store.dispatch("settingsModule/updateAuthToken", "");
   store.dispatch("settingsModule/updateRequestorId", 0);
 
@@ -226,7 +224,7 @@ const logoutUser = function (user) {
 };
 
 const assignAPIReponseToUser = function (data) {
-  let user = store.getters["userModule/getUser"];
+  let user = store.getters["settingsModule/getUser"];
 
   user.id = data.id;
   user.userName = data.userName;

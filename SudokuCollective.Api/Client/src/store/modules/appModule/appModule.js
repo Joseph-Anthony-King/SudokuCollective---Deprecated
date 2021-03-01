@@ -1,5 +1,5 @@
 import { 
-  UPDATE_APP, 
+  UPDATE_SELECTED_APP, 
   UPDATE_APPS,
   REMOVE_APPS,
 } from "./mutation-types";
@@ -10,13 +10,13 @@ const appModule = {
   namespaced: true,
 
   state: () => ({
-    App: new App(),
+    SelectedApp: new App(),
     Apps: []
   }),
 
   mutations: {
-    [UPDATE_APP](state, app) {
-      state.App = app;
+    [UPDATE_SELECTED_APP](state, app) {
+      state.SelectedApp = app;
     },
     [UPDATE_APPS](state, apps) {
       apps.forEach(app => state.Apps.push(app));
@@ -27,8 +27,8 @@ const appModule = {
   },
 
   actions: {
-    updateApp({ commit }, app) {
-      commit(UPDATE_APP, app);
+    updateSelectedApp({ commit }, app) {
+      commit(UPDATE_SELECTED_APP, app);
     },
     updateApps({ commit }, apps) {
       commit(UPDATE_APPS, apps);
@@ -39,8 +39,8 @@ const appModule = {
   },
 
   getters: {
-    getApp: (state) => {
-      return state.App;
+    getSelectedApp: (state) => {
+      return state.SelectedApp;
     },
     getAppById: (state) => (id) => {
       return state.Apps.find(app => app.id === id)

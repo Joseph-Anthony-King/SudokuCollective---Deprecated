@@ -1,7 +1,10 @@
 <template>
   <v-container fluid>
-    <v-card elevation="6" class="mx-auto">
-      <h1 class="text-center text-padding">Welcome to {{ adminApp.name }}</h1>
+    <v-card elevation="6" class="mx-auto" v-if="app.name === ''">
+      <v-card-text class="text-center"> loading... </v-card-text>
+    </v-card>
+    <v-card elevation="6" class="mx-auto" v-if="app.name !== ''">
+      <h1 class="text-center text-padding">Welcome to {{ app.name }}</h1>
       <v-row class="text-center">
         <v-col cols="12">
           <v-img src="/logo.png" class="my-3" contain height="200" />
@@ -32,11 +35,16 @@ import App from "@/models/app";
 export default {
   name: "HomeForm",
   data: () => ({
-    adminApp: {},
+    app: new App(),
   }),
+  watch: {
+    "$store.state.settingsModule.app": function () {
+      this.$data.app.clone(this.$store.getters["settingsModule/getApp"]);
+      console.log("app widget app updated:", this.$data.app);
+    },
+  },
   created() {
-    this.$data.adminApp = new App();
-    this.$data.adminApp.clone(this.$store.getters["settingsModule/getApp"]);
+    this.$data.app.clone(this.$store.getters["settingsModule/getApp"]);
   },
 };
 </script>

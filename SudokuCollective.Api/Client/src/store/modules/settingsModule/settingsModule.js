@@ -1,4 +1,5 @@
 ﻿import { apiURLConfirmationService } from "../../../services/apiURLConfirmationService/apiURLConfirmation.service";
+import User from "@/models/user";
 import App from "@/models/app";
 import {
   CONFIRM_API_URL,
@@ -6,6 +7,7 @@ import {
   UPDATE_REQUESTOR_ID,
   UPDATE_TOAST_DURATION,
   UPDATE_APP,
+  UPDATE_USER
 } from "./mutation-types";
 
 const settingsModule = {
@@ -17,6 +19,7 @@ const settingsModule = {
     requestorId: 0,
     toastDuration: 500,
     app: new App(),
+    User: new User(),
   }),
 
   mutations: {
@@ -35,6 +38,9 @@ const settingsModule = {
     [UPDATE_APP](state, app) {
       state.app = app;
     },
+    [UPDATE_USER](state, user) {
+      state.User = user;
+    },
   },
 
   actions: {
@@ -42,21 +48,20 @@ const settingsModule = {
       const response = await apiURLConfirmationService.confirm(apiURL);
       commit(CONFIRM_API_URL, response.url);
     },
-
     updateAuthToken({ commit }, token) {
       commit(UPDATE_AUTH_TOKEN, token);
     },
-
     updateRequestorId({ commit }, id) {
       commit(UPDATE_REQUESTOR_ID, id);
     },
-
     updateToastDuration({ commit }, duration) {
       commit(UPDATE_TOAST_DURATION, duration);
-    },
-    
+    },    
     updateApp({ commit }, app) {
       commit(UPDATE_APP, app);
+    },
+    updateUser({ commit }, user) {
+      commit(UPDATE_USER, user);
     },
   },
 
@@ -78,6 +83,9 @@ const settingsModule = {
     },
     getApp: (state) => {
       return state.app;
+    },
+    getUser: (state) => {
+      return state.User;
     },
   },
 };

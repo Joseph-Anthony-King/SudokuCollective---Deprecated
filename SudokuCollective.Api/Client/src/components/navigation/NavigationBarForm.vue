@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer    
+  <v-navigation-drawer
     app
     color="secondary"
     :value="navDrawerStatus"
@@ -89,16 +89,16 @@ export default {
     },
   },
   watch: {
-    "$store.state.userModule.User": function () {
+    "$store.state.settingsModule.User": function () {
       this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
     },
   },
   async created() {
     this.populateNavMenuItems();
 
     this.$data.user = new User();
-    this.$data.user.clone(this.$store.getters["userModule/getUser"]);
+    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
   },
 };
 </script>
