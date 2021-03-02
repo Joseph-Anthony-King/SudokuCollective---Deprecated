@@ -141,7 +141,7 @@ export default {
     resetForm() {
       this.$data.invalidUserNames = [];
       this.$data.invalidEmails = [];
-      this.$data.user = this.$store.getters["settingsModule/getUser"];
+      this.$data.user = this.getUser();
       this.$data.dirty = false;
     },
 
@@ -302,11 +302,8 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user = this.$store.getters["settingsModule/getUser"];
+      this.$data.user = this.getUser();
     },
-  },
-  created() {    
-    this.$data.user = this.$store.getters["settingsModule/getUser"];
   },
   mounted() {
     if (this.$props.loginFormStatus && this.$data.dirty) {

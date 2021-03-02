@@ -110,14 +110,17 @@ export default {
   }),
   methods: {
     ...mapActions("appModule", ["updateApps", "removeApps"]),
+
     resetForm() {
-      this.$data.app = new App((this.$store.getters["appModule/getSelectedApp"]));
+      this.$data.app = new App();
       this.$data.dirty = false;
     },
+
     close() {
       this.$emit("create-form-closed-event", null, null);
       this.resetForm();
     },
+
     async submit() {
       if (this.getCreateAppFormIsValid) {
         try {

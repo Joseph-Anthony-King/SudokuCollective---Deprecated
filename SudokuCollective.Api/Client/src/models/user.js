@@ -14,8 +14,8 @@
       this.isActive = false;
       this.isAdmin = false;
       this.isSuperUser = false;
-      this.dateCreated = new Date("0001-01-01T00:00:00Z");
-      this.dateUpdated = new Date("0001-01-01T00:00:00Z");
+      this.dateCreated = "";
+      this.dateUpdated = "";
       this.isLoggedIn = false;
     } else {
       this.id = data.id;
@@ -31,8 +31,8 @@
       this.isActive = data.isActive;
       this.isAdmin = data.isAdmin;
       this.isSuperUser = data.isSuperUser;
-      this.dateCreated = new Date(data.datecreated);
-      this.dateUpdated = new Date(data.dateupdated);
+      this.dateCreated = data.dateCreated;
+      this.dateUpdated = data.dateUpdated;
       this.isLoggedIn = false;
     }
   }
@@ -55,8 +55,8 @@
     this.isActive = false;
     this.isAdmin = false;
     this.isSuperUser = "";
-    this.dateCreated = new Date("0001-01-01T00:00:00Z");
-    this.dateUpdated = new Date("0001-01-01T00:00:00Z");
+    this.dateCreated = "";
+    this.dateUpdated = "";
     this.isLoggedIn = false;
   }
 }
