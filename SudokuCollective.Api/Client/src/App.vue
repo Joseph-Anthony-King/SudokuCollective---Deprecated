@@ -72,7 +72,6 @@ import SignUpForm from "@/components/forms/SignUpForm";
 import Footer from "@/components/navigation/Footer";
 import App from "@/models/app";
 import User from "@/models/user";
-import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -215,10 +214,7 @@ export default {
     const urlResponse = await apiURLConfirmationService.confirm();
     this.confirmBaseURL(urlResponse.url);
 
-    const appResponse = await appService.getByLicense(
-      new PageListModel(),
-      process.env.VUE_APP_LICENSE
-    );
+    const appResponse = await appService.getByLicense(process.env.VUE_APP_LICENSE);
 
     const app = new App(appResponse.data.app);
 

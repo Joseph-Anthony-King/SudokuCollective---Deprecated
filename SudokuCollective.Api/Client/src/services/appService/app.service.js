@@ -1,6 +1,7 @@
 import * as axios from "axios";
-import { requestHeader } from "../../helpers/requestHeader";
-import { requestData } from "../../helpers/requestData";
+import store from "@/store";
+import { requestHeader } from "@/helpers/requestHeader";
+import { requestData } from "@/helpers/requestData";
 import { 
   getAppEnpoint,
   getByLicenseEnpoint,
@@ -9,7 +10,7 @@ import {
   getObtainAdminPrivilegesEnpoint
 } from "./service.endpoints";
 
-const getApp = async function(id, pageListModel) {
+const getApp = async function(id) {
   try {
     let params = `/${id}`;
 
@@ -17,7 +18,7 @@ const getApp = async function(id, pageListModel) {
       method: "post",
       url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     const response = await axios(config);
@@ -29,13 +30,20 @@ const getApp = async function(id, pageListModel) {
   }
 }
 
-const getByLicense = async function(pageListModel, license) {
+const getByLicense = async function(license) {
   try {
+    const data = {
+      license: license,
+      requestorId: store.getters["settingsModule/getRequestorId"],
+      appId: store.getters["settingsModule/getAppId"],
+      pageListModel: null
+    };
+
     const config = {
       method: "post",
       url: `${getByLicenseEnpoint}`,
       headers: requestHeader(),
-      data: requestData(pageListModel, license),
+      data: requestData(data),
     };
 
     const response = await axios(config);
@@ -85,13 +93,13 @@ const getLicense = async function(id) {
   }
 }
 
-const getMyApps = async function(pageListModel) {
+const getMyApps = async function() {
   try {
     const config = {
       method: "put",
       url: `${getMyAppsEndpoint}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     const response = await axios(config);
@@ -103,13 +111,13 @@ const getMyApps = async function(pageListModel) {
   }
 }
 
-const postObtainAdminPrivileges = async function (pageListModel) {
+const postObtainAdminPrivileges = async function () {
   try {
     const config = {
       method: "post",
       url: `${getObtainAdminPrivilegesEnpoint}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     const response = await axios(config);
@@ -121,6 +129,33 @@ const postObtainAdminPrivileges = async function (pageListModel) {
   }
 };
 
+const deleteApp = async function(app) {
+  try {
+    let params = `/${app.id}`;
+
+    const data = {
+      license: app.license,
+      requestorId: app.ownerId,
+      appId: app.id,
+      pageListModel: null
+    };
+
+    const config = {
+      method: "delete",
+      url: `${getAppEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(data),
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
 export const appService = {
   getApp,
   getByLicense,
@@ -128,4 +163,5 @@ export const appService = {
   getLicense,
   getMyApps,
   postObtainAdminPrivileges,
+  deleteApp,
 };

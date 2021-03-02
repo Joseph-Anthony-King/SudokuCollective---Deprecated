@@ -171,7 +171,7 @@ export default {
   async created() {
     this.$data.user = new User(this.getUser);
 
-    const response = await appService.getMyApps(new PageListModel());
+    const response = await appService.getMyApps();
 
     if (response.data.success) {
       this.removeApps();

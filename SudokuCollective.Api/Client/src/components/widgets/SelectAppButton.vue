@@ -55,8 +55,6 @@ export default {
           }
         });
 
-        console.log(formattedName);
-
         return formattedName;
       } else {
         return this.$props.app.name

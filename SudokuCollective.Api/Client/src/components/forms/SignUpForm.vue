@@ -304,7 +304,7 @@ export default {
     if (this.$props.signUpFormStatus) {
       let self = this;
       window.addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
+        if (event.key === "Enter" && self.$data.signUpFormIsValid) {
           self.submit();
         }
       });

@@ -1,11 +1,19 @@
-﻿import { requestData } from "../requestData";
+﻿import store from "@/store";
+import { requestData } from "@/helpers/requestData";
 
 export function requestDataUpdatePassword(
   pageListModel,
   oldPassword,
   newPassword
 ) {
-  let result = requestData(pageListModel);
+  const data = {
+    license: store.getters["settingsModule/getLicense"],
+    requestorId: store.getters["settingsModule/getRequestorId"],
+    appId: store.getters["settingsModule/getAppId"],
+    pageListModel: pageListModel
+  };
+
+  let result = requestData(data);
 
   result["OldPassword"] = oldPassword;
   result["NewPassword"] = newPassword;
@@ -21,7 +29,14 @@ export function requestDataUpdateUser(
   nickName,
   email
 ) {
-  let result = requestData(pageListModel);
+  const data = {
+    license: store.getters["settingsModule/getLicense"],
+    requestorId: store.getters["settingsModule/getRequestorId"],
+    appId: store.getters["settingsModule/getAppId"],
+    pageListModel: pageListModel
+  };
+
+  let result = requestData(data);
 
   result["UserName"] = userName;
   result["FirstName"] = firstName;
@@ -33,7 +48,15 @@ export function requestDataUpdateUser(
 }
 
 export function requestDataUpdateUserRoles(pageListModel, roleIds) {
-  let result = requestData(pageListModel);
+
+  const data = {
+    license: store.getters["settingsModule/getLicense"],
+    requestorId: store.getters["settingsModule/getRequestorId"],
+    appId: store.getters["settingsModule/getAppId"],
+    pageListModel: pageListModel
+  };
+
+  let result = requestData(data);
 
   result["RoleIds"] = roleIds;
 

@@ -324,9 +324,9 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // DELETE: api/apps/5/deleteapp
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpDelete, Route("{id}/DeleteApp")]
+        // DELETE: api/apps/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpDelete, Route("{id}")]
         public async Task<ActionResult> DeleteApp(
             int id,
             [FromBody] BaseRequest request)

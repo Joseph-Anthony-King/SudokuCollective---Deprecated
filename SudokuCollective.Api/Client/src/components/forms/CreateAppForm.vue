@@ -97,7 +97,6 @@ import { mapActions } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import CreateAppModel from "@/models/viewModels/createAppModel";
 import App from "@/models/app";
-import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
@@ -126,9 +125,7 @@ export default {
 
           if (response.status === 201) {
 
-            const appsResponse = await appService.getMyApps(
-              new PageListModel()
-            );
+            const appsResponse = await appService.getMyApps();
 
             if (appsResponse.data.success) {
               let myTempArray = [];

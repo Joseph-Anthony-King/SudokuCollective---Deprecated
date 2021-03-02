@@ -76,11 +76,14 @@ const settingsModule = {
     getToastDuration: (state) => {
       return state.toastDuration;
     },
-    getLicense: (state) => {
-      return state.app.license;
-    },
     getApp: (state) => {
       return state.app;
+    },
+    getAppId: (state) => {
+      return state.app.id;
+    },
+    getLicense: (state) => {
+      return state.app.license;
     },
     getUser: (state) => {
       return state.user;

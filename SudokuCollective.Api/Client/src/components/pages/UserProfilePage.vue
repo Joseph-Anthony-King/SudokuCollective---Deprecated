@@ -679,9 +679,7 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await appService.postObtainAdminPrivileges(
-                new PageListModel()
-              );
+              const response = await appService.postObtainAdminPrivileges();
 
               if (response.status === 200) {
                 this.$data.user = new User(response.data.user);
@@ -742,9 +740,9 @@ export default {
     async reset() {
       let user = await userService.getUser(
         this.$data.user.id,
-        new PageListModel(),
         false
       );
+      
       this.$data.user = new User(user);
       this.updateUser(this.$data.user);
     },

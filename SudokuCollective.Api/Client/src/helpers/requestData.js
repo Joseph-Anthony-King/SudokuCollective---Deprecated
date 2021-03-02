@@ -1,19 +1,21 @@
-﻿import store from "../store";
+﻿import store from "@/store";
+import PageListModel from "@/models/viewModels/pageListModel"
 
-export function requestData(pageListModel, license = null) {
+export function requestData(data) {
 
-  if (license === null) {
-    license = store.getters["settingsModule/getLicense"];
+  if (data === undefined) {
+    data = {
+      license: store.getters["settingsModule/getLicense"],
+      requestorId: store.getters["settingsModule/getRequestorId"],
+      appId: store.getters["settingsModule/getAppId"],
+      pageListModel: new PageListModel()
+    }
   }
-  const requestorId = parseInt(
-    store.getters["settingsModule/getRequestorId"]
-  );
-  const appId = parseInt(process.env.VUE_APP_ID);
 
   return {
-    License: license,
-    RequestorId: requestorId,
-    AppId: appId,
-    PageListModel: pageListModel,
+    License: data.license,
+    RequestorId: data.requestorId,
+    AppId: data.appId,
+    PageListModel: data.pageListModel,
   };
 }

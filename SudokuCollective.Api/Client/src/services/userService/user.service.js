@@ -13,7 +13,7 @@ import {
   getCancelAllEmailRequestsEndpoint,
 } from "./service.endpoints";
 
-const getUser = async function (id, pageListModel, fullRecord) {
+const getUser = async function (id, fullRecord) {
   try {
     let params = "";
 
@@ -27,7 +27,7 @@ const getUser = async function (id, pageListModel, fullRecord) {
       method: "post",
       url: `${getUserEnpoint}${params}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     let user = new User();
@@ -43,7 +43,7 @@ const getUser = async function (id, pageListModel, fullRecord) {
   }
 };
 
-const getUsers = async function (pageListModel, fullRecord) {
+const getUsers = async function (data, fullRecord) {
   try {
     let params = "";
 
@@ -55,7 +55,7 @@ const getUsers = async function (pageListModel, fullRecord) {
       method: "post",
       url: `${getUserEnpoint}${params}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(data),
     };
 
     const response = await axios(config);

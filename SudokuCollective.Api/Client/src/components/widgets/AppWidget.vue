@@ -174,6 +174,7 @@
                   class="button-full"
                   color="blue darken-1"
                   text
+                  @click="deleteApp"
                   v-bind="attrs"
                   v-on="on"
                 >
@@ -201,9 +202,15 @@
 </style>
 
 <script>
+import { mapActions } from "vuex";
+import { appService } from "@/services/appService/app.service";
 import App from "@/models/app";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
+import {
+  showToast,
+  defaultToastOptions,
+  actionToastOptions,
+} from "@/helpers/toastHelper";
 import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
@@ -212,6 +219,8 @@ export default {
     app: new App(),
   }),
   methods: {
+    ...mapActions("appModule", ["updateApps", "removeApps"]),
+
     async copyLicenseToClipboard() {
       try {
         await navigator.clipboard.writeText(this.getLicense);
@@ -225,9 +234,85 @@ export default {
         showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
     },
+
+    async deleteApp() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await appService.deleteApp(this.$data.app);
+
+              if (response.status === 200) {
+
+                const appsResponse = await appService.getMyApps();
+
+                if (appsResponse.data.success) {
+                  let myTempArray = [];
+
+                  for (const app of appsResponse.data.apps) {
+                    const myApp = new App(app);
+                    const licenseResponse = await appService.getLicense(myApp.id);
+                    if (licenseResponse.data.success) {
+                      myApp.updateLicense(licenseResponse.data.license);
+                    }
+                    myTempArray.push(myApp);
+                  }
+
+                  this.removeApps();
+                  this.updateApps(myTempArray);
+
+                  showToast(
+                    this,
+                    ToastMethods["success"],
+                    response.data.message.substring(17),
+                    defaultToastOptions()
+                  );
+
+                  this.$emit("close-app-widget-event", null, null);
+                }     
+              } else if (response.status === 404) {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message,
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(this, ToastMethods["error"], error, defaultToastOptions());
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to delete this app?",
+        actionToastOptions(action, "delete")
+      );
+    },
+
     openEditAppDialog() {
       this.$emit("open-edit-app-dialog-event", null, null);
     },
+
     close() {
       this.$emit("close-app-widget-event", null, null);
     },
@@ -236,9 +321,11 @@ export default {
     getDateCreated() {
       return convertStringToDateTime(this.$data.app.dateCreated);
     },
+
     getDateUpdated() {
       return convertStringToDateTime(this.$data.app.dateUpdated);
     },
+
     isOwnersEmailConfirmed() {
       const owner = this.$data.app.users.find(user => user.id === this.$data.app.ownerId);
       return owner.emailConfirmed;
