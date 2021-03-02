@@ -211,12 +211,12 @@ import { passwordReset } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "LoginForm",
-  props: ["userForAuthentication", "loginFormStatus"],
+  props: ["loginFormStatus"],
   data: () => ({
     username: "",
     password: "",
     email: "",
-    user: {},
+    user: new User(),
     loginFormIsValid: true,
     userNameFormIsValid: true,
     showPassword: false,
@@ -236,7 +236,7 @@ export default {
           );
 
           if (response.status === 200) {
-            this.$data.user.clone(response.data.user);
+            this.$data.user = new User(response.data.user);
 
             this.resetLoginFormStatus;
 
@@ -394,16 +394,14 @@ export default {
     },
   },
   mounted() {
-    let self = this;
-
-    window.addEventListener("keyup", function (event) {
-      if (event.keyCode === 13) {
-        self.authenticate();
-      }
-    });
-
-    this.$data.user = new User();
-    this.$data.user.clone(this.$props.userForAuthentication);
+    if (this.$props.loginFormStatus) {
+      let self = this;
+      window.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+          self.authenticate();
+        }
+      });      
+    }
   },
 };
 </script>

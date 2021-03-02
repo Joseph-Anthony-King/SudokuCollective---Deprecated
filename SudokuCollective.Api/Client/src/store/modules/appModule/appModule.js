@@ -10,19 +10,19 @@ const appModule = {
   namespaced: true,
 
   state: () => ({
-    SelectedApp: new App(),
-    Apps: []
+    selectedApp: new App(),
+    apps: []
   }),
 
   mutations: {
     [UPDATE_SELECTED_APP](state, app) {
-      state.SelectedApp = app;
+      state.selectedApp = app;
     },
     [UPDATE_APPS](state, apps) {
-      apps.forEach(app => state.Apps.push(app));
+      apps.forEach(app => state.apps.push(app));
     },
     [REMOVE_APPS](state) {
-      state.Apps = [];
+      state.apps = [];
     },
   },
 
@@ -40,13 +40,13 @@ const appModule = {
 
   getters: {
     getSelectedApp: (state) => {
-      return state.SelectedApp;
+      return state.selectedApp;
     },
     getAppById: (state) => (id) => {
-      return state.Apps.find(app => app.id === id)
+      return state.apps.find(app => app.id === id)
     },
     getApps: (state) => {
-      return state.Apps;
+      return state.apps;
     },
   },
 };

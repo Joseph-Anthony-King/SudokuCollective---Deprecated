@@ -157,7 +157,7 @@ export default {
     confirmPassword: "",
     signUpFormIsValid: true,
     showPassword: false,
-    user: {},
+    user: new User(),
     invalidUserNames: [],
     invalidEmails: [],
   }),
@@ -177,7 +177,7 @@ export default {
           );
 
           if (response.status === 201) {
-            this.$data.user.clone(response.data.user);
+            this.$data.user = new User(response.data.user);
 
             this.resetSignUpFormStatus;
 
@@ -292,9 +292,6 @@ export default {
     getSignUpFormStatus() {
       return this.signUpFormStatus;
     },
-  },
-  mounted() {
-    this.$data.user = new User();
   },
 };
 </script>

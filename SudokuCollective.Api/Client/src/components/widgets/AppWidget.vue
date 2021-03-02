@@ -25,6 +25,12 @@
         <v-row>
           <v-col cols="12" lg="6" xl="6">
             <v-text-field
+              v-model="app.id"
+              label="Id"
+              prepend-icon="wysiwyg"
+              readonly
+            ></v-text-field>
+            <v-text-field
               v-model="app.name"
               label="Name"
               prepend-icon="wysiwyg"
@@ -130,6 +136,11 @@
               label="Custom Urls for Email Confirmations and Password Resets are Disabled"
               readonly
             ></v-checkbox>
+            <v-checkbox
+              v-model="isOwnersEmailConfirmed"
+              label="Owner's Email is Confirmed"
+              readonly
+            ></v-checkbox>
           </v-col>
         </v-row>
       </v-container>
@@ -228,18 +239,18 @@ export default {
     getDateUpdated() {
       return convertStringToDateTime(this.$data.app.dateUpdated);
     },
+    isOwnersEmailConfirmed() {
+      const owner = this.$data.app.users.find(user => user.id === this.$data.app.ownerId);
+      return owner.emailConfirmed;
+    }
   },
   watch: {
-    "$store.state.appModule.SelectedApp": function () {
-      const selectedApp = this.$store.getters["appModule/getSelectedApp"];
-      this.$data.app.clone(selectedApp);
-      console.log("app widget app updated:", this.$data.app);
+    "$store.state.appModule.selectedApp": function () {
+      this.$data.app = this.$store.getters["appModule/getSelectedApp"];
     },
   },
   created() {
-    const selectedApp = this.$store.getters["appModule/getSelectedApp"];
-    this.$data.app.clone(selectedApp);
-    console.log("app widget app created:", this.$data.app);
+    this.$data.app = this.$store.getters["appModule/getSelectedApp"];
   },
 };
 </script>

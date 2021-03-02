@@ -310,6 +310,13 @@ namespace SudokuCollective.Api.Models
 
                     context.AppAdmins.Add(
 
+                        new AppAdmin(0, 1, 2, true)
+                    );
+
+                    context.SaveChanges();
+
+                    context.AppAdmins.Add(
+
                         new AppAdmin(0, 2, 2, true)
                     );
 

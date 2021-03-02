@@ -27,6 +27,19 @@
           width="269"
         />
       </router-link>
+      <div class="hidden-md-and-up name-logo">
+        <router-link to="/">
+          <v-img
+            alt="Vuetify Name"
+            
+            contain
+            max-width="180"
+            src="/name-logo.png"
+            transition="scale-transition"
+            width="180"
+          />
+        </router-link>
+      </div>
     </div>
 
     <v-spacer></v-spacer>
@@ -135,6 +148,11 @@
     display: none;
   }
 }
+.name-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .menu-item {
   text-decoration: none !important;
   color: #9b9b9b;
@@ -181,7 +199,5 @@ export default {
   async created() {
     this.populateAppMenuItems();
   },
-
-  mounted() {},
 };
 </script>

@@ -116,6 +116,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { userService } from "@/services/userService/user.service";
 import User from "@/models/user";
 import PageListModel from "@/models/viewModels/pageListModel";
@@ -140,7 +141,7 @@ export default {
     resetForm() {
       this.$data.invalidUserNames = [];
       this.$data.invalidEmails = [];
-      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+      this.$data.user = this.$store.getters["settingsModule/getUser"];
       this.$data.dirty = false;
     },
 
@@ -268,6 +269,8 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("settingsModule", ["getUser"]),
+
     userNameRules() {
       return [
         (v) => !!v || "User Name is required",
@@ -275,6 +278,7 @@ export default {
           !this.$data.invalidUserNames.includes(v) || "User Name Not Unique",
       ];
     },
+
     stringRequiredRules() {
       return [(v) => !!v || "Value is required"];
     },
@@ -298,11 +302,25 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+      this.$data.user = this.$store.getters["settingsModule/getUser"];
     },
   },
-  created() {
-    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+  created() {    
+    this.$data.user = this.$store.getters["settingsModule/getUser"];
+  },
+  mounted() {
+    if (this.$props.loginFormStatus && this.$data.dirty) {
+
+      let self = this;
+
+      window.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+          self.submit();
+        }
+      });
+
+      this.$data.user = this.getUser();
+    }
   },
 };
 </script>

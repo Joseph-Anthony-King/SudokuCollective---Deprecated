@@ -1,28 +1,8 @@
 import User from "@/models/user";
 
 class App {
-  constructor(
-    id,
-    name,
-    ownerId,
-    devUrl,
-    liveUrl,
-    isActive,
-    inDevelopment,
-    permitSuperUserAccess,
-    permitCollectiveLogins,
-    disableCustomUrls,
-    customEmailConfirmationDevUrl,
-    customEmailConfirmationLiveUrl,
-    customPasswordResetDevUrl,
-    customPasswordResetLiveUrl,
-    gameCount,
-    userCount,
-    dateCreated,
-    dateUpdated,
-    users
-  ) {
-    if (!arguments.length) {
+  constructor(data) {
+    if (data === undefined) {
       this.id = 0;
       this.name = "";
       this.ownerId = 0;
@@ -44,40 +24,6 @@ class App {
       this.users = [];
       this.license = "";
     } else {
-      this.id = id;
-      this.name = name;
-      this.ownerId = ownerId;
-      this.devUrl = devUrl;
-      this.liveUrl = liveUrl;
-      this.isActive = isActive;
-      this.inDevelopment = inDevelopment;
-      this.permitSuperUserAccess = permitSuperUserAccess;
-      this.permitCollectiveLogins = permitCollectiveLogins;
-      this.disableCustomUrls = disableCustomUrls;
-      this.customEmailConfirmationDevUrl = customEmailConfirmationDevUrl;
-      this.customEmailConfirmationLiveUrl = customEmailConfirmationLiveUrl;
-      this.customPasswordResetDevUrl = customPasswordResetDevUrl;
-      this.customPasswordResetLiveUrl = customPasswordResetLiveUrl;
-      this.gameCount = gameCount;
-      this.userCount = userCount;
-      this.dateCreated = dateCreated;
-      this.dateUpdated = dateUpdated;
-      this.license = "";
-
-      for (const user of users) {
-        const u = new User();
-        u.clone(user);
-        this.users.push(u);
-      }
-    }
-  }
-
-  updateLicense(license) {
-    this.license = license;
-  }
-
-  clone(data) {
-    if (data !== undefined) {
       this.id = data.id;
       this.name = data.name;
       this.ownerId = data.ownerId;
@@ -96,13 +42,21 @@ class App {
       this.userCount = data.userCount;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;
+      this.users = [];
 
-      for (const user of data.users) {
-        const u = new User();
-        u.clone(user);
-        this.users.push(u);
+      if (data.users.length > 0) {
+        for (const userApp of data.users) {
+          const user = new User(userApp.user);
+          this.users.push(user);
+        }
       }
+      
+      this.license = "";
     }
+  }
+
+  updateLicense(license) {
+    this.license = license;
   }
 }
 

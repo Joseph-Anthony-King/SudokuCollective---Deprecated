@@ -14,6 +14,12 @@
           <v-row>
             <v-col cols="12" lg="6" xl="6">
               <v-text-field
+                v-model="user.id"
+                label="Id"
+                prepend-icon="mdi-account-circle"
+                readonly
+              ></v-text-field>
+              <v-text-field
                 v-model="user.userName"
                 label="User Name"
                 prepend-icon="mdi-account-circle"
@@ -353,7 +359,7 @@ export default {
         new PageListModel(),
         false
       );
-      this.$data.user.clone(user);
+      this.$data.user = new User(user);
       store.dispatch("userModule/updateUser", this.$data.user);
     },
     async refreshProfile() {
@@ -376,7 +382,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.clone(response.data.user);
+                this.$data.user = new User(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -430,7 +436,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.clone(response.data.user);
+                this.$data.user = new User(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -522,7 +528,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.clone(response.data.user);
+                this.$data.user = new User(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -576,7 +582,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.clone(response.data.user);
+                this.$data.user = new User(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -630,7 +636,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.clone(response.data.user);
+                this.$data.user = new User(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -684,7 +690,7 @@ export default {
               );
 
               if (response.status === 200) {
-                this.$data.user.clone(response.data.user);
+                this.$data.user = new User(response.data.user);
                 store.dispatch("userModule/updateUser", this.$data.user);
                 showToast(
                   this,
@@ -726,7 +732,7 @@ export default {
       );
     },
     closeEditing() {
-      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+      this.$data.user = this.$store.getters["settingsModule/getUser"];
       this.$data.editingProfile = false;
     },
   },
@@ -740,12 +746,11 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+      this.$data.user = this.$store.getters["settingsModule/getUser"];
     },
   },
-  created() {
-    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+  created() {    
+    this.$data.user = this.$store.getters["settingsModule/getUser"];
   },
 };
 </script>

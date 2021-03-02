@@ -50,7 +50,7 @@
 <style scoped>
 @media only screen and (min-width: 1297px) {
   .no-apps-message {
-    margin: 85px 0 0 425px;
+    margin: 85px 0 0 420px;
     font-size: xx-large;
   }
 }
@@ -62,7 +62,7 @@
 }
 @media only screen and (max-width: 1259px) {
   .no-apps-message {
-    margin: 85px 0 0 50px;
+    margin: 85px 0 0 60px;
     font-size: xx-large;
   }
 }
@@ -159,15 +159,14 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+      this.$data.user = this.$store.getters["settingsModule/getUser"];
     },
-    "$store.state.appModule.Apps": function () {
+    "$store.state.appModule.apps": function () {
       this.$data.myApps = this.$store.getters["appModule/getApps"];
     },
   },
   async created() {
-    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+    this.$data.user = this.$store.getters["settingsModule/getUser"];
 
     const response = await appService.getMyApps(new PageListModel());
 
@@ -176,9 +175,8 @@ export default {
       let myTempArray = [];
 
       for (const app of response.data.apps) {
-        const myApp = new App();
-        myApp.clone(app);
-        const licenseResponse = await appService.getLicense(app.id);
+        const myApp = new App(app);
+        const licenseResponse = await appService.getLicense(myApp.id);
         if (licenseResponse.data.success) {
           myApp.updateLicense(licenseResponse.data.license);
         }

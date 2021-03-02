@@ -1,5 +1,4 @@
-﻿import { apiURLConfirmationService } from "../../../services/apiURLConfirmationService/apiURLConfirmation.service";
-import User from "@/models/user";
+﻿import User from "@/models/user";
 import App from "@/models/app";
 import {
   CONFIRM_API_URL,
@@ -40,8 +39,7 @@ const settingsModule = {
 
   actions: {
     async confirmBaseURL({ commit }, apiURL) {
-      const response = await apiURLConfirmationService.confirm(apiURL);
-      commit(CONFIRM_API_URL, response.url);
+      commit(CONFIRM_API_URL, apiURL);
     },
     updateAuthToken({ commit }, token) {
       commit(UPDATE_AUTH_TOKEN, token);

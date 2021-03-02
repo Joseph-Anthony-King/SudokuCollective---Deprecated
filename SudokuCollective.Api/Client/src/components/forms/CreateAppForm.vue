@@ -104,14 +104,14 @@ import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 export default {
   name: "CreateAppForm",
   data: () => ({
-    app: {},
+    app: new App(),
     createAppFormIsValid: true,
     dirty: false,
   }),
   methods: {
     ...mapActions("appModule", ["updateApps", "removeApps"]),
     resetForm() {
-      this.$data.app.clone(this.$store.getters["appModule/getSelectedApp"]);
+      this.$data.app = new App((this.$store.getters["appModule/getSelectedApp"]));
       this.$data.dirty = false;
     },
     close() {
@@ -135,19 +135,18 @@ export default {
             );
 
             if (appsResponse.data.success) {
-              this.removeApps();
               let myTempArray = [];
 
               for (const app of appsResponse.data.apps) {
-                const myApp = new App();
-                myApp.clone(app);
-                const licenseResponse = await appService.getLicense(app.id);
+                const myApp = new App(app);
+                const licenseResponse = await appService.getLicense(myApp.id);
                 if (licenseResponse.data.success) {
                   myApp.updateLicense(licenseResponse.data.license);
                 }
                 myTempArray.push(myApp);
               }
 
+              this.removeApps();
               this.updateApps(myTempArray);
             }
 
@@ -194,10 +193,6 @@ export default {
     getCreateAppFormIsValid() {
       return this.createAppFormIsValid;
     },
-  },
-  created() {
-    this.$data.app = new App();
-    this.$data.app.clone(this.$store.getters["appModule/getSelectedApp"]);
   },
 };
 </script>

@@ -67,12 +67,11 @@
 }
 </style>
 <script>
-import User from "@/models/user";
 import MenuItem from "@/models/viewModels/menuItem";
 
 export default {
   name: "NavigationBar",
-  props: ["userLoggedIn", "profileNavigation", "navDrawerStatus"],
+  props: ["userLoggedIn", "navDrawerStatus", "profileNavigation"],
   data: () => ({
     navMenuItems: [],
     user: {},
@@ -90,15 +89,13 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+      this.$data.user = this.$store.getters["settingsModule/getUser"];
     },
   },
   async created() {
     this.populateNavMenuItems();
-
-    this.$data.user = new User();
-    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+    
+    this.$data.user = this.$store.getters["settingsModule/getUser"];
   },
 };
 </script>

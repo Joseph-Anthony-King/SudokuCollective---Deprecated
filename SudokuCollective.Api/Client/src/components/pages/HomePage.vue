@@ -1,8 +1,13 @@
 <template>
   <v-container fluid>
-    <v-card elevation="6" class="mx-auto" v-if="app.name === ''">
-      <v-card-text class="text-center"> loading... </v-card-text>
-    </v-card>
+    <div class="d-flex ma-12 pa-12 justify-center" v-if="app.name === ''" >
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="100"
+        :width="10"
+      ></v-progress-circular>
+    </div>
     <v-card elevation="6" class="mx-auto" v-if="app.name !== ''">
       <h1 class="text-center text-padding">Welcome to {{ app.name }}</h1>
       <v-row class="text-center">
@@ -39,12 +44,11 @@ export default {
   }),
   watch: {
     "$store.state.settingsModule.app": function () {
-      this.$data.app.clone(this.$store.getters["settingsModule/getApp"]);
-      console.log("app widget app updated:", this.$data.app);
+      this.$data.app = new App(this.$store.getters["settingsModule/getApp"]);
     },
   },
   created() {
-    this.$data.app.clone(this.$store.getters["settingsModule/getApp"]);
+    this.$data.app = new App(this.$store.getters["settingsModule/getApp"]);
   },
 };
 </script>

@@ -25,7 +25,6 @@
 
         <v-dialog v-model="userLoggingIn" persistent max-width="600px">
           <LoginForm
-            :userForAuthentication="user"
             :loginFormStatus="userLoggingIn"
             v-on:user-logging-in-event="login"
             v-on:redirect-to-sign-up="redirectToSignUp"
@@ -63,6 +62,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmation.service";
 import { userService } from "@/services/userService/user.service";
 import { appService } from "@/services/appService/app.service";
 import AppBarNav from "@/components/navigation/AppBarNav";
@@ -101,13 +101,18 @@ export default {
     navDrawerStatus: null,
   }),
   methods: {
-    ...mapActions("settingsModule", ["confirmBaseURL", "updateApp"]),
+    ...mapActions("settingsModule", [
+      "confirmBaseURL", 
+      "updateAuthToken", 
+      "updateApp", 
+      "updateUser"]),
 
     login(user, token) {
       if (user !== null && token !== null) {
         this.$data.user = user;
-
-        this.$data.user = userService.loginUser(this.$data.user, token);
+        this.$data.user.login();
+        this.updateUser(this.$data.user)
+        this.updateAuthToken(token);
 
         if (this.$router.currentRoute.path !== "/dashboard") {
           this.$router.push("/dashboard");
@@ -139,7 +144,9 @@ export default {
           onClick: (e, toastObject) => {
             toastObject.goAway(0);
 
-            this.$data.user = userService.logoutUser(this.$data.user);
+            this.$data.user = new User();
+            this.updateUser(this.$data.user)
+            this.updateAuthToken("");
 
             if (this.$router.currentRoute.path !== "/") {
               this.$router.push("/");
@@ -200,28 +207,24 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user = new User();
-      this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+      this.$data.user = this.$store.getters["settingsModule/getUser"];
     },
   },
-  async mounted() {
-    await this.confirmBaseURL();
+  async created() {    
+    const urlResponse = await apiURLConfirmationService.confirm();
+    this.confirmBaseURL(urlResponse.url);
 
-    const response = await appService.getByLicense(
+    const appResponse = await appService.getByLicense(
       new PageListModel(), 
       process.env.VUE_APP_LICENSE);
 
-    console.log("get by license response:", response);
-
-    const app = new App();
-
-    app.clone(response.data.app);
+    const app = new App(appResponse.data.app);
 
     app.updateLicense(process.env.VUE_APP_LICENSE);
 
     this.updateApp(app);
-
-    this.$data.user.clone(this.$store.getters["settingsModule/getUser"]);
+    
+    this.$data.user = this.$store.getters["settingsModule/getUser"];
   },
 };
 </script>
