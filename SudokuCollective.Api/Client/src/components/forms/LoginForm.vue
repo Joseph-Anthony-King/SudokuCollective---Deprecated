@@ -204,6 +204,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { authenticationService } from "@/services/authenticationService/authentication.service";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -230,6 +231,10 @@ export default {
     invalidEmails: [],
   }),
   methods: {
+    ...mapActions("settingsModule", [
+      "updateUserName",
+    ]),
+
     async submit() {
       if (this.getLoginFormStatus) {
         try {
@@ -335,6 +340,8 @@ export default {
     },
 
     redirectToSignUp() {
+      this.updateUserName(this.$data.username);
+
       this.reset();
 
       this.$emit("redirect-to-sign-up", null, null);
@@ -342,6 +349,9 @@ export default {
 
     reset() {
       this.$data.needHelp = false;
+      this.$data.invalidUserNames = [],
+      this.$data.invalidPasswords = [],
+      this.$data.invalidEmails = [],
       this.$refs.loginForm.reset();
       this.$refs.userNameForm.reset();
       document.activeElement.blur();

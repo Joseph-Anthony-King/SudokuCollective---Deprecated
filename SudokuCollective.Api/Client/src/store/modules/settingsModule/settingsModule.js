@@ -5,7 +5,8 @@ import {
   UPDATE_AUTH_TOKEN,
   UPDATE_TOAST_DURATION,
   UPDATE_APP,
-  UPDATE_USER
+  UPDATE_USER,
+  UPDATE_USERNAME,
 } from "./mutation-types";
 
 const settingsModule = {
@@ -17,6 +18,7 @@ const settingsModule = {
     toastDuration: 500,
     app: new App(),
     user: new User(),
+    userName: "",
   }),
 
   mutations: {
@@ -35,6 +37,9 @@ const settingsModule = {
     [UPDATE_USER](state, user) {
       state.user = user;
     },
+    [UPDATE_USERNAME](state, username) {
+      state.userName = username;
+    },
   },
 
   actions: {
@@ -51,8 +56,10 @@ const settingsModule = {
       commit(UPDATE_APP, app);
     },
     updateUser({ commit }, user) {
-      console.log("user settings module:", user);
       commit(UPDATE_USER, user);
+    },
+    updateUserName({ commit }, username) {
+      commit(UPDATE_USERNAME, username);
     },
   },
 
@@ -77,6 +84,9 @@ const settingsModule = {
     },
     getUser: (state) => {
       return state.user;
+    },
+    getUserName: (state) => {
+      return state.userName
     },
   },
 };

@@ -28,7 +28,7 @@
     </v-card>
     <div class="card-spacer"></div>
     <AppWidget
-      v-if="openAppWidget"
+      v-if="openingAppWidget"
       v-on:close-app-widget-event="closeAppWidget"
       v-on:open-edit-app-dialog-event="openEditAppForm"
     />
@@ -109,7 +109,7 @@ export default {
     myApps: [],
     creatingApp: false,
     editingApp: false,
-    openAppWidget: false,
+    openingAppWidget: false,
   }),
   methods: {
     ...mapActions("appModule", [
@@ -135,14 +135,14 @@ export default {
     },
 
     openAppWidget(id) {
-      this.$data.openAppWidget = true;
+      this.$data.openingAppWidget = true;
       const app = this.getAppById(id);
       this.updateSelectedApp(app);
     },
 
     closeAppWidget() {
       this.$data.app = new App();
-      this.$data.openAppWidget = false;
+      this.$data.openingAppWidget = false;
     },
 
     appCreatedEvent(id) {

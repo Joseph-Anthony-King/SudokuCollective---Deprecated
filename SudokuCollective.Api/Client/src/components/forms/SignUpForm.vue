@@ -131,6 +131,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { registerService } from "@/services/registerService/register.service";
 import SignUpModel from "@/models/viewModels/signUpModel";
 import User from "@/models/user";
@@ -246,6 +247,8 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("settingsModule", ["getUserName"]),
+
     userNameRules() {
       return [
         (v) => !!v || "User Name is required",
@@ -286,7 +289,18 @@ export default {
       return this.signUpFormStatus;
     },
   },
+  watch: {
+    "$store.state.settingsModule.userName": function () {
+      this.$data.username = this.getUserName;
+    },
+  },
   mounted() {
+    const username = this.getUserName;
+
+    if (username !== "") {
+      this.$data.username = username;
+    }
+
     if (this.$props.signUpFormStatus) {
       let self = this;
       window.addEventListener("keyup", function (event) {
