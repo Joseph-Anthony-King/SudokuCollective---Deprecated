@@ -147,7 +147,7 @@
                     class="button-full"
                     color="blue darken-1"
                     text
-                    @click="refreshProfile"
+                    @click="refresh"
                     v-bind="attrs"
                     v-on="on"
                   >
@@ -325,11 +325,11 @@
 </style>
 
 <script>
+import { mapActions } from "vuex";
 import { userService } from "@/services/userService/user.service";
 import { registerService } from "@/services/registerService/register.service";
 import { appService } from "@/services/appService/app.service";
 import EditProfileForm from "@/components/forms/EditProfileForm";
-import store from "../../store";
 import User from "@/models/user";
 import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -353,22 +353,10 @@ export default {
     editingProfile: false,
   }),
   methods: {
-    async refresh() {
-      let user = await userService.getUser(
-        this.$data.user.id,
-        new PageListModel(),
-        false
-      );
-      this.$data.user = new User(user);
-      store.dispatch("userModule/updateUser", this.$data.user);
-    },
-    async refreshProfile() {
-      try {
-        await this.refresh();
-      } catch (error) {
-        showToast(this, ToastMethods["error"], error, defaultToastOptions());
-      }
-    },
+    ...mapActions("settingsModule", [
+      "updateUser"
+    ]),
+
     async resendEmailConfirmation() {
       const action = [
         {
@@ -383,7 +371,7 @@ export default {
 
               if (response.status === 200) {
                 this.$data.user = new User(response.data.user);
-                store.dispatch("userModule/updateUser", this.$data.user);
+                this.updateUser(this.$data.user);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -423,6 +411,7 @@ export default {
         actionToastOptions(action, "email")
       );
     },
+
     async cancelEmailConfirmation() {
       const action = [
         {
@@ -437,7 +426,7 @@ export default {
 
               if (response.status === 200) {
                 this.$data.user = new User(response.data.user);
-                store.dispatch("userModule/updateUser", this.$data.user);
+                this.updateUser(this.$data.user);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -477,6 +466,7 @@ export default {
         actionToastOptions(action, "email")
       );
     },
+
     async resetPassword() {
       const action = [
         {
@@ -488,7 +478,7 @@ export default {
               let result = await passwordReset(this.$data.user.email, this);
 
               if (result) {
-                await this.refresh();
+                await this.reset();
               }
             } catch (error) {
               showToast(
@@ -515,6 +505,7 @@ export default {
         actionToastOptions(action, "lock")
       );
     },
+
     async resendResetPassword() {
       const action = [
         {
@@ -529,7 +520,7 @@ export default {
 
               if (response.status === 200) {
                 this.$data.user = new User(response.data.user);
-                store.dispatch("userModule/updateUser", this.$data.user);
+                this.updateUser(this.$data.user);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -569,6 +560,7 @@ export default {
         actionToastOptions(action, "lock")
       );
     },
+
     async cancelResetPassword() {
       const action = [
         {
@@ -583,7 +575,7 @@ export default {
 
               if (response.status === 200) {
                 this.$data.user = new User(response.data.user);
-                store.dispatch("userModule/updateUser", this.$data.user);
+                this.updateUser(this.$data.user);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -623,6 +615,7 @@ export default {
         actionToastOptions(action, "lock")
       );
     },
+
     async cancelAllEmailRequests() {
       const action = [
         {
@@ -637,7 +630,7 @@ export default {
 
               if (response.status === 200) {
                 this.$data.user = new User(response.data.user);
-                store.dispatch("userModule/updateUser", this.$data.user);
+                this.updateUser(this.$data.user);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -677,6 +670,7 @@ export default {
         actionToastOptions(action, "mode_edit")
       );
     },
+
     async obtainAdminPrivileges() {
       const action = [
         {
@@ -691,7 +685,7 @@ export default {
 
               if (response.status === 200) {
                 this.$data.user = new User(response.data.user);
-                store.dispatch("userModule/updateUser", this.$data.user);
+                this.updateUser(this.$data.user);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -731,9 +725,28 @@ export default {
         actionToastOptions(action, "mode_edit")
       );
     },
+    
+    async refresh() {
+      try {
+        await this.reset();
+      } catch (error) {
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      }
+    },
+
     closeEditing() {
       this.$data.user = this.$store.getters["settingsModule/getUser"];
       this.$data.editingProfile = false;
+    },
+
+    async reset() {
+      let user = await userService.getUser(
+        this.$data.user.id,
+        new PageListModel(),
+        false
+      );
+      this.$data.user = new User(user);
+      this.updateUser(this.$data.user);
     },
   },
   computed: {
@@ -746,11 +759,11 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user = this.$store.getters["settingsModule/getUser"];
+      this.$data.user = new User(this.$store.getters["settingsModule/getUser"]);
     },
   },
   created() {    
-    this.$data.user = this.$store.getters["settingsModule/getUser"];
+    this.$data.user = new User(this.$store.getters["settingsModule/getUser"]);
   },
 };
 </script>

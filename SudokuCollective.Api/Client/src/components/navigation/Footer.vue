@@ -19,6 +19,6 @@
 
 <script>
 export default {
-  name: "FooterNav",
+  name: "Footer",
 };
 </script>

@@ -2,17 +2,15 @@
   <v-card :color="evaluateColor(index)" class="app-button" @click="selectApp" v-if="app.name !== ''">
     <v-card-title>
       <span class="select-app-title">{{ formattedAppName }}</span>
-      <span>Users: {{ app.userCount }}</span>
       <span v-if="app.inDevelopment">In Development</span>
       <span v-if="!app.inDevelopment">In Production</span>
-      <span v-if="app.isActive && app.inDevelopment">Active</span>
-      <span v-if="!app.isActive">Inactive</span>
     </v-card-title>
   </v-card>
 </template>
 
 <style scoped>
 .select-app-title {
+  white-space:pre-wrap;
   text-decoration: none !important;
   color: white;
 }
@@ -38,13 +36,31 @@ export default {
   },
   computed: {
     formattedAppName() {
-      let formattedName = "";
+      if (this.$props.app.name.length > 15) {
 
-      const words = this.$props.app.name.split(" ");
+        let formattedName = "";
 
-      words.forEach((word) => (formattedName = formattedName + "\n" + word));
+        const words = this.$props.app.name.split(" ");
+        let index = 0;
 
-      return formattedName;
+        words.forEach((word) => {
+          if (index < 4) {
+            if (formattedName === ""){
+              formattedName = word;
+            } else {
+              formattedName = formattedName + "\n" + word; 
+            }
+            
+            index++;
+          }
+        });
+
+        console.log(formattedName);
+
+        return formattedName;
+      } else {
+        return this.$props.app.name
+      }
     },
   },
 };

@@ -28,6 +28,7 @@
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="showPassword = !showPassword"
                 :rules="passwordRules"
+                autocomplete="new-password"
                 required
               ></v-text-field>
             </v-col>
@@ -74,7 +75,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="resetForm"
+              @click="reset"
               v-bind="attrs"
               v-on="on"
             >
@@ -102,7 +103,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="authenticate"
+              @click="submit"
               :disabled="!loginFormIsValid"
               v-bind="attrs"
               v-on="on"
@@ -208,10 +209,12 @@ import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 import { passwordReset } from "@/helpers/commonFunctions/commonFunctions";
+import isChrome from "@/mixins/isChrome";
 
 export default {
   name: "LoginForm",
   props: ["loginFormStatus"],
+  mixins: [isChrome],
   data: () => ({
     username: "",
     password: "",
@@ -227,7 +230,7 @@ export default {
     invalidEmails: [],
   }),
   methods: {
-    async authenticate() {
+    async submit() {
       if (this.getLoginFormStatus) {
         try {
           const response = await authenticationService.authenticateUser(
@@ -238,9 +241,7 @@ export default {
           if (response.status === 200) {
             this.$data.user = new User(response.data.user);
 
-            this.resetLoginFormStatus;
-
-            this.resetForm();
+            this.reset();
 
             this.$emit(
               "user-logging-in-event",
@@ -333,26 +334,22 @@ export default {
       }
     },
 
-    resetForm() {
-      this.$refs.loginForm.reset();
-      this.$refs.userNameForm.reset();
-      this.$data.invalidUserNames = [];
-      this.$data.invalidPasswords = [];
-      this.$data.showPassword = false;
-      this.$data.needHelp = false;
-      this.$data.gettingHelp = false;
-    },
-
     redirectToSignUp() {
-      this.resetForm();
+      this.reset();
 
       this.$emit("redirect-to-sign-up", null, null);
     },
 
-    close() {
-      this.$emit("user-logging-in-event", null, null);
+    reset() {
+      this.$data.needHelp = false;
+      this.$refs.loginForm.reset();
+      this.$refs.userNameForm.reset();
+      document.activeElement.blur();
+    },
 
-      this.resetForm();
+    close() {
+      this.reset();
+      this.$emit("user-logging-in-event", null, null);
     },
   },
   computed: {
@@ -397,10 +394,10 @@ export default {
     if (this.$props.loginFormStatus) {
       let self = this;
       window.addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
-          self.authenticate();
+        if (event.key === "Enter" && self.$props.loginFormStatus) {
+          self.submit();
         }
-      });      
+      });
     }
   },
 };

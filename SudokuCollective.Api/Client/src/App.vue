@@ -5,7 +5,7 @@
       :profileNavigation="profileNavigation"
       :navDrawerStatus="navDrawerStatus"
     />
-    <AppBarNav
+    <AppBar
       :userLoggedIn="user.isLoggedIn"
       :profileNavigation="profileNavigation"
       v-on:user-logging-in="userLoggingIn = true"
@@ -41,7 +41,7 @@
     </v-main>
 
     <v-footer app>
-      <FooterNav />
+      <Footer />
     </v-footer>
   </v-app>
 </template>
@@ -65,11 +65,11 @@ import { mapActions } from "vuex";
 import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmation.service";
 import { userService } from "@/services/userService/user.service";
 import { appService } from "@/services/appService/app.service";
-import AppBarNav from "@/components/navigation/AppBarNav";
+import AppBar from "@/components/navigation/AppBar";
 import NavigationBar from "@/components/navigation/NavigationBar";
 import LoginForm from "@/components/forms/LoginForm";
 import SignUpForm from "@/components/forms/SignUpForm";
-import FooterNav from "@/components/navigation/FooterNav";
+import Footer from "@/components/navigation/Footer";
 import App from "@/models/app";
 import User from "@/models/user";
 import PageListModel from "@/models/viewModels/pageListModel";
@@ -83,11 +83,11 @@ import {
 export default {
   name: "App",
   components: {
-    AppBarNav,
+    AppBar,
     NavigationBar,
     LoginForm,
     SignUpForm,
-    FooterNav,
+    Footer,
   },
   data: () => ({
     userLoggingIn: false,
@@ -102,16 +102,17 @@ export default {
   }),
   methods: {
     ...mapActions("settingsModule", [
-      "confirmBaseURL", 
-      "updateAuthToken", 
-      "updateApp", 
-      "updateUser"]),
+      "confirmBaseURL",
+      "updateAuthToken",
+      "updateApp",
+      "updateUser",
+    ]),
 
     login(user, token) {
       if (user !== null && token !== null) {
         this.$data.user = user;
         this.$data.user.login();
-        this.updateUser(this.$data.user)
+        this.updateUser(this.$data.user);
         this.updateAuthToken(token);
 
         if (this.$router.currentRoute.path !== "/dashboard") {
@@ -145,7 +146,7 @@ export default {
             toastObject.goAway(0);
 
             this.$data.user = new User();
-            this.updateUser(this.$data.user)
+            this.updateUser(this.$data.user);
             this.updateAuthToken("");
 
             if (this.$router.currentRoute.path !== "/") {
@@ -210,20 +211,21 @@ export default {
       this.$data.user = this.$store.getters["settingsModule/getUser"];
     },
   },
-  async created() {    
+  async created() {
     const urlResponse = await apiURLConfirmationService.confirm();
     this.confirmBaseURL(urlResponse.url);
 
     const appResponse = await appService.getByLicense(
-      new PageListModel(), 
-      process.env.VUE_APP_LICENSE);
+      new PageListModel(),
+      process.env.VUE_APP_LICENSE
+    );
 
     const app = new App(appResponse.data.app);
 
     app.updateLicense(process.env.VUE_APP_LICENSE);
 
     this.updateApp(app);
-    
+
     this.$data.user = this.$store.getters["settingsModule/getUser"];
   },
 };

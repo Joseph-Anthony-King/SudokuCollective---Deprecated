@@ -9,7 +9,7 @@
           <v-row>
             <v-col cols="12">
               <v-text-field
-                v-model="app.name"
+                v-model="name"
                 label="Name"
                 prepend-icon="mdi-account-edit"
                 :rules="stringRequiredRules"
@@ -20,7 +20,7 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
-                v-model="app.devUrl"
+                v-model="devUrl"
                 label="Development Url (Not Required)"
                 prepend-icon="mdi-account-edit"
                 :rules="urlRules"
@@ -30,7 +30,7 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
-                v-model="app.liveUrl"
+                v-model="liveUrl"
                 label="Live Url (Not Required)"
                 prepend-icon="mdi-account-edit"
                 :rules="urlRules"
@@ -48,7 +48,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="resetForm"
+              @click="reset"
               v-bind="attrs"
               v-on="on"
             >
@@ -104,35 +104,28 @@ import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 export default {
   name: "CreateAppForm",
   data: () => ({
-    app: new App(),
+    name: "",
+    devUrl: "",
+    liveUrl: "",
     createAppFormIsValid: true,
     dirty: false,
   }),
   methods: {
     ...mapActions("appModule", ["updateApps", "removeApps"]),
 
-    resetForm() {
-      this.$data.app = new App();
-      this.$data.dirty = false;
-    },
-
-    close() {
-      this.$emit("create-form-closed-event", null, null);
-      this.resetForm();
-    },
-
     async submit() {
       if (this.getCreateAppFormIsValid) {
         try {
           const response = await appService.postLicense(
             new CreateAppModel(
-              this.$data.app.name,
-              this.$data.app.devUrl,
-              this.$data.app.liveUrl
+              this.$data.name,
+              this.$data.devUrl,
+              this.$data.liveUrl
             )
           );
 
           if (response.status === 201) {
+
             const appsResponse = await appService.getMyApps(
               new PageListModel()
             );
@@ -153,9 +146,7 @@ export default {
               this.updateApps(myTempArray);
             }
 
-            this.resetCreateAppFormIsValid;
-
-            this.resetForm();
+            this.reset();
 
             this.$emit("app-created-event", response.data.app.id, null);
           } else if (response.status === 404) {
@@ -178,6 +169,16 @@ export default {
         }
       }
     },
+
+    reset() {
+      this.$refs.createAppForm.reset();
+      document.activeElement.blur();
+    },
+
+    close() {
+      this.$emit("create-form-closed-event", null, null);
+      this.reset();
+    },
   },
   computed: {
     stringRequiredRules() {
@@ -196,6 +197,16 @@ export default {
     getCreateAppFormIsValid() {
       return this.createAppFormIsValid;
     },
+  },
+  mounted() {
+    let self = this;
+    window.addEventListener("keyup", function (event) {
+      if (event.key === "Enter"
+        && self.$data.createAppFormIsValid
+        && self.$data.dirty) {
+        self.submit();
+      }
+    });
   },
 };
 </script>

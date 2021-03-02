@@ -14,7 +14,6 @@
                 prepend-icon="mdi-account-plus"
                 :rules="userNameRules"
                 required
-                autocomplete="new-password"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -24,7 +23,6 @@
                 prepend-icon="mdi-account-plus"
                 :rules="stringRequiredRules"
                 required
-                autocomplete="new-password"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -34,7 +32,6 @@
                 prepend-icon="mdi-account-plus"
                 :rules="stringRequiredRules"
                 required
-                autocomplete="new-password"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -43,7 +40,6 @@
                 label="Nickname (Not Required)"
                 prepend-icon="mdi-account-plus"
                 required
-                autocomplete="new-password"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -52,7 +48,6 @@
                 label="Email"
                 prepend-icon="mdi-email"
                 required
-                autocomplete="new-password"
                 :rules="emailRules"
               ></v-text-field>
             </v-col>
@@ -92,7 +87,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="resetForm"
+              @click="reset"
               v-bind="attrs"
               v-on="on"
             >
@@ -120,7 +115,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="register"
+              @click="submit"
               :disabled="!signUpFormIsValid"
               v-bind="attrs"
               v-on="on"
@@ -162,7 +157,7 @@ export default {
     invalidEmails: [],
   }),
   methods: {
-    async register() {
+    async submit() {
       if (this.getSignUpFormStatus) {
         try {
           const response = await registerService.postSignUp(
@@ -181,7 +176,7 @@ export default {
 
             this.resetSignUpFormStatus;
 
-            this.resetForm();
+            this.reset();
 
             this.$emit(
               "user-signing-up-event",
@@ -240,16 +235,14 @@ export default {
       }
     },
 
-    resetForm() {
+    reset() {
       this.$refs.signUpForm.reset();
-      this.$data.invalidUserNames = [];
-      this.$data.invalidEmails = [];
-      this.$data.showPassword = false;
+      document.activeElement.blur();
     },
 
     close() {
+      this.reset();
       this.$emit("user-signing-up-event", null, null);
-      setTimeout(this.resetForm(), 10000);
     },
   },
   computed: {
@@ -292,6 +285,16 @@ export default {
     getSignUpFormStatus() {
       return this.signUpFormStatus;
     },
+  },
+  mounted() {
+    if (this.$props.signUpFormStatus) {
+      let self = this;
+      window.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+          self.submit();
+        }
+      });
+    }
   },
 };
 </script>

@@ -72,7 +72,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="resetForm"
+              @click="reset"
               v-bind="attrs"
               v-on="on"
             >
@@ -131,29 +131,24 @@ export default {
   name: "EditProfileForm",
   props: ["editProfileFormStatus"],
   data: () => ({
-    editProfileFormIsValid: true,
     user: new User(),
-    dirty: false,
     invalidUserNames: [],
     invalidEmails: [],
+    editProfileFormIsValid: true,
+    dirty: false,
+    submitInvoked: false
   }),
   methods: {
-    resetForm() {
-      this.$data.invalidUserNames = [];
-      this.$data.invalidEmails = [];
-      this.$data.user = this.getUser();
-      this.$data.dirty = false;
-    },
-
     async submit() {
       const action = [
         {
           text: "Yes",
           onClick: async (e, toastObject) => {
             toastObject.goAway(0);
+            this.$data.submitInvoked = false;
 
             try {
-              let userProfie = this.$store.getters["settingsModule/getUser"];
+              let userProfie = this.getUser;
               let updatingEmail = false;
               let oldEmail = "";
 
@@ -251,6 +246,7 @@ export default {
           text: "No",
           onClick: (e, toastObject) => {
             toastObject.goAway(0);
+            this.$data.submitInvoked = false;
           },
         },
       ];
@@ -263,9 +259,18 @@ export default {
       );
     },
 
+    reset() {
+      this.$data.user = new User(this.getUser);
+      this.$data.invalidUserNames = [];
+      this.$data.invalidEmails = [];
+      this.$data.editProfileFormIsValid = true,
+      this.$data.dirty = false;
+      this.$data.submitInvoked = false;
+    },
+
     close() {
       this.$emit("edit-user-profile-event", null, null);
-      this.resetForm();
+      this.reset();
     },
   },
   computed: {
@@ -302,21 +307,21 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user = this.getUser();
+      this.$data.user = new User(this.getUser);
     },
   },
+  created() {
+    this.$data.user = new User(this.getUser);
+  },
   mounted() {
-    if (this.$props.loginFormStatus && this.$data.dirty) {
-
+    if (this.$props.editProfileFormStatus) {
       let self = this;
-
       window.addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
+        if (event.key === "Enter"
+          && self.$data.dirty) {
           self.submit();
         }
       });
-
-      this.$data.user = this.getUser();
     }
   },
 };

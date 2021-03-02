@@ -6,7 +6,7 @@
     v-if="userLoggedIn"
   >
     <v-list>
-      <v-list-item class="top-list-item">
+      <v-list-item>
         <v-list-item-content>
           <router-link :to="profileNavigation.url" class="user-profile-item">
             <v-icon x-large color="white">{{ profileNavigation.icon }}</v-icon>
@@ -14,12 +14,12 @@
         </v-list-item-content>
       </v-list-item>
       <v-container class="navigation-status-indicator">
+        <span class="user-profile-subscript">{{ greeting }}</span>
+      </v-container>
+      <v-container class="navigation-status-indicator">
         <router-link :to="profileNavigation.url" class="nav-drawer-item">
           <span class="user-profile-item">{{ user.userName }}</span>
         </router-link>
-      </v-container>
-      <v-container class="navigation-status-indicator">
-        <span class="user-profile-subscript">(Logged In)</span>
       </v-container>
     </v-list>
     <v-list v-if="navMenuItems.length > 1">
@@ -37,11 +37,6 @@
 </template>
 
 <style scoped>
-@media only screen and (max-width: 1265px) {
-  .top-list-item {
-    margin: 60px 0 0 0;
-  }
-}
 .nav-drawer-item {
   font-weight: bold;
   text-decoration: none !important;
@@ -73,6 +68,7 @@ export default {
   name: "NavigationBar",
   props: ["userLoggedIn", "navDrawerStatus", "profileNavigation"],
   data: () => ({
+    //greeting: "(Logged In)",
     navMenuItems: [],
     user: {},
   }),
@@ -86,6 +82,19 @@ export default {
         }
       });
     },
+  },
+  computed: {
+    greeting() {
+      const now = new Date();
+
+      if (now.toLocaleTimeString() < "12:00:00 PM") {
+        return "Good Morning";
+      } else if (now.toLocaleTimeString() < "6:00:00 PM") {
+        return "Good Afternoon";
+      } else {
+        return "Good Evening";
+      }
+    }
   },
   watch: {
     "$store.state.settingsModule.user": function () {

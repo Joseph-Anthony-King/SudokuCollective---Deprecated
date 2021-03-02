@@ -26,7 +26,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="resetForm"
+              @click="reset"
               v-bind="attrs"
               v-on="on"
             >
@@ -76,17 +76,18 @@ export default {
         dirty: false
     }),
     methods: {
-        resetForm() {
-            this.$data.dirty = false;
-        },
-
         submit() {
           console.log("submit invoked...");
         },
 
+        reset() {
+          this.$refs.editAppForm.reset();
+          this.$data.dirty = false;
+        },
+
         close() {
-            this.$emit("close-edit-app-event", null, null);
-            this.resetForm();
+          this.$emit("close-edit-app-event", null, null);
+          this.reset();
         },
     }
 }

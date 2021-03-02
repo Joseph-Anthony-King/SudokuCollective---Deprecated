@@ -31,7 +31,6 @@
         <router-link to="/">
           <v-img
             alt="Vuetify Name"
-            
             contain
             max-width="180"
             src="/name-logo.png"
@@ -167,7 +166,7 @@
 import { AppMenuItems } from "@/models/arrays/appMenuItems";
 
 export default {
-  name: "AppBarNav",
+  name: "AppBar",
   props: ["userLoggedIn", "profileNavigation"],
   data: () => ({
     appMenuItems: [],

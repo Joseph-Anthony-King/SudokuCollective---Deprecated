@@ -51,6 +51,7 @@ const settingsModule = {
       commit(UPDATE_APP, app);
     },
     updateUser({ commit }, user) {
+      console.log("user settings module:", user);
       commit(UPDATE_USER, user);
     },
   },
