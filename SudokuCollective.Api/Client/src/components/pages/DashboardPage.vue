@@ -41,8 +41,10 @@
       />
     </v-dialog>
 
-    <v-dialog v-model="editingApp" persistent max-width="600px">
-      <EditAppForm v-on:close-edit-app-event="closeEditAppForm" />
+    <v-dialog v-model="editingApp" persistent max-width="1200px">
+      <EditAppForm 
+        :editAppFormStatus="editingApp"
+        v-on:close-edit-app-event="closeEditAppForm" />
     </v-dialog>
   </v-container>
 </template>
@@ -90,7 +92,6 @@ import SelectAppButton from "@/components/widgets/SelectAppButton";
 import { appService } from "@/services/appService/app.service";
 import User from "@/models/user";
 import App from "@/models/app";
-import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
@@ -164,8 +165,11 @@ export default {
     "$store.state.settingsModule.user": function () {
       this.$data.user = new User(this.getUser);
     },
-    "$store.state.appModule.apps": function () {
-      this.$data.myApps = this.getApps;
+    "$store.state.appModule.apps": {
+      handler: function (val, oldVal) {
+        this.$data.myApps = this.getApps;
+      },
+      deep: true
     }
   },
   async created() {

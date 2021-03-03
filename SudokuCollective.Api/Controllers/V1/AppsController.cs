@@ -150,10 +150,11 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/apps
+        // PUT: api/apps/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut]
+        [HttpPut, Route("{id}")]
         public async Task<IActionResult> UpdateApp(
+            int id,
             [FromBody] AppRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -161,7 +162,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.UpdateApp(request);
+                var result = await appsService.UpdateApp(id, request);
 
                 if (result.Success)
                 {

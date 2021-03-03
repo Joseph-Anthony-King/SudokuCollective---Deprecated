@@ -21,14 +21,14 @@ const postSignUp = async function (signUpModel) {
   }
 };
 
-const putResendEmailConfirmation = async function (pageListModel) {
+const putResendEmailConfirmation = async function () {
 
   try {
     const config = {
       method: "put",
       url: getResendEmailConfirmationEndpoint,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     const response = await axios(config);

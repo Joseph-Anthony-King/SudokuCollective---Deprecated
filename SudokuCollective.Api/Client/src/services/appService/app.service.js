@@ -1,7 +1,9 @@
 import * as axios from "axios";
 import store from "@/store";
+import App from "@/models/app";
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
+import { requestDataUpdateApp } from "@/helpers/appRequestData/appRequestData";
 import { 
   getAppEnpoint,
   getByLicenseEnpoint,
@@ -129,6 +131,59 @@ const postObtainAdminPrivileges = async function () {
   }
 };
 
+const updateApp = async function (
+  id,
+  name,
+  devUrl,
+  liveUrl,
+  isActive,
+  inDevelopment,
+  permitSuperUserAccess,
+  permitCollectiveLogins,
+  disableCustomUrls,
+  customEmailConfirmationDevUrl,
+  customEmailConfirmationLiveUrl,
+  customPasswordResetDevUrl,
+  customPasswordResetLiveUrl,
+) {
+  try {
+    const params = `/${id}`;
+
+    const payload = {
+      name: name,
+      devUrl: devUrl,
+      liveUrl: liveUrl,
+      isActive: isActive,
+      inDevelopment: inDevelopment,
+      permitSuperUserAccess: permitSuperUserAccess,
+      permitCollectiveLogins: permitCollectiveLogins,
+      disableCustomUrls: disableCustomUrls,
+      customEmailConfirmationDevUrl: customEmailConfirmationDevUrl,
+      customEmailConfirmationLiveUrl: customEmailConfirmationLiveUrl,
+      customPasswordResetDevUrl: customPasswordResetDevUrl,
+      customPasswordResetLiveUrl: customPasswordResetLiveUrl,
+    }
+
+    const config = {
+      method: "put",
+      url: `${getAppEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestDataUpdateApp(payload),
+    };
+
+    let app = new App();
+
+    const response = await axios(config);
+
+    app = new App(response.data.app);
+    store.dispatch("appModule/updateSelectedApp", app);
+
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
+
 const deleteApp = async function(app) {
   try {
     let params = `/${app.id}`;
@@ -163,5 +218,6 @@ export const appService = {
   getLicense,
   getMyApps,
   postObtainAdminPrivileges,
+  updateApp,
   deleteApp,
 };

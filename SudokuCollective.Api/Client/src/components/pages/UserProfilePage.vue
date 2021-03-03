@@ -331,7 +331,6 @@ import { registerService } from "@/services/registerService/register.service";
 import { appService } from "@/services/appService/app.service";
 import EditProfileForm from "@/components/forms/EditProfileForm";
 import User from "@/models/user";
-import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -353,9 +352,7 @@ export default {
     editingProfile: false,
   }),
   methods: {
-    ...mapActions("settingsModule", [
-      "updateUser"
-    ]),
+    ...mapActions("settingsModule", ["updateUser"]),
 
     async resendEmailConfirmation() {
       const action = [
@@ -365,13 +362,10 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await registerService.putResendEmailConfirmation(
-                new PageListModel()
-              );
+              const response = await registerService.putResendEmailConfirmation();
 
               if (response.status === 200) {
-                this.$data.user = new User(response.data.user);
-                this.updateUser(this.$data.user);
+                await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -420,13 +414,11 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.putCancelEmailConfirmation(
-                new PageListModel()
-              );
+              const response = await userService.putCancelEmailConfirmation();
+              console.log("cancel email response:", response);
 
               if (response.status === 200) {
-                this.$data.user = new User(response.data.user);
-                this.updateUser(this.$data.user);
+                await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -514,13 +506,10 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.putResendPasswordReset(
-                new PageListModel()
-              );
+              const response = await userService.putResendPasswordReset();
 
               if (response.status === 200) {
-                this.$data.user = new User(response.data.user);
-                this.updateUser(this.$data.user);
+                await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -569,13 +558,10 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.putCancelPasswordReset(
-                new PageListModel()
-              );
+              const response = await userService.putCancelPasswordReset();
 
               if (response.status === 200) {
-                this.$data.user = new User(response.data.user);
-                this.updateUser(this.$data.user);
+                await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -624,13 +610,10 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.putCancelAllEmailRequests(
-                new PageListModel()
-              );
+              const response = await userService.putCancelAllEmailRequests();
 
               if (response.status === 200) {
-                this.$data.user = new User(response.data.user);
-                this.updateUser(this.$data.user);
+                await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -682,8 +665,7 @@ export default {
               const response = await appService.postObtainAdminPrivileges();
 
               if (response.status === 200) {
-                this.$data.user = new User(response.data.user);
-                this.updateUser(this.$data.user);
+                await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -744,6 +726,7 @@ export default {
       );
       
       this.$data.user = new User(user);
+      this.$data.user.login();
       this.updateUser(this.$data.user);
     },
   },
@@ -755,11 +738,11 @@ export default {
       return convertStringToDateTime(this.$data.user.dateUpdated);
     },
   },
-  watch: {
-    "$store.state.settingsModule.user": function () {
-      this.$data.user = new User(this.$store.getters["settingsModule/getUser"]);
-    },
-  },
+  //watch: {
+  //  "$store.state.settingsModule.user": function () {
+  //    this.$data.user = new User(this.$store.getters["settingsModule/getUser"]);
+  //  },
+  //},
   created() {    
     this.$data.user = new User(this.$store.getters["settingsModule/getUser"]);
   },

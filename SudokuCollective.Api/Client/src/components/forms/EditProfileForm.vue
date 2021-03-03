@@ -116,6 +116,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { userService } from "@/services/userService/user.service";
 import User from "@/models/user";
@@ -139,6 +140,8 @@ export default {
     submitInvoked: false
   }),
   methods: {
+    ...mapActions("settingsModule", ["updateUser"]),
+
     async submit() {
       const action = [
         {
@@ -169,6 +172,15 @@ export default {
 
               if (response.status === 200) {
                 this.resetEditProfileFormStatus;
+
+                let user = await userService.getUser(
+                  this.$data.user.id,
+                  false
+                );
+                
+                this.$data.user = new User(user);
+                this.$data.user.login();
+                this.updateUser(this.$data.user);
 
                 if (updatingEmail) {
                   showToast(
@@ -263,9 +275,10 @@ export default {
       this.$data.user = new User(this.getUser);
       this.$data.invalidUserNames = [];
       this.$data.invalidEmails = [];
-      this.$data.editProfileFormIsValid = true,
+      this.$data.editProfileFormIsValid = true;
       this.$data.dirty = false;
       this.$data.submitInvoked = false;
+      document.activeElement.blur();
     },
 
     close() {

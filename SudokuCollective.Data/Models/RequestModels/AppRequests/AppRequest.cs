@@ -13,6 +13,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         public string Name { get; set; }
         public string DevUrl { get; set; }
         public string LiveUrl { get; set; }
+        public bool IsActive { get; set; }
         public bool InDevelopment { get; set; }
         public bool PermitSuperUserAccess { get; set; }
         public bool PermitCollectiveLogins { get; set; }
@@ -27,6 +28,7 @@ namespace SudokuCollective.Data.Models.RequestModels
             Name = string.Empty;
             DevUrl = string.Empty;
             LiveUrl = string.Empty;
+            IsActive = false;
             InDevelopment = false;
             PermitSuperUserAccess = false;
             PermitCollectiveLogins = false;

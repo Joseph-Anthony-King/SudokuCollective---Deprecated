@@ -2,9 +2,11 @@
   <v-card :color="evaluateColor(index)" class="app-button" @click="selectApp" v-if="app.name !== ''">
     <v-card-title>
       <span class="select-app-title">{{ formattedAppName }}</span>
-      <span v-if="app.inDevelopment">In Development</span>
-      <span v-if="!app.inDevelopment">In Production</span>
     </v-card-title>
+
+    <v-card-text>
+      <div class="select-app-title">{{ releaseStatus }}</div>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -60,6 +62,14 @@ export default {
         return this.$props.app.name
       }
     },
+
+    releaseStatus() {
+      if (this.$props.app.inDevelopment) {
+        return "In Development";
+      } else {
+        return "In Production";
+      }
+    }
   },
 };
 </script>

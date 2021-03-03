@@ -7,12 +7,19 @@
           class="justify-center"
           v-if="
             app.isActive === false ||
-            (app.devUrl === '' && app.inDevelopment === true) ||
-            (app.liveUrl === '' && app.inDevelopment === false)
+            (app.devUrl === '' && app.inDevelopment) ||
+            (app.liveUrl === '' && !app.inDevelopment)
           "
           >{{ app.name }}</v-card-title
         >
-        <v-card-title class="justify-center" v-if="app.isActive">
+        <v-card-title
+          class="justify-center"
+          v-if="
+            app.isActive &&
+            ((app.devUrl !== '' && app.inDevelopment) ||
+              (app.liveUrl !== '' && !app.inDevelopment))
+          "
+        >
           <a
             :href="app.inDevelopment ? app.devUrl : app.liveUrl"
             target="blank"
@@ -55,7 +62,7 @@
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="app.customEmailConfirmationDevUrl"
+              v-model="app.customEmailConfirmationLiveUrl"
               label="Custom Production Email Confirmation Url"
               prepend-icon="wysiwyg"
               readonly
@@ -123,7 +130,7 @@
             ></v-checkbox>
             <v-checkbox
               v-model="app.permitSuperUserAccess"
-              label="The Super User has Admin Access Rights to this App"
+              label="Super User has Admin Access Rights to this App"
               readonly
             ></v-checkbox>
             <v-checkbox
@@ -133,7 +140,7 @@
             ></v-checkbox>
             <v-checkbox
               v-model="app.disableCustomUrls"
-              label="Custom Urls for Email Confirmations and Password Resets are Disabled"
+              label="Disable Custom Urls for Email Confirmations and Password Resets"
               readonly
             ></v-checkbox>
             <v-checkbox
@@ -219,7 +226,11 @@ export default {
     app: new App(),
   }),
   methods: {
-    ...mapActions("appModule", ["updateApps", "removeApps"]),
+    ...mapActions("appModule", [
+      "updateSelectedApp",
+      "updateApps",
+      "removeApps",
+    ]),
 
     async copyLicenseToClipboard() {
       try {
@@ -246,7 +257,6 @@ export default {
               const response = await appService.deleteApp(this.$data.app);
 
               if (response.status === 200) {
-
                 const appsResponse = await appService.getMyApps();
 
                 if (appsResponse.data.success) {
@@ -254,7 +264,9 @@ export default {
 
                   for (const app of appsResponse.data.apps) {
                     const myApp = new App(app);
-                    const licenseResponse = await appService.getLicense(myApp.id);
+                    const licenseResponse = await appService.getLicense(
+                      myApp.id
+                    );
                     if (licenseResponse.data.success) {
                       myApp.updateLicense(licenseResponse.data.license);
                     }
@@ -263,6 +275,7 @@ export default {
 
                   this.removeApps();
                   this.updateApps(myTempArray);
+                  this.updateSelectedApp(new App());
 
                   showToast(
                     this,
@@ -272,7 +285,7 @@ export default {
                   );
 
                   this.$emit("close-app-widget-event", null, null);
-                }     
+                }
               } else if (response.status === 404) {
                 showToast(
                   this,
@@ -289,7 +302,12 @@ export default {
                 );
               }
             } catch (error) {
-              showToast(this, ToastMethods["error"], error, defaultToastOptions());
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
             }
           },
         },
@@ -327,17 +345,19 @@ export default {
     },
 
     isOwnersEmailConfirmed() {
-      const owner = this.$data.app.users.find(user => user.id === this.$data.app.ownerId);
+      const owner = this.$data.app.users.find(
+        (user) => user.id === this.$data.app.ownerId
+      );
       return owner.emailConfirmed;
-    }
+    },
   },
   watch: {
     "$store.state.appModule.selectedApp": function () {
-      this.$data.app = this.$store.getters["appModule/getSelectedApp"];
+      this.$data.app = new App(this.$store.getters["appModule/getSelectedApp"]);
     },
   },
   created() {
-    this.$data.app = this.$store.getters["appModule/getSelectedApp"];
+    this.$data.app = new App(this.$store.getters["appModule/getSelectedApp"]);
   },
 };
 </script>

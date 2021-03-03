@@ -5,6 +5,7 @@
         string Name { get; set; }
         string DevUrl { get; set; }
         string LiveUrl { get; set; }
+        bool IsActive { get; set; }
         bool InDevelopment { get; set; }
         bool PermitSuperUserAccess { get; set; }
         bool PermitCollectiveLogins { get; set; }

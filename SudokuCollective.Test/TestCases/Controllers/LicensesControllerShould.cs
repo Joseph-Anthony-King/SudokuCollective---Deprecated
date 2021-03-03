@@ -90,14 +90,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutSuccess.PostApp(TestObjects.GetLicenseRequest());
-            var app = ((AppResult)((OkObjectResult)result.Result.Result).Value).App;
-            var message = ((AppResult)((OkObjectResult)result.Result.Result).Value).Message;
-            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+            var app = ((AppResult)((ObjectResult)result.Result.Result).Value).App;
+            var message = ((AppResult)((ObjectResult)result.Result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result.Result).StatusCode;
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
-            Assert.That(message, Is.EqualTo("Status Code 200: App Created"));
-            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(message, Is.EqualTo("Status Code 201: App Created"));
+            Assert.That(statusCode, Is.EqualTo(201));
             Assert.That(app, Is.InstanceOf<IApp>());
         }
 

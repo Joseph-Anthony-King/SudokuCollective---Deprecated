@@ -2,6 +2,7 @@ import {
   UPDATE_SELECTED_APP, 
   UPDATE_APPS,
   REMOVE_APPS,
+  REPLACE_APP,
 } from "./mutation-types";
 
 import App from "@/models/app";
@@ -16,13 +17,24 @@ const appModule = {
 
   mutations: {
     [UPDATE_SELECTED_APP](state, app) {
-      state.selectedApp = app;
+      state.selectedApp = new App(app);
     },
     [UPDATE_APPS](state, apps) {
       apps.forEach(app => state.apps.push(app));
     },
     [REMOVE_APPS](state) {
       state.apps = [];
+    },
+    [REPLACE_APP](state, updatedApp) {
+      let a;
+      for (let app of state.apps) {
+        if (app.id === updatedApp.id) {
+          a = app;
+        }
+      }
+      const index = state.apps.indexOf(a);
+      state.apps.splice(index, 1);
+      state.apps.push(updatedApp)
     },
   },
 
@@ -35,6 +47,9 @@ const appModule = {
     },
     removeApps({ commit }) {
       commit(REMOVE_APPS);
+    },
+    replaceApp({ commit }, app) {
+      commit(REPLACE_APP, app);
     },
   },
 

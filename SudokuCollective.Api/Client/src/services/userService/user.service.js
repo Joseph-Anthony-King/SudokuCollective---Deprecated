@@ -30,11 +30,9 @@ const getUser = async function (id, fullRecord) {
       data: requestData(),
     };
 
-    let user = new User();
-
     const response = await axios(config);
 
-    user = assignAPIReponseToUser(response.data.user);
+    const user = new User(response.data.user);
 
     return user;
   } catch (error) {
@@ -79,26 +77,23 @@ const updateUser = async function (
   try {
     const params = `/${id}`;
 
+    const payload = {
+      pageListModel: pageListModel,
+      userName: userName,
+      firstName: firstName,
+      lastName: lastName,
+      nickName: nickName,
+      email: email
+    }
+
     const config = {
       method: "put",
       url: `${getUserEnpoint}${params}`,
       headers: requestHeader(),
-      data: requestDataUpdateUser(
-        pageListModel,
-        userName,
-        firstName,
-        lastName,
-        nickName,
-        email
-      ),
+      data: requestDataUpdateUser(payload),
     };
 
-    let user = new User();
-
     const response = await axios(config);
-
-    user = assignAPIReponseToUser(response.data.user);
-    store.dispatch("settingsModule/updateUser", user);
 
     return response;
   } catch (error) {
@@ -129,13 +124,13 @@ const postRequestPasswordReset = async function (email) {
   }
 };
 
-const putResendPasswordReset = async function (pageListModel) {
+const putResendPasswordReset = async function () {
   try {
     const config = {
       method: "put",
       url: `${getResendRequestPasswordResetEndpoint}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     const response = await axios(config);
@@ -147,13 +142,13 @@ const putResendPasswordReset = async function (pageListModel) {
   }
 };
 
-const putCancelPasswordReset = async function (pageListModel) {
+const putCancelPasswordReset = async function () {
   try {
     const config = {
       method: "put",
       url: `${getCancelPasswordResetEndpoint}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     const response = await axios(config);
@@ -165,13 +160,13 @@ const putCancelPasswordReset = async function (pageListModel) {
   }
 };
 
-const putCancelEmailConfirmation = async function (pageListModel) {
+const putCancelEmailConfirmation = async function () {
   try {
     const config = {
       method: "put",
       url: `${getCancelEmailConfirmationEndpoint}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     const response = await axios(config);
@@ -183,13 +178,13 @@ const putCancelEmailConfirmation = async function (pageListModel) {
   }
 };
 
-const putCancelAllEmailRequests = async function (pageListModel) {
+const putCancelAllEmailRequests = async function () {
   try {
     const config = {
       method: "put",
       url: `${getCancelAllEmailRequestsEndpoint}`,
       headers: requestHeader(),
-      data: requestData(pageListModel),
+      data: requestData(),
     };
 
     const response = await axios(config);

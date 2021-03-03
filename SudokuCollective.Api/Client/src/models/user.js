@@ -33,12 +33,7 @@
       this.isSuperUser = data.isSuperUser;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;
-      
-      if (data.isLoggedIn !== null || data.isLoggedIn !== undefined) {
-        this.isLoggedIn = data.isLoggedIn;
-      } else {
-        this.isLoggedIn = false;
-      }
+      this.isLoggedIn = data.isLoggedIn !== undefined ? data.isLoggedIn : false;
     }
   }
 

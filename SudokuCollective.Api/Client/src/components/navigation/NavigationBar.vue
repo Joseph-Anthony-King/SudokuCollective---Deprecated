@@ -87,9 +87,9 @@ export default {
     greeting() {
       const now = new Date();
 
-      if (now.toLocaleTimeString() < "12:00:00 PM") {
+      if (now.getHours() < 12) {
         return "Good Morning";
-      } else if (now.toLocaleTimeString() < "6:00:00 PM") {
+      } else if (now.getHours() < 6) {
         return "Good Afternoon";
       } else {
         return "Good Evening";

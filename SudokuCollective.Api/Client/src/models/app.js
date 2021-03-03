@@ -46,12 +46,21 @@ class App {
 
       if (data.users.length > 0) {
         for (const userApp of data.users) {
-          const user = new User(userApp.user);
-          this.users.push(user);
+          if (userApp.user !== undefined) {
+            const user = new User(userApp.user);
+            this.users.push(user);
+          } else {
+            const user = new User(userApp);
+            this.users.push(user);
+          }
         }
       }
-      
-      this.license = "";
+
+      if (data.license !== undefined) {
+        this.license = data.license;
+      } else {      
+        this.license = "";
+      }
     }
   }
 

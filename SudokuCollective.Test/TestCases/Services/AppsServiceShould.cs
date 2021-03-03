@@ -251,6 +251,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.UpdateApp(
+                1,
                 new AppRequest()
                 {
                     License = license,

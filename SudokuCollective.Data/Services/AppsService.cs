@@ -1380,21 +1380,22 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IAppResult> UpdateApp(IAppRequest request)
+        public async Task<IAppResult> UpdateApp(int id, IAppRequest request)
         {
             var result = new AppResult();
 
             try
             {
-                if (await appsRepository.HasEntity(request.AppId))
+                if (await appsRepository.HasEntity(id))
                 {
-                    var getAppResponse = await appsRepository.GetById(request.AppId);
+                    var getAppResponse = await appsRepository.GetById(id);
 
                     if (getAppResponse.Success)
                     {
                         ((IApp)getAppResponse.Object).Name = request.Name;
                         ((IApp)getAppResponse.Object).DevUrl = request.DevUrl;
                         ((IApp)getAppResponse.Object).LiveUrl = request.LiveUrl;
+                        ((IApp)getAppResponse.Object).IsActive = request.IsActive;
                         ((IApp)getAppResponse.Object).InDevelopment = request.InDevelopment;
                         ((IApp)getAppResponse.Object).PermitSuperUserAccess = request.PermitSuperUserAccess;
                         ((IApp)getAppResponse.Object).PermitCollectiveLogins = request.PermitCollectiveLogins;

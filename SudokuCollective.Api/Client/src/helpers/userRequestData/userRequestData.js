@@ -1,64 +1,53 @@
 ﻿import store from "@/store";
 import { requestData } from "@/helpers/requestData";
 
-export function requestDataUpdatePassword(
-  pageListModel,
-  oldPassword,
-  newPassword
-) {
+export function requestDataUpdatePassword(payload) {
   const data = {
     license: store.getters["settingsModule/getLicense"],
     requestorId: store.getters["settingsModule/getRequestorId"],
     appId: store.getters["settingsModule/getAppId"],
-    pageListModel: pageListModel
+    pageListModel: payload.pageListModel
   };
 
   let result = requestData(data);
 
-  result["OldPassword"] = oldPassword;
-  result["NewPassword"] = newPassword;
+  result["OldPassword"] = payload.oldPassword;
+  result["NewPassword"] = payload.newPassword;
 
   return result;
 }
 
-export function requestDataUpdateUser(
-  pageListModel,
-  userName,
-  firstName,
-  lastName,
-  nickName,
-  email
-) {
+export function requestDataUpdateUser(payload) {
   const data = {
     license: store.getters["settingsModule/getLicense"],
     requestorId: store.getters["settingsModule/getRequestorId"],
     appId: store.getters["settingsModule/getAppId"],
-    pageListModel: pageListModel
+    pageListModel: payload.pageListModel
   };
 
   let result = requestData(data);
 
-  result["UserName"] = userName;
-  result["FirstName"] = firstName;
-  result["LastName"] = lastName;
-  result["NickName"] = nickName;
-  result["Email"] = email;
+  result["UserName"] = payload.userName;
+  result["FirstName"] = payload.firstName;
+  result["LastName"] = payload.lastName;
+  result["NickName"] = payload.nickName;
+  result["Email"] = payload.email;
 
   return result;
 }
 
-export function requestDataUpdateUserRoles(pageListModel, roleIds) {
+export function requestDataUpdateUserRoles(payload) {
 
   const data = {
     license: store.getters["settingsModule/getLicense"],
     requestorId: store.getters["settingsModule/getRequestorId"],
     appId: store.getters["settingsModule/getAppId"],
-    pageListModel: pageListModel
+    pageListModel: payload.pageListModel
   };
 
   let result = requestData(data);
 
-  result["RoleIds"] = roleIds;
+  result["RoleIds"] = payload.roleIds;
 
   return result;
 }
