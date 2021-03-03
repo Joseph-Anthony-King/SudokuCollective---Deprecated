@@ -89,7 +89,7 @@ export default {
 
       if (now.getHours() < 12) {
         return "Good Morning";
-      } else if (now.getHours() < 6) {
+      } else if (now.getHours() < 18) {
         return "Good Afternoon";
       } else {
         return "Good Evening";

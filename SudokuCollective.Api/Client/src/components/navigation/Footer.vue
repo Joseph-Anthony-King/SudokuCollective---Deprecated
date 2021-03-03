@@ -3,7 +3,7 @@
     <v-row class="text-right">
       <v-col cols="12">
         <div>
-          © Copyright <span id="year"></span>:
+          © Copyright {{ getCopyrightYear }}:
           <a
             href="https://www.linkedin.com/in/joseph-king-23650256/"
             target="_blank"
@@ -20,5 +20,11 @@
 <script>
 export default {
   name: "Footer",
+  computed: {
+    getCopyrightYear() {
+      const now = new Date();
+      return now.getFullYear();
+    }
+  }
 };
 </script>

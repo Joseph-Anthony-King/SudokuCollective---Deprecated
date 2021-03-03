@@ -1,7 +1,11 @@
 <template>
-  <div class="home">
-    <HomePage />
-  </div>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <HomePage />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
