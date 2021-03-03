@@ -69,31 +69,51 @@
             <v-col cols="12" lg="6" xl="6">
               <v-checkbox
                 v-model="app.isActive"
-                :label="app.isActive ? 'App is Active' : 'App Is deactivated'"
+                :label="
+                  app.isActive
+                    ? 'App is Active'
+                    : 'App is deactivated, API requests will be denied as invalid'
+                "
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-checkbox>
               <v-checkbox
                 v-model="app.inDevelopment"
-                :label="app.inDevelopment ? 'App is in Development' : 'App is in Production'"
+                :label="
+                  app.inDevelopment
+                    ? 'App is in Development'
+                    : 'App is in Production'
+                "
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-checkbox>
               <v-checkbox
                 v-model="app.permitSuperUserAccess"
-                :label="app.permitSuperUserAccess ? 'Super User has Admin Access Rights to this App' : 'Super User does not have Admin Access Rights to this App'"
+                :label="
+                  app.permitSuperUserAccess
+                    ? 'Super User has Admin Access Rights to this App'
+                    : 'Super User does not have Admin Access Rights to this App'
+                "
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-checkbox>
               <v-checkbox
                 v-model="app.permitCollectiveLogins"
-                :label="app.permitCollectiveLogins ? 'User Registration is not Required to Gain Access to this App' : 'User Registration is Required to Gain Access to this App'"
+                :label="
+                  app.permitCollectiveLogins
+                    ? 'User Registration is not Required to Gain Access to this App'
+                    : 'User Registration is Required to Gain Access to this App'
+                "
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-checkbox>
               <v-checkbox
                 v-model="app.disableCustomUrls"
-                :label="app.disableCustomUrls ? 'Custom Urls for Email Confirmations and Password Resets are disabled' : 'Custom Urls for Email Confirmations and Password Resets are enabled'"
+                :label="
+                  app.disableCustomUrls
+                    ? 'Custom Urls for Email Confirmations and Password Resets are disabled'
+                    : 'Custom Urls for Email Confirmations and Password Resets are enabled'
+                "
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-checkbox>

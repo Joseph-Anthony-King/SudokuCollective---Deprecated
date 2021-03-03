@@ -120,32 +120,52 @@
             ></v-text-field>
             <v-checkbox
               v-model="app.isActive"
-              label="App Is Active"
+              :label="
+                app.isActive
+                  ? 'App is Active'
+                  : 'App is deactivated, API requests will be denied as invalid'
+              "
               readonly
             ></v-checkbox>
             <v-checkbox
               v-model="app.inDevelopment"
-              label="App Is In Development"
+              :label="
+                app.inDevelopment 
+                  ? 'App is in Development' 
+                  : 'App is in Production'
+              "
               readonly
             ></v-checkbox>
             <v-checkbox
               v-model="app.permitSuperUserAccess"
-              label="Super User has Admin Access Rights to this App"
+              :label="
+                app.permitSuperUserAccess 
+                  ? 'Super User has Admin Access Rights to this App' 
+                  : 'Super User does not have Admin Access Rights to this App'
+              "
               readonly
             ></v-checkbox>
             <v-checkbox
               v-model="app.permitCollectiveLogins"
-              label="User Registration is not Required to Gain Access to this App"
+              :label="
+                app.permitCollectiveLogins 
+                  ? 'User Registration is not Required to Gain Access to this App' 
+                  : 'User Registration is Required to Gain Access to this App'
+              "
               readonly
             ></v-checkbox>
             <v-checkbox
               v-model="app.disableCustomUrls"
-              label="Disable Custom Urls for Email Confirmations and Password Resets"
+              :label="
+                app.disableCustomUrls 
+                  ? 'Custom Urls for Email Confirmations and Password Resets are disabled' 
+                  : 'Custom Urls for Email Confirmations and Password Resets are enabled'
+              "
               readonly
             ></v-checkbox>
             <v-checkbox
               v-model="isOwnersEmailConfirmed"
-              label="Owner's Email is Confirmed"
+              :label="isOwnersEmailConfirmed ? 'Owner\'s Email is Confirmed' : 'Owner\'s Email is not Confirmed'"
               readonly
             ></v-checkbox>
           </v-col>
@@ -234,7 +254,7 @@ export default {
 
     async copyLicenseToClipboard() {
       try {
-        await navigator.clipboard.writeText(this.getLicense);
+        await navigator.clipboard.writeText(this.$data.app.license);
         showToast(
           this,
           ToastMethods["success"],

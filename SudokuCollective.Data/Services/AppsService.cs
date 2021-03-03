@@ -2100,7 +2100,16 @@ namespace SudokuCollective.Data.Services
 
                     if (requestorRegisteredToApp && validLicense)
                     {
-                        return true;
+                        var app = (App)(await appsRepository.GetByLicense(license)).Object;
+
+                        if (app.IsActive)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                     else if (requestor.IsSuperUser && validLicense)
                     {
