@@ -62,6 +62,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmation.service";
 import { userService } from "@/services/userService/user.service";
 import { appService } from "@/services/appService/app.service";
@@ -205,13 +206,17 @@ export default {
       this.$data.navDrawerStatus = this.$data.navDrawerStatus ? false : true;
     },
   },
+  computed: {
+    ...mapGetters("settingsModule", ["getUser"]),
+  },
   watch: {
     "$store.state.settingsModule.user": function () {
-      this.$data.user = this.$store.getters["settingsModule/getUser"];
+      this.$data.user = this.getUser;
     },
   },
   async created() {
     const urlResponse = await apiURLConfirmationService.confirm();
+
     this.confirmBaseURL(urlResponse.url);
 
     const appResponse = await appService.getByLicense(process.env.VUE_APP_LICENSE);
@@ -222,7 +227,7 @@ export default {
 
     this.updateApp(app);
 
-    this.$data.user = this.$store.getters["settingsModule/getUser"];
+    this.$data.user = this.getUser;
   },
 };
 </script>

@@ -44,6 +44,20 @@
               readonly
             ></v-text-field>
             <v-text-field
+              v-model="app.license"
+              label="App License"
+              prepend-icon="wysiwyg"
+              append-icon="content_copy"
+              @click:append="copyLicenseToClipboard"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              v-model="getAccessPeriod"
+              label="Authorization Token Access Period"
+              prepend-icon="wysiwyg"
+              readonly
+            ></v-text-field>
+            <v-text-field
               v-model="app.devUrl"
               label="Development Url"
               prepend-icon="wysiwyg"
@@ -56,26 +70,14 @@
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="app.customEmailConfirmationDevUrl"
-              label="Custom Development Email Confirmation Url"
+              v-model="app.customEmailConfirmationAction"
+              label="Custom Email Confirmation Action"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="app.customEmailConfirmationLiveUrl"
-              label="Custom Production Email Confirmation Url"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.customPasswordResetDevUrl"
-              label="Custom Development Password Reset Url"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.customPasswordResetLiveUrl"
-              label="Custom Production Password Reset Url"
+              v-model="app.customPasswordResetAction"
+              label="Custom Password Reset Action"
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
@@ -93,20 +95,6 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6" xl="6">
-            <v-text-field
-              v-model="app.license"
-              label="App License"
-              prepend-icon="wysiwyg"
-              append-icon="content_copy"
-              @click:append="copyLicenseToClipboard"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="getAccessPeriod"
-              label="Authorization Token Access Period"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
             <v-text-field
               v-model="getDateCreated"
               label="Date Created"
@@ -136,8 +124,8 @@
             <v-checkbox
               v-model="app.inDevelopment"
               :label="
-                app.inDevelopment 
-                  ? 'App is in Development' 
+                app.inDevelopment
+                  ? 'App is in Development'
                   : 'App is in Production'
               "
               readonly
@@ -145,8 +133,8 @@
             <v-checkbox
               v-model="app.permitSuperUserAccess"
               :label="
-                app.permitSuperUserAccess 
-                  ? 'Super User has Admin Access Rights to this App' 
+                app.permitSuperUserAccess
+                  ? 'Super User has Admin Access Rights to this App'
                   : 'Super User does not have Admin Access Rights to this App'
               "
               readonly
@@ -154,8 +142,8 @@
             <v-checkbox
               v-model="app.permitCollectiveLogins"
               :label="
-                app.permitCollectiveLogins 
-                  ? 'User Registration is not Required to Gain Access to this App' 
+                app.permitCollectiveLogins
+                  ? 'User Registration is not Required to Gain Access to this App'
                   : 'User Registration is Required to Gain Access to this App'
               "
               readonly
@@ -163,15 +151,19 @@
             <v-checkbox
               v-model="app.disableCustomUrls"
               :label="
-                app.disableCustomUrls 
-                  ? 'Custom Urls for Email Confirmations and Password Resets are disabled' 
+                app.disableCustomUrls
+                  ? 'Custom Urls for Email Confirmations and Password Resets are disabled'
                   : 'Custom Urls for Email Confirmations and Password Resets are enabled'
               "
               readonly
             ></v-checkbox>
             <v-checkbox
               v-model="isOwnersEmailConfirmed"
-              :label="isOwnersEmailConfirmed ? 'Owner\'s Email is Confirmed' : 'Owner\'s Email is not Confirmed'"
+              :label="
+                isOwnersEmailConfirmed
+                  ? 'Owner\'s Email is Confirmed'
+                  : 'Owner\'s Email is not Confirmed'
+              "
               readonly
             ></v-checkbox>
           </v-col>
@@ -365,27 +357,18 @@ export default {
     getAccessPeriod() {
       let period;
       if (this.$data.app.timeFrame === 0) {
-
         period = this.$data.app.accessDuration === 1 ? "second" : "seconds";
-        
       } else if (this.$data.app.timeFrame === 1) {
-
         period = this.$data.app.accessDuration === 1 ? "minute" : "minutes";
-
       } else if (this.$data.app.timeFrame === 2) {
-
         period = this.$data.app.accessDuration === 1 ? "hour" : "hours";
-
       } else if (this.$data.app.timeFrame === 3) {
-
         period = this.$data.app.accessDuration === 1 ? "day" : "days";
-
       } else {
-
         period = this.$data.app.accessDuration === 1 ? "month" : "months";
       }
 
-      return `Good for ${this.$data.app.accessDuration} ${period}`
+      return `Good for ${this.$data.app.accessDuration} ${period}`;
     },
 
     getDateCreated() {

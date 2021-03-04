@@ -49,10 +49,8 @@ namespace SudokuCollective.Test.TestData
                 PermitSuperUserAccess = true,
                 PermitCollectiveLogins = true,
                 DisableCustomUrls = true,
-                CustomEmailConfirmationDevUrl = string.Empty,
-                CustomEmailConfirmationLiveUrl = string.Empty,
-                CustomPasswordResetDevUrl = string.Empty,
-                CustomPasswordResetLiveUrl = string.Empty,
+                CustomEmailConfirmationAction = string.Empty,
+                CustomPasswordResetAction = string.Empty,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
                 PageListModel = new PageListModel()

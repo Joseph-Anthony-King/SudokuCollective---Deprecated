@@ -4,7 +4,7 @@ import App from "@/models/app";
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
 import { requestDataUpdateApp } from "@/helpers/appRequestData/appRequestData";
-import { 
+import {
   getAppEnpoint,
   getByLicenseEnpoint,
   getLicenseEndpoint,
@@ -13,7 +13,7 @@ import {
   getTimeFramesEnpoint
 } from "./service.endpoints";
 
-const getApp = async function(id) {
+const getApp = async function (id) {
   try {
     let params = `/${id}`;
 
@@ -33,7 +33,7 @@ const getApp = async function(id) {
   }
 }
 
-const getByLicense = async function(license) {
+const getByLicense = async function (license) {
   try {
     const data = {
       license: license,
@@ -58,7 +58,7 @@ const getByLicense = async function(license) {
   }
 }
 
-const postLicense = async function(createAppModel) {
+const postLicense = async function (createAppModel) {
 
   try {
     const config = {
@@ -76,7 +76,7 @@ const postLicense = async function(createAppModel) {
   }
 }
 
-const getLicense = async function(id) {
+const getLicense = async function (id) {
   try {
     let params = `/${id}`;
 
@@ -96,7 +96,7 @@ const getLicense = async function(id) {
   }
 }
 
-const getMyApps = async function() {
+const getMyApps = async function () {
   try {
     const config = {
       method: "put",
@@ -142,10 +142,8 @@ const updateApp = async function (
   permitSuperUserAccess,
   permitCollectiveLogins,
   disableCustomUrls,
-  customEmailConfirmationDevUrl,
-  customEmailConfirmationLiveUrl,
-  customPasswordResetDevUrl,
-  customPasswordResetLiveUrl,
+  customEmailConfirmationAction,
+  customPasswordResetAction,
   timeFrame,
   accessDuration,
 ) {
@@ -161,10 +159,8 @@ const updateApp = async function (
       permitSuperUserAccess: permitSuperUserAccess,
       permitCollectiveLogins: permitCollectiveLogins,
       disableCustomUrls: disableCustomUrls,
-      customEmailConfirmationDevUrl: customEmailConfirmationDevUrl,
-      customEmailConfirmationLiveUrl: customEmailConfirmationLiveUrl,
-      customPasswordResetDevUrl: customPasswordResetDevUrl,
-      customPasswordResetLiveUrl: customPasswordResetLiveUrl,
+      customEmailConfirmationAction: customEmailConfirmationAction,
+      customPasswordResetAction: customPasswordResetAction,
       timeFrame: timeFrame,
       accessDuration: accessDuration
     }
@@ -189,7 +185,7 @@ const updateApp = async function (
   }
 };
 
-const deleteApp = async function(app) {
+const deleteApp = async function (app) {
   try {
     let params = `/${app.id}`;
 

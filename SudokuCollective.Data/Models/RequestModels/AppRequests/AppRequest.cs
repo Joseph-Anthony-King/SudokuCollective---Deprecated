@@ -19,10 +19,8 @@ namespace SudokuCollective.Data.Models.RequestModels
         public bool PermitSuperUserAccess { get; set; }
         public bool PermitCollectiveLogins { get; set; }
         public bool DisableCustomUrls { get; set; }
-        public string CustomEmailConfirmationDevUrl { get; set; }
-        public string CustomEmailConfirmationLiveUrl { get; set; }
-        public string CustomPasswordResetDevUrl { get; set; }
-        public string CustomPasswordResetLiveUrl { get; set; }
+        public string CustomEmailConfirmationAction { get; set; }
+        public string CustomPasswordResetAction { get; set; }
         public TimeFrame TimeFrame { get; set; }
         public int AccessDuration { get; set; }
 
@@ -36,10 +34,8 @@ namespace SudokuCollective.Data.Models.RequestModels
             PermitSuperUserAccess = false;
             PermitCollectiveLogins = false;
             DisableCustomUrls = false;
-            CustomEmailConfirmationDevUrl = string.Empty;
-            CustomEmailConfirmationLiveUrl = string.Empty;
-            CustomPasswordResetDevUrl = string.Empty;
-            CustomPasswordResetLiveUrl = string.Empty;
+            CustomEmailConfirmationAction = string.Empty;
+            CustomPasswordResetAction = string.Empty;
 
             if (PageListModel == null)
             {

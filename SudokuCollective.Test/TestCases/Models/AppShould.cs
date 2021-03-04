@@ -54,13 +54,11 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.InDevelopment, Is.TypeOf<bool>());
             Assert.That(sut.PermitSuperUserAccess, Is.TypeOf<bool>());
             Assert.That(sut.PermitCollectiveLogins, Is.TypeOf<bool>());
-            Assert.That(sut.UseCustomEmailConfirmationUrl, Is.TypeOf<bool>());
-            Assert.That(sut.UseCustomPasswordResetUrl, Is.TypeOf<bool>());
+            Assert.That(sut.UseCustomEmailConfirmationAction, Is.TypeOf<bool>());
+            Assert.That(sut.UseCustomPasswordResetAction, Is.TypeOf<bool>());
             Assert.That(sut.DisableCustomUrls, Is.TypeOf<bool>());
-            Assert.That(sut.CustomEmailConfirmationDevUrl, Is.TypeOf<string>());
-            Assert.That(sut.CustomEmailConfirmationLiveUrl, Is.TypeOf<string>());
-            Assert.That(sut.CustomPasswordResetDevUrl, Is.TypeOf<string>());
-            Assert.That(sut.CustomPasswordResetLiveUrl, Is.TypeOf<string>());
+            Assert.That(sut.CustomEmailConfirmationAction, Is.TypeOf<string>());
+            Assert.That(sut.CustomPasswordResetAction, Is.TypeOf<string>());
             Assert.That(sut.GameCount, Is.TypeOf<int>());
             Assert.That(sut.UserCount, Is.TypeOf<int>());
             Assert.That(sut.TimeFrame, Is.TypeOf<TimeFrame>());
@@ -145,68 +143,38 @@ namespace SudokuCollective.Test.TestCases.Models
 
         [Test]
         [Category("Models")]
-        public void UseCustomEmailConfirmationDevUrlIfInDevelopmentAndValueSet()
+        public void UseCustomEmailConfirmationAction()
         {
             // Arrange
-            var customUrl = "http://example.com/customurl";
+            var devUrl = "http://localhost:5001";
+            var customAction = "customurl";
 
             // Act
-            sut.CustomEmailConfirmationDevUrl = customUrl;
+            sut.DevUrl = devUrl;
+            sut.CustomEmailConfirmationAction = customAction;
             sut.DisableCustomUrls = false;
 
             // Assert
-            Assert.That(sut.UseCustomEmailConfirmationUrl, Is.True);
-            Assert.That(sut.CustomEmailConfirmationDevUrl, Is.EqualTo(customUrl));
+            Assert.That(sut.UseCustomEmailConfirmationAction, Is.True);
+            Assert.That(sut.CustomEmailConfirmationAction, Is.EqualTo(customAction));
         }
 
         [Test]
         [Category("Models")]
-        public void UseCustomEmailConfirmationLiveUrlIfInProductionAndValueSet()
+        public void UseCustomPasswordResetAction()
         {
             // Arrange
-            var customUrl = "http://example.com/customurl";
+            var devUrl = "http://localhost:5001";
+            var customAction = "customurl";
 
             // Act
-            sut.CustomEmailConfirmationLiveUrl = customUrl;
-            sut.DisableCustomUrls = false;
-            sut.InDevelopment = false;
-
-            // Assert
-            Assert.That(sut.UseCustomEmailConfirmationUrl, Is.True);
-            Assert.That(sut.CustomEmailConfirmationLiveUrl, Is.EqualTo(customUrl));
-        }
-
-        [Test]
-        [Category("Models")]
-        public void UseCustomPasswordResetDevUrllIfInDevelopmentAndValueSet()
-        {
-            // Arrange
-            var customUrl = "http://example.com/customurl";
-
-            // Act
-            sut.CustomPasswordResetDevUrl = customUrl;
+            sut.DevUrl = devUrl;
+            sut.CustomPasswordResetAction = customAction;
             sut.DisableCustomUrls = false;
 
             // Assert
-            Assert.That(sut.UseCustomPasswordResetUrl, Is.True);
-            Assert.That(sut.CustomPasswordResetDevUrl, Is.EqualTo(customUrl));
-        }
-
-        [Test]
-        [Category("Models")]
-        public void UseCustomPasswordResetLiveUrlIfInProductionAndValueSet()
-        {
-            // Arrange
-            var customUrl = "http://example.com/customurl";
-
-            // Act
-            sut.CustomPasswordResetLiveUrl = customUrl;
-            sut.DisableCustomUrls = false;
-            sut.InDevelopment = false;
-
-            // Assert
-            Assert.That(sut.UseCustomPasswordResetUrl, Is.True);
-            Assert.That(sut.CustomPasswordResetLiveUrl, Is.EqualTo(customUrl));
+            Assert.That(sut.UseCustomPasswordResetAction, Is.True);
+            Assert.That(sut.CustomPasswordResetAction, Is.EqualTo(customAction));
         }
 
         [Test]
@@ -314,8 +282,6 @@ namespace SudokuCollective.Test.TestCases.Models
                 true,
                 true,
                 true,
-                null,
-                null,
                 null,
                 null,
                 TimeFrame.DAYS,

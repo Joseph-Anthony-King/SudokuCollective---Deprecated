@@ -10,7 +10,7 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210304001506_InitializeDatabase")]
+    [Migration("20210304210510_InitializeDatabase")]
     partial class InitializeDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,16 +31,10 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<int>("AccessDuration")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CustomEmailConfirmationDevUrl")
+                    b.Property<string>("CustomEmailConfirmationAction")
                         .HasColumnType("text");
 
-                    b.Property<string>("CustomEmailConfirmationLiveUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CustomPasswordResetDevUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CustomPasswordResetLiveUrl")
+                    b.Property<string>("CustomPasswordResetAction")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("DateCreated")

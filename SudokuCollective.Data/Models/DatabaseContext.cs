@@ -262,10 +262,10 @@ namespace SudokuCollective.Data.Models
                 .Ignore(app => app.UserCount);
 
             modelBuilder.Entity<App>()
-                .Ignore(app => app.UseCustomEmailConfirmationUrl);
+                .Ignore(app => app.UseCustomEmailConfirmationAction);
 
             modelBuilder.Entity<App>()
-                .Ignore(app => app.UseCustomPasswordResetUrl);
+                .Ignore(app => app.UseCustomPasswordResetAction);
 
             modelBuilder.Entity<UserApp>()
                 .HasKey(ua => ua.Id);

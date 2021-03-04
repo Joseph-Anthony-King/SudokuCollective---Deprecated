@@ -12,10 +12,8 @@ namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
         bool PermitSuperUserAccess { get; set; }
         bool PermitCollectiveLogins { get; set; }
         bool DisableCustomUrls { get; set; }
-        string CustomEmailConfirmationDevUrl { get; set; }
-        string CustomEmailConfirmationLiveUrl { get; set; }
-        string CustomPasswordResetDevUrl { get; set; }
-        string CustomPasswordResetLiveUrl { get; set; }
+        string CustomEmailConfirmationAction { get; set; }
+        string CustomPasswordResetAction { get; set; }
         TimeFrame TimeFrame { get; set; }
         int AccessDuration { get; set; }
     }

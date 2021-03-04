@@ -13,10 +13,8 @@ class App {
       this.permitSuperUserAccess = false;
       this.permitCollectiveLogins = false;
       this.disableCustomUrls = false;
-      this.customEmailConfirmationDevUrl = "";
-      this.customEmailConfirmationLiveUrl = "";
-      this.customPasswordResetDevUrl = "";
-      this.customPasswordResetLiveUrl = "";
+      this.customEmailConfirmationAction = "";
+      this.customPasswordResetAction = "";
       this.gameCount = 0;
       this.userCount = 0;
       this.timeFrame = 0;
@@ -36,10 +34,8 @@ class App {
       this.permitSuperUserAccess = data.permitSuperUserAccess;
       this.permitCollectiveLogins = data.permitCollectiveLogins;
       this.disableCustomUrls = data.disableCustomUrls;
-      this.customEmailConfirmationDevUrl = data.customEmailConfirmationDevUrl;
-      this.customEmailConfirmationLiveUrl = data.customEmailConfirmationLiveUrl;
-      this.customPasswordResetDevUrl = data.customPasswordResetDevUrl;
-      this.customPasswordResetLiveUrl = data.customPasswordResetLiveUrl;
+      this.customEmailConfirmationAction = data.customEmailConfirmationAction;
+      this.customPasswordResetAction = data.customPasswordResetAction;
       this.gameCount = data.gameCount;
       this.userCount = data.userCount;
       this.timeFrame = data.timeFrame;
@@ -62,7 +58,7 @@ class App {
 
       if (data.license !== undefined) {
         this.license = data.license;
-      } else {      
+      } else {
         this.license = "";
       }
     }

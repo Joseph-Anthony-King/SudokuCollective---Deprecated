@@ -17,6 +17,28 @@
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
+              <v-select
+                v-model="app.accessDuration"
+                prepend-icon="mode_edit"
+                :items="durations"
+                item-text="durations"
+                item-value="durations"
+                label="Duration for authorization token before it expires"
+                dense
+                @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
+              ></v-select>
+              <v-select
+                v-model="app.timeFrame"
+                prepend-icon="mode_edit"
+                :items="timeFrames"
+                item-text="label"
+                item-value="value"
+                label="Time frame for authorization token before it expires"
+                dense
+                @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
+              ></v-select>
               <v-text-field
                 label="Development Url"
                 v-model="app.devUrl"
@@ -34,32 +56,15 @@
                 @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
               <v-text-field
-                label="Custom Development Email Confirmation Url"
-                v-model="app.customEmailConfirmationDevUrl"
+                label="Custom Email Confirmation Action"
+                v-model="app.customEmailConfirmationAction"
                 prepend-icon="mode_edit"
-                :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
               <v-text-field
-                v-model="app.customEmailConfirmationLiveUrl"
-                label="Custom Production Email Confirmation Url"
-                prepend-icon="mode_edit"
-                :rules="urlRules"
-                @click="!dirty ? (dirty = true) : null"
-                @focus="!dirty ? (dirty = true) : null"
-              ></v-text-field>
-              <v-text-field
-                v-model="app.customPasswordResetDevUrl"
-                label="Custom Development Password Reset Url"
-                prepend-icon="mode_edit"
-                :rules="urlRules"
-                @click="!dirty ? (dirty = true) : null"
-                @focus="!dirty ? (dirty = true) : null"
-              ></v-text-field>
-              <v-text-field
-                v-model="app.customPasswordResetLiveUrl"
-                label="Custom Production Password Reset Url"
+                v-model="app.customPasswordResetAction"
+                label="Custom Password Reset Action"
                 prepend-icon="mode_edit"
                 :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
@@ -117,26 +122,6 @@
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-checkbox>
-              <v-select
-                v-model="app.accessDuration"
-                :items="durations"
-                item-text="durations"
-                item-value="durations"
-                label="Duration for authorization token before it expires"
-                dense
-                @click="!dirty ? (dirty = true) : null"
-                @focus="!dirty ? (dirty = true) : null"
-              ></v-select>
-              <v-select
-                v-model="app.timeFrame"
-                :items="timeFrames"
-                item-text="label"
-                item-value="value"
-                label="Time frame for authorization token before it expires"
-                dense
-                @click="!dirty ? (dirty = true) : null"
-                @focus="!dirty ? (dirty = true) : null"
-              ></v-select>
             </v-col>
           </v-row>
         </v-container>
@@ -240,10 +225,8 @@ export default {
                 this.$data.app.permitSuperUserAccess,
                 this.$data.app.permitCollectiveLogins,
                 this.$data.app.disableCustomUrls,
-                this.$data.app.customEmailConfirmationDevUrl,
-                this.$data.app.customEmailConfirmationLiveUrl,
-                this.$data.app.customPasswordResetDevUrl,
-                this.$data.app.customPasswordResetLiveUrl,
+                this.$data.app.customEmailConfirmationAction,
+                this.$data.app.customPasswordResetAction,
                 this.$data.app.timeFrame,
                 this.$data.app.accessDuration,
                 new PageListModel()
@@ -336,12 +319,12 @@ export default {
   },
   watch: {
     "$store.state.appModule.selectedApp": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.app = new App(this.getSelectedApp);
-      }
+      },
     },
     "app.timeFrame": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         if (val === 0) {
           this.$data.durations = [];
           for (let i = 1; i <= 59; i++) {
@@ -377,7 +360,7 @@ export default {
             this.app.accessDuration = 12;
           }
         }
-      }
+      },
     },
   },
   async created() {
@@ -387,7 +370,6 @@ export default {
       const response = await appService.getTimeFrames();
 
       this.$data.timeFrames = response;
-      
     } catch (error) {
       console.log(error);
     }

@@ -1400,10 +1400,8 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).PermitSuperUserAccess = request.PermitSuperUserAccess;
                         ((IApp)getAppResponse.Object).PermitCollectiveLogins = request.PermitCollectiveLogins;
                         ((IApp)getAppResponse.Object).DisableCustomUrls = request.DisableCustomUrls;
-                        ((IApp)getAppResponse.Object).CustomEmailConfirmationDevUrl = request.CustomEmailConfirmationDevUrl;
-                        ((IApp)getAppResponse.Object).CustomEmailConfirmationLiveUrl = request.CustomEmailConfirmationLiveUrl;
-                        ((IApp)getAppResponse.Object).CustomPasswordResetDevUrl = request.CustomPasswordResetDevUrl;
-                        ((IApp)getAppResponse.Object).CustomPasswordResetLiveUrl = request.CustomPasswordResetLiveUrl;
+                        ((IApp)getAppResponse.Object).CustomEmailConfirmationAction = request.CustomEmailConfirmationAction;
+                        ((IApp)getAppResponse.Object).CustomPasswordResetAction = request.CustomPasswordResetAction;
                         ((IApp)getAppResponse.Object).TimeFrame = request.TimeFrame;
                         ((IApp)getAppResponse.Object).AccessDuration = request.AccessDuration;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;

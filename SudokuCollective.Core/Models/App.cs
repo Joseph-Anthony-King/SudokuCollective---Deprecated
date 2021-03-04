@@ -31,15 +31,21 @@ namespace SudokuCollective.Core.Models
         public bool PermitSuperUserAccess { get; set; }
         public bool PermitCollectiveLogins { get; set; }
         [JsonIgnore]
-        public bool UseCustomEmailConfirmationUrl
+        public bool UseCustomEmailConfirmationAction
         {
             get
             {
-                if (InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomEmailConfirmationDevUrl))
+                if (InDevelopment 
+                    && !DisableCustomUrls
+                    && !string.IsNullOrEmpty(DevUrl)
+                    && !string.IsNullOrEmpty(CustomEmailConfirmationAction))
                 {
                     return true;
                 }
-                else if (!InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomEmailConfirmationLiveUrl))
+                else if (!InDevelopment 
+                    && !DisableCustomUrls
+                    && !string.IsNullOrEmpty(LiveUrl)
+                    && !string.IsNullOrEmpty(CustomEmailConfirmationAction))
                 {
                     return true;
                 }
@@ -50,15 +56,21 @@ namespace SudokuCollective.Core.Models
             }
         }
         [JsonIgnore]
-        public bool UseCustomPasswordResetUrl
+        public bool UseCustomPasswordResetAction
         {
             get
             {
-                if (InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomPasswordResetDevUrl))
+                if (InDevelopment 
+                    && !DisableCustomUrls
+                    && !string.IsNullOrEmpty(DevUrl)
+                    && !string.IsNullOrEmpty(CustomPasswordResetAction))
                 {
                     return true;
                 }
-                else if (!InDevelopment && !DisableCustomUrls && !string.IsNullOrEmpty(CustomPasswordResetLiveUrl))
+                else if (!InDevelopment 
+                    && !DisableCustomUrls
+                    && !string.IsNullOrEmpty(DevUrl)
+                    && !string.IsNullOrEmpty(CustomPasswordResetAction))
                 {
                     return true;
                 }
@@ -69,10 +81,8 @@ namespace SudokuCollective.Core.Models
             }
         }
         public bool DisableCustomUrls { get; set; }
-        public string CustomEmailConfirmationDevUrl { get; set; }
-        public string CustomEmailConfirmationLiveUrl { get; set; }
-        public string CustomPasswordResetDevUrl { get; set; }
-        public string CustomPasswordResetLiveUrl { get; set; }
+        public string CustomEmailConfirmationAction { get; set; }
+        public string CustomPasswordResetAction { get; set; }
         public int GameCount
         {
             get
@@ -211,10 +221,8 @@ namespace SudokuCollective.Core.Models
             PermitCollectiveLogins = true;
             InDevelopment = true;
             DisableCustomUrls = true;
-            CustomEmailConfirmationDevUrl = string.Empty;
-            CustomEmailConfirmationLiveUrl = string.Empty;
-            CustomPasswordResetDevUrl = string.Empty;
-            CustomPasswordResetLiveUrl = string.Empty;
+            CustomEmailConfirmationAction = string.Empty;
+            CustomPasswordResetAction = string.Empty;
             Users = new List<UserApp>();
             TimeFrame = TimeFrame.DAYS;
             AccessDuration = 1;
@@ -248,10 +256,8 @@ namespace SudokuCollective.Core.Models
             bool permitCollectiveLogins,
             bool inDevelopment,
             bool disableCustomUrls,
-            string customEmailConfirmationDevUrl,
-            string customEmailConfirmationLiveUrl,
-            string customPasswordResetDevUrl,
-            string customPasswordResetLiveUrl,
+            string customEmailConfirmationAction,
+            string customPasswordResetAction,
             TimeFrame timeFrame,
             int accessDuration,
             DateTime dateCreated,
@@ -268,10 +274,8 @@ namespace SudokuCollective.Core.Models
             PermitCollectiveLogins = permitCollectiveLogins;
             InDevelopment = inDevelopment;
             DisableCustomUrls = disableCustomUrls;
-            CustomEmailConfirmationDevUrl = customEmailConfirmationDevUrl;
-            CustomEmailConfirmationLiveUrl = customEmailConfirmationLiveUrl;
-            CustomPasswordResetDevUrl = customPasswordResetDevUrl;
-            CustomPasswordResetLiveUrl = customPasswordResetLiveUrl;
+            CustomEmailConfirmationAction = customEmailConfirmationAction;
+            CustomPasswordResetAction = customPasswordResetAction;
             TimeFrame = timeFrame;
             AccessDuration = accessDuration;
             DateCreated = dateCreated;
