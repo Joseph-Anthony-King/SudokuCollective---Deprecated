@@ -19,7 +19,7 @@
               ></v-text-field>
               <v-select
                 v-model="app.accessDuration"
-                prepend-icon="mode_edit"
+                prepend-icon="av_timer"
                 :items="durations"
                 item-text="durations"
                 item-value="durations"
@@ -30,7 +30,7 @@
               ></v-select>
               <v-select
                 v-model="app.timeFrame"
-                prepend-icon="mode_edit"
+                prepend-icon="av_timer"
                 :items="timeFrames"
                 item-text="label"
                 item-value="value"

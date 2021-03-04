@@ -212,14 +212,14 @@ const deleteApp = async function (app) {
   }
 }
 
-const resetApp = async function (id) {
+const resetApp = async function (app) {
   try {
-    let params = `/${id}/resetapp`;
+    let params = `/${app.id}/resetapp`;
 
     const data = {
-      license: license,
-      requestorId: store.getters["settingsModule/getRequestorId"],
-      appId: store.getters["settingsModule/getAppId"],
+      license: app.license,
+      requestorId: app.ownerId,
+      appId: app.id,
       pageListModel: null
     };
 
@@ -264,5 +264,6 @@ export const appService = {
   postObtainAdminPrivileges,
   updateApp,
   deleteApp,
+  resetApp,
   getTimeFrames,
 };

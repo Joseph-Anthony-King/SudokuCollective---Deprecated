@@ -54,7 +54,7 @@
             <v-text-field
               v-model="getAccessPeriod"
               label="Authorization Token Access Period"
-              prepend-icon="wysiwyg"
+              prepend-icon="av_timer"
               readonly
             ></v-text-field>
             <v-text-field
@@ -203,7 +203,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  Edit App
+                  Reset App
                 </v-btn>
               </template>
               <span>Reset your app</span>
@@ -289,7 +289,7 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await appService.resetApp(this.$data.app.id);
+              const response = await appService.resetApp(this.$data.app);
 
               if (response.status === 200) {
                 const appsResponse = await appService.getMyApps();
@@ -359,7 +359,7 @@ export default {
         this,
         ToastMethods["show"],
         "Are you sure you want to clear all games and reset this app?",
-        actionToastOptions(action, "delete")
+        actionToastOptions(action, "clear")
       );
     },
 
