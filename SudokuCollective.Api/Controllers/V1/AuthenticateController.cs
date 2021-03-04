@@ -52,6 +52,10 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
             }
+            else if (authenticateResult.Message.Equals(AppsMessages.UserIsNotARegisteredUserOfThisAppMessage))
+            {
+                return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
+            }
             else
             {
                 var result = await userManagementService

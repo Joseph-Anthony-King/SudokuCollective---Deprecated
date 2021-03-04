@@ -2,7 +2,6 @@
 VUE_APP_API_KESTREL = "your value here";
 VUE_APP_API_IIS = "your value here";
 VUE_APP_TITLE = "your value here";
-VUE_APP_ID = 1;
 VUE_APP_LICENSE = "your value here";
 VUE_APP_I18N_LOCALE = en;
 VUE_APP_I18N_FALLBACK_LOCALE = en;

@@ -12,9 +12,5 @@ namespace SudokuCollective.Data.Models.TokenModels
         public string Issuer { get; set; }
         [JsonProperty("Audience")]
         public string Audience { get; set; }
-        [JsonProperty("AccessExpiration")]
-        public int AccessExpiration { get; set; }
-        [JsonProperty("RefreshExpiration")]
-        public int RefreshExpiration { get; set; }
     }
 }

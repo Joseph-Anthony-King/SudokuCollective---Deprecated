@@ -71,8 +71,8 @@ namespace SudokuCollective.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(token.Secret)),
                     ValidIssuer = token.Issuer,
                     ValidAudience = token.Audience,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                     ValidateLifetime = true,
                     LifetimeValidator = LifetimeValidator,
                 };
@@ -163,6 +163,7 @@ namespace SudokuCollective.Api
 
             SeedData.EnsurePopulated(app, Configuration);
         }
+
         private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
         {
             if (expires != null)

@@ -88,6 +88,9 @@ const settingsModule = {
     getUser: (state) => {
       return state.user;
     },
+    getAppName: (state) => {
+      return state.app.name;
+    },
     getUserName: (state) => {
       return state.userName
     },

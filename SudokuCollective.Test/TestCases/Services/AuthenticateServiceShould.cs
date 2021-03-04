@@ -44,9 +44,7 @@ namespace SudokuCollective.Test.TestCases.Services
             {
                 Secret = "3c1ad157-be37-40d2-9cc8-e7527a56aa7b",
                 Issuer = "testProject",
-                Audience = "testEnvironment",
-                AccessExpiration = 30,
-                RefreshExpiration = 60
+                Audience = "testEnvironment"
             };
 
             IOptions<TokenManagement> options = Options.Create<TokenManagement>(tokenManagement);

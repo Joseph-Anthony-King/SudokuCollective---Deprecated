@@ -38,12 +38,16 @@
     "DevUrl": "[Your value here]",
     "LiveUrl": "[Your value here]"
   },
+  "DefaultPostmanApp": {
+    "Name": "[Your value here]",
+    "License": "[Your value here]",
+    "DevUrl": "[Your value here]",
+    "LiveUrl": "[Your value here]"
+  },
   "TokenManagement": {
     "Secret": "[Your value here]",
     "Issuer": "[Your value here]",
-    "Audience": "[Your value here]",
-    "AccessExpiration": 24,
-    "RefreshExpiration": 24
+    "Audience": "[Your value here]"
   },
   "EmailMetaData": {
     "SmtpServer": "[Your value here]",
