@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
@@ -199,7 +200,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     .GetAppUsers(
                         request.AppId,
                         request.RequestorId,
-                        request.PageListModel, 
+                        request.PageListModel,
                         fullRecord);
 
                 if (result.Success)
@@ -418,7 +419,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
             else
             {
-                return BadRequest(ControllerMessages.NotOwnerMessage);
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -449,7 +450,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
             else
             {
-                return BadRequest(ControllerMessages.NotOwnerMessage);
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
 
@@ -480,8 +481,40 @@ namespace SudokuCollective.Api.V1.Controllers
             }
             else
             {
-                return BadRequest(ControllerMessages.NotOwnerMessage);
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
+
+        // PUT: api/apps/getTimeFrames
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("GetTimeFrames")]
+        public async Task<ActionResult<List<TimeFrameListItem>>> GetTimeFrames([FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = new List<TimeFrameListItem>();
+
+                result.Add(new TimeFrameListItem { label = "Seconds", value = TimeFrame.SECONDS });
+                result.Add(new TimeFrameListItem { label = "Minutes", value = TimeFrame.MINUTES });
+                result.Add(new TimeFrameListItem { label = "Hours", value = TimeFrame.HOURS });
+                result.Add(new TimeFrameListItem { label = "Days", value = TimeFrame.DAYS });
+                result.Add(new TimeFrameListItem { label = "Months", value = TimeFrame.MONTHS });
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        public class TimeFrameListItem 
+        {
+            public string label;
+            public TimeFrame value;
+        };
     }
 }

@@ -43,6 +43,8 @@ namespace SudokuCollective.Api.Migrations
                     CustomEmailConfirmationLiveUrl = table.Column<string>(nullable: true),
                     CustomPasswordResetDevUrl = table.Column<string>(nullable: true),
                     CustomPasswordResetLiveUrl = table.Column<string>(nullable: true),
+                    TimeFrame = table.Column<int>(nullable: false),
+                    AccessDuration = table.Column<int>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false)
                 },

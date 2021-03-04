@@ -10,6 +10,8 @@ using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Enums;
+using static SudokuCollective.Api.V1.Controllers.AppsController;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -620,6 +622,36 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
             Assert.That(message, Is.EqualTo("Status Code 404: Apps Not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyGetAccessTokenTimeFrames()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.GetTimeFrames(baseRequest);
+            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<List<TimeFrameListItem>>>());
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void ReturnFalseIfSuccessfullyGetAccessTokenTimeFramesFails()
+        {
+            // Arrange
+
+            // Act
+            var result = sutInvalid.GetTimeFrames(baseRequest);
+            var statusCode = ((BadRequestObjectResult)result.Result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult<List<TimeFrameListItem>>>());
+            Assert.That(statusCode, Is.EqualTo(400));
         }
     }
 }

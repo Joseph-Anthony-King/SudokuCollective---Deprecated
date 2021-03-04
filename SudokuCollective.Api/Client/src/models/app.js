@@ -19,6 +19,8 @@ class App {
       this.customPasswordResetLiveUrl = "";
       this.gameCount = 0;
       this.userCount = 0;
+      this.timeFrame = 0;
+      this.accessDuration = 0;
       this.dateCreated = "";
       this.dateUpdated = "";
       this.users = [];
@@ -40,6 +42,8 @@ class App {
       this.customPasswordResetLiveUrl = data.customPasswordResetLiveUrl;
       this.gameCount = data.gameCount;
       this.userCount = data.userCount;
+      this.timeFrame = data.timeFrame;
+      this.accessDuration = data.accessDuration;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;
       this.users = [];

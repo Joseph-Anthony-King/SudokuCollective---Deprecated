@@ -48,6 +48,10 @@ namespace SudokuCollective.Api.V1.Controllers
 
                 return Ok(result);
             }
+            else if (authenticateResult.Message.Equals(AppsMessages.AppDeactivatedMessage))
+            {
+                return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
+            }
             else
             {
                 var result = await userManagementService

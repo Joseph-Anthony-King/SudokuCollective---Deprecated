@@ -163,6 +163,8 @@ namespace SudokuCollective.Api.Models
                             string.Empty,
                             string.Empty,
                             string.Empty,
+                            TimeFrame.DAYS,
+                            1,
                             createdDate,
                             DateTime.MinValue)
                     );
@@ -187,6 +189,8 @@ namespace SudokuCollective.Api.Models
                             string.Empty,
                             string.Empty,
                             string.Empty,
+                            TimeFrame.DAYS,
+                            1,
                             createdDate,
                             DateTime.MinValue)
                     );
@@ -209,6 +213,8 @@ namespace SudokuCollective.Api.Models
                             string.Empty,
                             string.Empty,
                             string.Empty,
+                            TimeFrame.DAYS,
+                            1,
                             createdDate,
                             DateTime.MinValue)
                     );

@@ -325,7 +325,9 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import { userService } from "@/services/userService/user.service";
 import { registerService } from "@/services/registerService/register.service";
 import { appService } from "@/services/appService/app.service";
@@ -415,7 +417,6 @@ export default {
 
             try {
               const response = await userService.putCancelEmailConfirmation();
-              console.log("cancel email response:", response);
 
               if (response.status === 200) {
                 await this.reset();
@@ -731,6 +732,8 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("settingsModule", ["getUser"]),
+
     displayDateCreated: function () {
       return convertStringToDateTime(this.$data.user.dateCreated);
     },
@@ -738,13 +741,15 @@ export default {
       return convertStringToDateTime(this.$data.user.dateUpdated);
     },
   },
-  //watch: {
-  //  "$store.state.settingsModule.user": function () {
-  //    this.$data.user = new User(this.$store.getters["settingsModule/getUser"]);
-  //  },
-  //},
+  watch: {
+    "$store.state.settingsModule.user": {
+      handler: function(val, oldVal) {
+        this.$data.user = new User(this.getUser);
+      }
+    },
+  },
   created() {    
-    this.$data.user = new User(this.$store.getters["settingsModule/getUser"]);
+    this.$data.user = new User(this.getUser);
   },
 };
 </script>

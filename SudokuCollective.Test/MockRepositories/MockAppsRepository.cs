@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.DataModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
@@ -50,6 +51,8 @@ namespace SudokuCollective.Test.MockRepositories
                             string.Empty,
                             string.Empty,
                             string.Empty,
+                            TimeFrame.DAYS,
+                            1,
                             todaysDate,
                             DateTime.MinValue)
                     } as IRepositoryResponse));
@@ -339,6 +342,8 @@ namespace SudokuCollective.Test.MockRepositories
                             string.Empty,
                             string.Empty,
                             string.Empty,
+                            TimeFrame.DAYS,
+                            1,
                             todaysDate,
                             DateTime.MinValue)
                     } as IRepositoryResponse));

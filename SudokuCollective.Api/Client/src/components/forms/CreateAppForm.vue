@@ -140,6 +140,7 @@ export default {
               }
 
               this.removeApps();
+              
               this.updateApps(myTempArray);
             }
 

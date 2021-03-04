@@ -116,6 +116,7 @@
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { userService } from "@/services/userService/user.service";
@@ -319,8 +320,10 @@ export default {
     },
   },
   watch: {
-    "$store.state.settingsModule.user": function () {
-      this.$data.user = new User(this.getUser);
+    "$store.state.settingsModule.user": {
+      handler: function(val, oldVal) {
+        this.$data.user = new User(this.getUser);
+      }
     },
   },
   created() {

@@ -162,8 +162,10 @@ export default {
     ...mapGetters("appModule", ["getAppById", "getApps"]),
   },
   watch: {
-    "$store.state.settingsModule.user": function () {
-      this.$data.user = new User(this.getUser);
+    "$store.state.settingsModule.user": {
+      handler: function(val, oldVal) {
+        this.$data.user = new User(this.getUser);
+      }
     },
     "$store.state.appModule.apps": {
       handler: function (val, oldVal) {

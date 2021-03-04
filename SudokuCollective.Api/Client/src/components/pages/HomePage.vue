@@ -35,6 +35,8 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
+import { mapGetters } from "vuex";
 import App from "@/models/app";
 
 export default {
@@ -42,13 +44,18 @@ export default {
   data: () => ({
     app: new App(),
   }),
+  computed: {
+    ...mapGetters("settingsModule", ["getApp"]),
+  },
   watch: {
-    "$store.state.settingsModule.app": function () {
-      this.$data.app = new App(this.$store.getters["settingsModule/getApp"]);
+    "$store.state.settingsModule.app": {
+      handler: function(val, oldVal) {
+        this.$data.app = new App(this.getApp);
+      }
     },
   },
   created() {
-    this.$data.app = new App(this.$store.getters["settingsModule/getApp"]);
+    this.$data.app = new App(this.getApp);
   },
 };
 </script>

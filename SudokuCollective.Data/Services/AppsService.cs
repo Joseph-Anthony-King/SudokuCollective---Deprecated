@@ -1404,6 +1404,8 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).CustomEmailConfirmationLiveUrl = request.CustomEmailConfirmationLiveUrl;
                         ((IApp)getAppResponse.Object).CustomPasswordResetDevUrl = request.CustomPasswordResetDevUrl;
                         ((IApp)getAppResponse.Object).CustomPasswordResetLiveUrl = request.CustomPasswordResetLiveUrl;
+                        ((IApp)getAppResponse.Object).TimeFrame = request.TimeFrame;
+                        ((IApp)getAppResponse.Object).AccessDuration = request.AccessDuration;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
                         var updateAppResponse = await appsRepository

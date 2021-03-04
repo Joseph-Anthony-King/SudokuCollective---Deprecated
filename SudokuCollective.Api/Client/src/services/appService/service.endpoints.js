@@ -6,3 +6,4 @@ export const getByLicenseEnpoint = `${getAppEnpoint}/getByLicense`;
 export const getMyAppsEndpoint = `${getAppEnpoint}/getMyApps`;
 export const getLicenseEndpoint = `${baseURL}/api/v1/licenses`;
 export const getObtainAdminPrivilegesEnpoint = `${getAppEnpoint}/obtainAdminPrivileges`;
+export const getTimeFramesEnpoint = `${getAppEnpoint}/getTimeFrames`;

@@ -23,6 +23,8 @@ export function requestDataUpdateApp(payload) {
   result["customEmailConfirmationLiveUrl"] = payload.customEmailConfirmationLiveUrl;
   result["customPasswordResetDevUrl"] = payload.customPasswordResetDevUrl;
   result["customPasswordResetLiveUrl"] = payload.customPasswordResetLiveUrl;
+  result["timeFrame"] = payload.timeFrame;
+  result["accessDuration"] = payload.accessDuration;
 
   return result;
 }

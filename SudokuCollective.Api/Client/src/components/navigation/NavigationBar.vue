@@ -62,13 +62,15 @@
 }
 </style>
 <script>
+/* eslint-disable no-unused-vars */
+import { mapGetters } from "vuex";
+import User from "@/models/user";
 import MenuItem from "@/models/viewModels/menuItem";
 
 export default {
   name: "NavigationBar",
   props: ["userLoggedIn", "navDrawerStatus", "profileNavigation"],
   data: () => ({
-    //greeting: "(Logged In)",
     navMenuItems: [],
     user: {},
   }),
@@ -84,6 +86,8 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("settingsModule", ["getUser"]),
+
     greeting() {
       const now = new Date();
 
@@ -97,14 +101,16 @@ export default {
     }
   },
   watch: {
-    "$store.state.settingsModule.user": function () {
-      this.$data.user = this.$store.getters["settingsModule/getUser"];
+    "$store.state.settingsModule.user": {
+      handler: function(val, oldVal) {
+        this.$data.user = new User(this.getUser);
+      }
     },
   },
   async created() {
     this.populateNavMenuItems();
     
-    this.$data.user = this.$store.getters["settingsModule/getUser"];
+    this.$data.user = new User(this.getUser);
   },
 };
 </script>

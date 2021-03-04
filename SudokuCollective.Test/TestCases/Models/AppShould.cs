@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Models;
 
@@ -62,6 +63,8 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.CustomPasswordResetLiveUrl, Is.TypeOf<string>());
             Assert.That(sut.GameCount, Is.TypeOf<int>());
             Assert.That(sut.UserCount, Is.TypeOf<int>());
+            Assert.That(sut.TimeFrame, Is.TypeOf<TimeFrame>());
+            Assert.That(sut.AccessDuration, Is.TypeOf<int>());
             Assert.That(sut.DateCreated, Is.TypeOf<DateTime>());
             Assert.That(sut.DateUpdated, Is.TypeOf<DateTime>());
             Assert.That(sut.Users, Is.InstanceOf<ICollection<UserApp>>());
@@ -315,6 +318,8 @@ namespace SudokuCollective.Test.TestCases.Models
                 null,
                 null,
                 null,
+                TimeFrame.DAYS,
+                1,
                 DateTime.Now,
                 DateTime.MinValue);
 

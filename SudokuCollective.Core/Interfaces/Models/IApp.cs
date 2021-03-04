@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Core.Interfaces.Models
@@ -24,6 +25,8 @@ namespace SudokuCollective.Core.Interfaces.Models
         string CustomPasswordResetLiveUrl { get; set; }
         int GameCount { get; }
         int UserCount { get; }
+        TimeFrame TimeFrame { get; set; }
+        int AccessDuration { get; set; }
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
         List<UserApp> Users { get; set; }

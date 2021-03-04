@@ -1,3 +1,4 @@
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Data.Models.PageModels;
@@ -22,6 +23,8 @@ namespace SudokuCollective.Data.Models.RequestModels
         public string CustomEmailConfirmationLiveUrl { get; set; }
         public string CustomPasswordResetDevUrl { get; set; }
         public string CustomPasswordResetLiveUrl { get; set; }
+        public TimeFrame TimeFrame { get; set; }
+        public int AccessDuration { get; set; }
 
         public AppRequest() : base()
         {

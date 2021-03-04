@@ -9,7 +9,8 @@ import {
   getByLicenseEnpoint,
   getLicenseEndpoint,
   getMyAppsEndpoint,
-  getObtainAdminPrivilegesEnpoint
+  getObtainAdminPrivilegesEnpoint,
+  getTimeFramesEnpoint
 } from "./service.endpoints";
 
 const getApp = async function(id) {
@@ -145,6 +146,8 @@ const updateApp = async function (
   customEmailConfirmationLiveUrl,
   customPasswordResetDevUrl,
   customPasswordResetLiveUrl,
+  timeFrame,
+  accessDuration,
 ) {
   try {
     const params = `/${id}`;
@@ -162,6 +165,8 @@ const updateApp = async function (
       customEmailConfirmationLiveUrl: customEmailConfirmationLiveUrl,
       customPasswordResetDevUrl: customPasswordResetDevUrl,
       customPasswordResetLiveUrl: customPasswordResetLiveUrl,
+      timeFrame: timeFrame,
+      accessDuration: accessDuration
     }
 
     const config = {
@@ -211,6 +216,22 @@ const deleteApp = async function(app) {
   }
 }
 
+const getTimeFrames = async function () {
+  try {
+    const config = {
+      method: "put",
+      url: `${getTimeFramesEnpoint}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+    const response = await axios(config);
+    return response.data;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+};
+
 export const appService = {
   getApp,
   getByLicense,
@@ -220,4 +241,5 @@ export const appService = {
   postObtainAdminPrivileges,
   updateApp,
   deleteApp,
+  getTimeFrames,
 };

@@ -11,7 +11,7 @@
               <v-text-field
                 label="Name"
                 v-model="app.name"
-                prepend-icon="mdi-mode-edit"
+                prepend-icon="mode_edit"
                 :rules="stringRequiredRules"
                 required
                 @click="!dirty ? (dirty = true) : null"
@@ -20,7 +20,7 @@
               <v-text-field
                 label="Development Url"
                 v-model="app.devUrl"
-                prepend-icon="mdi-mode-edit"
+                prepend-icon="mode_edit"
                 :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
@@ -28,7 +28,7 @@
               <v-text-field
                 label="Production Url"
                 v-model="app.liveUrl"
-                prepend-icon="mdi-mode-edit"
+                prepend-icon="mode_edit"
                 :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
@@ -36,7 +36,7 @@
               <v-text-field
                 label="Custom Development Email Confirmation Url"
                 v-model="app.customEmailConfirmationDevUrl"
-                prepend-icon="mdi-mode-edit"
+                prepend-icon="mode_edit"
                 :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
@@ -44,7 +44,7 @@
               <v-text-field
                 v-model="app.customEmailConfirmationLiveUrl"
                 label="Custom Production Email Confirmation Url"
-                prepend-icon="mdi-mode-edit"
+                prepend-icon="mode_edit"
                 :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
@@ -52,7 +52,7 @@
               <v-text-field
                 v-model="app.customPasswordResetDevUrl"
                 label="Custom Development Password Reset Url"
-                prepend-icon="mdi-mode-edit"
+                prepend-icon="mode_edit"
                 :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
@@ -60,7 +60,7 @@
               <v-text-field
                 v-model="app.customPasswordResetLiveUrl"
                 label="Custom Production Password Reset Url"
-                prepend-icon="mdi-mode-edit"
+                prepend-icon="mode_edit"
                 :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
@@ -117,6 +117,26 @@
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-checkbox>
+              <v-select
+                v-model="app.accessDuration"
+                :items="durations"
+                item-text="durations"
+                item-value="durations"
+                label="Duration for authorization token before it expires"
+                dense
+                @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
+              ></v-select>
+              <v-select
+                v-model="app.timeFrame"
+                :items="timeFrames"
+                item-text="label"
+                item-value="value"
+                label="Time frame for authorization token before it expires"
+                dense
+                @click="!dirty ? (dirty = true) : null"
+                @focus="!dirty ? (dirty = true) : null"
+              ></v-select>
             </v-col>
           </v-row>
         </v-container>
@@ -172,7 +192,7 @@
 </template>
 
 <script>
-/* eslint-disable no-useless-escape */
+/* eslint-disable no-useless-escape, no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
@@ -193,6 +213,8 @@ export default {
     editAppFormIsValid: true,
     dirty: false,
     submitInvoked: false,
+    timeFrames: [],
+    durations: [],
   }),
   methods: {
     ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
@@ -222,6 +244,8 @@ export default {
                 this.$data.app.customEmailConfirmationLiveUrl,
                 this.$data.app.customPasswordResetDevUrl,
                 this.$data.app.customPasswordResetLiveUrl,
+                this.$data.app.timeFrame,
+                this.$data.app.accessDuration,
                 new PageListModel()
               );
 
@@ -311,12 +335,62 @@ export default {
     },
   },
   watch: {
-    "$store.state.appModule.selectedApp": function () {
-      this.$data.app = new App(this.getSelectedApp);
+    "$store.state.appModule.selectedApp": {
+      handler: function(val, oldVal) {
+        this.$data.app = new App(this.getSelectedApp);
+      }
+    },
+    "app.timeFrame": {
+      handler: function(val, oldVal) {
+        if (val === 0) {
+          this.$data.durations = [];
+          for (let i = 1; i <= 59; i++) {
+            this.$data.durations.push(i);
+          }
+        } else if (val === 1) {
+          this.$data.durations = [];
+          for (let i = 1; i <= 59; i++) {
+            this.$data.durations.push(i);
+          }
+        } else if (val === 2) {
+          this.$data.durations = [];
+          for (let i = 1; i <= 23; i++) {
+            this.$data.durations.push(i);
+          }
+          if (this.app.accessDuration > 23) {
+            this.app.accessDuration = 23;
+          }
+        } else if (val === 3) {
+          this.$data.durations = [];
+          for (let i = 1; i <= 31; i++) {
+            this.$data.durations.push(i);
+          }
+          if (this.app.accessDuration > 31) {
+            this.app.accessDuration = 31;
+          }
+        } else {
+          this.$data.durations = [];
+          for (let i = 1; i <= 12; i++) {
+            this.$data.durations.push(i);
+          }
+          if (this.app.accessDuration > 12) {
+            this.app.accessDuration = 12;
+          }
+        }
+      }
     },
   },
-  created() {
+  async created() {
     this.$data.app = new App(this.getSelectedApp);
+
+    try {
+      const response = await appService.getTimeFrames();
+
+      this.$data.timeFrames = response;
+      
+    } catch (error) {
+      console.log(error);
+    }
   },
   mounted() {
     if (this.$props.editAppFormStatus) {

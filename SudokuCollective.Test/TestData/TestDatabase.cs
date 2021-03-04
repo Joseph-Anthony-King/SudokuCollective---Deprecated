@@ -144,6 +144,8 @@ namespace SudokuCollective.Test.TestData
                         string.Empty,
                         string.Empty,
                         string.Empty,
+                        TimeFrame.DAYS,
+                        1,
                         dateCreated,
                         DateTime.MinValue),
 
@@ -163,6 +165,8 @@ namespace SudokuCollective.Test.TestData
                         string.Empty,
                         string.Empty,
                         string.Empty,
+                        TimeFrame.DAYS,
+                        1,
                         dateCreated,
                         DateTime.MinValue)
                 );

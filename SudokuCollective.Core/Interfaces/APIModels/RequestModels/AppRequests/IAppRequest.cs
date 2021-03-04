@@ -1,4 +1,6 @@
-﻿namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
+﻿using SudokuCollective.Core.Enums;
+
+namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
 {
     public interface IAppRequest : IBaseRequest
     {
@@ -14,5 +16,7 @@
         string CustomEmailConfirmationLiveUrl { get; set; }
         string CustomPasswordResetDevUrl { get; set; }
         string CustomPasswordResetLiveUrl { get; set; }
+        TimeFrame TimeFrame { get; set; }
+        int AccessDuration { get; set; }
     }
 }

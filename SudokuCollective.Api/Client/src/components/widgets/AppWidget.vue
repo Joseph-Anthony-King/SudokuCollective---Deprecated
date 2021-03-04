@@ -102,6 +102,12 @@
               readonly
             ></v-text-field>
             <v-text-field
+              v-model="getAccessPeriod"
+              label="Authorization Token Access Period"
+              prepend-icon="wysiwyg"
+              readonly
+            ></v-text-field>
+            <v-text-field
               v-model="getDateCreated"
               label="Date Created"
               hint="MM/DD/YYYY format"
@@ -356,6 +362,32 @@ export default {
     },
   },
   computed: {
+    getAccessPeriod() {
+      let period;
+      if (this.$data.app.timeFrame === 0) {
+
+        period = this.$data.app.accessDuration === 1 ? "second" : "seconds";
+        
+      } else if (this.$data.app.timeFrame === 1) {
+
+        period = this.$data.app.accessDuration === 1 ? "minute" : "minutes";
+
+      } else if (this.$data.app.timeFrame === 2) {
+
+        period = this.$data.app.accessDuration === 1 ? "hour" : "hours";
+
+      } else if (this.$data.app.timeFrame === 3) {
+
+        period = this.$data.app.accessDuration === 1 ? "day" : "days";
+
+      } else {
+
+        period = this.$data.app.accessDuration === 1 ? "month" : "months";
+      }
+
+      return `Good for ${this.$data.app.accessDuration} ${period}`
+    },
+
     getDateCreated() {
       return convertStringToDateTime(this.$data.app.dateCreated);
     },

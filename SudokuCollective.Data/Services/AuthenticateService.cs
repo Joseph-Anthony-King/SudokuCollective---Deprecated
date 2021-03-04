@@ -64,6 +64,14 @@ namespace SudokuCollective.Data.Services
 
             var app = (App)(await appsRepository.GetByLicense(request.License)).Object;
 
+            if (!app.IsActive)
+            {
+                result.Success = false;
+                result.Message = AppsMessages.AppDeactivatedMessage;
+
+                return result;
+            }
+
             if (!app.PermitCollectiveLogins && !app.Users.Any(ua => ua.UserId == user.Id))
             {
                 result.Success = false;
@@ -133,11 +141,34 @@ namespace SudokuCollective.Data.Services
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            DateTime expirationLimit;
+
+            if (app.TimeFrame == TimeFrame.SECONDS)
+            {
+                expirationLimit = DateTime.UtcNow.AddSeconds(app.AccessDuration);
+            }
+            else if (app.TimeFrame == TimeFrame.MINUTES)
+            {
+                expirationLimit = DateTime.UtcNow.AddMinutes(app.AccessDuration);
+            }
+            else if (app.TimeFrame == TimeFrame.HOURS)
+            {
+                expirationLimit = DateTime.UtcNow.AddHours(app.AccessDuration);
+            }
+            else if (app.TimeFrame == TimeFrame.DAYS)
+            {
+                expirationLimit = DateTime.UtcNow.AddDays(app.AccessDuration);
+            }
+            else
+            {
+                expirationLimit = DateTime.UtcNow.AddMonths(app.AccessDuration);
+            }
+
             var jwtToken = new JwtSecurityToken(
                     tokenManagement.Issuer,
                     tokenManagement.Audience,
                     claim.ToArray(),
-                    expires: DateTime.UtcNow.AddHours(tokenManagement.AccessExpiration),
+                    expires: expirationLimit,
                     signingCredentials: credentials
                 );
 

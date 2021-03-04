@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
 
 namespace SudokuCollective.Core.Models
@@ -10,6 +11,8 @@ namespace SudokuCollective.Core.Models
     {
         #region Fields
         private List<UserApp> _users = new List<UserApp>();
+        private TimeFrame _timeFrame;
+        private int _accessDuration;
         #endregion
 
         #region Properties
@@ -101,6 +104,81 @@ namespace SudokuCollective.Core.Models
                 }
             }
         }
+        public TimeFrame TimeFrame 
+        { 
+            get
+            {
+                return _timeFrame;
+            }
+
+            set
+            {
+                _timeFrame = value;
+
+                if (value == TimeFrame.HOURS && AccessDuration < 23)
+                {
+                    AccessDuration = 23;
+                }
+                else if (value == TimeFrame.DAYS && AccessDuration < 31)
+                {
+                    AccessDuration = 31;
+                }
+                else if (value == TimeFrame.MONTHS && AccessDuration < 12)
+                {
+                    AccessDuration = 12;
+                }
+                else
+                {
+
+                }
+            }
+        }
+        public int AccessDuration 
+        {
+            get
+            {
+                return _accessDuration;
+            }
+            
+            set
+            {
+                if (TimeFrame == TimeFrame.SECONDS)
+                {
+                    if (0 < value || value <= 59)
+                    {
+                        _accessDuration = value;
+                    }
+                }
+                else if (TimeFrame == TimeFrame.MINUTES)
+                {
+                    if (0 < value || value <= 59)
+                    {
+                        _accessDuration = value;
+                    }
+                }
+                else if (TimeFrame == TimeFrame.HOURS)
+                {
+                    if (0 < value || value <= 23)
+                    {
+                        _accessDuration = value;
+                    }
+                }
+                else if (TimeFrame == TimeFrame.DAYS)
+                {
+                    if (0 < value || value <= 31)
+                    {
+                        _accessDuration = value;
+                    }
+                }
+                else
+                {
+                    if (0 < value || value <= 12)
+                    {
+                        _accessDuration = value;
+                    }
+                }
+            }
+        }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public virtual List<UserApp> Users
@@ -116,7 +194,6 @@ namespace SudokuCollective.Core.Models
                 _users = value;
             }
         }
-
         #endregion
 
         #region Constructors
@@ -139,6 +216,8 @@ namespace SudokuCollective.Core.Models
             CustomPasswordResetDevUrl = string.Empty;
             CustomPasswordResetLiveUrl = string.Empty;
             Users = new List<UserApp>();
+            TimeFrame = TimeFrame.DAYS;
+            AccessDuration = 1;
         }
 
         public App(
@@ -173,6 +252,8 @@ namespace SudokuCollective.Core.Models
             string customEmailConfirmationLiveUrl,
             string customPasswordResetDevUrl,
             string customPasswordResetLiveUrl,
+            TimeFrame timeFrame,
+            int accessDuration,
             DateTime dateCreated,
             DateTime dateUpdated)
         {
@@ -191,6 +272,8 @@ namespace SudokuCollective.Core.Models
             CustomEmailConfirmationLiveUrl = customEmailConfirmationLiveUrl;
             CustomPasswordResetDevUrl = customPasswordResetDevUrl;
             CustomPasswordResetLiveUrl = customPasswordResetLiveUrl;
+            TimeFrame = timeFrame;
+            AccessDuration = accessDuration;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
         }
