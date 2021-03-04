@@ -199,6 +199,23 @@
                   class="button-full"
                   color="blue darken-1"
                   text
+                  @click="resetApp"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Edit App
+                </v-btn>
+              </template>
+              <span>Reset your app</span>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text
                   @click="deleteApp"
                   v-bind="attrs"
                   v-on="on"
@@ -262,6 +279,88 @@ export default {
       } catch (error) {
         showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
+    },
+
+    async resetApp() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await appService.resetApp(this.$data.app.id);
+
+              if (response.status === 200) {
+                const appsResponse = await appService.getMyApps();
+
+                if (appsResponse.data.success) {
+                  let myTempArray = [];
+
+                  for (const app of appsResponse.data.apps) {
+                    const myApp = new App(app);
+                    const licenseResponse = await appService.getLicense(
+                      myApp.id
+                    );
+                    if (licenseResponse.data.success) {
+                      myApp.updateLicense(licenseResponse.data.license);
+                    }
+                    if (this.$data.app.id === myApp.id) {
+                      this.$data.app = new App(myApp)
+                    }
+                    myTempArray.push(myApp);
+                  }
+
+                  this.removeApps();
+                  this.updateApps(myTempArray);
+                  this.updateSelectedApp(this.$data.app);
+
+                  showToast(
+                    this,
+                    ToastMethods["success"],
+                    response.data.message.substring(17),
+                    defaultToastOptions()
+                  );
+                }
+              } else if (response.status === 404) {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message,
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to clear all games and reset this app?",
+        actionToastOptions(action, "delete")
+      );
     },
 
     async deleteApp() {

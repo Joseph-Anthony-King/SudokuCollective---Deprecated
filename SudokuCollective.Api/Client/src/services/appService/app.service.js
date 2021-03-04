@@ -212,6 +212,33 @@ const deleteApp = async function (app) {
   }
 }
 
+const resetApp = async function (id) {
+  try {
+    let params = `/${id}/resetapp`;
+
+    const data = {
+      license: license,
+      requestorId: store.getters["settingsModule/getRequestorId"],
+      appId: store.getters["settingsModule/getAppId"],
+      pageListModel: null
+    };
+
+    const config = {
+      method: "delete",
+      url: `${getAppEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(data),
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
 const getTimeFrames = async function () {
   try {
     const config = {
