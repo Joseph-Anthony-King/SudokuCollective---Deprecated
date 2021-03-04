@@ -168,6 +168,7 @@ namespace SudokuCollective.Data.Services
                     tokenManagement.Issuer,
                     tokenManagement.Audience,
                     claim.ToArray(),
+                    notBefore: DateTime.UtcNow,
                     expires: expirationLimit,
                     signingCredentials: credentials
                 );

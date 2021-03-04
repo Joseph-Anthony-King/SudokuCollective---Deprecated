@@ -20,6 +20,7 @@ using SudokuCollective.Data.Services;
 using SudokuCollective.Data.Repositories;
 using SudokuCollective.Api.Models;
 using SudokuCollective.Data.Models.DataModels;
+using System;
 
 namespace SudokuCollective.Api
 {
@@ -71,7 +72,9 @@ namespace SudokuCollective.Api
                     ValidIssuer = token.Issuer,
                     ValidAudience = token.Audience,
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    LifetimeValidator = LifetimeValidator,
                 };
             });
 
@@ -159,6 +162,14 @@ namespace SudokuCollective.Api
             });
 
             SeedData.EnsurePopulated(app, Configuration);
+        }
+        private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
+        {
+            if (expires != null)
+            {
+                return expires > DateTime.UtcNow;
+            }
+            return false;
         }
     }
 }
