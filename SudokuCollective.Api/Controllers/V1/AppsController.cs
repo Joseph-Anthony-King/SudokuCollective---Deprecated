@@ -184,10 +184,11 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/apps/getusers
+        // PUT: api/apps/5/getusers
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost, Route("GetUsers")]
+        [HttpPut, Route("{id}/GetUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
+            int id,
             [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
         {
@@ -198,7 +199,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await appsService
                     .GetAppUsers(
-                        request.AppId,
+                        id,
                         request.RequestorId,
                         request.PageListModel,
                         fullRecord);

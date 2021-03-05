@@ -13,9 +13,15 @@ import {
   getTimeFramesEnpoint
 } from "./service.endpoints";
 
-const getApp = async function (id) {
+const getApp = async function (id, fullRecord) {
   try {
-    let params = `/${id}`;
+    let params;
+    
+    if (fullRecord === undefined) {
+      params = `/${id}/getUsers?fullRecord=false`;
+    } else {
+      params = `/${id}/getUsers?${fullRecord}`;
+    }
 
     const config = {
       method: "post",
@@ -33,8 +39,16 @@ const getApp = async function (id) {
   }
 }
 
-const getByLicense = async function (license) {
+const getByLicense = async function (license, fullRecord) {
   try {
+    let params;
+    
+    if (fullRecord === undefined) {
+      params = "?fullRecord=false";
+    } else {
+      params = `?${fullRecord}`;
+    }
+
     const data = {
       license: license,
       requestorId: store.getters["settingsModule/getRequestorId"],
@@ -44,7 +58,7 @@ const getByLicense = async function (license) {
 
     const config = {
       method: "post",
-      url: `${getByLicenseEnpoint}`,
+      url: `${getByLicenseEnpoint}${params}`,
       headers: requestHeader(),
       data: requestData(data),
     };
@@ -76,9 +90,15 @@ const postLicense = async function (createAppModel) {
   }
 }
 
-const getLicense = async function (id) {
+const getLicense = async function (id, fullRecord) {
   try {
-    let params = `/${id}`;
+    let params;
+    
+    if (fullRecord === undefined) {
+      params = `/${id}/getUsers?fullRecord=false`;
+    } else {
+      params = `/${id}/getUsers?${fullRecord}`;
+    }
 
     const config = {
       method: "get",
@@ -96,11 +116,45 @@ const getLicense = async function (id) {
   }
 }
 
-const getMyApps = async function () {
+const getMyApps = async function (fullRecord) {
   try {
+    let params;
+    
+    if (fullRecord === undefined) {
+      params = "?fullRecord=false";
+    } else {
+      params = `?${fullRecord}`;
+    }
+
     const config = {
       method: "put",
-      url: `${getMyAppsEndpoint}`,
+      url: `${getMyAppsEndpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
+const getAppUsers = async function (id, fullRecord) {
+  try {
+    let params;
+    
+    if (fullRecord === undefined) {
+      params = `/${id}/getUsers?fullRecord=false`;
+    } else {
+      params = `/${id}/getUsers?${fullRecord}`;
+    }
+
+    const config = {
+      method: "put",
+      url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
     };
@@ -261,6 +315,7 @@ export const appService = {
   postLicense,
   getLicense,
   getMyApps,
+  getAppUsers,
   postObtainAdminPrivileges,
   updateApp,
   deleteApp,

@@ -227,19 +227,32 @@ export default {
   async created() {
     this.$data.user = new User(this.getUser);
 
-    const response = await appService.getMyApps();
+    const response = await appService.getMyApps(true);
 
     if (response.data.success) {
       this.removeApps();
       let myTempArray = [];
 
       for (const app of response.data.apps) {
+        /* The api loads users as reference variables thus effecting the 
+           accuracy of the 'isAdmin' field.  As such we need to clear out 
+           and reload the users. */
+        app.users = [];
         const myApp = new App(app);
         const licenseResponse = await appService.getLicense(myApp.id);
         if (licenseResponse.data.success) {
           myApp.updateLicense(licenseResponse.data.license);
         }
         myTempArray.push(myApp);
+      }
+      
+      // Reload the users per app
+      for (const app of myTempArray) {
+        const appUsersResponse = await appService.getAppUsers(app.id, true);
+        appUsersResponse.data.users.forEach((user) => {
+          const tempUser = new User(user);
+          app.users.push(tempUser);
+        });
       }
 
       this.updateApps(myTempArray);
