@@ -11,7 +11,6 @@
           >
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
-            <CreateAppButton v-on:click.native="openCreateAppForm" />
             <v-progress-circular
               indeterminate
               color="primary"
@@ -20,6 +19,7 @@
               v-if="loading === true"
               class="progress-circular"
             ></v-progress-circular>
+            <CreateAppButton v-on:click.native="openCreateAppForm" v-if="loading === false" />
             <span class="no-apps-message" v-if="loading === false && myApps.length === 0"
               >Time to Get Coding!</span
             >
@@ -40,7 +40,8 @@
         <span @click="openingAppWidgets = false" class="material-icons close-hover"> clear </span>
       </v-container>
       <template>
-        <v-tabs>
+        <v-tabs
+          fixed-tabs>
           <v-tab href="#info">
             App Info
           </v-tab>
@@ -245,8 +246,8 @@ export default {
 
       for (const app of response.data.apps) {
         /* The api loads users as reference variables thus effecting the 
-           accuracy of the 'isAdmin' field.  As such we need to clear out 
-           and reload the users. */
+          accuracy of the 'isAdmin' field.  As such we need to clear out 
+          and reload the users. */
         app.users = [];
         const myApp = new App(app);
         const licenseResponse = await appService.getLicense(myApp.id);
@@ -267,6 +268,7 @@ export default {
 
       this.updateApps(myTempArray);
     }
+    
     this.$data.loading = false;
   },
 };
