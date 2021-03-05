@@ -452,20 +452,270 @@ export default {
     ...mapGetters("appModule", ["getSelectedApp"]),
 
     getAccessPeriod() {
-      let period;
-      if (this.$data.app.timeFrame === 0) {
-        period = this.$data.app.accessDuration === 1 ? "second" : "seconds";
-      } else if (this.$data.app.timeFrame === 1) {
-        period = this.$data.app.accessDuration === 1 ? "minute" : "minutes";
-      } else if (this.$data.app.timeFrame === 2) {
-        period = this.$data.app.accessDuration === 1 ? "hour" : "hours";
-      } else if (this.$data.app.timeFrame === 3) {
-        period = this.$data.app.accessDuration === 1 ? "day" : "days";
-      } else {
-        period = this.$data.app.accessDuration === 1 ? "month" : "months";
+      let duration;
+      
+      switch (this.$data.app.accessDuration) {
+        case 1:
+          duration = "one";
+          break;
+
+        case 2:
+          duration = "two";
+          break;
+
+        case 3:
+          duration = "three";
+          break;
+
+        case 4:
+          duration = "four";
+          break;
+
+        case 5:
+          duration = "five";
+          break;
+
+        case 6:
+          duration = "six";
+          break;
+
+        case 7:
+          duration = "seven";
+          break;
+
+        case 8:
+          duration = "eight";
+          break;
+
+        case 9:
+          duration = "nine";
+          break;
+
+        case 10:
+          duration = "ten";
+          break;
+
+        case 11:
+          duration = "eleven";
+          break;
+
+        case 12:
+          duration = "twelve";
+          break;
+
+        case 13:
+          duration = "thirteen";
+          break;
+
+        case 14:
+          duration = "fourteen";
+          break;
+
+        case 15:
+          duration = "fifteen";
+          break;
+
+        case 16:
+          duration = "sixteen";
+          break;
+
+        case 17:
+          duration = "seventeen";
+          break;
+
+        case 18:
+          duration = "eighteen";
+          break;
+
+        case 19:
+          duration = "nineteen";
+          break;
+
+        case 20:
+          duration = "twenty";
+          break;
+
+        case 21:
+          duration = "twenty-one";
+          break;
+
+        case 22:
+          duration = "twenty-two";
+          break;
+
+        case 23:
+          duration = "twenty-three";
+          break;
+
+        case 24:
+          duration = "twenty-four";
+          break;
+
+        case 25:
+          duration = "twenty-five";
+          break;
+
+        case 26:
+          duration = "twenty-six";
+          break;
+
+        case 27:
+          duration = "twenty-seven";
+          break;
+
+        case 28:
+          duration = "twenty-eight";
+          break;
+
+        case 29:
+          duration = "twenty-nine";
+          break;
+
+        case 30:
+          duration = "thirty";
+          break;
+
+        case 31:
+          duration = "thirty-one";
+          break;
+
+        case 32:
+          duration = "thirty-two";
+          break;
+
+        case 33:
+          duration = "thirty-three";
+          break;
+
+        case 34:
+          duration = "thirty-four";
+          break;
+
+        case 35:
+          duration = "thirty-five";
+          break;
+
+        case 36:
+          duration = "thirty-six";
+          break;
+
+        case 37:
+          duration = "thirty-seven";
+          break;
+
+        case 38:
+          duration = "thirty-eight";
+          break;
+
+        case 39:
+          duration = "thirty-nine";
+          break;
+
+        case 40:
+          duration = "fourty";
+          break;
+
+        case 41:
+          duration = "fourty-one";
+          break;
+
+        case 42:
+          duration = "fourty-two";
+          break;
+
+        case 43:
+          duration = "fourty-three";
+          break;
+
+        case 44:
+          duration = "fourty-four";
+          break;
+
+        case 45:
+          duration = "fourty-five";
+          break;
+
+        case 46:
+          duration = "fourty-six";
+          break;
+
+        case 47:
+          duration = "fourty-seven";
+          break;
+
+        case 48:
+          duration = "fourty-eight";
+          break;
+
+        case 49:
+          duration = "fourty-nine";
+          break;
+
+        case 50:
+          duration = "fifty";
+          break;
+
+        case 51:
+          duration = "fifty-one";
+          break;
+
+        case 52:
+          duration = "fifty-two";
+          break;
+
+        case 53:
+          duration = "fifty-three";
+          break;
+
+        case 54:
+          duration = "fifty-four";
+          break;
+
+        case 55:
+          duration = "fifty-five";
+          break;
+
+        case 56:
+          duration = "fifty-six";
+          break;
+
+        case 57:
+          duration = "fifty-seven";
+          break;
+
+        case 58:
+          duration = "fifty-eight";
+          break;
+
+        default:
+          duration = "fifty-nine"
       }
 
-      return `Good for ${this.$data.app.accessDuration} ${period}`;
+      let period;
+
+      switch (this.$data.app.timeFrame) {
+
+        case 0:
+          period = this.$data.app.accessDuration === 1 ? "second" : "seconds";
+          break;
+
+        case 1:
+          period = this.$data.app.accessDuration === 1 ? "minute" : "minutes";
+          break;
+        
+        case 2:
+          period = this.$data.app.accessDuration === 1 ? "hour" : "hours";
+          break;
+        
+        case 3:
+          period = this.$data.app.accessDuration === 1 ? "day" : "days";
+          break;
+        
+        default:
+          period = this.$data.app.accessDuration === 1 ? "month" : "months";
+      }
+
+      return `Good for ${duration} ${period}`;
     },
 
     getDateCreated() {

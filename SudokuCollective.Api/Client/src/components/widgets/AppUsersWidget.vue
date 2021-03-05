@@ -27,6 +27,15 @@
         </a>
       </v-card-title>
       <hr class="title-spacer" />
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
       <v-data-table
         v-model="selectedUsers"
         :headers="adminHeaders"
@@ -34,6 +43,7 @@
         show-select
         class="elevation-1"
         v-if="app.id === 1"
+        :search="search"
         >
       </v-data-table>
       <v-data-table
@@ -43,6 +53,7 @@
         show-select
         class="elevation-1"
         v-if="app.id !== 1"
+        :search="search"
         >
       </v-data-table>
     </v-container>
@@ -58,6 +69,7 @@ export default {
   name: "AppUsersWidget",
   data: () => ({
     app: new App(),
+    search: '',
     selectedUsers: [],
     adminHeaders: [
       {
