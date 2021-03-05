@@ -28,17 +28,29 @@
       </v-card-title>
       <hr class="title-spacer" />
       <v-data-table
+        v-model="selectedUsers"
+        :headers="adminHeaders"
+        :items="app.users"
+        show-select
+        class="elevation-1"
+        v-if="app.id === 1"
+        >
+      </v-data-table>
+      <v-data-table
+        v-model="selectedUsers"
         :headers="headers"
         :items="app.users"
-        :items-per-page="5"
+        show-select
         class="elevation-1"
-      >
+        v-if="app.id !== 1"
+        >
       </v-data-table>
     </v-container>
   </v-card>
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
 import App from "@/models/app";
 import { mapGetters } from "vuex";
 
@@ -46,39 +58,67 @@ export default {
   name: "AppUsersWidget",
   data: () => ({
     app: new App(),
+    selectedUsers: [],
+    adminHeaders: [
+      {
+        text: "App Users",
+        align: "start",
+        sortable: true,
+        value: "userName",
+      },
+      { text: "Id", value: "id" },
+      { text: "First Name", value: "firstName" },
+      { text: "Last Name", value: "lastName" },
+      { text: "Admin", value: "isAdmin" },
+    ],
     headers: [
       {
-        text: 'App Users',
-        align: 'start',
+        text: "App Users",
+        align: "start",
         sortable: true,
-        value: 'userName',
+        value: "userName",
       },
-      { text: 'Id', value: 'id' },
-      { text: 'First Name', value: 'firstName' },
-      { text: 'Last Name', value: 'lastName' },
-      { text: 'Admin', value: 'isAdmin' },
+      { text: "Id", value: "id" },
+      { text: "First Name", value: "firstName" },
+      { text: "Last Name", value: "lastName" },
+      { text: "Game Count", value: "gameCount"},
+      { text: "Admin", value: "isAdmin" },
     ],
   }),
-  methods: {    
-
-    isAdmin(user) {
-      if (user.isAdmin) {
-        return "Yes";
-      } else {
-        return "No"
-      }
-    }
-  },
   computed: {    
     ...mapGetters("appModule", ["getSelectedApp"]),
   },
   watch: {
-    "$store.state.appModule.selectedApp": function () {
-      this.$data.app = new App(this.getSelectedApp);
+    "$store.state.appModule.selectedApp": {
+      handler: function(val, oldVal) {
+        this.$data.app = new App(this.getSelectedApp);
+
+        this.$data.app.users.forEach((user) => {
+          if (user.isAdmin === true) {
+            user.isAdmin = "Yes";
+          } else {
+            user.isAdmin = "No";
+          }
+        });
+      }
+    },
+    "selectedUsers": {
+      handler: function(val, oldVal) {
+        console.log("old value:", oldVal);
+        console.log("new value:", val);
+      }
     },
   },
   created() {
     this.$data.app = new App(this.getSelectedApp);
+
+    this.$data.app.users.forEach((user) => {
+      if (user.isAdmin === true) {
+        user.isAdmin = "Yes";
+      } else {
+        user.isAdmin = "No";
+      }
+    });
   },
 }
 </script>

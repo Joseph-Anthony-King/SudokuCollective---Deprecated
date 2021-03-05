@@ -90,15 +90,9 @@ const postLicense = async function (createAppModel) {
   }
 }
 
-const getLicense = async function (id, fullRecord) {
+const getLicense = async function (id) {
   try {
-    let params;
-    
-    if (fullRecord === undefined) {
-      params = `/${id}/getUsers?fullRecord=false`;
-    } else {
-      params = `/${id}/getUsers?${fullRecord}`;
-    }
+    let params =`/${id}`;
 
     const config = {
       method: "get",

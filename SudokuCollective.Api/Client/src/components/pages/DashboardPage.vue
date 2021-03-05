@@ -12,7 +12,15 @@
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
             <CreateAppButton v-on:click.native="openCreateAppForm" />
-            <span class="no-apps-message" v-if="myApps.length === 0"
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              :size="100"
+              :width="10"
+              v-if="loading === true"
+              class="progress-circular"
+            ></v-progress-circular>
+            <span class="no-apps-message" v-if="loading === false && myApps.length === 0"
               >Time to Get Coding!</span
             >
             <SelectAppButton
@@ -142,6 +150,7 @@ export default {
     user: new User(),
     app: new App(),
     myApps: [],
+    loading: false,
     creatingApp: false,
     editingApp: false,
     openingAppWidgets: false,
@@ -225,6 +234,7 @@ export default {
     }
   },
   async created() {
+    this.$data.loading = true;
     this.$data.user = new User(this.getUser);
 
     const response = await appService.getMyApps(true);
@@ -257,6 +267,7 @@ export default {
 
       this.updateApps(myTempArray);
     }
+    this.$data.loading = false;
   },
 };
 </script>

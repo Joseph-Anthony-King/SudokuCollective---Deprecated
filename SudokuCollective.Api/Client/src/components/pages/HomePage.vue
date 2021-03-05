@@ -6,6 +6,7 @@
         color="primary"
         :size="100"
         :width="10"
+        class="progress-circular"
       ></v-progress-circular>
     </div>
     <v-card elevation="6" class="mx-auto" v-if="app.name !== ''">

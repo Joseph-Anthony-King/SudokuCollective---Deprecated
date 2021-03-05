@@ -98,7 +98,11 @@ import { appService } from "@/services/appService/app.service";
 import CreateAppModel from "@/models/viewModels/createAppModel";
 import App from "@/models/app";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
+import { 
+  showToast,
+  defaultToastOptions,
+  actionToastOptions,
+} from "@/helpers/toastHelper";
 
 export default {
   name: "CreateAppForm",
@@ -112,59 +116,81 @@ export default {
   methods: {
     ...mapActions("appModule", ["updateApps", "removeApps"]),
 
-    async submit() {
+    submit() {
       if (this.getCreateAppFormIsValid) {
-        try {
-          const response = await appService.postLicense(
-            new CreateAppModel(
-              this.$data.name,
-              this.$data.devUrl,
-              this.$data.liveUrl
-            )
-          );
+        const action = [
+          {
+            text: "Yes",
+            onClick: async (e, toastObject) => {
+              toastObject.goAway(0);
 
-          if (response.status === 201) {
+              try {
+                const response = await appService.postLicense(
+                  new CreateAppModel(
+                    this.$data.name,
+                    this.$data.devUrl,
+                    this.$data.liveUrl
+                  )
+                );
 
-            const appsResponse = await appService.getMyApps();
+                if (response.status === 201) {
 
-            if (appsResponse.data.success) {
-              let myTempArray = [];
+                  const appsResponse = await appService.getMyApps();
 
-              for (const app of appsResponse.data.apps) {
-                const myApp = new App(app);
-                const licenseResponse = await appService.getLicense(myApp.id);
-                if (licenseResponse.data.success) {
-                  myApp.updateLicense(licenseResponse.data.license);
+                  if (appsResponse.data.success) {
+                    let myTempArray = [];
+
+                    for (const app of appsResponse.data.apps) {
+                      const myApp = new App(app);
+                      const licenseResponse = await appService.getLicense(myApp.id);
+                      if (licenseResponse.data.success) {
+                        myApp.updateLicense(licenseResponse.data.license);
+                      }
+                      myTempArray.push(myApp);
+                    }
+
+                    this.removeApps();
+                    
+                    this.updateApps(myTempArray);
+                  }
+
+                  this.reset();
+
+                  this.$emit("app-created-event", response.data.app.id, null);
+                } else if (response.status === 404) {
+                  showToast(
+                    this,
+                    ToastMethods["error"],
+                    response.data.message.substring(17),
+                    defaultToastOptions()
+                  );
+                } else {
+                  showToast(
+                    this,
+                    ToastMethods["error"],
+                    response.data.message,
+                    defaultToastOptions()
+                  );
                 }
-                myTempArray.push(myApp);
+              } catch (error) {
+                showToast(this, ToastMethods["error"], error, defaultToastOptions());
               }
+            },
+          },
+          {
+            text: "No",
+            onClick: (e, toastObject) => {
+              toastObject.goAway(0);
+            },
+          },
+        ];
 
-              this.removeApps();
-              
-              this.updateApps(myTempArray);
-            }
-
-            this.reset();
-
-            this.$emit("app-created-event", response.data.app.id, null);
-          } else if (response.status === 404) {
-            showToast(
-              this,
-              ToastMethods["error"],
-              response.data.message.substring(17),
-              defaultToastOptions()
-            );
-          } else {
-            showToast(
-              this,
-              ToastMethods["error"],
-              response.data.message,
-              defaultToastOptions()
-            );
-          }
-        } catch (error) {
-          showToast(this, ToastMethods["error"], error, defaultToastOptions());
-        }
+        showToast(
+          this,
+          ToastMethods["show"],
+          "Are you sure you want to create this app?",
+          actionToastOptions(action, "mode_edit")
+        );
       }
     },
 

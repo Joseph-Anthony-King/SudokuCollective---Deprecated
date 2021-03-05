@@ -24,3 +24,9 @@
   color: #666666 !important;
   cursor: pointer;
 }
+
+.progress-circular {
+  display: block;
+  width: 100px;
+  margin: auto;
+}
