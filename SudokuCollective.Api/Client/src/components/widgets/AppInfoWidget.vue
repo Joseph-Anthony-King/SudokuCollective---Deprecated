@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="6">
+  <v-card>
     <v-card-text>
       <v-container fluid>
         <v-card-title
@@ -232,11 +232,6 @@
 </template>
 
 <style scoped>
-.app-card-title {
-  text-decoration: none !important;
-  color: #666666;
-  cursor: pointer;
-}
 .close-hover:hover {
   cursor: pointer;
 }
@@ -244,6 +239,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import App from "@/models/app";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -452,6 +448,8 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("appModule", ["getSelectedApp"]),
+
     getAccessPeriod() {
       let period;
       if (this.$data.app.timeFrame === 0) {
@@ -486,11 +484,11 @@ export default {
   },
   watch: {
     "$store.state.appModule.selectedApp": function () {
-      this.$data.app = new App(this.$store.getters["appModule/getSelectedApp"]);
+      this.$data.app = new App(this.getSelectedApp);
     },
   },
   created() {
-    this.$data.app = new App(this.$store.getters["appModule/getSelectedApp"]);
+    this.$data.app = new App(this.getSelectedApp);
   },
 };
 </script>

@@ -18,3 +18,9 @@
   margin-right: 10px;
   margin-bottom: 30px;;
 }
+
+.app-card-title {
+  text-decoration: none !important;
+  color: #666666 !important;
+  cursor: pointer;
+}

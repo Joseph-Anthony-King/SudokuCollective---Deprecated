@@ -47,9 +47,7 @@
             App Users
           </v-tab>
           <v-tab-item value="users">
-            <v-card-text>
-              <v-card-title class="justify-center">App Users Widget Placeholder...</v-card-title>
-            </v-card-text>
+            <AppUsersWidget />
           </v-tab-item>
 
           <v-tab href="#others">
@@ -121,6 +119,7 @@ import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
 import EditAppForm from "@/components/forms/EditAppForm";
 import AppInfoWidget from "@/components/widgets/AppInfoWidget";
+import AppUsersWidget from "@/components/widgets/AppUsersWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
 import { appService } from "@/services/appService/app.service";
@@ -135,6 +134,7 @@ export default {
     CreateAppForm,
     EditAppForm,
     AppInfoWidget,
+    AppUsersWidget,
     CreateAppButton,
     SelectAppButton,
   },
