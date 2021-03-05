@@ -37,7 +37,7 @@
     <div class="card-spacer"></div>
     <v-card elevation="6" v-if="openingAppWidgets">
       <v-container>        
-        <span @click="openingAppWidgets = false" class="material-icons close-hover"> clear </span>
+        <span @click="closeAppWidgets" class="material-icons close-hover"> clear </span>
       </v-container>
       <template>
         <v-tabs
@@ -197,13 +197,14 @@ export default {
 
     openAppWidgets(id) {
       this.$data.openingAppWidgets = true;
-      const app = this.getAppById(id);
-      this.updateSelectedApp(app);
+      this.$data.app = this.getAppById(id);
+      this.updateSelectedApp(this.$data.app);
     },
 
     closeAppWidgets() {
-      this.$data.app = new App();
       this.$data.openingAppWidgets = false;
+      this.$data.app = new App();
+      this.updateSelectedApp(this.$data.app);
     },
 
     appCreatedEvent(id) {
@@ -219,7 +220,10 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
-    ...mapGetters("appModule", ["getAppById", "getApps"]),
+    ...mapGetters("appModule", [
+      "getAppById", 
+      "getApps",
+      "getSelectedApp"]),
   },
   watch: {
     "$store.state.settingsModule.user": {
@@ -238,35 +242,53 @@ export default {
     this.$data.loading = true;
     this.$data.user = new User(this.getUser);
 
-    const response = await appService.getMyApps(true);
+    const selectedApp = this.getSelectedApp;
 
-    if (response.data.success) {
-      this.removeApps();
-      let myTempArray = [];
+    if (selectedApp.id !== 0) {
+      this.openAppWidgets(selectedApp.id);
+    }
 
-      for (const app of response.data.apps) {
-        /* The api loads users as reference variables thus effecting the 
-          accuracy of the 'isAdmin' field.  As such we need to clear out 
-          and reload the users. */
-        app.users = [];
-        const myApp = new App(app);
-        const licenseResponse = await appService.getLicense(myApp.id);
-        if (licenseResponse.data.success) {
-          myApp.updateLicense(licenseResponse.data.license);
+    const storeApps = this.getApps;
+    
+    if (storeApps.length === 0) {
+
+      const response = await appService.getMyApps(true);
+
+      if (response.data.success) {
+        this.removeApps();
+        let myTempArray = [];
+
+        for (const app of response.data.apps) {
+          /* The api loads users as reference variables thus effecting the 
+            accuracy of the 'isAdmin' field.  As such we need to clear out 
+            and reload the users. */
+          app.users = [];
+          const myApp = new App(app);
+          const licenseResponse = await appService.getLicense(myApp.id);
+          if (licenseResponse.data.success) {
+            myApp.updateLicense(licenseResponse.data.license);
+          }
+          myTempArray.push(myApp);
         }
-        myTempArray.push(myApp);
-      }
-      
-      // Reload the users per app
-      for (const app of myTempArray) {
-        const appUsersResponse = await appService.getAppUsers(app.id, true);
-        appUsersResponse.data.users.forEach((user) => {
-          const tempUser = new User(user);
-          app.users.push(tempUser);
-        });
+        
+        // Reload the users per app
+        for (const app of myTempArray) {
+          const appUsersResponse = await appService.getAppUsers(app.id, true);
+          appUsersResponse.data.users.forEach((user) => {
+            const tempUser = new User(user);
+            app.users.push(tempUser);
+          });
+        }
+
+        this.updateApps(myTempArray);
       }
 
-      this.updateApps(myTempArray);
+    } else {
+      
+      storeApps.forEach((store) => {
+
+        this.$data.myApps.push(store);
+      });
     }
     
     this.$data.loading = false;

@@ -197,22 +197,12 @@ const putCancelAllEmailRequests = async function () {
 };
 
 const loginUser = function (user, token) {
-  user.login();
-
-  store.dispatch("settingsModule/updateUser", user);
-  store.dispatch("settingsModule/updateAuthToken", token);
-
+  user.login(token);
   return user;
 };
 
 const logoutUser = function (user) {
   user.logout();
-
-  user = new User();
-
-  store.dispatch("settingsModule/updateUser", user);
-  store.dispatch("settingsModule/updateAuthToken", "");
-
   return user;
 };
 

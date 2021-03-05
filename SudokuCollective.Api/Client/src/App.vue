@@ -145,9 +145,9 @@ export default {
           onClick: (e, toastObject) => {
             toastObject.goAway(0);
 
-            this.$data.user = new User();
-            this.updateUser(this.$data.user);
-            this.updateAuthToken("");
+            const user = new User(this.$data.user);
+
+            user.logout();
 
             if (this.$router.currentRoute.path !== "/") {
               this.$router.push("/");
