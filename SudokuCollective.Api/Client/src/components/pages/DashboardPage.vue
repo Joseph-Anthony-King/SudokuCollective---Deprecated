@@ -27,11 +27,42 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
-    <AppWidget
-      v-if="openingAppWidget"
-      v-on:close-app-widget-event="closeAppWidget"
-      v-on:open-edit-app-dialog-event="openEditAppForm"
-    />
+    <v-card elevation="6" v-if="openingAppWidgets">
+      <v-container>        
+        <span @click="openingAppWidgets = false" class="material-icons close-hover"> clear </span>
+      </v-container>
+      <template>
+        <v-tabs>
+          <v-tab href="#info">
+            App Info
+          </v-tab>
+          <v-tab-item value="info">
+            <AppWidget
+              v-on:close-app-widget-event="closeAppWidget"
+              v-on:open-edit-app-dialog-event="openEditAppForm"
+            />
+          </v-tab-item>
+
+          <v-tab href="#users">
+            App Users
+          </v-tab>
+          <v-tab-item value="users">
+            <v-card-text>
+              <v-card-title class="justify-center">App Users Widget Placeholder...</v-card-title>
+            </v-card-text>
+          </v-tab-item>
+
+          <v-tab href="#others">
+            Non-App Users
+          </v-tab>
+          <v-tab-item value="others">
+            <v-card-text>
+              <v-card-title class="justify-center">Non-App Users Widget Placeholder...</v-card-title>
+            </v-card-text>
+          </v-tab-item>
+        </v-tabs>
+      </template>
+    </v-card>
 
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
@@ -78,6 +109,9 @@
   display: flex;
   overflow-x: auto;
 }
+.close-hover:hover {
+  cursor: pointer;
+}
 </style>
 
 <script>
@@ -111,6 +145,7 @@ export default {
     creatingApp: false,
     editingApp: false,
     openingAppWidget: false,
+    openingAppWidgets: false,
   }),
   methods: {
     ...mapActions("appModule", [
@@ -153,6 +188,7 @@ export default {
 
     openAppWidget(id) {
       this.$data.openingAppWidget = true;
+      this.$data.openingAppWidgets = true;
       const app = this.getAppById(id);
       this.updateSelectedApp(app);
     },

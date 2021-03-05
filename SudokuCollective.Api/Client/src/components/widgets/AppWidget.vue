@@ -2,7 +2,6 @@
   <v-card elevation="6">
     <v-card-text>
       <v-container fluid>
-        <span @click="close" class="material-icons close-hover"> clear </span>
         <v-card-title
           class="justify-center"
           v-if="

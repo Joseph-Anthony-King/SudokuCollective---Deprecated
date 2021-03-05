@@ -1786,7 +1786,7 @@ namespace SudokuCollective.Data.Services
                         var app = (App)appResult.Object;
                         var user = (User)userResult.Object;
 
-                        if (await appsRepository.IsUserRegisteredToApp(
+                        if (!await appsRepository.IsUserRegisteredToApp(
                             app.Id, 
                             app.License, 
                             user.Id))
