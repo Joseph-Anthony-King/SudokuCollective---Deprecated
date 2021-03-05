@@ -20,7 +20,7 @@
               :app="myApp"
               :key="index"
               :index="index"
-              v-on:click.native="openAppWidget(myApp.id)"
+              v-on:click.native="openAppWidgets(myApp.id)"
             />
           </div>
         </v-container>
@@ -37,8 +37,8 @@
             App Info
           </v-tab>
           <v-tab-item value="info">
-            <AppWidget
-              v-on:close-app-widget-event="closeAppWidget"
+            <AppInfoWidget
+              v-on:close-app-widget-event="closeAppWidgets"
               v-on:open-edit-app-dialog-event="openEditAppForm"
             />
           </v-tab-item>
@@ -120,7 +120,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
 import EditAppForm from "@/components/forms/EditAppForm";
-import AppWidget from "@/components/widgets/AppWidget";
+import AppInfoWidget from "@/components/widgets/AppInfoWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
 import { appService } from "@/services/appService/app.service";
@@ -134,7 +134,7 @@ export default {
   components: {
     CreateAppForm,
     EditAppForm,
-    AppWidget,
+    AppInfoWidget,
     CreateAppButton,
     SelectAppButton,
   },
@@ -144,7 +144,6 @@ export default {
     myApps: [],
     creatingApp: false,
     editingApp: false,
-    openingAppWidget: false,
     openingAppWidgets: false,
   }),
   methods: {
@@ -186,21 +185,20 @@ export default {
       this.$data.editingApp = false;
     },
 
-    openAppWidget(id) {
-      this.$data.openingAppWidget = true;
+    openAppWidgets(id) {
       this.$data.openingAppWidgets = true;
       const app = this.getAppById(id);
       this.updateSelectedApp(app);
     },
 
-    closeAppWidget() {
+    closeAppWidgets() {
       this.$data.app = new App();
-      this.$data.openingAppWidget = false;
+      this.$data.openingAppWidgets = false;
     },
 
     appCreatedEvent(id) {
       this.$data.creatingApp = false;
-      this.openAppWidget(id);
+      this.openAppWidgets(id);
       showToast(
         this,
         ToastMethods["success"],

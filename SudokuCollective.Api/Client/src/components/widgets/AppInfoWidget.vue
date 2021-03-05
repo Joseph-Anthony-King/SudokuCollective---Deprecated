@@ -255,7 +255,7 @@ import {
 import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
-  name: "AppWidget",
+  name: "AppInfoWidget",
   data: () => ({
     app: new App(),
   }),
