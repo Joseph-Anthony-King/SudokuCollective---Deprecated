@@ -123,7 +123,7 @@
       <v-card-actions>
         <v-container>
           <v-row dense>
-            <v-col v-if="!user.isAdmin">
+            <v-col v-if="!user.isAdmin && user.emailConfirmed">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn

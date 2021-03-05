@@ -120,7 +120,23 @@ export default {
     ]),
 
     openCreateAppForm() {
-      this.$data.creatingApp = true;
+      if (!this.$data.user.isAdmin) {
+        showToast(
+          this,
+          ToastMethods["error"],
+          "You don't have admin privileges, please review your user profile",
+          defaultToastOptions()
+        );
+      } else if (!this.$data.user.emailConfirmed) {
+        showToast(
+          this,
+          ToastMethods["error"],
+          `Please review ${this.$data.user.email} and confirm your email`,
+          defaultToastOptions()
+        );
+      } else {
+        this.$data.creatingApp = true;
+      }
     },
 
     closeCreateAppForm() {

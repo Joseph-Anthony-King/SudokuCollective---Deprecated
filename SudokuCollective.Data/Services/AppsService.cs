@@ -1786,6 +1786,14 @@ namespace SudokuCollective.Data.Services
                         var app = (App)appResult.Object;
                         var user = (User)userResult.Object;
 
+                        if (await appsRepository.IsUserRegisteredToApp(
+                            app.Id, 
+                            app.License, 
+                            user.Id))
+                        {
+                            _ = await appsRepository.AddAppUser(user.Id, app.License);
+                        }
+
                         if (await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
                         {
                             result.Success = appResult.Success;
@@ -2096,12 +2104,21 @@ namespace SudokuCollective.Data.Services
                 {
                     var requestor = (User)(await usersRepository.GetById(userId, true)).Object;
                     var validLicense = await appsRepository.IsAppLicenseValid(license);
-                    var requestorRegisteredToApp = await appsRepository.IsUserRegisteredToApp(id, license, userId);
+                    var app = (App)(await appsRepository.GetByLicense(license)).Object;
+                    bool userPermittedAccess;
 
-                    if (requestorRegisteredToApp && validLicense)
+                    if (!app.PermitCollectiveLogins)
                     {
-                        var app = (App)(await appsRepository.GetByLicense(license)).Object;
+                        userPermittedAccess = await appsRepository
+                            .IsUserRegisteredToApp(id, license, userId);
+                    }
+                    else
+                    {
+                        userPermittedAccess = true;
+                    }
 
+                    if (userPermittedAccess && validLicense)
+                    {
                         if (app.IsActive)
                         {
                             return true;

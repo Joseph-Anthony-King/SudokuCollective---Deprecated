@@ -216,28 +216,6 @@ const logoutUser = function (user) {
   return user;
 };
 
-const assignAPIReponseToUser = function (data) {
-  let user = store.getters["settingsModule/getUser"];
-
-  user.id = data.id;
-  user.userName = data.userName;
-  user.firstName = data.firstName;
-  user.lastName = data.lastName;
-  user.nickName = data.nickName;
-  user.fullName = data.fullName;
-  user.email = data.email;
-  user.emailConfirmed = data.emailConfirmed;
-  user.receivedRequestToUpdateEmail = data.receivedRequestToUpdateEmail;
-  user.receivedRequestToUpdatePassword = data.receivedRequestToUpdatePassword;
-  user.isActive = data.isActive;
-  user.isAdmin = data.isAdmin;
-  user.isSuperUser = data.isSuperUser;
-  user.dateCreated = data.dateCreated;
-  user.dateUpdated = data.dateUpdated;
-
-  return user;
-};
-
 export const userService = {
   getUser,
   getUsers,
@@ -249,5 +227,4 @@ export const userService = {
   putCancelAllEmailRequests,
   loginUser,
   logoutUser,
-  assignAPIReponseToUser,
 };
