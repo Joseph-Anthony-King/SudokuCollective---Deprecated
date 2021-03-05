@@ -88,6 +88,7 @@
             ></v-text-field>
             <v-text-field
               v-model="app.gameCount"
+              v-if="app.id !== 1"
               label="Game Count"
               prepend-icon="wysiwyg"
               readonly
