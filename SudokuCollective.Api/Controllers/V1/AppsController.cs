@@ -35,7 +35,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.GetApp(id, fullRecord);
+                var result = await appsService.GetApp(id, request.RequestorId, fullRecord);
 
                 if (result.Success)
                 {
@@ -64,7 +64,7 @@ namespace SudokuCollective.Api.V1.Controllers
             [FromQuery] bool fullRecord = true)
         {
             var result = await appsService
-                .GetAppByLicense(request.License, fullRecord);
+                .GetAppByLicense(request.License, request.RequestorId, fullRecord);
 
             if (result.Success)
             {
@@ -93,7 +93,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId))
             {
                 var result = await appsService
-                    .GetApps(request.PageListModel, fullRecord);
+                    .GetApps(request.PageListModel, request.RequestorId, fullRecord);
 
                 if (result.Success)
                 {

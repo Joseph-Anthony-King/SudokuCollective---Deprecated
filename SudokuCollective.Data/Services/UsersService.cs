@@ -536,7 +536,9 @@ namespace SudokuCollective.Data.Services
                         // Filter out user emails from the frontend...
                         foreach (var user in result.Users)
                         {
+                            var emailConfirmed = user.EmailConfirmed;
                             user.Email = null;
+                            user.EmailConfirmed = emailConfirmed;
                         }
                     }
 

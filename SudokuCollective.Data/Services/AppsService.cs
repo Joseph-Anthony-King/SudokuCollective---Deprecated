@@ -40,7 +40,10 @@ namespace SudokuCollective.Data.Services
         #endregion
 
         #region Methods
-        public async Task<IAppResult> GetApp(int id, bool fullRecord = true)
+        public async Task<IAppResult> GetApp(
+            int id, 
+            int requestorId,
+            bool fullRecord = true)
         {
             var result = new AppResult();
 
@@ -63,9 +66,6 @@ namespace SudokuCollective.Data.Services
 
                             foreach (var userApp in app.Users)
                             {
-                                userApp.App = null;
-                                userApp.User.Apps = new List<UserApp>();
-
                                 if (app.Id != 1 && userApp
                                     .User
                                     .Roles
@@ -114,6 +114,25 @@ namespace SudokuCollective.Data.Services
                                     }
                                 }
                             }
+
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.App = null;
+                                userApp.User.Apps = new List<UserApp>();
+                            }
+                        }
+
+                        var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
+
+                        if (!requestor.IsSuperUser)
+                        {
+                            // Filter out user emails from the frontend...
+                            foreach (var userApp in app.Users)
+                            {
+                                var emailConfirmed = userApp.User.EmailConfirmed;
+                                userApp.User.Email = null;
+                                userApp.User.EmailConfirmed = emailConfirmed;
+                            }
                         }
 
                         result.Success = response.Success;
@@ -154,7 +173,10 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IAppResult> GetAppByLicense(string license, bool fullRecord = true)
+        public async Task<IAppResult> GetAppByLicense(
+            string license, 
+            int requestorId,
+            bool fullRecord = true)
         {
             var result = new AppResult();
 
@@ -177,9 +199,6 @@ namespace SudokuCollective.Data.Services
 
                             foreach (var userApp in app.Users)
                             {
-                                userApp.App = null;
-                                userApp.User.Apps = new List<UserApp>();
-
                                 if (app.Id != 1 && userApp
                                     .User
                                     .Roles
@@ -227,6 +246,25 @@ namespace SudokuCollective.Data.Services
                                         }
                                     }
                                 }
+                            }
+
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.App = null;
+                                userApp.User.Apps = new List<UserApp>();
+                            }
+                        }
+
+                        var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
+
+                        if (!requestor.IsSuperUser)
+                        {
+                            // Filter out user emails from the frontend...
+                            foreach (var userApp in app.Users)
+                            {
+                                var emailConfirmed = userApp.User.EmailConfirmed;
+                                userApp.User.Email = null;
+                                userApp.User.EmailConfirmed = emailConfirmed;
                             }
                         }
 
@@ -270,6 +308,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAppsResult> GetApps(
             IPageListModel pageListModel,
+            int requestorId,
             bool fullRecord = true)
         {
             var result = new AppsResult();
@@ -494,9 +533,6 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var userApp in app.Users)
                             {
-                                userApp.App = null;
-                                userApp.User.Apps = new List<UserApp>();
-
                                 if (app.Id != 1 && userApp
                                     .User
                                     .Roles
@@ -543,6 +579,25 @@ namespace SudokuCollective.Data.Services
                                             }
                                         }
                                     }
+                                }
+                            }
+
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.App = null;
+                                userApp.User.Apps = new List<UserApp>();
+                            }
+
+                            var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
+
+                            if (!requestor.IsSuperUser)
+                            {
+                                // Filter out user emails from the frontend...
+                                foreach (var userApp in app.Users)
+                                {
+                                    var emailConfirmed = userApp.User.EmailConfirmed;
+                                    userApp.User.Email = null;
+                                    userApp.User.EmailConfirmed = emailConfirmed;
                                 }
                             }
                         }
@@ -820,9 +875,6 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var userApp in app.Users)
                             {
-                                userApp.App = null;
-                                userApp.User.Apps = new List<UserApp>();
-
                                 if (app.Id != 1 && userApp
                                     .User
                                     .Roles
@@ -869,6 +921,25 @@ namespace SudokuCollective.Data.Services
                                             }
                                         }
                                     }
+                                }
+                            }
+
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.App = null;
+                                userApp.User.Apps = new List<UserApp>();
+                            }
+
+                            var requestor = (User)(await usersRepository.GetById(ownerId)).Object;
+
+                            if (!requestor.IsSuperUser)
+                            {
+                                // Filter out user emails from the frontend...
+                                foreach (var userApp in app.Users)
+                                {
+                                    var emailConfirmed = userApp.User.EmailConfirmed;
+                                    userApp.User.Email = null;
+                                    userApp.User.EmailConfirmed = emailConfirmed;
                                 }
                             }
                         }
@@ -1146,9 +1217,6 @@ namespace SudokuCollective.Data.Services
                             {
                                 foreach (var userApp in user.Apps)
                                 {
-                                    userApp.App = null;
-                                    userApp.User.Apps = new List<UserApp>();
-
                                     if (id != 1 && userApp
                                         .User
                                         .Roles
@@ -1198,6 +1266,12 @@ namespace SudokuCollective.Data.Services
                                     }
                                 }
 
+                                foreach (var userApp in user.Apps)
+                                {
+                                    userApp.App = null;
+                                    userApp.User.Apps = new List<UserApp>();
+                                }
+
                                 foreach (var userRole in user.Roles)
                                 {
                                     userRole.Role.Users = new List<UserRole>();
@@ -1218,7 +1292,9 @@ namespace SudokuCollective.Data.Services
                             // Filter out user emails from the frontend...
                             foreach (var user in result.Users)
                             {
+                                var emailConfirmed = user.EmailConfirmed;
                                 user.Email = null;
+                                user.EmailConfirmed = emailConfirmed;
                             }
                         }
 

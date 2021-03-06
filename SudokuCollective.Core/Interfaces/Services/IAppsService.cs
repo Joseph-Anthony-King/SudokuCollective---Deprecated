@@ -7,11 +7,11 @@ namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface IAppsService : IService
     {
-        Task<IAppResult> GetApp(int id, bool fullRecord = true);
-        Task<IAppsResult> GetApps(IPageListModel pageListModel, bool fullRecord = true);
+        Task<IAppResult> GetApp(int id, int requestorId, bool fullRecord = true);
+        Task<IAppsResult> GetApps(IPageListModel pageListModel, int requestorId, bool fullRecord = true);
         Task<IAppsResult> GetMyApps(int ownerId, IPageListModel pageListModel, bool fullRecord = true);
         Task<IAppResult> CreateApp(ILicenseRequest request);
-        Task<IAppResult> GetAppByLicense(string license, bool fullRecord = true);
+        Task<IAppResult> GetAppByLicense(string license, int requestorId, bool fullRecord = true);
         Task<ILicenseResult> GetLicense(int id);
         Task<IUsersResult> GetAppUsers(int id, int requestorId, IPageListModel pageListModel, bool fullRecord = true);
         Task<IAppResult> UpdateApp(int id, IAppRequest request);
