@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { 
   UPDATE_SELECTED_APP, 
   UPDATE_APPS,
@@ -25,16 +26,9 @@ const appModule = {
     [REMOVE_APPS](state) {
       state.apps = [];
     },
-    [REPLACE_APP](state, updatedApp) {
-      let a;
-      for (let app of state.apps) {
-        if (app.id === updatedApp.id) {
-          a = app;
-        }
-      }
-      const index = state.apps.indexOf(a);
-      state.apps.splice(index, 1);
-      state.apps.push(updatedApp);
+    [REPLACE_APP](state, app) {
+      const index = _.findIndex(state.apps, { id: app.id })
+      state.apps.splice(index, 1, app);
     },
   },
 

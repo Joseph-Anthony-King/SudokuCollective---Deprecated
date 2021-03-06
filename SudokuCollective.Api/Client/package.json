@@ -11,6 +11,8 @@
   "dependencies": {
     "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
+    "clean": "^4.0.2",
+    "lodash": "^4.17.21",
     "vue": "^2.6.12",
     "vue-router": "^3.4.7",
     "vue-toasted": "^1.1.28",
