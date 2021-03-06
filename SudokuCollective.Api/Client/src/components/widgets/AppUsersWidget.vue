@@ -64,6 +64,7 @@
 /* eslint-disable no-unused-vars */
 import App from "@/models/app";
 import { mapGetters } from "vuex";
+import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions"
 
 export default {
   name: "AppUsersWidget",
@@ -82,6 +83,7 @@ export default {
       { text: "First Name", value: "firstName" },
       { text: "Last Name", value: "lastName" },
       { text: "Admin", value: "isAdmin" },
+      { text: "Signed Up Date", value: "signedUpDate" },
     ],
     headers: [
       {
@@ -95,6 +97,7 @@ export default {
       { text: "Last Name", value: "lastName" },
       { text: "Game Count", value: "gameCount"},
       { text: "Admin", value: "isAdmin" },
+      { text: "Signed Up Date", value: "signedUpDate" },
     ],
   }),
   computed: {    
@@ -111,6 +114,8 @@ export default {
           } else {
             user.isAdmin = "No";
           }
+
+          user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
         });
       }
     },
@@ -130,6 +135,8 @@ export default {
       } else {
         user.isAdmin = "No";
       }
+
+      user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
     });
   },
 }
