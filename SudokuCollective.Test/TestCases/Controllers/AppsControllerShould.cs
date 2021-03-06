@@ -194,7 +194,10 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.GetUsers(baseRequest, true);
+            var result = sutSuccess.GetUsers(
+                1,
+                baseRequest, 
+                true);
             var message = ((UsersResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var users = ((UsersResult)((OkObjectResult)result.Result.Result).Value).Users;
@@ -213,7 +216,10 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.GetUsers(baseRequest, true);
+            var result = sutFailure.GetUsers(
+                1,
+                baseRequest, 
+                true);
             var message = ((UsersResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -379,7 +385,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var messageThree = ((BadRequestObjectResult)resultThree.Result).Value;
             var statusCodeThree = ((BadRequestObjectResult)resultThree.Result).StatusCode;
 
-            var resultFour = sutInvalid.GetUsers(baseRequest, true);
+            var resultFour = sutInvalid.GetUsers(1, baseRequest, true);
             var messageFour = ((BadRequestObjectResult)resultFour.Result.Result).Value;
             var statusCodeFour = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
