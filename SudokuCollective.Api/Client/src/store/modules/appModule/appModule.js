@@ -34,7 +34,7 @@ const appModule = {
       }
       const index = state.apps.indexOf(a);
       state.apps.splice(index, 1);
-      state.apps.push(updatedApp)
+      state.apps.push(updatedApp);
     },
   },
 

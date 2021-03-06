@@ -18,9 +18,9 @@ const getApp = async function (id, fullRecord) {
     let params;
     
     if (fullRecord === undefined) {
-      params = `/${id}/getUsers?fullRecord=false`;
+      params = `/${id}?fullRecord=false`;
     } else {
-      params = `/${id}/getUsers?${fullRecord}`;
+      params = `/${id}?fullRecord=${fullRecord}`;
     }
 
     const config = {
@@ -46,7 +46,7 @@ const getByLicense = async function (license, fullRecord) {
     if (fullRecord === undefined) {
       params = "?fullRecord=false";
     } else {
-      params = `?${fullRecord}`;
+      params = `?fullRecord=${fullRecord}`;
     }
 
     const data = {
@@ -117,7 +117,7 @@ const getMyApps = async function (fullRecord) {
     if (fullRecord === undefined) {
       params = "?fullRecord=false";
     } else {
-      params = `?${fullRecord}`;
+      params = `?fullRecord=${fullRecord}`;
     }
 
     const config = {
@@ -143,7 +143,7 @@ const getAppUsers = async function (id, fullRecord) {
     if (fullRecord === undefined) {
       params = `/${id}/getUsers?fullRecord=false`;
     } else {
-      params = `/${id}/getUsers?${fullRecord}`;
+      params = `/${id}/getUsers?fullRecord=${fullRecord}`;
     }
 
     const config = {

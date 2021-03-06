@@ -182,6 +182,23 @@
                   class="button-full"
                   color="blue darken-1"
                   text
+                  @click="refreshApp"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Refresh App
+                </v-btn>
+              </template>
+              <span>Get your latest app data from the api</span>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text
                   @click="openEditAppDialog"
                   v-bind="attrs"
                   v-on="on"
@@ -261,6 +278,7 @@ export default {
       "updateSelectedApp",
       "updateApps",
       "removeApps",
+      "replaceApp"
     ]),
 
     async copyLicenseToClipboard() {
@@ -438,6 +456,20 @@ export default {
         "Are you sure you want to delete this app?",
         actionToastOptions(action, "delete")
       );
+    },
+
+    async refreshApp() {
+      var response = await appService.getApp(this.$data.app.id, true);
+
+      if (response.data.success) {
+        this.$data.app = new App(response.data.app);
+        const licenseResponse = await appService.getLicense(this.$data.app.id);
+        if (licenseResponse.data.success) {
+          this.$data.app.updateLicense(licenseResponse.data.license);
+        }
+        this.updateSelectedApp(this.$data.app);
+        this.replaceApp(this.$data.app);
+      }
     },
 
     openEditAppDialog() {

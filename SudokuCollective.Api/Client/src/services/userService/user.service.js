@@ -17,10 +17,10 @@ const getUser = async function (id, fullRecord) {
   try {
     let params = "";
 
-    if (fullRecord) {
-      params = `/${id}?fullrecord=${fullRecord}`;
+    if (fullRecord === undefined) {
+      params = `/${id}?fullrecord=false`;
     } else {
-      params = `/${id}`;
+      params = `/${id}?fullrecord=${fullRecord}`;
     }
 
     const config = {
@@ -45,7 +45,9 @@ const getUsers = async function (data, fullRecord) {
   try {
     let params = "";
 
-    if (fullRecord) {
+    if (fullRecord === undefined) {
+      params = `?fullrecord=false`;
+    } else {
       params = `?fullrecord=${fullRecord}`;
     }
 
