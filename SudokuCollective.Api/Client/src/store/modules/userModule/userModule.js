@@ -1,7 +1,10 @@
-﻿import { 
+﻿import _ from 'lodash';
+import { 
   UPDATE_SELECTED_USER, 
   UPDATE_USERS,
+  REMOVE_USER,
   REMOVE_USERS,
+  REPLACE_USER,
 } from "./mutation-types";
 
 import User from "@/models/user";
@@ -10,43 +13,70 @@ const userModule = {
   namespaced: true,
 
   state: () => ({
-    SelectedUser: new User(),
-    Users: []
+    selectedUser: new User(),
+    users: []
   }),
 
   mutations: {
-    [UPDATE_SELECTED_USER](state, app) {
-      state.SelectedApp = app;
+    [UPDATE_SELECTED_USER](state, user) {
+      state.selectedUser = user;
     },
-    [UPDATE_USERS](state, apps) {
-      apps.forEach(app => state.Apps.push(app));
+    [UPDATE_USERS](state, users) {
+      users.forEach((user) => { 
+        const index = _.findIndex(state.users, { id: user.id });
+        if (index !== -1) {
+          state.users.splice(index, 1, user);
+        } else {
+          state.users.push(user);
+        }
+      });
+    },
+    [REMOVE_USER](state, user) {
+      const index = _.findIndex(state.users, { id: user.id });
+      if (index !== -1) {
+        state.users.splice(index, 1);
+      }
     },
     [REMOVE_USERS](state) {
-      state.Apps = [];
+      state.users = [];
+    },
+    [REPLACE_USER](state, user) {
+      const index = _.findIndex(state.users, { id: user.id });
+      if (index !== -1) {
+        state.users.splice(index, 1, user);
+      } else {
+        state.users.push(user);
+      }
     },
   },
 
   actions: {
-    updateSelectedApp({ commit }, app) {
-      commit(UPDATE_SELECTED_USER, app);
+    updateSelectedUser({ commit }, user) {
+      commit(UPDATE_SELECTED_USER, user);
     },
-    updateApps({ commit }, apps) {
-      commit(UPDATE_USERS, apps);
+    updateUsers({ commit }, users) {
+      commit(UPDATE_USERS, users);
     },
-    removeApps({ commit }) {
+    removeUser({ commit }, user) {
+      commit(REMOVE_USER, user);
+    },
+    removeUsers({ commit }) {
       commit(REMOVE_USERS);
+    },
+    replaceUser({ commit }, user) {
+      commit(REPLACE_USER, user);
     },
   },
 
   getters: {
-    getSelectedApp: (state) => {
-      return state.SelectedUser;
+    getSelectedUser: (state) => {
+      return state.selectedUser;
     },
-    getAppById: (state) => (id) => {
-      return state.Users.find(user => user.id === id)
+    getUserById: (state) => (id) => {
+      return state.users.find(user => user.id === id)
     },
-    getApps: (state) => {
-      return state.Users;
+    getUsers: (state) => {
+      return state.users;
     },
   },
 };

@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { 
   UPDATE_SELECTED_APP, 
   UPDATE_APPS,
+  REMOVE_APP,
   REMOVE_APPS,
   REPLACE_APP,
 } from "./mutation-types";
@@ -21,14 +22,31 @@ const appModule = {
       state.selectedApp = new App(app);
     },
     [UPDATE_APPS](state, apps) {
-      apps.forEach(app => state.apps.push(app));
+      apps.forEach((app) => { 
+        const index = _.findIndex(state.apps, { id: app.id });
+        if (index !== -1) {
+          state.apps.splice(index, 1, app);
+        } else {
+          state.apps.push(app);
+        }
+      });
+    },
+    [REMOVE_APP](state, app) {
+      const index = _.findIndex(state.apps, { id: app.id });
+      if (index !== -1) {
+        state.apps.splice(index, 1);
+      }
     },
     [REMOVE_APPS](state) {
       state.apps = [];
     },
     [REPLACE_APP](state, app) {
-      const index = _.findIndex(state.apps, { id: app.id })
-      state.apps.splice(index, 1, app);
+      const index = _.findIndex(state.apps, { id: app.id });
+      if (index !== -1) {
+        state.apps.splice(index, 1, app);
+      } else {
+        state.apps.push(app);
+      }
     },
   },
 
@@ -38,6 +56,9 @@ const appModule = {
     },
     updateApps({ commit }, apps) {
       commit(UPDATE_APPS, apps);
+    },
+    removeApp({ commit }, app) {
+      commit(REMOVE_APP, app);
     },
     removeApps({ commit }) {
       commit(REMOVE_APPS);

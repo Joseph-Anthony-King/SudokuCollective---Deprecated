@@ -23,6 +23,15 @@
           <router-view></router-view>
         </transition>
 
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          :size="100"
+          :width="10"
+          v-if="processingAPIRequest === true"
+          class="progress-circular"
+        ></v-progress-circular>
+
         <v-dialog v-model="userLoggingIn" persistent max-width="600px">
           <LoginForm
             :loginFormStatus="userLoggingIn"
@@ -34,6 +43,7 @@
         <v-dialog v-model="userSigningUp" persistent max-width="600px">
           <SignUpForm
             :signUpFormStatus="userSigningUp"
+            v-on:processing-user-sign-up-event="processingUserSignUp"
             v-on:user-signing-up-event="signUp"
           />
         </v-dialog>
@@ -64,7 +74,6 @@
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmation.service";
-import { userService } from "@/services/userService/user.service";
 import { appService } from "@/services/appService/app.service";
 import AppBar from "@/components/navigation/AppBar";
 import NavigationBar from "@/components/navigation/NavigationBar";
@@ -99,8 +108,10 @@ export default {
       icon: "mdi-account-circle",
     },
     navDrawerStatus: null,
+    processingAPIRequest: false,
   }),
   methods: {
+    ...mapActions("appModule", ["updateSelectedApp", "removeApps", ]),
     ...mapActions("settingsModule", [
       "confirmBaseURL",
       "updateAuthToken",
@@ -110,14 +121,8 @@ export default {
 
     login(user, token) {
       if (user !== null && token !== null) {
-        this.$data.user = user;
-        this.$data.user.login();
-        this.updateUser(this.$data.user);
-        this.updateAuthToken(token);
 
-        if (this.$router.currentRoute.path !== "/dashboard") {
-          this.$router.push("/dashboard");
-        }
+        this.userLoginProcess(user, token);
 
         let logInMessage;
 
@@ -145,9 +150,14 @@ export default {
           onClick: (e, toastObject) => {
             toastObject.goAway(0);
 
-            const user = new User(this.$data.user);
+            this.$data.user = new User();
 
-            user.logout();
+            this.$data.user.logout();
+
+            this.updateUser(this.$data.user);
+            this.updateAuthToken("");
+            this.updateSelectedApp(new App());
+            this.removeApps();
 
             if (this.$router.currentRoute.path !== "/") {
               this.$router.push("/");
@@ -179,13 +189,8 @@ export default {
 
     signUp(user, token) {
       if (user !== null && token !== null) {
-        this.$data.user = user;
 
-        this.$data.user = userService.loginUser(this.$data.user, token);
-
-        if (this.$router.currentRoute.path !== "/dashboard") {
-          this.$router.push("/dashboard");
-        }
+        this.userLoginProcess(user, token);
 
         showToast(
           this,
@@ -195,11 +200,27 @@ export default {
         );
       }
       this.$data.userSigningUp = false;
+      this.$data.processingAPIRequest = false;
     },
 
     redirectToSignUp() {
       this.$data.userLoggingIn = false;
       this.$data.userSigningUp = true;
+    },
+
+    userLoginProcess(user, token) {
+        this.$data.user = user;
+        this.$data.user.login();
+        this.updateUser(this.$data.user);
+        this.updateAuthToken(token);
+
+        if (this.$router.currentRoute.path !== "/dashboard") {
+          this.$router.push("/dashboard");
+        }
+    },
+
+    processingUserSignUp() {
+      this.$data.processingAPIRequest = true;
     },
 
     updateNavDrawer() {
@@ -219,9 +240,16 @@ export default {
 
     this.confirmBaseURL(urlResponse.url);
 
-    const appResponse = await appService.getByLicense(process.env.VUE_APP_LICENSE);
+    const data = {
+      license: process.env.VUE_APP_LICENSE,
+      requestorId: 1,
+      appId: 1,
+      pageListModel: null
+    };
 
-    const app = new App(appResponse.data.app);
+    const response = await appService.getByLicense(data);
+
+    const app = new App(response.data.app);
 
     app.updateLicense(process.env.VUE_APP_LICENSE);
 

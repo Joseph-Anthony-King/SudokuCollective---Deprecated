@@ -277,7 +277,7 @@ export default {
     ...mapActions("appModule", [
       "updateSelectedApp",
       "updateApps",
-      "removeApps",
+      "removeApp",
       "replaceApp"
     ]),
 
@@ -309,7 +309,7 @@ export default {
                 const appsResponse = await appService.getMyApps();
 
                 if (appsResponse.data.success) {
-                  let myTempArray = [];
+                  let tempArray = [];
 
                   for (const app of appsResponse.data.apps) {
                     const myApp = new App(app);
@@ -322,11 +322,10 @@ export default {
                     if (this.$data.app.id === myApp.id) {
                       this.$data.app = new App(myApp)
                     }
-                    myTempArray.push(myApp);
+                    tempArray.push(myApp);
                   }
-
-                  this.removeApps();
-                  this.updateApps(myTempArray);
+                  
+                  this.updateApps(tempArray);
                   this.updateSelectedApp(this.$data.app);
 
                   showToast(
@@ -391,7 +390,7 @@ export default {
                 const appsResponse = await appService.getMyApps();
 
                 if (appsResponse.data.success) {
-                  let myTempArray = [];
+                  let tempArray = [];
 
                   for (const app of appsResponse.data.apps) {
                     const myApp = new App(app);
@@ -401,11 +400,11 @@ export default {
                     if (licenseResponse.data.success) {
                       myApp.updateLicense(licenseResponse.data.license);
                     }
-                    myTempArray.push(myApp);
+                    tempArray.push(myApp);
                   }
 
-                  this.removeApps();
-                  this.updateApps(myTempArray);
+                  this.removeApp(this.$data.app);
+                  this.updateApps(tempArray);
                   this.updateSelectedApp(new App());
 
                   showToast(

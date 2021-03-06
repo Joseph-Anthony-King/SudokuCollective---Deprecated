@@ -1,7 +1,4 @@
-﻿import store from "@/store";
-import App from "@/models/app";
-
-class User {
+﻿class User {
   constructor(data) {
     if (data == undefined) {
       this.id = 0;
@@ -40,11 +37,8 @@ class User {
     }
   }
 
-  login(token) {
+  login() {
     this.isLoggedIn = true;
-
-    store.dispatch("settingsModule/updateUser", new User());
-    store.dispatch("settingsModule/updateAuthToken", token);
   }
 
   logout() {
@@ -64,11 +58,6 @@ class User {
     this.dateCreated = "";
     this.dateUpdated = "";
     this.isLoggedIn = false;
-  
-    store.dispatch("settingsModule/updateUser", this);
-    store.dispatch("settingsModule/updateAuthToken", "");
-    store.dispatch("appModule/updateSelectedApp", new App());
-    store.dispatch("appModule/removeApps");
   }
 }
 

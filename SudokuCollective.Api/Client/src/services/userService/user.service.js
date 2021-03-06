@@ -198,16 +198,6 @@ const putCancelAllEmailRequests = async function () {
   }
 };
 
-const loginUser = function (user, token) {
-  user.login(token);
-  return user;
-};
-
-const logoutUser = function (user) {
-  user.logout();
-  return user;
-};
-
 export const userService = {
   getUser,
   getUsers,
@@ -217,6 +207,4 @@ export const userService = {
   putCancelPasswordReset,
   putCancelEmailConfirmation,
   putCancelAllEmailRequests,
-  loginUser,
-  logoutUser,
 };

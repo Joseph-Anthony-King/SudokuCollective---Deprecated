@@ -160,7 +160,6 @@ export default {
     ...mapActions("appModule", [
       "updateSelectedApp",
       "updateApps",
-      "removeApps",
     ]),
 
     openCreateAppForm() {
@@ -255,8 +254,7 @@ export default {
       const response = await appService.getMyApps(true);
 
       if (response.data.success) {
-        this.removeApps();
-        let myTempArray = [];
+        let tempArray = [];
 
         for (const app of response.data.apps) {
           /* The api loads users as reference variables thus effecting the 
@@ -268,11 +266,11 @@ export default {
           if (licenseResponse.data.success) {
             myApp.updateLicense(licenseResponse.data.license);
           }
-          myTempArray.push(myApp);
+          tempArray.push(myApp);
         }
         
         // Reload the users per app
-        for (const app of myTempArray) {
+        for (const app of tempArray) {
           const appUsersResponse = await appService.getAppUsers(app.id, true);
           appUsersResponse.data.users.forEach((user) => {
             const tempUser = new User(user);
@@ -280,7 +278,7 @@ export default {
           });
         }
 
-        this.updateApps(myTempArray);
+        this.updateApps(tempArray);
       }
 
     } else {

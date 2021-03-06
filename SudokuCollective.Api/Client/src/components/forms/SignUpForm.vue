@@ -173,6 +173,8 @@ export default {
             )
           );
 
+          this.$emit("processing-user-sign-up-event", null, null);
+
           if (response.status === 201) {
             this.$data.user = new User(response.data.user);
 

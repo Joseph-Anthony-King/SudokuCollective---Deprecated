@@ -114,7 +114,7 @@ export default {
     dirty: false,
   }),
   methods: {
-    ...mapActions("appModule", ["updateApps", "removeApps"]),
+    ...mapActions("appModule", ["updateApps"]),
 
     submit() {
       if (this.getCreateAppFormIsValid) {
@@ -132,13 +132,13 @@ export default {
                     this.$data.liveUrl
                   )
                 );
-
+                
                 if (response.status === 201) {
 
                   const appsResponse = await appService.getMyApps();
 
                   if (appsResponse.data.success) {
-                    let myTempArray = [];
+                    let tempArray = [];
 
                     for (const app of appsResponse.data.apps) {
                       const myApp = new App(app);
@@ -146,12 +146,10 @@ export default {
                       if (licenseResponse.data.success) {
                         myApp.updateLicense(licenseResponse.data.license);
                       }
-                      myTempArray.push(myApp);
+                      tempArray.push(myApp);
                     }
-
-                    this.removeApps();
                     
-                    this.updateApps(myTempArray);
+                    this.updateApps(tempArray);
                   }
 
                   this.reset();

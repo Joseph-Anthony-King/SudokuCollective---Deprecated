@@ -39,7 +39,7 @@ const getApp = async function (id, fullRecord) {
   }
 }
 
-const getByLicense = async function (license, fullRecord) {
+const getByLicense = async function (data, fullRecord) {
   try {
     let params;
     
@@ -48,13 +48,6 @@ const getByLicense = async function (license, fullRecord) {
     } else {
       params = `?fullRecord=${fullRecord}`;
     }
-
-    const data = {
-      license: license,
-      requestorId: store.getters["settingsModule/getRequestorId"],
-      appId: store.getters["settingsModule/getAppId"],
-      pageListModel: null
-    };
 
     const config = {
       method: "post",
