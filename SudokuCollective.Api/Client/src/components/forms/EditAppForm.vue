@@ -182,6 +182,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import App from "@/models/app";
+import User from "@/models/user";
 import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
@@ -238,6 +239,14 @@ export default {
                 this.$data.app = new App(response.data.app);
 
                 this.$data.app.license = license;
+                
+                this.$data.app.users = [];
+
+                const appUsersResponse = await appService.getAppUsers(this.$data.app.id, true);
+                appUsersResponse.data.users.forEach((user) => {
+                  const tempUser = new User(user);
+                  this.$data.app.users.push(tempUser);
+                });
 
                 this.updateSelectedApp(this.$data.app);
 
