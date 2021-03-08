@@ -8,6 +8,7 @@ namespace SudokuCollective.Core.Interfaces.Repositories
     {
         Task<IRepositoryResponse> GetByLicense(string license, bool fullRecord = true);
         Task<IRepositoryResponse> GetAppUsers(int id, bool fullRecord = true);
+        Task<IRepositoryResponse> GetNonAppUsers(int id, bool fullRecord = true);
         Task<IRepositoryResponse> GetMyApps(int ownerId, bool fullRecord = true);
         Task<IRepositoryResponse> AddAppUser(int userId, string license);
         Task<IRepositoryResponse> RemoveAppUser(int userId, string license);

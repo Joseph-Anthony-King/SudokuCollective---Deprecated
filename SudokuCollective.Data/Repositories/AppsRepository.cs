@@ -529,6 +529,86 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
+        public async Task<IRepositoryResponse> GetNonAppUsers(int id, bool fullRecord = true)
+        {
+            var result = new RepositoryResponse();
+            var query = new List<User>();
+
+            try
+            {
+                if (!await HasEntity(id))
+                {
+                    result.Success = false;
+                    result.Objects = query
+                        .ConvertAll(u => (IEntityBase)u)
+                        .ToList();
+
+                    return result;
+                }
+
+                if (fullRecord)
+                {
+                    query = await context
+                        .Users
+                        .Include(u => u.Apps)
+                            .ThenInclude(ua => ua.App)
+                        .Include(u => u.Roles)
+                            .ThenInclude(ur => ur.Role)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuSolution)
+                        .Include(u => u.Games)
+                            .ThenInclude(g => g.SudokuMatrix)
+                                .ThenInclude(m => m.SudokuCells)
+                        .Where(u => u.Apps.Any(ua => ua.AppId != id))
+                        .OrderBy(u => u.Id)
+                        .ToListAsync();
+
+                    if (query.Count != 0)
+                    {
+                        foreach (var user in query)
+                        {
+                            // Filter games by app
+                            user.Games = new List<Game>();
+
+                            user.Games = await context
+                                .Games
+                                .Where(g => g.AppId == id && g.UserId != user.Id)
+                                .ToListAsync();
+                        }
+                    }
+                }
+                else
+                {
+                    query = await context
+                        .Users
+                        .Where(u => u.Apps.Any(ua => ua.AppId != id))
+                        .OrderBy(u => u.Id)
+                        .ToListAsync();
+                }
+
+                if (query.Count == 0)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
+                result.Success = true;
+                result.Objects = query
+                    .ConvertAll(u => (IEntityBase)u)
+                    .ToList();
+
+                return result;
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
         public async Task<IRepositoryResponse> Update(TEntity entity)
         {
             var result = new RepositoryResponse();

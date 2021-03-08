@@ -157,7 +157,33 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Object, Is.Null);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetNonAppUsersByApp()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetNonAppUsers(1);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Objects.ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfGetNonAppUsersByAppFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetNonAppUsers(3);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
         }
 
         [Test]
