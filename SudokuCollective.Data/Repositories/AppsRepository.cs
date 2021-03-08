@@ -559,7 +559,7 @@ namespace SudokuCollective.Data.Repositories
                         .Include(u => u.Games)
                             .ThenInclude(g => g.SudokuMatrix)
                                 .ThenInclude(m => m.SudokuCells)
-                        .Where(u => u.Apps.Any(ua => ua.AppId != id))
+                        .Where(u => !u.Apps.Any(ua => ua.AppId == id))
                         .OrderBy(u => u.Id)
                         .ToListAsync();
 
@@ -581,7 +581,7 @@ namespace SudokuCollective.Data.Repositories
                 {
                     query = await context
                         .Users
-                        .Where(u => u.Apps.Any(ua => ua.AppId != id))
+                        .Where(u => !u.Apps.Any(ua => ua.AppId == id))
                         .OrderBy(u => u.Id)
                         .ToListAsync();
                 }

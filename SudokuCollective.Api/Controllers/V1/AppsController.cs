@@ -184,10 +184,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/apps/5/getusers
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut, Route("{id}/GetUsers")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers(
+        // PUT: api/apps/5/getAppUsers
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("{id}/GetAppUsers")]
+        public async Task<ActionResult<IEnumerable<User>>> GetAppUsers(
             int id,
             [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
@@ -202,6 +202,47 @@ namespace SudokuCollective.Api.V1.Controllers
                         id,
                         request.RequestorId,
                         request.PageListModel,
+                        true,
+                        fullRecord);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/apps/5/getNonAppUsers
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("{id}/GetNonAppUsers")]
+        public async Task<ActionResult<IEnumerable<User>>> GetNonAppUsers(
+            int id,
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = true)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService
+                    .GetAppUsers(
+                        id,
+                        request.RequestorId,
+                        request.PageListModel,
+                        false,
                         fullRecord);
 
                 if (result.Success)

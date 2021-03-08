@@ -13,6 +13,7 @@ using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Interfaces.DataModels;
 
 namespace SudokuCollective.Data.Services
 {
@@ -978,6 +979,7 @@ namespace SudokuCollective.Data.Services
             int id,
             int requestorId,
             IPageListModel pageListModel,
+            bool appUsers = true,
             bool fullRecord = true)
         {
             var result = new UsersResult();
@@ -987,7 +989,17 @@ namespace SudokuCollective.Data.Services
                 if (await appsRepository.HasEntity(id))
                 {
                     var app = (App)(await appsRepository.GetById(id)).Object;
-                    var response = await appsRepository.GetAppUsers(id, fullRecord);
+
+                    IRepositoryResponse response;
+
+                    if (appUsers)
+                    {
+                        response = await appsRepository.GetAppUsers(id, fullRecord);
+                    }
+                    else
+                    {
+                        response = await appsRepository.GetNonAppUsers(id, fullRecord);
+                    }
 
                     if (response.Success)
                     {

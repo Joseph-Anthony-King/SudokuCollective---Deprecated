@@ -13,7 +13,7 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IAppResult> CreateApp(ILicenseRequest request);
         Task<IAppResult> GetAppByLicense(string license, int requestorId, bool fullRecord = true);
         Task<ILicenseResult> GetLicense(int id);
-        Task<IUsersResult> GetAppUsers(int id, int requestorId, IPageListModel pageListModel, bool fullRecord = true);
+        Task<IUsersResult> GetAppUsers(int id, int requestorId, IPageListModel pageListModel, bool appUsers = true, bool fullRecord = true);
         Task<IAppResult> UpdateApp(int id, IAppRequest request);
         Task<IBaseResult> AddAppUser(int id, IBaseRequest request);
         Task<IBaseResult> RemoveAppUser(int id, IBaseRequest request);

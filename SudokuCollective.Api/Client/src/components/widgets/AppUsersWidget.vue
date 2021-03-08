@@ -1,62 +1,64 @@
 <template>
   <v-card>
-    <v-container fluid>
-      <v-card-title
-        class="justify-center"
-        v-if="
-          app.isActive === false ||
-          (app.devUrl === '' && app.inDevelopment) ||
-          (app.liveUrl === '' && !app.inDevelopment)
-        "
-        >{{ app.name }}</v-card-title
-      >
-      <v-card-title
-        class="justify-center"
-        v-if="
-          app.isActive &&
-          ((app.devUrl !== '' && app.inDevelopment) ||
-            (app.liveUrl !== '' && !app.inDevelopment))
-        "
-      >
-        <a
-          :href="app.inDevelopment ? app.devUrl : app.liveUrl"
-          target="blank"
-          class="app-card-title"
+    <v-card-text>
+      <v-container fluid>
+        <v-card-title
+          class="justify-center"
+          v-if="
+            app.isActive === false ||
+            (app.devUrl === '' && app.inDevelopment) ||
+            (app.liveUrl === '' && !app.inDevelopment)
+          "
+          >{{ app.name }}</v-card-title
         >
-          {{ app.name }}
-        </a>
-      </v-card-title>
-      <hr class="title-spacer" />
-      <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
-      <v-data-table
-        v-model="selectedUsers"
-        :headers="adminHeaders"
-        :items="app.users"
-        show-select
-        class="elevation-1"
-        v-if="app.id === 1"
-        :search="search"
+        <v-card-title
+          class="justify-center"
+          v-if="
+            app.isActive &&
+            ((app.devUrl !== '' && app.inDevelopment) ||
+              (app.liveUrl !== '' && !app.inDevelopment))
+          "
         >
-      </v-data-table>
-      <v-data-table
-        v-model="selectedUsers"
-        :headers="headers"
-        :items="app.users"
-        show-select
-        class="elevation-1"
-        v-if="app.id !== 1"
-        :search="search"
-        >
-      </v-data-table>
-    </v-container>
+          <a
+            :href="app.inDevelopment ? app.devUrl : app.liveUrl"
+            target="blank"
+            class="app-card-title"
+          >
+            {{ app.name }}
+          </a>
+        </v-card-title>
+        <hr class="title-spacer" />
+        <v-card-title>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table
+          v-model="selectedUsers"
+          :headers="adminHeaders"
+          :items="app.users"
+          show-select
+          class="elevation-1"
+          v-if="app.id === 1"
+          :search="search"
+          >
+        </v-data-table>
+        <v-data-table
+          v-model="selectedUsers"
+          :headers="headers"
+          :items="app.users"
+          show-select
+          class="elevation-1"
+          v-if="app.id !== 1"
+          :search="search"
+          >
+        </v-data-table>
+      </v-container>
+    </v-card-text>
     <hr />
     <v-card-title class="justify-center">Available Actions</v-card-title>
     <v-card-actions>
@@ -79,7 +81,7 @@
               <span>Get your latest app data from the api</span>
             </v-tooltip>
           </v-col>
-          <v-col>
+          <v-col v-if="selectedUsers.length > 0">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -87,7 +89,6 @@
                   color="blue darken-1"
                   text
                   @click="promoteToAdmins"
-                  :disabled="disableAdminButton"
                   v-bind="attrs"
                   v-on="on"
                 >
@@ -118,7 +119,7 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions"
+import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "AppUsersWidget",
@@ -158,7 +159,7 @@ export default {
     ...mapActions("appModule", [
       "updateSelectedApp",
       "replaceApp"
-    ]), 
+    ]),
 
     async refreshApp() {
       var response = await appService.getApp(this.$data.app.id, true);
@@ -283,8 +284,10 @@ export default {
     disableAdminButton() {
       // At least one selected user is not an admin
       return _.filter(this.$data.selectedUsers, function(user) { 
-        user.isAdmin && user.id !== 1;
-      }).length === 0;
+        console.log("disableAdminButton", user);
+        console.log(user.isAdmin === "No");
+        user.isAdmin === "No";
+      }).length !== 0;
     },
   },
   watch: {
@@ -301,6 +304,12 @@ export default {
 
           user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
         });
+      }
+    },
+    "selectedUsers": {
+      handler: function(val, oldVal) {
+        console.log("old value:", oldVal);
+        console.log("new value:", val);
       }
     },
   },

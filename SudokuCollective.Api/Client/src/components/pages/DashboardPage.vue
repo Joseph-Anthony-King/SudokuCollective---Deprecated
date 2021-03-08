@@ -55,20 +55,18 @@
             />
           </v-tab-item>
 
-          <v-tab href="#users">
+          <v-tab href="#app-users">
             App Users
           </v-tab>
-          <v-tab-item value="users">
+          <v-tab-item value="app-users">
             <AppUsersWidget />
           </v-tab-item>
 
-          <v-tab href="#others">
+          <v-tab href="#non-app-users">
             Non-App Users
           </v-tab>
-          <v-tab-item value="others">
-            <v-card-text>
-              <v-card-title class="justify-center">Non-App Users Widget Placeholder...</v-card-title>
-            </v-card-text>
+          <v-tab-item value="non-app-users">
+            <NonAppUsersWidget />
           </v-tab-item>
         </v-tabs>
       </template>
@@ -132,6 +130,7 @@ import CreateAppForm from "@/components/forms/CreateAppForm";
 import EditAppForm from "@/components/forms/EditAppForm";
 import AppInfoWidget from "@/components/widgets/AppInfoWidget";
 import AppUsersWidget from "@/components/widgets/AppUsersWidget";
+import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
 import { appService } from "@/services/appService/app.service";
@@ -147,6 +146,7 @@ export default {
     EditAppForm,
     AppInfoWidget,
     AppUsersWidget,
+    NonAppUsersWidget,
     CreateAppButton,
     SelectAppButton,
   },

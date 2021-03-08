@@ -182,7 +182,8 @@ namespace SudokuCollective.Test.MockServices
                 appService.GetAppUsers(
                     It.IsAny<int>(), 
                     It.IsAny<int>(),
-                    It.IsAny<PageListModel>(), 
+                    It.IsAny<PageListModel>(),
+                    It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
@@ -466,7 +467,8 @@ namespace SudokuCollective.Test.MockServices
                 appService.GetAppUsers(
                     It.IsAny<int>(),
                     It.IsAny<int>(), 
-                    It.IsAny<PageListModel>(), 
+                    It.IsAny<PageListModel>(),
+                    It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
@@ -762,6 +764,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>(),
                     It.IsAny<int>(),
                     It.IsAny<PageListModel>(),
+                    It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
@@ -1058,6 +1061,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>(),
                     It.IsAny<int>(),
                     It.IsAny<PageListModel>(),
+                    It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {

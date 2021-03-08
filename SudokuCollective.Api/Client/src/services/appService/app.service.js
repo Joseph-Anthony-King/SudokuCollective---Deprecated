@@ -136,9 +136,35 @@ const getAppUsers = async function (id, fullRecord) {
     let params;
     
     if (fullRecord === undefined) {
-      params = `/${id}/getUsers?fullRecord=false`;
+      params = `/${id}/getAppUsers?fullRecord=false`;
     } else {
-      params = `/${id}/getUsers?fullRecord=${fullRecord}`;
+      params = `/${id}/getAppUsers?fullRecord=${fullRecord}`;
+    }
+
+    const config = {
+      method: "put",
+      url: `${getAppEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
+const getNonAppUsers = async function (id, fullRecord) {
+  try {
+    let params;
+    
+    if (fullRecord === undefined) {
+      params = `/${id}/getNonAppUsers?fullRecord=false`;
+    } else {
+      params = `/${id}/getNonAppUsers?fullRecord=${fullRecord}`;
     }
 
     const config = {
@@ -318,6 +344,7 @@ export const appService = {
   getLicense,
   getMyApps,
   getAppUsers,
+  getNonAppUsers,
   postObtainAdminPrivileges,
   updateApp,
   deleteApp,
