@@ -81,7 +81,7 @@
               <span>Get your latest app data from the api</span>
             </v-tooltip>
           </v-col>
-          <v-col v-if="selectedUsers.length > 0">
+          <v-col v-if="filterNonAdmins">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -193,7 +193,7 @@ export default {
                   user.isAdmin = true;
                 }
                 
-                if (!user.isAdmin) {
+                if (!user.isAdmin && user.id !== 1) {
                   users.push(new User(user));
                 }
 
@@ -280,6 +280,14 @@ export default {
   computed: {
     ...mapGetters("settingsModule", ["getRequestorId"]),
     ...mapGetters("appModule", ["getSelectedApp"]),
+
+    filterNonAdmins() {
+      const filteredArray = _.filter(this.$data.selectedUsers, 
+        function(user) { 
+          return user.isAdmin === "No";
+        });
+      return filteredArray.length > 0;
+    }
   },
   watch: {
     "$store.state.appModule.selectedApp": {
@@ -295,12 +303,6 @@ export default {
 
           user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
         });
-      }
-    },
-    "selectedUsers": {
-      handler: function(val, oldVal) {
-        console.log("old value:", oldVal);
-        console.log("new value:", val);
       }
     },
   },
