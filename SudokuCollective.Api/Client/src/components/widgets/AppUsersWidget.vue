@@ -57,13 +57,59 @@
         >
       </v-data-table>
     </v-container>
+    <hr />
+    <v-card-title class="justify-center">Available Actions</v-card-title>
+    <v-card-actions>
+      <v-container>
+        <v-row dense>
+          <v-col>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text
+                  @click="refreshApp"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Refresh List
+                </v-btn>
+              </template>
+              <span>Get your latest app data from the api</span>
+            </v-tooltip>
+          </v-col>
+          <v-col>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text
+                  @click="promoteToAdmins"
+                  :disabled="disableAdminButton"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Promote to Admins
+                </v-btn>
+              </template>
+              <span>Provide the selected uses with admin rights to this app</span>
+            </v-tooltip>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 /* eslint-disable no-unused-vars */
-import App from "@/models/app";
+import _ from "lodash";
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import { appService } from "@/services/appService/app.service";
+import App from "@/models/app";
 import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions"
 
 export default {
@@ -100,8 +146,39 @@ export default {
       { text: "Signed Up Date", value: "signedUpDate" },
     ],
   }),
+  methods: {  
+    ...mapActions("appModule", [
+      "updateSelectedApp",
+      "replaceApp"
+    ]), 
+
+    async refreshApp() {
+      var response = await appService.getApp(this.$data.app.id, true);
+
+      if (response.data.success) {
+        this.$data.app = new App(response.data.app);
+        const licenseResponse = await appService.getLicense(this.$data.app.id);
+        if (licenseResponse.data.success) {
+          this.$data.app.updateLicense(licenseResponse.data.license);
+        }
+        this.updateSelectedApp(this.$data.app);
+        this.replaceApp(this.$data.app);
+      }
+    },
+
+    promoteToAdmins() {
+      console.log(this.$data.selectedUsers);
+    },
+  },
   computed: {    
     ...mapGetters("appModule", ["getSelectedApp"]),
+
+    disableAdminButton() {
+      // At least one selected user is not an admin
+      return _.filter(this.$data.selectedUsers, function(user) { 
+        user.isAdmin;
+      }).length === 0;
+    },
   },
   watch: {
     "$store.state.appModule.selectedApp": {

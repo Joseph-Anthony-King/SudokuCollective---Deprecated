@@ -1,7 +1,6 @@
 <template>
   <v-container fluid>
     <v-overlay
-      :absolute="absolute"
       :value="processing"
     >
       <v-progress-circular
