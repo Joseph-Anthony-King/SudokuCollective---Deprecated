@@ -84,13 +84,29 @@ export default {
   },
   watch: {
     "$store.state.appModule.selectedApp": {
-      handler: function(val, oldVal) {
+      handler: async function(val, oldVal) {
         this.$data.app = new App(this.getSelectedApp);
+        this.nonAppUsers = [];
+
+        const response = await appService.getNonAppUsers(this.$data.app.id);
+
+        if (response.data.success) {
+          response.data.users.forEach((user) => {
+            this.nonAppUsers.push(new User(user));
+          });        
+        }
+        
+        if (this.nonAppUsers.length > 0) {
+          this.nonAppUsers.forEach((user) => {
+            user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
+          });
+        }
       }
     },
   },
   async created() {
     this.$data.app = new App(this.getSelectedApp);
+    this.nonAppUsers = [];
 
     const response = await appService.getNonAppUsers(this.$data.app.id);
 

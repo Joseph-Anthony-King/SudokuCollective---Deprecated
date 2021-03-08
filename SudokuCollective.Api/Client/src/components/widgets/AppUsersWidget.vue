@@ -280,15 +280,6 @@ export default {
   computed: {
     ...mapGetters("settingsModule", ["getRequestorId"]),
     ...mapGetters("appModule", ["getSelectedApp"]),
-
-    disableAdminButton() {
-      // At least one selected user is not an admin
-      return _.filter(this.$data.selectedUsers, function(user) { 
-        console.log("disableAdminButton", user);
-        console.log(user.isAdmin === "No");
-        user.isAdmin === "No";
-      }).length !== 0;
-    },
   },
   watch: {
     "$store.state.appModule.selectedApp": {
