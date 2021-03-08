@@ -1,6 +1,18 @@
 <template>
   <v-container fluid>
-    <v-card elevation="6" class="mx-auto">
+    <v-overlay
+      :absolute="absolute"
+      :value="processing"
+    >
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="100"
+        :width="10"
+        class="progress-circular"
+      ></v-progress-circular>
+    </v-overlay>
+    <v-card elevation="6" class="mx-auto" v-if="!processing">
       <v-card-text>
         <v-container fluid>
           <v-card-title v-if="user.isLoggedIn" class="justify-center"
@@ -11,16 +23,8 @@
           >
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-              :size="100"
-              :width="10"
-              v-if="loading === true"
-              class="progress-circular"
-            ></v-progress-circular>
-            <CreateAppButton v-on:click.native="openCreateAppForm" v-if="loading === false" />
-            <span class="no-apps-message" v-if="loading === false && myApps.length === 0"
+            <CreateAppButton v-on:click.native="openCreateAppForm" />
+            <span class="no-apps-message" v-if="myApps.length === 0"
               >Time to Get Coding!</span
             >
             <SelectAppButton
@@ -151,7 +155,7 @@ export default {
     user: new User(),
     app: new App(),
     myApps: [],
-    loading: false,
+    processing: false,
     creatingApp: false,
     editingApp: false,
     openingAppWidgets: false,
@@ -238,7 +242,7 @@ export default {
     }
   },
   async created() {
-    this.$data.loading = true;
+    this.$data.processing = true;
     this.$data.user = new User(this.getUser);
 
     const selectedApp = this.getSelectedApp;
@@ -289,7 +293,7 @@ export default {
       });
     }
     
-    this.$data.loading = false;
+    this.$data.processing = false;
   },
 };
 </script>

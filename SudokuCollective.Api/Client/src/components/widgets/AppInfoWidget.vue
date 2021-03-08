@@ -231,7 +231,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   class="button-full"
-                  color="blue darken-1"
+                  color="red darken-1"
                   text
                   @click="deleteApp"
                   v-bind="attrs"
@@ -256,6 +256,7 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
@@ -765,8 +766,10 @@ export default {
     },
   },
   watch: {
-    "$store.state.appModule.selectedApp": function () {
-      this.$data.app = new App(this.getSelectedApp);
+    "$store.state.appModule.selectedApp": {
+      handler: function(val, oldVal) {
+        this.$data.app = new App(this.getSelectedApp);
+      }
     },
   },
   created() {

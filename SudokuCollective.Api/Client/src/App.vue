@@ -20,17 +20,8 @@
       <v-container fluid>
         <!-- If using vue-router -->
         <transition name="fade">
-          <router-view></router-view>
+          <router-view v-on:user-logging-out="logout"></router-view>
         </transition>
-
-        <v-progress-circular
-          indeterminate
-          color="primary"
-          :size="100"
-          :width="10"
-          v-if="processingAPIRequest === true"
-          class="progress-circular"
-        ></v-progress-circular>
 
         <v-dialog v-model="userLoggingIn" persistent max-width="600px">
           <LoginForm
@@ -43,7 +34,6 @@
         <v-dialog v-model="userSigningUp" persistent max-width="600px">
           <SignUpForm
             :signUpFormStatus="userSigningUp"
-            v-on:processing-user-sign-up-event="processingUserSignUp"
             v-on:user-signing-up-event="signUp"
           />
         </v-dialog>
@@ -71,6 +61,7 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmation.service";
@@ -108,7 +99,6 @@ export default {
       icon: "mdi-account-circle",
     },
     navDrawerStatus: null,
-    processingAPIRequest: false,
   }),
   methods: {
     ...mapActions("appModule", ["updateSelectedApp", "removeApps", ]),
@@ -219,10 +209,6 @@ export default {
         }
     },
 
-    processingUserSignUp() {
-      this.$data.processingAPIRequest = true;
-    },
-
     updateNavDrawer() {
       this.$data.navDrawerStatus = this.$data.navDrawerStatus ? false : true;
     },
@@ -231,8 +217,10 @@ export default {
     ...mapGetters("settingsModule", ["getUser"]),
   },
   watch: {
-    "$store.state.settingsModule.user": function () {
-      this.$data.user = this.getUser;
+    "$store.state.settingsModule.user": {
+      handler: function(val, oldVal) {
+        this.$data.user = this.getUser;
+      }
     },
   },
   async created() {

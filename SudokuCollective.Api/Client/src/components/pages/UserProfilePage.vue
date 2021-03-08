@@ -300,6 +300,23 @@
                 >
               </v-tooltip>
             </v-col>
+            <v-col>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="red darken-1"
+                    text
+                    @click="deleteUser"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Delete
+                  </v-btn>
+                </template>
+                <span>Delete your profile and all information collective wide</span>
+              </v-tooltip>
+            </v-col>
           </v-row>
         </v-container>
       </v-card-actions>
@@ -332,6 +349,7 @@ import { userService } from "@/services/userService/user.service";
 import { registerService } from "@/services/registerService/register.service";
 import { appService } from "@/services/appService/app.service";
 import EditProfileForm from "@/components/forms/EditProfileForm";
+import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
@@ -354,7 +372,11 @@ export default {
     editingProfile: false,
   }),
   methods: {
-    ...mapActions("settingsModule", ["updateUser"]),
+    ...mapActions("appModule", ["updateSelectedApp", "removeApps", ]),
+    ...mapActions("settingsModule", [
+      "updateAuthToken",
+      "updateUser",
+    ]),
 
     async resendEmailConfirmation() {
       const action = [
@@ -706,6 +728,71 @@ export default {
         actionToastOptions(action, "mode_edit")
       );
     },
+
+    async deleteUser() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              const response = await userService.deleteUser(this.$data.user.id);
+
+              if (response.status === 200) {
+
+                this.$data.user = new User();
+
+                this.$data.user.logout();
+
+                this.updateUser(this.$data.user);
+                this.updateAuthToken("");
+                this.updateSelectedApp(new App());
+                this.removeApps();
+
+                if (this.$router.currentRoute.path !== "/") {
+                  this.$router.push("/");
+                }
+
+                showToast(
+                  this,
+                  ToastMethods["info"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.data.message.substring(17),
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to delete your account?",
+        actionToastOptions(action, "delete")
+      );
+    },
     
     async refresh() {
       try {
@@ -713,11 +800,6 @@ export default {
       } catch (error) {
         showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
-    },
-
-    closeEditing() {
-      this.$data.user = this.$store.getters["settingsModule/getUser"];
-      this.$data.editingProfile = false;
     },
 
     async reset() {
@@ -729,6 +811,11 @@ export default {
       this.$data.user = new User(user);
       this.$data.user.login();
       this.updateUser(this.$data.user);
+    },
+
+    closeEditing() {
+      this.$data.user = this.$store.getters["settingsModule/getUser"];
+      this.$data.editingProfile = false;
     },
   },
   computed: {

@@ -103,6 +103,26 @@ const updateUser = async function (
   }
 };
 
+const deleteUser = async function(id) {
+  try {
+    const params = `/${id}`;
+
+    const config = {
+      method: "delete",
+      url: `${getUserEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+};
+
 const postRequestPasswordReset = async function (email) {
   try {
     const license = store.getters["settingsModule/getLicense"];
@@ -202,6 +222,7 @@ export const userService = {
   getUser,
   getUsers,
   updateUser,
+  deleteUser,
   postRequestPasswordReset,
   putResendPasswordReset,
   putCancelPasswordReset,

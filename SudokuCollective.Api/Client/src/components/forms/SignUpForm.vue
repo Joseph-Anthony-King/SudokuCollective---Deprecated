@@ -3,6 +3,18 @@
     <v-card-title>
       <span class="headline">Sign Up</span>
     </v-card-title>
+    <v-overlay
+      :absolute="absolute"
+      :value="processing"
+    >
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="100"
+        :width="10"
+        class="progress-circular"
+      ></v-progress-circular>
+    </v-overlay>
     <v-form v-model="signUpFormIsValid" ref="signUpForm">
       <v-card-text>
         <v-container>
@@ -154,6 +166,7 @@ export default {
     confirmPassword: "",
     signUpFormIsValid: true,
     showPassword: false,
+    processing: false,
     user: new User(),
     invalidUserNames: [],
     invalidEmails: [],
@@ -173,7 +186,7 @@ export default {
             )
           );
 
-          this.$emit("processing-user-sign-up-event", null, null);
+          this.$data.processing = true;
 
           if (response.status === 201) {
             this.$data.user = new User(response.data.user);
@@ -233,6 +246,9 @@ export default {
               defaultToastOptions()
             );
           }
+
+          this.$data.processing = false;
+
         } catch (error) {
           showToast(this, ToastMethods["error"], error, defaultToastOptions());
         }
