@@ -685,7 +685,9 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await appService.postObtainAdminPrivileges();
+              const response = await appService.postObtainAdminPrivileges(
+                this.$data.user.id,
+                this.getLicense);
 
               if (response.status === 200) {
                 await this.reset();
@@ -819,7 +821,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser"]),
+    ...mapGetters("settingsModule", ["getUser", "getLicense"]),
 
     displayDateCreated: function () {
       return convertStringToDateTime(this.$data.user.dateCreated);

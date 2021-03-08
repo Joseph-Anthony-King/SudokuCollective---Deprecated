@@ -1845,22 +1845,30 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IUserResult> PromoteToAdmin(IBaseRequest request)
+        public async Task<IUserResult> PromoteToAdmin(int userId, string license)
         {
             var result = new UserResult();
 
             try
             {
-                var appResult = await appsRepository.GetByLicense(request.License);
+                var appResult = await appsRepository.GetByLicense(license);
 
                 if (appResult.Success)
                 {
-                    var userResult = await usersRepository.GetById(request.RequestorId);
+                    var userResult = await usersRepository.GetById(userId);
 
                     if (userResult.Success)
                     {
                         var app = (App)appResult.Object;
                         var user = (User)userResult.Object;
+
+                        if (user.IsSuperUser)
+                        {
+                            result.Success = false;
+                            result.Message = UsersMessages.SuperUserCannotBePromotedMessage;
+
+                            return result;
+                        }
 
                         if (!await appsRepository.IsUserRegisteredToApp(
                             app.Id, 
@@ -1901,7 +1909,7 @@ namespace SudokuCollective.Data.Services
                         if (appAdminResult.Success)
                         {
                             result.User = (User)
-                                (await usersRepository.GetById(request.RequestorId))
+                                (await usersRepository.GetById(userId))
                                 .Object;
                             result.Success = appAdminResult.Success;
                             result.Message = UsersMessages.UserHasBeenPromotedToAdminMessage;

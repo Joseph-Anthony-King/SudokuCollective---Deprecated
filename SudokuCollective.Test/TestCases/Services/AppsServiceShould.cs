@@ -62,9 +62,9 @@ namespace SudokuCollective.Test.TestCases.Services
 
             sutPromoteUser = new AppsService(
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                MockUsersRepository.UsersRepositoryInitiatePasswordSuccessful.Object,
                 MockAppAdminsRepository.AppAdminsRepositoryPromoteUser.Object,
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object); ;
 
             dateCreated = DateTime.UtcNow;
             license = TestObjects.GetLicense();
@@ -462,7 +462,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutPromoteUser.PromoteToAdmin(TestObjects.GetBaseRequest());
+            var result = await sutPromoteUser.PromoteToAdmin(3, TestObjects.GetLicense());
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -476,7 +476,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutAppRepoFailure.PromoteToAdmin(TestObjects.GetBaseRequest());
+            var result = await sutAppRepoFailure.PromoteToAdmin(3, TestObjects.GetLicense());
 
             // Assert
             Assert.That(result.Success, Is.False);

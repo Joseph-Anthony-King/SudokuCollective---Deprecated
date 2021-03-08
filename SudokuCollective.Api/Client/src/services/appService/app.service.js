@@ -1,9 +1,11 @@
 import * as axios from "axios";
 import store from "@/store";
 import App from "@/models/app";
+import PageListModel from "@/models/viewModels/pageListModel"
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
 import { requestDataUpdateApp } from "@/helpers/appRequestData/appRequestData";
+import { appPromoteToAdminData } from "@/helpers/appRequestData/appPromoteToAdminData";
 import {
   getAppEnpoint,
   getByLicenseEnpoint,
@@ -155,13 +157,26 @@ const getAppUsers = async function (id, fullRecord) {
   }
 }
 
-const postObtainAdminPrivileges = async function () {
+const postObtainAdminPrivileges = async function (
+  userId,
+  license) {
   try {
+    const params = `/${userId}`;
+
+    const pageListModel = new PageListModel();
+
+    const payload = {
+      targetLicense: license,
+      pageListModel: pageListModel
+    }
+
+    const data = appPromoteToAdminData(payload);
+
     const config = {
       method: "post",
-      url: `${getObtainAdminPrivilegesEnpoint}`,
+      url: `${getObtainAdminPrivilegesEnpoint}${params}`,
       headers: requestHeader(),
-      data: requestData(),
+      data: data
     };
 
     const response = await axios(config);

@@ -156,7 +156,7 @@ export default {
             showToast(
               this,
               ToastMethods["info"],
-              "You are logged out.",
+              "You are logged out",
               defaultToastOptions()
             );
           },

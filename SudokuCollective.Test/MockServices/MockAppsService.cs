@@ -281,7 +281,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceSuccessfulRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<IBaseRequest>()))
+                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -559,7 +559,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceFailedRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<IBaseRequest>()))
+                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -860,7 +860,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceInvalidRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<IBaseRequest>()))
+                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -1156,7 +1156,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<IBaseRequest>()))
+                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -1170,7 +1170,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<IBaseRequest>()))
+                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository

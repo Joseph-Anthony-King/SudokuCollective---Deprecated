@@ -395,15 +395,19 @@ namespace SudokuCollective.Api.V1.Controllers
 
         // POST: api/apps/obtainAdminPrivileges
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost, Route("ObtainAdminPrivileges")]
-        public async Task<ActionResult> ObtainAdminPrivileges([FromBody] BaseRequest request)
+        [HttpPost, Route("ObtainAdminPrivileges/{userId}")]
+        public async Task<ActionResult> ObtainAdminPrivileges(
+            int userId, 
+            [FromBody] AppAdminRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.PromoteToAdmin(request);
+                var result = await appsService.PromoteToAdmin(
+                  userId, 
+                  request.TargetLicense);
 
                 if (result.Success)
                 {

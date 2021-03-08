@@ -110,6 +110,14 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import App from "@/models/app";
+import User from "@/models/user";
+import PageListModel from "@/models/viewModels/pageListModel";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import {
+  showToast,
+  defaultToastOptions,
+  actionToastOptions,
+} from "@/helpers/toastHelper";
 import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions"
 
 export default {
@@ -166,17 +174,116 @@ export default {
       }
     },
 
-    promoteToAdmins() {
-      console.log(this.$data.selectedUsers);
+    async promoteToAdmins() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+
+              let users = [];
+
+              this.$data.selectedUsers.forEach((user) => {
+                if (user.isAdmin === "No") {
+                  user.isAdmin = false;
+                } else {
+                  user.isAdmin = true;
+                }
+                
+                if (!user.isAdmin) {
+                  users.push(new User(user));
+                }
+
+                if (user.isAdmin === false) {
+                  user.isAdmin = "No";
+                } else {
+                  user.isAdmin = "Yes";
+                }
+              });
+              
+              let successes = 0;
+              let errors = 0;
+              let errorMessages = "";
+
+              for (const user of users) {
+
+                const data = {
+                  license: this.$data.app.license,
+                  requestorId: this.getRequestorId,
+                  appId: this.$data.app.id,
+                  pageListModel: new PageListModel()
+                };
+
+                const response = await appService.postObtainAdminPrivileges(
+                  user.id,
+                  this.$data.app.license
+                );
+
+                if (response.status === 200) {
+                  successes++;
+                } else {
+                  errors++;
+                  errorMessages = response.data.message.substring(17);
+                }
+              }
+
+              if (successes > 0 && errors === 0) {
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  defaultToastOptions()
+                );
+              } else if (successes > 0 && errors > 0) {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  `Some users were not promoted with the following message(s): ${errorMessages}`,
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  `Request failed with the following message(s): ${errorMessages}`,
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        "Are you sure you want to add admin privileges to these account?",
+        actionToastOptions(action, "mode_edit")
+      );
     },
   },
-  computed: {    
+  computed: {
+    ...mapGetters("settingsModule", ["getRequestorId"]),
     ...mapGetters("appModule", ["getSelectedApp"]),
 
     disableAdminButton() {
       // At least one selected user is not an admin
       return _.filter(this.$data.selectedUsers, function(user) { 
-        user.isAdmin;
+        user.isAdmin && user.id !== 1;
       }).length === 0;
     },
   },
@@ -194,12 +301,6 @@ export default {
 
           user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
         });
-      }
-    },
-    "selectedUsers": {
-      handler: function(val, oldVal) {
-        console.log("old value:", oldVal);
-        console.log("new value:", val);
       }
     },
   },
