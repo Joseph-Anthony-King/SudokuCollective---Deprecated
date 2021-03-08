@@ -10,7 +10,6 @@ using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Data.Models.ResultModels;
-using SudokuCollective.Core.Enums;
 using static SudokuCollective.Api.V1.Controllers.AppsController;
 
 namespace SudokuCollective.Test.TestCases.Controllers
@@ -203,7 +202,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.GetUsers(
+            var result = sutSuccess.GetAppUsers(
                 1,
                 baseRequest, 
                 true);
@@ -225,7 +224,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.GetUsers(
+            var result = sutFailure.GetAppUsers(
                 1,
                 baseRequest, 
                 true);
@@ -394,7 +393,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var messageThree = ((BadRequestObjectResult)resultThree.Result).Value;
             var statusCodeThree = ((BadRequestObjectResult)resultThree.Result).StatusCode;
 
-            var resultFour = sutInvalid.GetUsers(1, baseRequest, true);
+            var resultFour = sutInvalid.GetAppUsers(1, baseRequest, true);
             var messageFour = ((BadRequestObjectResult)resultFour.Result.Result).Value;
             var statusCodeFour = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
