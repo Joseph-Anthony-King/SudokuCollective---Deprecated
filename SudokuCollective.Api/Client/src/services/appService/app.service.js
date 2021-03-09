@@ -205,6 +205,8 @@ const postObtainAdminPrivileges = async function (
       data: data
     };
 
+    console.log("postObtainAdminPrivileges config:", config);
+
     const response = await axios(config);
 
     return response;
