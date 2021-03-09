@@ -132,9 +132,12 @@ export default {
     ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
 
     async refreshApp() {
+
       this.$data.app = this.getSelectedApp;
 
       const response = await appService.getNonAppUsers(this.$data.app.id);
+      
+      this.$data.nonAppUsers = [];
 
       if (response.data.success) {
         response.data.users.forEach((user) => {
@@ -220,8 +223,6 @@ export default {
               this.updateSelectedApp(this.$data.app);
               this.replaceApp(this.$data.app);
             }
-      
-            this.$data.nonAppUsers = [];
 
             this.refreshApp();
           },
