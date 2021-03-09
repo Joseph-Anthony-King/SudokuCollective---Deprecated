@@ -217,7 +217,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ILicenseResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
-                appService.AddAppUser(It.IsAny<int>(), It.IsAny<BaseRequest>()))
+                appService.AddAppUser(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -496,7 +496,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ILicenseResult));
 
             AppsServiceFailedRequest.Setup(appService =>
-                appService.AddAppUser(It.IsAny<int>(), It.IsAny<BaseRequest>()))
+                appService.AddAppUser(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -798,7 +798,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ILicenseResult));
 
             AppsServiceInvalidRequest.Setup(appService =>
-                appService.AddAppUser(It.IsAny<int>(), It.IsAny<BaseRequest>()))
+                appService.AddAppUser(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -1095,7 +1095,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ILicenseResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appService =>
-                appService.AddAppUser(It.IsAny<int>(), It.IsAny<BaseRequest>()))
+                appService.AddAppUser(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository

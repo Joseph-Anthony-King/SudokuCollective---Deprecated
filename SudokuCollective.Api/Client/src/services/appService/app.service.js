@@ -5,20 +5,21 @@ import PageListModel from "@/models/viewModels/pageListModel"
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
 import { requestDataUpdateApp } from "@/helpers/appRequestData/appRequestData";
-import { appPromoteToAdminData } from "@/helpers/appRequestData/appPromoteToAdminData";
+import { appUserRequestData } from "@/helpers/appRequestData/appUserRequestData";
 import {
   getAppEnpoint,
   getByLicenseEnpoint,
   getLicenseEndpoint,
   getMyAppsEndpoint,
   getObtainAdminPrivilegesEnpoint,
-  getTimeFramesEnpoint
+  getAddAppUserEndpoint,
+  getTimeFramesEnpoint,
 } from "./service.endpoints";
 
 const getApp = async function (id, fullRecord) {
   try {
     let params;
-    
+
     if (fullRecord === undefined) {
       params = `/${id}?fullRecord=false`;
     } else {
@@ -44,7 +45,7 @@ const getApp = async function (id, fullRecord) {
 const getByLicense = async function (data, fullRecord) {
   try {
     let params;
-    
+
     if (fullRecord === undefined) {
       params = "?fullRecord=false";
     } else {
@@ -87,7 +88,7 @@ const postLicense = async function (createAppModel) {
 
 const getLicense = async function (id) {
   try {
-    let params =`/${id}`;
+    let params = `/${id}`;
 
     const config = {
       method: "get",
@@ -108,7 +109,7 @@ const getLicense = async function (id) {
 const getMyApps = async function (fullRecord) {
   try {
     let params;
-    
+
     if (fullRecord === undefined) {
       params = "?fullRecord=false";
     } else {
@@ -134,7 +135,7 @@ const getMyApps = async function (fullRecord) {
 const getAppUsers = async function (id, fullRecord) {
   try {
     let params;
-    
+
     if (fullRecord === undefined) {
       params = `/${id}/getAppUsers?fullRecord=false`;
     } else {
@@ -160,7 +161,7 @@ const getAppUsers = async function (id, fullRecord) {
 const getNonAppUsers = async function (id, fullRecord) {
   try {
     let params;
-    
+
     if (fullRecord === undefined) {
       params = `/${id}/getNonAppUsers?fullRecord=false`;
     } else {
@@ -196,7 +197,7 @@ const postObtainAdminPrivileges = async function (
       pageListModel: pageListModel
     }
 
-    const data = appPromoteToAdminData(payload);
+    const data = appUserRequestData(payload);
 
     const config = {
       method: "post",
@@ -323,6 +324,38 @@ const resetApp = async function (app) {
   }
 }
 
+const putAddUser = async function (
+  userId,
+  license) {
+
+  try {
+    let params = `/${userId}`;
+
+    const pageListModel = new PageListModel();
+
+    const payload = {
+      targetLicense: license,
+      pageListModel: pageListModel
+    }
+
+    const data = appUserRequestData(payload);
+
+    const config = {
+      method: "put",
+      url: `${getAddAppUserEndpoint}${params}`,
+      headers: requestHeader(),
+      data: data,
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
 const getTimeFrames = async function () {
   try {
     const config = {
@@ -351,5 +384,6 @@ export const appService = {
   updateApp,
   deleteApp,
   resetApp,
+  putAddUser,
   getTimeFrames,
 };

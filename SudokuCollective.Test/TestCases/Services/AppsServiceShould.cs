@@ -279,7 +279,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.AddAppUser(3, baseRequest);
+            var result = await sut.AddAppUser(3, TestObjects.GetLicense());
             var appUsers = context.Users.Where(u => u.Apps.Any(ua => ua.AppId == 1)).ToList();
 
             // Assert

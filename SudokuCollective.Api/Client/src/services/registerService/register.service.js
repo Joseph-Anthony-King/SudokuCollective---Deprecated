@@ -1,7 +1,7 @@
 import * as axios from "axios";
 import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
-import { getRegisterEndpoint, getResendEmailConfirmationEndpoint } from "./service.endpoints";
+import { getRegisterEndpoint, getResendEmailConfirmationEndpoint, } from "./service.endpoints";
 
 const postSignUp = async function (signUpModel) {
 

@@ -267,14 +267,16 @@ namespace SudokuCollective.Api.V1.Controllers
         // PUT: api/apps/adduser/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut, Route("AddUser/{userId}")]
-        public async Task<IActionResult> AddUser(int userId, [FromBody] BaseRequest request)
+        public async Task<IActionResult> AddUser(
+            int userId,
+            [FromBody] AppUserRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.AddAppUser(userId, request);
+                var result = await appsService.AddAppUser(userId, request.TargetLicense);
 
                 if (result.Success)
                 {
@@ -439,7 +441,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost, Route("ObtainAdminPrivileges/{userId}")]
         public async Task<ActionResult> ObtainAdminPrivileges(
             int userId, 
-            [FromBody] AppAdminRequest request)
+            [FromBody] AppUserRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,

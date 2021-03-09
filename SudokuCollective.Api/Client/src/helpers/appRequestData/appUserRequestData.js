@@ -1,7 +1,7 @@
 import store from "@/store";
 import { requestData } from "@/helpers/requestData";
 
-export function appPromoteToAdminData(payload) {
+export function appUserRequestData(payload) {
   const data = {
     license: store.getters["settingsModule/getLicense"],
     requestorId: store.getters["settingsModule/getRequestorId"],

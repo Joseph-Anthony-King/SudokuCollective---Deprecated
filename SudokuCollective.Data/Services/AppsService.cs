@@ -1545,17 +1545,17 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> AddAppUser(int userId, IBaseRequest request)
+        public async Task<IBaseResult> AddAppUser(int userId, string license)
         {
             var result = new BaseResult();
 
             try
             {
-                if (await appsRepository.IsAppLicenseValid(request.License))
+                if (await appsRepository.IsAppLicenseValid(license))
                 {
                     var addUserToAppResponse = await appsRepository.AddAppUser(
                         userId,
-                        request.License);
+                        license);
 
                     if (addUserToAppResponse.Success)
                     {
