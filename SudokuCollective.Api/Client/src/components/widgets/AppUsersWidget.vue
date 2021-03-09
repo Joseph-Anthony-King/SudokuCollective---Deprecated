@@ -210,13 +210,6 @@ export default {
 
               for (const user of users) {
 
-                const data = {
-                  license: this.$data.app.license,
-                  requestorId: this.getRequestorId,
-                  appId: this.$data.app.id,
-                  pageListModel: new PageListModel()
-                };
-
                 const response = await appService.postObtainAdminPrivileges(
                   user.id,
                   this.$data.app.license
@@ -284,7 +277,7 @@ export default {
     filterNonAdmins() {
       const filteredArray = _.filter(this.$data.selectedUsers, 
         function(user) { 
-          return user.isAdmin === "No";
+          return user.isAdmin === "No" && user.id !== 1;
         });
       return filteredArray.length > 0;
     }
