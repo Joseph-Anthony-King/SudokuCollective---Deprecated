@@ -75,7 +75,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  Refresh List
+                  Refresh App
                 </v-btn>
               </template>
               <span>Get your latest app data from the api</span>
