@@ -67,7 +67,7 @@ namespace SudokuCollective.Data.Services
 
                             foreach (var userApp in app.Users)
                             {
-                                if (app.Id != 1 && userApp
+                                if (userApp
                                     .User
                                     .Roles
                                     .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
@@ -200,7 +200,7 @@ namespace SudokuCollective.Data.Services
 
                             foreach (var userApp in app.Users)
                             {
-                                if (app.Id != 1 && userApp
+                                if (userApp
                                     .User
                                     .Roles
                                     .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
@@ -534,7 +534,7 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var userApp in app.Users)
                             {
-                                if (app.Id != 1 && userApp
+                                if (userApp
                                     .User
                                     .Roles
                                     .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
@@ -876,7 +876,7 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var userApp in app.Users)
                             {
-                                if (app.Id != 1 && userApp
+                                if (userApp
                                     .User
                                     .Roles
                                     .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
@@ -1595,17 +1595,27 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> RemoveAppUser(int userId, IBaseRequest request)
+        public async Task<IBaseResult> RemoveAppUser(int userId, string license)
         {
             var result = new BaseResult();
 
             try
             {
-                if (await appsRepository.IsAppLicenseValid(request.License))
+                if (await appsRepository.IsAppLicenseValid(license))
                 {
+                    var app = (App)(await appsRepository.GetByLicense(license)).Object;
+
+                    if (app.OwnerId == userId)
+                    {
+                        result.Success = false;
+                        result.Message = AppsMessages.UserIsTheAppOwnerMessage;
+
+                        return result;
+                    }
+
                     var addUserToAppResponse = await appsRepository.RemoveAppUser(
                         userId,
-                        request.License);
+                        license);
 
                     if (addUserToAppResponse.Success)
                     {
@@ -1700,6 +1710,14 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
+                        if (id == 1)
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.AdminAppCannotBeDeletedMessage;
+
+                            return result;
+                        }
+
                         if (getAppResponse.Success)
                         {
                             var deleteAppResponse = await appsRepository.Delete((App)getAppResponse.Object);
@@ -1889,14 +1907,35 @@ namespace SudokuCollective.Data.Services
                         {
                             _ = await appsRepository.AddAppUser(user.Id, app.License);
                         }
-
-                        if (await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
+                        else
                         {
-                            result.Success = appResult.Success;
-                            result.Message = UsersMessages.UserIsAlreadyAnAdminMessage;
+                            if (await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
+                            {
+                                var adminRecord = (AppAdmin)(await appAdminsRepository
+                                    .GetAdminRecord(app.Id, user.Id)).Object;
 
-                            return result;
+                                if (adminRecord.IsActive)
+                                {
+                                    result.Success = appResult.Success;
+                                    result.Message = UsersMessages.UserIsAlreadyAnAdminMessage;
+
+                                    return result;
+                                }
+                                else
+                                {
+                                    adminRecord.IsActive = true;
+
+                                    var adminRecordUpdateResult = await appAdminsRepository
+                                        .Update(adminRecord);
+
+                                    result.Success = adminRecordUpdateResult.Success;
+                                    result.Message = UsersMessages.UserHasBeenPromotedToAdminMessage;
+
+                                    return result;
+                                }
+                            }
                         }
+
 
                         if (!user.IsAdmin)
                         {
@@ -1982,17 +2021,17 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IUserResult> ActivateAdminPrivileges(IBaseRequest request)
+        public async Task<IUserResult> ActivateAdminPrivileges(int userId, string license)
         {
             var result = new UserResult();
 
             try
             {
-                var appResult = await appsRepository.GetByLicense(request.License);
+                var appResult = await appsRepository.GetByLicense(license);
 
                 if (appResult.Success)
                 {
-                    var userResult = await usersRepository.GetById(request.RequestorId);
+                    var userResult = await usersRepository.GetById(userId);
 
                     if (userResult.Success)
                     {
@@ -2087,17 +2126,17 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IUserResult> DeactivateAdminPrivileges(IBaseRequest request)
+        public async Task<IUserResult> DeactivateAdminPrivileges(int userId, string license)
         {
             var result = new UserResult();
 
             try
             {
-                var appResult = await appsRepository.GetByLicense(request.License);
+                var appResult = await appsRepository.GetByLicense(license);
 
                 if (appResult.Success)
                 {
-                    var userResult = await usersRepository.GetById(request.RequestorId);
+                    var userResult = await usersRepository.GetById(userId);
 
                     if (userResult.Success)
                     {
@@ -2114,7 +2153,7 @@ namespace SudokuCollective.Data.Services
 
                         if (!await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
                         {
-                            result.Success = appResult.Success;
+                            result.Success = false;
                             result.Message = AppsMessages.UserIsNotAnAssignedAdminMessage;
 
                             return result;

@@ -82,43 +82,40 @@ namespace SudokuCollective.Data.Services
 
             var appAdmins = (await appAdminsRepository.GetAll()).Objects.ConvertAll(aa => (AppAdmin)aa);
 
-            if (app.Id != 1)
+            if (!user.IsSuperUser)
             {
-                if (!user.IsSuperUser)
+                if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
                 {
-                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                    if (!appAdmins.Any(aa => aa.AppId == app.Id && aa.UserId == user.Id && aa.IsActive))
                     {
-                        if (!appAdmins.Any(aa => aa.AppId == app.Id && aa.UserId == user.Id && aa.IsActive))
-                        {
-                            var adminRole = user
-                                .Roles
-                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+                        var adminRole = user
+                            .Roles
+                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
 
-                            user.Roles.Remove(adminRole);
-                        }
+                        user.Roles.Remove(adminRole);
                     }
                 }
-                else
+            }
+            else
+            {
+                if (!app.PermitSuperUserAccess)
                 {
-                    if (!app.PermitSuperUserAccess)
+                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
                     {
-                        if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                        {
-                            var superUserRole = user
-                                .Roles
-                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+                        var superUserRole = user
+                            .Roles
+                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
 
-                            user.Roles.Remove(superUserRole);
-                        }
+                        user.Roles.Remove(superUserRole);
+                    }
 
-                        if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                        {
-                            var adminRole = user
-                                .Roles
-                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                    {
+                        var adminRole = user
+                            .Roles
+                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
 
-                            user.Roles.Remove(adminRole);
-                        }
+                        user.Roles.Remove(adminRole);
                     }
                 }
             }

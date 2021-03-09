@@ -29,5 +29,7 @@
         public static string ActivationOfAdminPrivilegesFailedMessage = "Activation Of Admin Privileges Failed";
         public static string AdminPrivilegesDeactivatedMessage = "Admin Privileges Deactivated";
         public static string DeactivationOfAdminPrivilegesFailedMessage = "Deactivation Of Admin Privileges Failed";
+        public static string AdminAppCannotBeDeletedMessage = "Admin App Cannot Be Deleted";
+        public static string UserIsTheAppOwnerMessage = "User Is The App Owner";
     }
 }

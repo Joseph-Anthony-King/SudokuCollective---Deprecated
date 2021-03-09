@@ -12,6 +12,7 @@ import {
   getLicenseEndpoint,
   getMyAppsEndpoint,
   getObtainAdminPrivilegesEnpoint,
+  getDeactivateAdminPrivilegesEnpoint,
   getAddAppUserEndpoint,
   getTimeFramesEnpoint,
 } from "./service.endpoints";
@@ -186,11 +187,23 @@ const getNonAppUsers = async function (id, fullRecord) {
 
 const postObtainAdminPrivileges = async function (
   userId,
-  license) {
+  license,
+  pagination) {
   try {
     const params = `/${userId}`;
+    let pageListModel;
 
-    const pageListModel = new PageListModel();
+    if (pagination === undefined) {
+      pageListModel = new PageListModel();
+    } else {
+      pageListModel = new PageListModel(
+        pagination.page,
+        pagination.itemsPerPage,
+        pagination.sortBy,
+        pagination.orderByDescending,
+        pagination.includeCompletedGames
+      );
+    }
 
     const payload = {
       targetLicense: license,
@@ -202,6 +215,51 @@ const postObtainAdminPrivileges = async function (
     const config = {
       method: "post",
       url: `${getObtainAdminPrivilegesEnpoint}${params}`,
+      headers: requestHeader(),
+      data: data
+    };
+
+    console.log("postObtainAdminPrivileges config:", config);
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+};
+
+const putDeactivateAdminPrivileges = async function (
+  userId,
+  license,
+  pagination) {
+  try {
+    const params = `/${userId}`;
+    let pageListModel;
+
+    if (pagination === undefined) {
+      pageListModel = new PageListModel();
+    } else {
+      pageListModel = new PageListModel(
+        pagination.page,
+        pagination.itemsPerPage,
+        pagination.sortBy,
+        pagination.orderByDescending,
+        pagination.includeCompletedGames
+      );
+    }
+
+    const payload = {
+      targetLicense: license,
+      pageListModel: pageListModel
+    }
+
+    const data = appUserRequestData(payload);
+
+    const config = {
+      method: "put",
+      url: `${getDeactivateAdminPrivilegesEnpoint}${params}`,
       headers: requestHeader(),
       data: data
     };
@@ -326,12 +384,23 @@ const resetApp = async function (app) {
 
 const putAddUser = async function (
   userId,
-  license) {
-
+  license,
+  pagination) {
   try {
-    let params = `/${userId}`;
+    const params = `/${userId}`;
+    let pageListModel;
 
-    const pageListModel = new PageListModel();
+    if (pagination === undefined) {
+      pageListModel = new PageListModel();
+    } else {
+      pageListModel = new PageListModel(
+        pagination.page,
+        pagination.itemsPerPage,
+        pagination.sortBy,
+        pagination.orderByDescending,
+        pagination.includeCompletedGames
+      );
+    }
 
     const payload = {
       targetLicense: license,
@@ -381,6 +450,7 @@ export const appService = {
   getAppUsers,
   getNonAppUsers,
   postObtainAdminPrivileges,
+  putDeactivateAdminPrivileges,
   updateApp,
   deleteApp,
   resetApp,

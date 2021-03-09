@@ -294,7 +294,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.RemoveAppUser(2, baseRequest);
+            var result = await sut.RemoveAppUser(2, TestObjects.GetLicense());
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -491,7 +491,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut
-                .ActivateAdminPrivileges(TestObjects.GetBaseRequest());
+                .ActivateAdminPrivileges(3, TestObjects.GetLicense());
 
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());
@@ -509,7 +509,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sutAppRepoFailure
-                .ActivateAdminPrivileges(TestObjects.GetBaseRequest());
+                .ActivateAdminPrivileges(3, TestObjects.GetLicense());
 
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());
@@ -527,7 +527,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut
-                .DeactivateAdminPrivileges(TestObjects.GetBaseRequest());
+                .DeactivateAdminPrivileges(3, TestObjects.GetLicense());
 
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());
@@ -545,7 +545,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sutAppRepoFailure
-                .DeactivateAdminPrivileges(TestObjects.GetBaseRequest());
+                .DeactivateAdminPrivileges(3, TestObjects.GetLicense());
 
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());

@@ -99,7 +99,7 @@ namespace SudokuCollective.Data.Services
                             .ConvertAll(aa => (AppAdmin)aa)
                             .ToList();
 
-                        if (app.Id != 1 && result
+                        if (result
                             .User
                             .Roles
                             .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
@@ -462,7 +462,7 @@ namespace SudokuCollective.Data.Services
 
                     foreach (var user in result.Users)
                     {
-                        if (app.Id != 1 && user
+                        if (user
                             .Roles
                             .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
                         {

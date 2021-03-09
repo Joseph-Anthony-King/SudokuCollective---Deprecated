@@ -278,7 +278,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.RemoveUser(3, baseRequest);
+            var result = sutSuccess.RemoveUser(3, appUserRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -295,7 +295,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.RemoveUser(3, baseRequest);
+            var result = sutFailure.RemoveUser(3, appUserRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -401,7 +401,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var messageFive = ((BadRequestObjectResult)resultFive.Result).Value;
             var statusCodeFive = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
-            var resultSix = sutInvalid.RemoveUser(3, baseRequest);
+            var resultSix = sutInvalid.RemoveUser(3, appUserRequest);
             var messageSix = ((BadRequestObjectResult)resultSix.Result).Value;
             var statusCodeSix = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
@@ -537,7 +537,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.ActivateAdminPrivileges(baseRequest);
+            var result = sutSuccess.ActivateAdminPrivileges(3, appUserRequest);
             var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
             var user = ((UserResult)((OkObjectResult)result.Result).Value).User;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
@@ -556,7 +556,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutPromoteUserFailure.ActivateAdminPrivileges(baseRequest);
+            var result = sutPromoteUserFailure.ActivateAdminPrivileges(3, appUserRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -573,7 +573,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.DeactivateAdminPrivileges(baseRequest);
+            var result = sutSuccess.DeactivateAdminPrivileges(3, appUserRequest);
             var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
             var user = ((UserResult)((OkObjectResult)result.Result).Value).User;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
@@ -592,7 +592,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutPromoteUserFailure.DeactivateAdminPrivileges(baseRequest);
+            var result = sutPromoteUserFailure.DeactivateAdminPrivileges(3, appUserRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 

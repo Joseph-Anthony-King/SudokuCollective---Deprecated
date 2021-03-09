@@ -95,7 +95,24 @@
                   Promote to Admins
                 </v-btn>
               </template>
-              <span>Provide the selected uses with admin rights to this app</span>
+              <span>Provide the selected users with admin rights to this app</span>
+            </v-tooltip>
+          </v-col>
+          <v-col v-if="filterAdmins">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text
+                  @click="demoteAdmins"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Demote Admins
+                </v-btn>
+              </template>
+              <span>Demote the selected users admin rights to this app</span>
             </v-tooltip>
           </v-col>
         </v-row>
@@ -273,6 +290,104 @@ export default {
         actionToastOptions(action, "mode_edit")
       );
     },
+
+    async demoteAdmins() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+
+              let users = [];
+
+              this.$data.selectedUsers.forEach((user) => {
+                if (user.isAdmin === "No") {
+                  user.isAdmin = false;
+                } else {
+                  user.isAdmin = true;
+                }
+                
+                if (user.isAdmin && user.id !== 1) {
+                  users.push(new User(user));
+                }
+
+                if (user.isAdmin === false) {
+                  user.isAdmin = "No";
+                } else {
+                  user.isAdmin = "Yes";
+                }
+              });
+              
+              let successes = 0;
+              let errors = 0;
+              let errorMessages = "";
+
+              for (const user of users) {
+
+                const response = await appService.putDeactivateAdminPrivileges(
+                  user.id,
+                  this.$data.app.license
+                );
+
+                if (response.status === 200) {
+                  successes++;
+                } else {
+                  errors++;
+                  errorMessages = response.data.message.substring(17);
+                }
+              }
+
+              if (successes > 0 && errors === 0) {
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  `Users have been demoted from admins for ${this.$data.app.name}`,
+                  defaultToastOptions()
+                );
+              } else if (successes > 0 && errors > 0) {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  `Some users were not demoted with the following message(s): ${errorMessages}`,
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  `Request failed with the following message(s): ${errorMessages}`,
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+            
+            this.refreshApp();
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        `Are you sure you want to demote these admin users for ${this.$data.app.name}?`,
+        actionToastOptions(action, "mode_edit")
+      );
+    }
   },
   computed: {
     ...mapGetters("settingsModule", ["getRequestorId"]),
@@ -282,6 +397,14 @@ export default {
       const filteredArray = _.filter(this.$data.selectedUsers, 
         function(user) { 
           return user.isAdmin === "No" && user.id !== 1;
+        });
+      return filteredArray.length > 0;
+    },
+
+    filterAdmins() {
+      const filteredArray = _.filter(this.$data.selectedUsers, 
+        function(user) { 
+          return user.isAdmin === "Yes" && user.id !== 1;
         });
       return filteredArray.length > 0;
     }

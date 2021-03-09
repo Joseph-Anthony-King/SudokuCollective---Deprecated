@@ -829,6 +829,13 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
 
+                if (app.OwnerId == user.Id)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
                 user.Games = new List<Game>();
 
                 user.Games = await context

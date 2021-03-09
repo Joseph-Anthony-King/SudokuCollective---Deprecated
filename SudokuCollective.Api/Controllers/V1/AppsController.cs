@@ -300,14 +300,14 @@ namespace SudokuCollective.Api.V1.Controllers
         // DELETE: api/apps/removeuser/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete, Route("RemoveUser/{userId}")]
-        public async Task<IActionResult> RemoveUser(int userId, [FromBody] BaseRequest request)
+        public async Task<IActionResult> RemoveUser(int userId, [FromBody] AppUserRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.RemoveAppUser(userId, request);
+                var result = await appsService.RemoveAppUser(userId, request.TargetLicense);
 
                 if (result.Success)
                 {
@@ -329,7 +329,7 @@ namespace SudokuCollective.Api.V1.Controllers
         }
 
         // PUT: api/apps/5/activateapp
-        [Authorize(Roles = "SUPERUSER")]
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut, Route("{id}/ActivateApp")]
         public async Task<IActionResult> ActivateApp(int id)
         {
@@ -350,7 +350,7 @@ namespace SudokuCollective.Api.V1.Controllers
         }
 
         // PUT: api/apps/5/deactivateapp
-        [Authorize(Roles = "SUPERUSER")]
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut, Route("{id}/DeactivateApp")]
         public async Task<IActionResult> DeactivateApp(int id)
         {
@@ -471,17 +471,21 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/apps/activateAdminPrivileges
+        // PUT: api/apps/activateAdminPrivileges/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut, Route("ActivateAdminPrivileges")]
-        public async Task<ActionResult> ActivateAdminPrivileges([FromBody] BaseRequest request)
+        [HttpPut, Route("ActivateAdminPrivileges/{userId}")]
+        public async Task<ActionResult> ActivateAdminPrivileges(
+            int userId,
+            [FromBody] AppUserRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.ActivateAdminPrivileges(request);
+                var result = await appsService.ActivateAdminPrivileges(
+                    userId, 
+                    request.TargetLicense);
 
                 if (result.Success)
                 {
@@ -502,17 +506,21 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/apps/deactivateAdminPrivileges
+        // PUT: api/apps/deactivateAdminPrivileges/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut, Route("DeactivateAdminPrivileges")]
-        public async Task<ActionResult> DeactivateAdminPrivileges([FromBody] BaseRequest request)
+        [HttpPut, Route("DeactivateAdminPrivileges/{userId}")]
+        public async Task<ActionResult> DeactivateAdminPrivileges(
+            int userId,
+            [FromBody] AppUserRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.DeactivateAdminPrivileges(request);
+                var result = await appsService.DeactivateAdminPrivileges(
+                    userId,
+                    request.TargetLicense);
 
                 if (result.Success)
                 {
