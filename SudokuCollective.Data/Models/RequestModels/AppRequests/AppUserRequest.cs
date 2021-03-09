@@ -4,7 +4,7 @@ using SudokuCollective.Data.Models.PageModels;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
-    public class AppAdminRequest : IAppAdminRequest
+    public class AppUserRequest : IAppUserRequest
     {
         public string TargetLicense { get; set; }
         public string License { get; set; }
@@ -12,7 +12,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         public int AppId { get; set; }
         public IPageListModel PageListModel { get; set; }
 
-        public AppAdminRequest() : base()
+        public AppUserRequest() : base()
         {
             TargetLicense = string.Empty;
             License = string.Empty;

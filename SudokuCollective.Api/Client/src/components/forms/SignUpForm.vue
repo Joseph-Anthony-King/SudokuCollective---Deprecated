@@ -4,7 +4,6 @@
       <span class="headline">Sign Up</span>
     </v-card-title>
     <v-overlay
-      :absolute="absolute"
       :value="processing"
     >
       <v-progress-circular
@@ -175,6 +174,8 @@ export default {
     async submit() {
       if (this.getSignUpFormStatus) {
         try {
+          this.$data.processing = true;
+
           const response = await registerService.postSignUp(
             new SignUpModel(
               this.$data.username,
@@ -185,8 +186,6 @@ export default {
               this.$data.password
             )
           );
-
-          this.$data.processing = true;
 
           if (response.status === 201) {
             this.$data.user = new User(response.data.user);

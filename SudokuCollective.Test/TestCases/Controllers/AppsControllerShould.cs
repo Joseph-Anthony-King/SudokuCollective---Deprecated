@@ -24,7 +24,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
         private AppRequest appRequest;
-        private AppAdminRequest appAdminRequest;
+        private AppUserRequest appUserRequest;
 
         [SetUp]
         public async Task Setup()
@@ -36,7 +36,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             appRequest = TestObjects.GetAppRequest();
 
-            appAdminRequest = new AppAdminRequest
+            appUserRequest = new AppUserRequest
             {
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
@@ -244,7 +244,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.AddUser(3, baseRequest);
+            var result = sutSuccess.AddUser(3, appUserRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -261,7 +261,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.AddUser(3, baseRequest);
+            var result = sutFailure.AddUser(3, appUserRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -397,7 +397,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var messageFour = ((BadRequestObjectResult)resultFour.Result.Result).Value;
             var statusCodeFour = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
-            var resultFive = sutInvalid.AddUser(3, baseRequest);
+            var resultFive = sutInvalid.AddUser(3, appUserRequest);
             var messageFive = ((BadRequestObjectResult)resultFive.Result).Value;
             var statusCodeFive = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
@@ -501,7 +501,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.ObtainAdminPrivileges(3, appAdminRequest);
+            var result = sutSuccess.ObtainAdminPrivileges(3, appUserRequest);
             var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
             var user = ((UserResult)((OkObjectResult)result.Result).Value).User;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
@@ -520,7 +520,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutPromoteUserFailure.ObtainAdminPrivileges(3, appAdminRequest);
+            var result = sutPromoteUserFailure.ObtainAdminPrivileges(3, appUserRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 

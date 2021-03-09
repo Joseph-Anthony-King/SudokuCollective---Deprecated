@@ -112,7 +112,6 @@ import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import App from "@/models/app";
 import User from "@/models/user";
-import PageListModel from "@/models/viewModels/pageListModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -173,6 +172,8 @@ export default {
         this.updateSelectedApp(this.$data.app);
         this.replaceApp(this.$data.app);
       }
+
+      this.$data.selectedUsers = [];
     },
 
     async promoteToAdmins() {
@@ -227,6 +228,7 @@ export default {
                 showToast(
                   this,
                   ToastMethods["success"],
+                  `Users have been promoted to admins for ${this.$data.app.name}`,
                   defaultToastOptions()
                 );
               } else if (successes > 0 && errors > 0) {
@@ -252,6 +254,8 @@ export default {
                 defaultToastOptions()
               );
             }
+            
+            this.refreshApp();
           },
         },
         {
@@ -265,7 +269,7 @@ export default {
       showToast(
         this,
         ToastMethods["show"],
-        "Are you sure you want to add admin privileges to these account?",
+        `Are you sure you want to promote these users to admins for ${this.$data.app.name}?`,
         actionToastOptions(action, "mode_edit")
       );
     },

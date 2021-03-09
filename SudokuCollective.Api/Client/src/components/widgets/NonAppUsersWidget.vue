@@ -48,15 +48,64 @@
         </v-data-table>
       </v-container>
     </v-card-text>
+    <hr />
+    <v-card-title class="justify-center">Available Actions</v-card-title>
+    <v-card-actions>
+      <v-container>
+        <v-row dense>
+          <v-col>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text
+                  @click="refreshApp"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Refresh App
+                </v-btn>
+              </template>
+              <span>Get your latest app data from the api</span>
+            </v-tooltip>
+          </v-col>
+          <v-col v-if="selectedUsers.length > 0">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="button-full"
+                  color="blue darken-1"
+                  text
+                  @click="addUsers"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Add Users
+                </v-btn>
+              </template>
+              <span>Add registered users to your app</span>
+            </v-tooltip>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 /* eslint-disable no-unused-vars */
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import App from "@/models/app";
 import User from "@/models/user";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import {
+  showToast,
+  defaultToastOptions,
+  actionToastOptions,
+} from "@/helpers/toastHelper";
 import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
@@ -79,48 +128,132 @@ export default {
       { text: "Signed Up Date", value: "signedUpDate" },
     ],
   }),
+  methods: {
+    ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
+
+    async refreshApp() {
+      this.$data.app = this.getSelectedApp;
+
+      const response = await appService.getNonAppUsers(this.$data.app.id);
+
+      if (response.data.success) {
+        response.data.users.forEach((user) => {
+          this.$data.nonAppUsers.push(new User(user));
+        });        
+      }
+      
+      if (this.$data.nonAppUsers.length > 0) {
+        this.$data.nonAppUsers.forEach((user) => {
+          user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
+        });
+      }
+    },
+
+    async addUsers() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              
+              let successes = 0;
+              let errors = 0;
+              let errorMessages = "";
+
+              for (const user of this.$data.selectedUsers) {
+
+                const response = await appService.putAddUser(
+                  user.id,
+                  this.$data.app.license
+                );
+
+                if (response.status === 200) {
+                  successes++;
+                } else {
+                  errors++;
+                  errorMessages = response.data.message.substring(17);
+                }
+              }
+
+              if (successes > 0 && errors === 0) {
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  `Users have been added to ${this.$data.app.name}`,
+                  defaultToastOptions()
+                );
+              } else if (successes > 0 && errors > 0) {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  `Some users were not added with the following message(s): ${errorMessages}`,
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  `Request failed with the following message(s): ${errorMessages}`,
+                  defaultToastOptions()
+                );
+              }
+
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+            
+            var appResponse = await appService.getApp(this.$data.app.id, true);
+
+            if (appResponse.data.success) {
+              this.$data.app = new App(appResponse.data.app);
+              const licenseResponse = await appService.getLicense(this.$data.app.id);
+              if (licenseResponse.data.success) {
+                this.$data.app.updateLicense(licenseResponse.data.license);
+              }
+              this.updateSelectedApp(this.$data.app);
+              this.replaceApp(this.$data.app);
+            }
+      
+            this.$data.nonAppUsers = [];
+
+            this.refreshApp();
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        `Are you sure you want to add this users to ${this.$data.app.name}?`,
+        actionToastOptions(action, "mode_edit")
+      );
+    }
+  },
   computed: {
     ...mapGetters("appModule", ["getSelectedApp"]),
   },
   watch: {
     "$store.state.appModule.selectedApp": {
-      handler: async function(val, oldVal) {
-        this.$data.app = new App(this.getSelectedApp);
-        this.nonAppUsers = [];
-
-        const response = await appService.getNonAppUsers(this.$data.app.id);
-
-        if (response.data.success) {
-          response.data.users.forEach((user) => {
-            this.nonAppUsers.push(new User(user));
-          });        
-        }
-        
-        if (this.nonAppUsers.length > 0) {
-          this.nonAppUsers.forEach((user) => {
-            user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
-          });
-        }
+      handler: function(val, oldVal) {
+        this.refreshApp();
       }
     },
   },
-  async created() {
-    this.$data.app = new App(this.getSelectedApp);
-    this.nonAppUsers = [];
-
-    const response = await appService.getNonAppUsers(this.$data.app.id);
-
-    if (response.data.success) {
-      response.data.users.forEach((user) => {
-        this.nonAppUsers.push(new User(user));
-      });        
-    }
-    
-    if (this.nonAppUsers.length > 0) {
-      this.nonAppUsers.forEach((user) => {
-        user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
-      });
-    }
+  created() {
+    this.refreshApp();
   },
 }
 </script>

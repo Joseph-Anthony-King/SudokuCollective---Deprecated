@@ -1,6 +1,6 @@
 ﻿namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
 {
-    public interface IAppAdminRequest : IBaseRequest
+    public interface IAppUserRequest : IBaseRequest
     {
         string TargetLicense { get; set; }
     }
