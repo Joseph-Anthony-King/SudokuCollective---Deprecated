@@ -1394,6 +1394,14 @@ namespace SudokuCollective.Data.Services
                 {
                     var userResponse = await usersRepository.GetById(id);
 
+                    if (((User)userResponse.Object).Id == 1 && ((User)userResponse.Object).IsSuperUser)
+                    {
+                        result.Success = false;
+                        result.Message = UsersMessages.SuperUserCannotBeDeletedMessage;
+
+                        return result;
+                    }
+
                     if (userResponse.Success)
                     {
                         var deletionResponse = await usersRepository.Delete((User)userResponse.Object);

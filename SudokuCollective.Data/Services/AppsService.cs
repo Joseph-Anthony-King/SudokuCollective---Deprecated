@@ -1545,17 +1545,18 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> AddAppUser(int userId, string license)
+        public async Task<IBaseResult> AddAppUser(int appId, int userId)
         {
             var result = new BaseResult();
 
             try
             {
-                if (await appsRepository.IsAppLicenseValid(license))
+                if (await appsRepository.HasEntity(appId))
                 {
+                    var app = (App)(await appsRepository.GetById(appId)).Object;
                     var addUserToAppResponse = await appsRepository.AddAppUser(
                         userId,
-                        license);
+                        app.License);
 
                     if (addUserToAppResponse.Success)
                     {
@@ -1595,15 +1596,15 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> RemoveAppUser(int userId, string license)
+        public async Task<IBaseResult> RemoveAppUser(int appId, int userId)
         {
             var result = new BaseResult();
 
             try
             {
-                if (await appsRepository.IsAppLicenseValid(license))
+                if (await appsRepository.HasEntity(appId))
                 {
-                    var app = (App)(await appsRepository.GetByLicense(license)).Object;
+                    var app = (App)(await appsRepository.GetById(appId)).Object;
 
                     if (app.OwnerId == userId)
                     {
@@ -1615,7 +1616,7 @@ namespace SudokuCollective.Data.Services
 
                     var addUserToAppResponse = await appsRepository.RemoveAppUser(
                         userId,
-                        license);
+                        app.License);
 
                     if (addUserToAppResponse.Success)
                     {
@@ -1875,13 +1876,13 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IUserResult> PromoteToAdmin(int userId, string license)
+        public async Task<IUserResult> ActivateAdminPrivileges(int appId, int userId)
         {
             var result = new UserResult();
 
             try
             {
-                var appResult = await appsRepository.GetByLicense(license);
+                var appResult = await appsRepository.GetById(appId);
 
                 if (appResult.Success)
                 {
@@ -1916,7 +1917,7 @@ namespace SudokuCollective.Data.Services
 
                                 if (adminRecord.IsActive)
                                 {
-                                    result.Success = appResult.Success;
+                                    result.Success = false;
                                     result.Message = UsersMessages.UserIsAlreadyAnAdminMessage;
 
                                     return result;
@@ -2021,118 +2022,13 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IUserResult> ActivateAdminPrivileges(int userId, string license)
+        public async Task<IUserResult> DeactivateAdminPrivileges(int appId, int userId)
         {
             var result = new UserResult();
 
             try
             {
-                var appResult = await appsRepository.GetByLicense(license);
-
-                if (appResult.Success)
-                {
-                    var userResult = await usersRepository.GetById(userId);
-
-                    if (userResult.Success)
-                    {
-                        var app = (App)appResult.Object;
-                        var user = (User)userResult.Object;
-
-                        if (!user.IsAdmin)
-                        {
-                            result.Success = false;
-                            result.Message = UsersMessages.UserDoesNotHaveAdminPrivilegesMessage;
-
-                            return result;
-                        }
-
-                        if (!await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
-                        {
-                            result.Success = appResult.Success;
-                            result.Message = AppsMessages.UserIsNotAnAssignedAdminMessage;
-
-                            return result;
-                        }
-
-                        var appAdmin = (AppAdmin)
-                            (await appAdminsRepository.GetAdminRecord(app.Id, user.Id))
-                            .Object;
-
-                        appAdmin.IsActive = true;
-
-                        var appAdminResult = await appAdminsRepository.Update(appAdmin);
-
-                        if (appAdminResult.Success)
-                        {
-                            result.User = (User)
-                                (await usersRepository.GetById(user.Id))
-                                .Object;
-                            result.Success = appAdminResult.Success;
-                            result.Message = AppsMessages.AdminPrivilegesActivatedMessage;
-
-                            return result;
-                        }
-                        else if (!appAdminResult.Success && appAdminResult.Exception != null)
-                        {
-                            result.Success = appAdminResult.Success;
-                            result.Message = appAdminResult.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = AppsMessages.ActivationOfAdminPrivilegesFailedMessage;
-
-                            return result;
-                        }
-                    }
-                    else if (!userResult.Success && userResult.Exception != null)
-                    {
-                        result.Success = userResult.Success;
-                        result.Message = userResult.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.Success = userResult.Success;
-                        result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
-
-                        return result;
-                    }
-                }
-                else if (!appResult.Success && appResult.Exception != null)
-                {
-                    result.Success = appResult.Success;
-                    result.Message = appResult.Exception.Message;
-
-                    return result;
-                }
-                else
-                {
-                    result.Success = appResult.Success;
-                    result.Message = AppsMessages.AppNotFoundMessage;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
-            {
-                result.Success = false;
-                result.Message = exp.Message;
-
-                return result;
-            }
-        }
-
-        public async Task<IUserResult> DeactivateAdminPrivileges(int userId, string license)
-        {
-            var result = new UserResult();
-
-            try
-            {
-                var appResult = await appsRepository.GetByLicense(license);
+                var appResult = await appsRepository.GetById(appId);
 
                 if (appResult.Success)
                 {

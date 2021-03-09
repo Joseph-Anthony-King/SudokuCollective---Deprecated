@@ -279,7 +279,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.AddAppUser(3, TestObjects.GetLicense());
+            var result = await sut.AddAppUser(1, 3);
             var appUsers = context.Users.Where(u => u.Apps.Any(ua => ua.AppId == 1)).ToList();
 
             // Assert
@@ -294,7 +294,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.RemoveAppUser(2, TestObjects.GetLicense());
+            var result = await sut.RemoveAppUser(1, 2);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -462,7 +462,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutPromoteUser.PromoteToAdmin(3, TestObjects.GetLicense());
+            var result = await sutPromoteUser.ActivateAdminPrivileges(1, 3);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -476,47 +476,11 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutAppRepoFailure.PromoteToAdmin(3, TestObjects.GetLicense());
+            var result = await sutAppRepoFailure.ActivateAdminPrivileges(1, 3);
 
             // Assert
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("App Not Found"));
-        }
-
-        [Test]
-        [Category("Services")]
-        public async Task ActivateUserAdminPrivileges()
-        {
-            // Arrange
-
-            // Act
-            var result = await sut
-                .ActivateAdminPrivileges(3, TestObjects.GetLicense());
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<UserResult>());
-            Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Admin Privileges Activated"));
-            Assert.That(result.User, Is.TypeOf<User>());
-
-        }
-
-        [Test]
-        [Category("Services")]
-        public async Task ReturnFalseIfActivateUserAdminPrivilegesFails()
-        {
-            // Arrange
-
-            // Act
-            var result = await sutAppRepoFailure
-                .ActivateAdminPrivileges(3, TestObjects.GetLicense());
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<UserResult>());
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("App Not Found"));
-            Assert.That(result.User, Is.TypeOf<User>());
-
         }
 
         [Test]
@@ -527,7 +491,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut
-                .DeactivateAdminPrivileges(3, TestObjects.GetLicense());
+                .DeactivateAdminPrivileges(1, 3);
 
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());
@@ -545,7 +509,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sutAppRepoFailure
-                .DeactivateAdminPrivileges(3, TestObjects.GetLicense());
+                .DeactivateAdminPrivileges(1, 3);
 
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());

@@ -101,7 +101,7 @@ export default {
     navDrawerStatus: null,
   }),
   methods: {
-    ...mapActions("appModule", ["updateSelectedApp", "removeApps", ]),
+    ...mapActions("appModule", ["updateSelectedApp", "removeApps"]),
     ...mapActions("settingsModule", [
       "confirmBaseURL",
       "updateAuthToken",
@@ -111,7 +111,6 @@ export default {
 
     login(user, token) {
       if (user !== null && token !== null) {
-
         this.userLoginProcess(user, token);
 
         let logInMessage;
@@ -179,7 +178,6 @@ export default {
 
     signUp(user, token) {
       if (user !== null && token !== null) {
-
         this.userLoginProcess(user, token);
 
         showToast(
@@ -199,14 +197,14 @@ export default {
     },
 
     userLoginProcess(user, token) {
-        this.$data.user = user;
-        this.$data.user.login();
-        this.updateUser(this.$data.user);
-        this.updateAuthToken(token);
+      this.$data.user = user;
+      this.$data.user.login();
+      this.updateUser(this.$data.user);
+      this.updateAuthToken(token);
 
-        if (this.$router.currentRoute.path !== "/dashboard") {
-          this.$router.push("/dashboard");
-        }
+      if (this.$router.currentRoute.path !== "/dashboard") {
+        this.$router.push("/dashboard");
+      }
     },
 
     updateNavDrawer() {
@@ -218,9 +216,9 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.user = this.getUser;
-      }
+      },
     },
   },
   async created() {
@@ -232,7 +230,7 @@ export default {
       license: process.env.VUE_APP_LICENSE,
       requestorId: 1,
       appId: 1,
-      pageListModel: null
+      pageListModel: null,
     };
 
     const response = await appService.getByLicense(data);

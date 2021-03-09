@@ -217,7 +217,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ILicenseResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
-                appService.AddAppUser(It.IsAny<int>(), It.IsAny<string>()))
+                appService.AddAppUser(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -230,7 +230,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
-                appService.RemoveAppUser(It.IsAny<int>(), It.IsAny<string>()))
+                appService.RemoveAppUser(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -282,7 +282,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceSuccessfulRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -301,26 +301,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             AppsServiceSuccessfulRequest.Setup(appsService =>
-                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(new UserResult()
-                {
-                    Success = MockAppAdminsRepository
-                        .AppAdminsRepositorySuccessfulRequest
-                        .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
-                        .Result
-                        .Success,
-                    Message = AppsMessages.AdminPrivilegesActivatedMessage,
-                    User = (User)MockUsersRepository
-                        .UsersRepositorySuccessfulRequest
-                        .Object
-                        .Add(It.IsAny<User>())
-                        .Result
-                        .Object
-                } as IUserResult));
-
-            AppsServiceSuccessfulRequest.Setup(appsService =>
-                appsService.DeactivateAdminPrivileges(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.DeactivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -496,7 +477,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ILicenseResult));
 
             AppsServiceFailedRequest.Setup(appService =>
-                appService.AddAppUser(It.IsAny<int>(), It.IsAny<string>()))
+                appService.AddAppUser(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -509,7 +490,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceFailedRequest.Setup(appService =>
-                appService.RemoveAppUser(It.IsAny<int>(), It.IsAny<string>()))
+                appService.RemoveAppUser(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -561,7 +542,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceFailedRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -580,26 +561,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             AppsServiceFailedRequest.Setup(appsService =>
-                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(new UserResult()
-                {
-                    Success = MockAppAdminsRepository
-                        .AppAdminsRepositoryFailedRequest
-                        .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
-                        .Result
-                        .Success,
-                    Message = AppsMessages.ActivationOfAdminPrivilegesFailedMessage,
-                    User = (User)MockUsersRepository
-                        .UsersRepositorySuccessfulRequest
-                        .Object
-                        .Add(It.IsAny<User>())
-                        .Result
-                        .Object
-                } as IUserResult));
-
-            AppsServiceFailedRequest.Setup(appsService =>
-                appsService.DeactivateAdminPrivileges(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.DeactivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -798,7 +760,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ILicenseResult));
 
             AppsServiceInvalidRequest.Setup(appService =>
-                appService.AddAppUser(It.IsAny<int>(), It.IsAny<string>()))
+                appService.AddAppUser(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -811,7 +773,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceInvalidRequest.Setup(appService =>
-                appService.RemoveAppUser(It.IsAny<int>(), It.IsAny<string>()))
+                appService.RemoveAppUser(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -863,7 +825,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceInvalidRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -877,26 +839,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             AppsServiceInvalidRequest.Setup(appsService =>
-                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(new UserResult()
-                {
-                    Success = MockAppAdminsRepository
-                        .AppAdminsRepositorySuccessfulRequest
-                        .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
-                        .Result
-                        .Success,
-                    Message = AppsMessages.AdminPrivilegesActivatedMessage,
-                    User = (User)MockUsersRepository
-                        .UsersRepositorySuccessfulRequest
-                        .Object
-                        .Add(It.IsAny<User>())
-                        .Result
-                        .Object
-                } as IUserResult));
-
-            AppsServiceInvalidRequest.Setup(appsService =>
-                appsService.DeactivateAdminPrivileges(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.DeactivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -1095,7 +1038,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ILicenseResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appService =>
-                appService.AddAppUser(It.IsAny<int>(), It.IsAny<string>()))
+                appService.AddAppUser(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -1108,7 +1051,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appService =>
-                appService.RemoveAppUser(It.IsAny<int>(), It.IsAny<string>()))
+                appService.RemoveAppUser(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -1160,7 +1103,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -1174,7 +1117,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appsService =>
-                appsService.PromoteToAdmin(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository
@@ -1193,26 +1136,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appsService =>
-                appsService.ActivateAdminPrivileges(It.IsAny<int>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(new UserResult()
-                {
-                    Success = MockAppAdminsRepository
-                        .AppAdminsRepositoryFailedRequest
-                        .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
-                        .Result
-                        .Success,
-                    Message = AppsMessages.ActivationOfAdminPrivilegesFailedMessage,
-                    User = (User)MockUsersRepository
-                        .UsersRepositorySuccessfulRequest
-                        .Object
-                        .Add(It.IsAny<User>())
-                        .Result
-                        .Object
-                } as IUserResult));
-
-            AppsServicePromoteUserFailsRequest.Setup(appsService =>
-                appsService.DeactivateAdminPrivileges(It.IsAny<int>(), It.IsAny<string>()))
+                appsService.DeactivateAdminPrivileges(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockAppAdminsRepository

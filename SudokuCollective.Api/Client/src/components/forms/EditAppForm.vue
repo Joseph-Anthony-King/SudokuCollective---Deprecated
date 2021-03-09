@@ -216,7 +216,7 @@ export default {
             try {
               const license = this.$data.app.license;
 
-              const response = await appService.updateApp(
+              const response = await appService.putUpdateApp(
                 this.$data.app.id,
                 this.$data.app.name,
                 this.$data.app.devUrl,
@@ -239,10 +239,13 @@ export default {
                 this.$data.app = new App(response.data.app);
 
                 this.$data.app.license = license;
-                
+
                 this.$data.app.users = [];
 
-                const appUsersResponse = await appService.getAppUsers(this.$data.app.id, true);
+                const appUsersResponse = await appService.getAppUsers(
+                  this.$data.app.id,
+                  true
+                );
                 appUsersResponse.data.users.forEach((user) => {
                   const tempUser = new User(user);
                   this.$data.app.users.push(tempUser);

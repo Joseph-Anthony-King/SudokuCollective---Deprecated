@@ -15,14 +15,13 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<ILicenseResult> GetLicense(int id);
         Task<IUsersResult> GetAppUsers(int id, int requestorId, IPageListModel pageListModel, bool appUsers = true, bool fullRecord = true);
         Task<IAppResult> UpdateApp(int id, IAppRequest request);
-        Task<IBaseResult> AddAppUser(int id, string license);
-        Task<IBaseResult> RemoveAppUser(int id, string license);
+        Task<IBaseResult> AddAppUser(int appId, int userId);
+        Task<IBaseResult> RemoveAppUser(int appId, int userId);
         Task<IBaseResult> DeleteOrResetApp(int id, bool isReset = false);
         Task<IBaseResult> ActivateApp(int id);
         Task<IBaseResult> DeactivateApp(int id);
-        Task<IUserResult> PromoteToAdmin(int userId, string license);
-        Task<IUserResult> ActivateAdminPrivileges(int userId, string license);
-        Task<IUserResult> DeactivateAdminPrivileges(int userId, string license);
+        Task<IUserResult> ActivateAdminPrivileges(int appId, int userId);
+        Task<IUserResult> DeactivateAdminPrivileges(int appId, int userId);
         Task<bool> IsRequestValidOnThisLicense(int id, string license, int userId);
         Task<bool> IsOwnerOfThisLicense(int id, string license, int userId);
     }

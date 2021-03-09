@@ -57,5 +57,6 @@
         public static string UserHasNotBeenPromotedToAdminMessage = "User Has Not Been Promoted To Admin";
         public static string UserDoesNotHaveAdminPrivilegesMessage = "User Does Not Have Admin Privileges";
         public static string SuperUserCannotBePromotedMessage = "Super User Cannot Be Promoted";
+        public static string SuperUserCannotBeDeletedMessage = "Super User Cannot Be Deleted";
     }
 }

@@ -168,8 +168,8 @@ export default {
               for (const user of this.$data.selectedUsers) {
 
                 const response = await appService.putAddUser(
-                  user.id,
-                  this.$data.app.license
+                  this.$data.app.id,
+                  user.id
                 );
 
                 if (response.status === 200) {

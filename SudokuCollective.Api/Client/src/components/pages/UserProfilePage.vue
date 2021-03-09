@@ -300,7 +300,7 @@
                 >
               </v-tooltip>
             </v-col>
-            <v-col>
+            <v-col v-if="!user.isSuperUser">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -314,7 +314,9 @@
                     Delete
                   </v-btn>
                 </template>
-                <span>Delete your profile and all information collective wide</span>
+                <span
+                  >Delete your profile and all information collective wide</span
+                >
               </v-tooltip>
             </v-col>
           </v-row>
@@ -372,11 +374,8 @@ export default {
     editingProfile: false,
   }),
   methods: {
-    ...mapActions("appModule", ["updateSelectedApp", "removeApps", ]),
-    ...mapActions("settingsModule", [
-      "updateAuthToken",
-      "updateUser",
-    ]),
+    ...mapActions("appModule", ["updateSelectedApp", "removeApps"]),
+    ...mapActions("settingsModule", ["updateAuthToken", "updateUser"]),
 
     async resendEmailConfirmation() {
       const action = [
@@ -685,9 +684,10 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await appService.postObtainAdminPrivileges(
-                this.$data.user.id,
-                this.getLicense);
+              const response = await appService.putActivateAdminPrivileges(
+                this.getAppId,
+                this.$data.user.id
+              );
 
               if (response.status === 200) {
                 await this.reset();
@@ -742,7 +742,6 @@ export default {
               const response = await userService.deleteUser(this.$data.user.id);
 
               if (response.status === 200) {
-
                 this.$data.user = new User();
 
                 this.$data.user.logout();
@@ -795,7 +794,7 @@ export default {
         actionToastOptions(action, "delete")
       );
     },
-    
+
     async refresh() {
       try {
         await this.reset();
@@ -805,11 +804,8 @@ export default {
     },
 
     async reset() {
-      let user = await userService.getUser(
-        this.$data.user.id,
-        false
-      );
-      
+      let user = await userService.getUser(this.$data.user.id, false);
+
       this.$data.user = new User(user);
       this.$data.user.login();
       this.updateUser(this.$data.user);
@@ -821,7 +817,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser", "getLicense"]),
+    ...mapGetters("settingsModule", ["getUser", "getAppId"]),
 
     displayDateCreated: function () {
       return convertStringToDateTime(this.$data.user.dateCreated);
@@ -832,12 +828,12 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.user = new User(this.getUser);
-      }
+      },
     },
   },
-  created() {    
+  created() {
     this.$data.user = new User(this.getUser);
   },
 };

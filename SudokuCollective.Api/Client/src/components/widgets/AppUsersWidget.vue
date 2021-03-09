@@ -45,7 +45,7 @@
           class="elevation-1"
           v-if="app.id === 1"
           :search="search"
-          >
+        >
         </v-data-table>
         <v-data-table
           v-model="selectedUsers"
@@ -55,7 +55,7 @@
           class="elevation-1"
           v-if="app.id !== 1"
           :search="search"
-          >
+        >
         </v-data-table>
       </v-container>
     </v-card-text>
@@ -95,7 +95,9 @@
                   Promote to Admins
                 </v-btn>
               </template>
-              <span>Provide the selected users with admin rights to this app</span>
+              <span
+                >Provide the selected users with admin rights to this app</span
+              >
             </v-tooltip>
           </v-col>
           <v-col v-if="filterAdmins">
@@ -113,6 +115,23 @@
                 </v-btn>
               </template>
               <span>Demote the selected users admin rights to this app</span>
+            </v-tooltip>
+          </v-col>
+          <v-col v-if="selectedUsers.length > 0">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="button-full"
+                  color="red darken-1"
+                  text
+                  @click="removeUsers"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Remove Users
+                </v-btn>
+              </template>
+              <span>Remove users from this app</span>
             </v-tooltip>
           </v-col>
         </v-row>
@@ -141,7 +160,7 @@ export default {
   name: "AppUsersWidget",
   data: () => ({
     app: new App(),
-    search: '',
+    search: "",
     selectedUsers: [],
     adminHeaders: [
       {
@@ -166,16 +185,13 @@ export default {
       { text: "Id", value: "id" },
       { text: "First Name", value: "firstName" },
       { text: "Last Name", value: "lastName" },
-      { text: "Game Count", value: "gameCount"},
+      { text: "Game Count", value: "gameCount" },
       { text: "Admin", value: "isAdmin" },
       { text: "Signed Up Date", value: "signedUpDate" },
     ],
   }),
-  methods: {  
-    ...mapActions("appModule", [
-      "updateSelectedApp",
-      "replaceApp"
-    ]),
+  methods: {
+    ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
 
     async refreshApp() {
       var response = await appService.getApp(this.$data.app.id, true);
@@ -201,7 +217,6 @@ export default {
             toastObject.goAway(0);
 
             try {
-
               let users = [];
 
               this.$data.selectedUsers.forEach((user) => {
@@ -210,7 +225,7 @@ export default {
                 } else {
                   user.isAdmin = true;
                 }
-                
+
                 if (!user.isAdmin && user.id !== 1) {
                   users.push(new User(user));
                 }
@@ -221,16 +236,15 @@ export default {
                   user.isAdmin = "Yes";
                 }
               });
-              
+
               let successes = 0;
               let errors = 0;
               let errorMessages = "";
 
               for (const user of users) {
-
-                const response = await appService.postObtainAdminPrivileges(
-                  user.id,
-                  this.$data.app.license
+                const response = await appService.putActivateAdminPrivileges(
+                  this.$data.app.id,
+                  user.id
                 );
 
                 if (response.status === 200) {
@@ -271,7 +285,7 @@ export default {
                 defaultToastOptions()
               );
             }
-            
+
             this.refreshApp();
           },
         },
@@ -299,7 +313,6 @@ export default {
             toastObject.goAway(0);
 
             try {
-
               let users = [];
 
               this.$data.selectedUsers.forEach((user) => {
@@ -308,7 +321,7 @@ export default {
                 } else {
                   user.isAdmin = true;
                 }
-                
+
                 if (user.isAdmin && user.id !== 1) {
                   users.push(new User(user));
                 }
@@ -319,16 +332,15 @@ export default {
                   user.isAdmin = "Yes";
                 }
               });
-              
+
               let successes = 0;
               let errors = 0;
               let errorMessages = "";
 
               for (const user of users) {
-
                 const response = await appService.putDeactivateAdminPrivileges(
-                  user.id,
-                  this.$data.app.license
+                  this.$data.app.id,
+                  user.id
                 );
 
                 if (response.status === 200) {
@@ -369,7 +381,7 @@ export default {
                 defaultToastOptions()
               );
             }
-            
+
             this.refreshApp();
           },
         },
@@ -387,31 +399,105 @@ export default {
         `Are you sure you want to demote these admin users for ${this.$data.app.name}?`,
         actionToastOptions(action, "mode_edit")
       );
-    }
+    },
+
+    async removeUsers() {
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              let successes = 0;
+              let errors = 0;
+              let errorMessages = "";
+
+              for (const user of this.$data.selectedUsers) {
+                const response = await appService.deleteRemoveUser(
+                  this.$data.app.id,
+                  user.id
+                );
+
+                if (response.status === 200) {
+                  successes++;
+                } else {
+                  errors++;
+                  errorMessages = response.data.message.substring(17);
+                }
+              }
+
+              if (successes > 0 && errors === 0) {
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  `Users have been demoted from admins for ${this.$data.app.name}`,
+                  defaultToastOptions()
+                );
+              } else if (successes > 0 && errors > 0) {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  `Some users were not demoted with the following message(s): ${errorMessages}`,
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  `Request failed with the following message(s): ${errorMessages}`,
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+
+            this.refreshApp();
+          },
+        },
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        `Are you sure you want to remove this user from ${this.$data.app.name}?`,
+        actionToastOptions(action, "delete")
+      );
+    },
   },
   computed: {
     ...mapGetters("settingsModule", ["getRequestorId"]),
     ...mapGetters("appModule", ["getSelectedApp"]),
 
     filterNonAdmins() {
-      const filteredArray = _.filter(this.$data.selectedUsers, 
-        function(user) { 
-          return user.isAdmin === "No" && user.id !== 1;
-        });
+      const filteredArray = _.filter(this.$data.selectedUsers, function (user) {
+        return user.isAdmin === "No" && user.id !== 1;
+      });
       return filteredArray.length > 0;
     },
 
     filterAdmins() {
-      const filteredArray = _.filter(this.$data.selectedUsers, 
-        function(user) { 
-          return user.isAdmin === "Yes" && user.id !== 1;
-        });
+      const filteredArray = _.filter(this.$data.selectedUsers, function (user) {
+        return user.isAdmin === "Yes" && user.id !== 1;
+      });
       return filteredArray.length > 0;
-    }
+    },
   },
   watch: {
     "$store.state.appModule.selectedApp": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.app = new App(this.getSelectedApp);
 
         this.$data.app.users.forEach((user) => {
@@ -423,7 +509,7 @@ export default {
 
           user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
         });
-      }
+      },
     },
   },
   created() {
@@ -439,5 +525,5 @@ export default {
       user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
     });
   },
-}
+};
 </script>

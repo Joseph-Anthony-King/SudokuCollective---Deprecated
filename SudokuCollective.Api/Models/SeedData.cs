@@ -200,7 +200,7 @@ namespace SudokuCollective.Api.Models
                             1,
                             config.GetValue<string>("DefaultPostmanApp:DevUrl"),
                             config.GetValue<string>("DefaultPostmanApp:LiveUrl"),
-                            false,
+                            true,
                             true,
                             true,
                             true,

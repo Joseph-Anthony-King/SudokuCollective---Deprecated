@@ -5,15 +5,11 @@ import PageListModel from "@/models/viewModels/pageListModel"
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
 import { requestDataUpdateApp } from "@/helpers/appRequestData/appRequestData";
-import { appUserRequestData } from "@/helpers/appRequestData/appUserRequestData";
 import {
   getAppEnpoint,
   getByLicenseEnpoint,
   getLicenseEndpoint,
   getMyAppsEndpoint,
-  getObtainAdminPrivilegesEnpoint,
-  getDeactivateAdminPrivilegesEnpoint,
-  getAddAppUserEndpoint,
   getTimeFramesEnpoint,
 } from "./service.endpoints";
 
@@ -185,12 +181,12 @@ const getNonAppUsers = async function (id, fullRecord) {
   }
 }
 
-const postObtainAdminPrivileges = async function (
+const putActivateAdminPrivileges = async function (
+  appId,
   userId,
-  license,
   pagination) {
   try {
-    const params = `/${userId}`;
+    const params = `/${appId}/activateAdminPrivileges/${userId}`;
     let pageListModel;
 
     if (pagination === undefined) {
@@ -206,20 +202,20 @@ const postObtainAdminPrivileges = async function (
     }
 
     const payload = {
-      targetLicense: license,
+      license: store.getters["settingsModule/getLicense"],
+      requestorId: store.getters["settingsModule/getRequestorId"],
+      appId: store.getters["settingsModule/getAppId"],
       pageListModel: pageListModel
     }
 
-    const data = appUserRequestData(payload);
+    const data = requestData(payload);
 
     const config = {
-      method: "post",
-      url: `${getObtainAdminPrivilegesEnpoint}${params}`,
+      method: "put",
+      url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
       data: data
     };
-
-    console.log("postObtainAdminPrivileges config:", config);
 
     const response = await axios(config);
 
@@ -231,11 +227,11 @@ const postObtainAdminPrivileges = async function (
 };
 
 const putDeactivateAdminPrivileges = async function (
+  appId,
   userId,
-  license,
   pagination) {
   try {
-    const params = `/${userId}`;
+    const params = `/${appId}/deactivateAdminPrivileges/${userId}`;
     let pageListModel;
 
     if (pagination === undefined) {
@@ -251,20 +247,20 @@ const putDeactivateAdminPrivileges = async function (
     }
 
     const payload = {
-      targetLicense: license,
+      license: store.getters["settingsModule/getLicense"],
+      requestorId: store.getters["settingsModule/getRequestorId"],
+      appId: store.getters["settingsModule/getAppId"],
       pageListModel: pageListModel
     }
 
-    const data = appUserRequestData(payload);
+    const data = requestData(payload);
 
     const config = {
       method: "put",
-      url: `${getDeactivateAdminPrivilegesEnpoint}${params}`,
+      url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
       data: data
     };
-
-    console.log("postObtainAdminPrivileges config:", config);
 
     const response = await axios(config);
 
@@ -275,7 +271,7 @@ const putDeactivateAdminPrivileges = async function (
   }
 };
 
-const updateApp = async function (
+const putUpdateApp= async function (
   id,
   name,
   devUrl,
@@ -383,11 +379,11 @@ const resetApp = async function (app) {
 }
 
 const putAddUser = async function (
+  appId,
   userId,
-  license,
   pagination) {
   try {
-    const params = `/${userId}`;
+    const params = `/${appId}/adduser/${userId}`;
     let pageListModel;
 
     if (pagination === undefined) {
@@ -403,17 +399,64 @@ const putAddUser = async function (
     }
 
     const payload = {
-      targetLicense: license,
+      license: store.getters["settingsModule/getLicense"],
+      requestorId: store.getters["settingsModule/getRequestorId"],
+      appId: store.getters["settingsModule/getAppId"],
       pageListModel: pageListModel
     }
 
-    const data = appUserRequestData(payload);
+    const data = requestData(payload);
 
     const config = {
       method: "put",
-      url: `${getAddAppUserEndpoint}${params}`,
+      url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
-      data: data,
+      data: data
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
+const deleteRemoveUser = async function (
+  appId,
+  userId,
+  pagination) {
+  try {
+    const params = `/${appId}/removeuser/${userId}`;
+    let pageListModel;
+
+    if (pagination === undefined) {
+      pageListModel = new PageListModel();
+    } else {
+      pageListModel = new PageListModel(
+        pagination.page,
+        pagination.itemsPerPage,
+        pagination.sortBy,
+        pagination.orderByDescending,
+        pagination.includeCompletedGames
+      );
+    }
+
+    const payload = {
+      license: store.getters["settingsModule/getLicense"],
+      requestorId: store.getters["settingsModule/getRequestorId"],
+      appId: store.getters["settingsModule/getAppId"],
+      pageListModel: pageListModel
+    }
+
+    const data = requestData(payload);
+
+    const config = {
+      method: "delete",
+      url: `${getAppEnpoint}${params}`,
+      headers: requestHeader(),
+      data: data
     };
 
     const response = await axios(config);
@@ -449,11 +492,12 @@ export const appService = {
   getMyApps,
   getAppUsers,
   getNonAppUsers,
-  postObtainAdminPrivileges,
+  putActivateAdminPrivileges,
   putDeactivateAdminPrivileges,
-  updateApp,
+  putUpdateApp,
   deleteApp,
   resetApp,
   putAddUser,
+  deleteRemoveUser,
   getTimeFrames,
 };
