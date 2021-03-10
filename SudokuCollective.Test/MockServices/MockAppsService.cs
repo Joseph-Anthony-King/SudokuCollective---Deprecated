@@ -82,7 +82,7 @@ namespace SudokuCollective.Test.MockServices
 
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.GetApps(
-                    It.IsAny<PageListModel>(),
+                    It.IsAny<Paginator>(),
                     It.IsAny<int>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppsResult()
@@ -106,7 +106,7 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.GetMyApps(
                     It.IsAny<int>(), 
-                    It.IsAny<PageListModel>(), 
+                    It.IsAny<Paginator>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
@@ -182,7 +182,7 @@ namespace SudokuCollective.Test.MockServices
                 appService.GetAppUsers(
                     It.IsAny<int>(), 
                     It.IsAny<int>(),
-                    It.IsAny<PageListModel>(),
+                    It.IsAny<Paginator>(),
                     It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
@@ -365,7 +365,7 @@ namespace SudokuCollective.Test.MockServices
 
             AppsServiceFailedRequest.Setup(appService =>
                 appService.GetApps(
-                    It.IsAny<PageListModel>(),
+                    It.IsAny<Paginator>(),
                     It.IsAny<int>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppsResult()
@@ -383,7 +383,7 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceFailedRequest.Setup(appService =>
                 appService.GetMyApps(
                     It.IsAny<int>(), 
-                    It.IsAny<PageListModel>(), 
+                    It.IsAny<Paginator>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
@@ -448,7 +448,7 @@ namespace SudokuCollective.Test.MockServices
                 appService.GetAppUsers(
                     It.IsAny<int>(),
                     It.IsAny<int>(), 
-                    It.IsAny<PageListModel>(),
+                    It.IsAny<Paginator>(),
                     It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
@@ -625,7 +625,7 @@ namespace SudokuCollective.Test.MockServices
 
             AppsServiceInvalidRequest.Setup(appService =>
                 appService.GetApps(
-                    It.IsAny<PageListModel>(),
+                    It.IsAny<Paginator>(),
                     It.IsAny<int>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppsResult()
@@ -649,7 +649,7 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceInvalidRequest.Setup(appService =>
                 appService.GetMyApps(
                     It.IsAny<int>(), 
-                    It.IsAny<PageListModel>(), 
+                    It.IsAny<Paginator>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
@@ -725,7 +725,7 @@ namespace SudokuCollective.Test.MockServices
                 appService.GetAppUsers(
                     It.IsAny<int>(),
                     It.IsAny<int>(),
-                    It.IsAny<PageListModel>(),
+                    It.IsAny<Paginator>(),
                     It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
@@ -903,7 +903,7 @@ namespace SudokuCollective.Test.MockServices
 
             AppsServicePromoteUserFailsRequest.Setup(appService =>
                 appService.GetApps(
-                    It.IsAny<PageListModel>(),
+                    It.IsAny<Paginator>(),
                     It.IsAny<int>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppsResult()
@@ -927,7 +927,7 @@ namespace SudokuCollective.Test.MockServices
             AppsServicePromoteUserFailsRequest.Setup(appService =>
                 appService.GetMyApps(
                     It.IsAny<int>(), 
-                    It.IsAny<PageListModel>(), 
+                    It.IsAny<Paginator>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
@@ -1003,7 +1003,7 @@ namespace SudokuCollective.Test.MockServices
                 appService.GetAppUsers(
                     It.IsAny<int>(),
                     It.IsAny<int>(),
-                    It.IsAny<PageListModel>(),
+                    It.IsAny<Paginator>(),
                     It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()

@@ -183,7 +183,7 @@ import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import App from "@/models/app";
 import User from "@/models/user";
-import PageListModel from "@/models/viewModels/pageListModel";
+import Paginator from "@/models/viewModels/Paginator";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -230,7 +230,7 @@ export default {
                 this.$data.app.customPasswordResetAction,
                 this.$data.app.timeFrame,
                 this.$data.app.accessDuration,
-                new PageListModel()
+                new Paginator()
               );
 
               if (response.status === 200) {

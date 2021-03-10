@@ -149,7 +149,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetUsers(
                 baseRequest.RequestorId,
                 license, 
-                baseRequest.PageListModel);
+                baseRequest.Paginator);
 
             // Assert
             Assert.That(result.Success, Is.True);

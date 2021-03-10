@@ -9,7 +9,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         public string License { get; set; }
         public int RequestorId { get; set; }
         public int AppId { get; set; }
-        public IPageListModel PageListModel { get; set; }
+        public IPaginator Paginator { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -26,9 +26,9 @@ namespace SudokuCollective.Data.Models.RequestModels
             Email = string.Empty;
             Password = string.Empty;
 
-            if (PageListModel == null)
+            if (Paginator == null)
             {
-                PageListModel = new PageListModel();
+                Paginator = new Paginator();
             }
         }
     }

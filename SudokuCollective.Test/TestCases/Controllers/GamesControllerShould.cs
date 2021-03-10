@@ -41,7 +41,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 UserId = 1,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             updateGameRequest = TestObjects.GetUpdateGameRequest();

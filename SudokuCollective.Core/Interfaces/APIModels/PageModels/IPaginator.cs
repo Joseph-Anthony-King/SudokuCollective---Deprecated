@@ -2,7 +2,7 @@
 
 namespace SudokuCollective.Core.Interfaces.APIModels.PageModels
 {
-    public interface IPageListModel
+    public interface IPaginator
     {
         int Page { get; set; }
         int ItemsPerPage { get; set; }

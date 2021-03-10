@@ -121,7 +121,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { userService } from "@/services/userService/user.service";
 import User from "@/models/user";
-import PageListModel from "@/models/viewModels/pageListModel";
+import Paginator from "@/models/viewModels/paginator";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -138,7 +138,7 @@ export default {
     invalidEmails: [],
     editProfileFormIsValid: true,
     dirty: false,
-    submitInvoked: false
+    submitInvoked: false,
   }),
   methods: {
     ...mapActions("settingsModule", ["updateUser"]),
@@ -168,17 +168,14 @@ export default {
                 this.$data.user.lastName,
                 this.$data.user.nickName,
                 this.$data.user.email,
-                new PageListModel()
+                new Paginator()
               );
 
               if (response.status === 200) {
                 this.resetEditProfileFormStatus;
 
-                let user = await userService.getUser(
-                  this.$data.user.id,
-                  false
-                );
-                
+                let user = await userService.getUser(this.$data.user.id, false);
+
                 this.$data.user = new User(user);
                 this.$data.user.login();
                 this.updateUser(this.$data.user);
@@ -321,9 +318,9 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.user": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.user = new User(this.getUser);
-      }
+      },
     },
   },
   created() {
@@ -333,8 +330,7 @@ export default {
     if (this.$props.editProfileFormStatus) {
       let self = this;
       window.addEventListener("keyup", function (event) {
-        if (event.key === "Enter"
-          && self.$data.dirty) {
+        if (event.key === "Enter" && self.$data.dirty) {
           self.submit();
         }
       });

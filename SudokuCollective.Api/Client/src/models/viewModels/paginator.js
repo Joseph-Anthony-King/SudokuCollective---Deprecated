@@ -1,6 +1,6 @@
 ﻿import { SortValues } from "@/models/arrays/sortValues";
 
-class PageListModel {
+class Paginator {
   constructor(
     page,
     itemsPerPage,
@@ -24,4 +24,4 @@ class PageListModel {
   }
 }
 
-export default PageListModel;
+export default Paginator;

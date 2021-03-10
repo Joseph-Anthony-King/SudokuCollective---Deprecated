@@ -93,7 +93,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId))
             {
                 var result = await appsService
-                    .GetApps(request.PageListModel, request.RequestorId, fullRecord);
+                    .GetApps(request.Paginator, request.RequestorId, fullRecord);
 
                 if (result.Success)
                 {
@@ -129,7 +129,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 var result = await appsService
                     .GetMyApps(
                     request.RequestorId,
-                    request.PageListModel,
+                    request.Paginator,
                     fullRecord);
 
                 if (result.Success)
@@ -201,7 +201,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     .GetAppUsers(
                         id,
                         request.RequestorId,
-                        request.PageListModel,
+                        request.Paginator,
                         true,
                         fullRecord);
 
@@ -241,7 +241,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     .GetAppUsers(
                         id,
                         request.RequestorId,
-                        request.PageListModel,
+                        request.Paginator,
                         false,
                         fullRecord);
 

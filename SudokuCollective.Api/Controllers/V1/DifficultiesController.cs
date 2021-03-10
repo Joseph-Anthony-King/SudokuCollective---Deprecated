@@ -72,7 +72,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId))
             {
                 var result = await difficultiesService
-                    .GetDifficulties(request.PageListModel, fullRecord);
+                    .GetDifficulties(request.Paginator, fullRecord);
 
                 if (result.Success)
                 {

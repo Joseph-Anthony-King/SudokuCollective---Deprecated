@@ -29,19 +29,19 @@ namespace SudokuCollective.Data.Helpers
             return app.IsActive;
         }
 
-        public static bool IsPageValid(IPageListModel pageListModel, List<IEntityBase> entities)
+        public static bool IsPageValid(IPaginator paginator, List<IEntityBase> entities)
         {
-            if (pageListModel.ItemsPerPage * pageListModel.Page > entities.Count && pageListModel.Page == 1)
+            if (paginator.ItemsPerPage * paginator.Page > entities.Count && paginator.Page == 1)
             {
                 return true;
             }
-            else if (pageListModel.ItemsPerPage * pageListModel.Page > entities.Count && pageListModel.Page > 1)
+            else if (paginator.ItemsPerPage * paginator.Page > entities.Count && paginator.Page > 1)
             {
                 return false;
             }
             else
             {
-                return pageListModel.ItemsPerPage * pageListModel.Page <= entities.Count;
+                return paginator.ItemsPerPage * paginator.Page <= entities.Count;
             }
         }
     }

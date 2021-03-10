@@ -48,7 +48,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IDifficultyResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.GetDifficulties(It.IsAny<PageListModel>(), It.IsAny<bool>()))
+                difficultiesService.GetDifficulties(It.IsAny<Paginator>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new DifficultiesResult()
                 {
                     Success = MockDifficultiesRepository
@@ -132,7 +132,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IDifficultyResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.GetDifficulties(It.IsAny<PageListModel>(), It.IsAny<bool>()))
+                difficultiesService.GetDifficulties(It.IsAny<Paginator>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new DifficultiesResult()
                 {
                     Success = MockDifficultiesRepository

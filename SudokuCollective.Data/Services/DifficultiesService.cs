@@ -83,7 +83,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IDifficultiesResult> GetDifficulties(
-            IPageListModel pageListModel,
+            IPaginator paginator,
             bool fullRecord = true)
         {
             var result = new DifficultiesResult();
@@ -94,15 +94,15 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    if (pageListModel != null)
+                    if (paginator != null)
                     {
-                        if (pageListModel.SortBy == SortValue.NULL)
+                        if (paginator.SortBy == SortValue.NULL)
                         {
                             result.Difficulties = response.Objects.ConvertAll(d => (IDifficulty)d);
                         }
-                        else if (pageListModel.SortBy == SortValue.ID)
+                        else if (paginator.SortBy == SortValue.ID)
                         {
-                            if (!pageListModel.OrderByDescending)
+                            if (!paginator.OrderByDescending)
                             {
                                 foreach (var obj in response.Objects)
                                 {
@@ -125,9 +125,9 @@ namespace SudokuCollective.Data.Services
                                     .ToList();
                             }
                         }
-                        else if (pageListModel.SortBy == SortValue.NAME)
+                        else if (paginator.SortBy == SortValue.NAME)
                         {
-                            if (!pageListModel.OrderByDescending)
+                            if (!paginator.OrderByDescending)
                             {
                                 foreach (var obj in response.Objects)
                                 {
@@ -150,9 +150,9 @@ namespace SudokuCollective.Data.Services
                                     .ToList();
                             }
                         }
-                        else if (pageListModel.SortBy == SortValue.DIFFICULTY)
+                        else if (paginator.SortBy == SortValue.DIFFICULTY)
                         {
-                            if (!pageListModel.OrderByDescending)
+                            if (!paginator.OrderByDescending)
                             {
                                 foreach (var obj in response.Objects)
                                 {

@@ -7,6 +7,6 @@ namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
         string License { get; set; }
         int RequestorId { get; set; }
         int AppId { get; set; }
-        IPageListModel PageListModel { get; set; }
+        IPaginator Paginator { get; set; }
     }
 }

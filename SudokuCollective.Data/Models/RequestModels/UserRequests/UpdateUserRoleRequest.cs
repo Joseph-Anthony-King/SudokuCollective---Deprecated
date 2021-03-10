@@ -10,16 +10,16 @@ namespace SudokuCollective.Data.Models.RequestModels
         public string License { get; set; }
         public int RequestorId { get; set; }
         public int AppId { get; set; }
-        public IPageListModel PageListModel { get; set; }
+        public IPaginator Paginator { get; set; }
         public List<int> RoleIds { get; set; }
 
         public UpdateUserRoleRequest() : base()
         {
             RoleIds = new List<int>();
 
-            if (PageListModel == null)
+            if (Paginator == null)
             {
-                PageListModel = new PageListModel();
+                Paginator = new Paginator();
             }
         }
     }

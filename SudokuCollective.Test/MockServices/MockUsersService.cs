@@ -81,7 +81,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.GetUsers(
                     It.IsAny<int>(),
                     It.IsAny<string>(), 
-                    It.IsAny<PageListModel>(), 
+                    It.IsAny<Paginator>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
@@ -395,7 +395,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.GetUsers(
                     It.IsAny<int>(),
                     It.IsAny<string>(),
-                    It.IsAny<PageListModel>(), 
+                    It.IsAny<Paginator>(), 
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
