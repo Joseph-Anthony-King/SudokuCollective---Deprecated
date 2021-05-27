@@ -183,7 +183,7 @@ import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/app.service";
 import App from "@/models/app";
 import User from "@/models/user";
-import Paginator from "@/models/viewModels/Paginator";
+import Paginator from "@/models/viewModels/paginator";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
