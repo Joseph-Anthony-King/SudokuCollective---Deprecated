@@ -120,7 +120,8 @@ namespace SudokuCollective.Api
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
-            app.UseHttpsRedirection();
+            // https redirection has been disabled during development
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
