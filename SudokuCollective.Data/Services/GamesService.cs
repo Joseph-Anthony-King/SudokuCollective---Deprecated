@@ -379,17 +379,17 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
-                        if (request.PageListModel != null)
+                        if (request.Paginator != null)
                         {
-                            if (StaticDataHelpers.IsPageValid(request.PageListModel, response.Objects))
+                            if (StaticDataHelpers.IsPageValid(request.Paginator, response.Objects))
                             {
-                                if (request.PageListModel.SortBy == SortValue.NULL)
+                                if (request.Paginator.SortBy == SortValue.NULL)
                                 {
                                     result.Games = response.Objects.ConvertAll(g => (IGame)g);
                                 }
-                                else if (request.PageListModel.SortBy == SortValue.ID)
+                                else if (request.Paginator.SortBy == SortValue.ID)
                                 {
-                                    if (!request.PageListModel.OrderByDescending)
+                                    if (!request.Paginator.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -398,8 +398,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.Id)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -411,14 +411,14 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.Id)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (request.PageListModel.SortBy == SortValue.SCORE)
+                                else if (request.Paginator.SortBy == SortValue.SCORE)
                                 {
-                                    if (!request.PageListModel.OrderByDescending)
+                                    if (!request.Paginator.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -431,8 +431,8 @@ namespace SudokuCollective.Data.Services
                                                 g.Score != 0 &&
                                                 !g.ContinueGame)
                                             .OrderByDescending(g => g.Score)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -448,14 +448,14 @@ namespace SudokuCollective.Data.Services
                                                 g.Score != 0 &&
                                                 !g.ContinueGame)
                                             .OrderBy(g => g.Score)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (request.PageListModel.SortBy == SortValue.DATECREATED)
+                                else if (request.Paginator.SortBy == SortValue.DATECREATED)
                                 {
-                                    if (!request.PageListModel.OrderByDescending)
+                                    if (!request.Paginator.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -464,8 +464,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.DateCreated)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -477,14 +477,14 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.DateCreated)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (request.PageListModel.SortBy == SortValue.DATEUPDATED)
+                                else if (request.Paginator.SortBy == SortValue.DATEUPDATED)
                                 {
-                                    if (!request.PageListModel.OrderByDescending)
+                                    if (!request.Paginator.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -493,8 +493,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.DateUpdated)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -506,8 +506,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.DateUpdated)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
@@ -668,17 +668,17 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
-                        if (request.PageListModel != null)
+                        if (request.Paginator != null)
                         {
-                            if (StaticDataHelpers.IsPageValid(request.PageListModel, response.Objects))
+                            if (StaticDataHelpers.IsPageValid(request.Paginator, response.Objects))
                             {
-                                if (request.PageListModel.SortBy == SortValue.NULL)
+                                if (request.Paginator.SortBy == SortValue.NULL)
                                 {
                                     result.Games = response.Objects.ConvertAll(g => (IGame)g);
                                 }
-                                else if (request.PageListModel.SortBy == SortValue.ID)
+                                else if (request.Paginator.SortBy == SortValue.ID)
                                 {
-                                    if (!request.PageListModel.OrderByDescending)
+                                    if (!request.Paginator.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -687,8 +687,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.Id)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -700,14 +700,14 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.Id)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (request.PageListModel.SortBy == SortValue.SCORE)
+                                else if (request.Paginator.SortBy == SortValue.SCORE)
                                 {
-                                    if (!request.PageListModel.OrderByDescending)
+                                    if (!request.Paginator.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -720,8 +720,8 @@ namespace SudokuCollective.Data.Services
                                                 g.Score != 0 &&
                                                 !g.ContinueGame)
                                             .OrderByDescending(g => g.Score)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -737,14 +737,14 @@ namespace SudokuCollective.Data.Services
                                                 g.Score != 0 &&
                                                 !g.ContinueGame)
                                             .OrderBy(g => g.Score)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (request.PageListModel.SortBy == SortValue.DATECREATED)
+                                else if (request.Paginator.SortBy == SortValue.DATECREATED)
                                 {
-                                    if (!request.PageListModel.OrderByDescending)
+                                    if (!request.Paginator.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -753,8 +753,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.DateCreated)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -766,14 +766,14 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.DateCreated)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                 }
-                                else if (request.PageListModel.SortBy == SortValue.DATEUPDATED)
+                                else if (request.Paginator.SortBy == SortValue.DATEUPDATED)
                                 {
-                                    if (!request.PageListModel.OrderByDescending)
+                                    if (!request.Paginator.OrderByDescending)
                                     {
                                         foreach (var obj in response.Objects)
                                         {
@@ -782,8 +782,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderBy(g => g.DateUpdated)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                     else
@@ -795,8 +795,8 @@ namespace SudokuCollective.Data.Services
 
                                         result.Games = result.Games
                                             .OrderByDescending(g => g.DateUpdated)
-                                            .Skip((request.PageListModel.Page - 1) * request.PageListModel.ItemsPerPage)
-                                            .Take(request.PageListModel.ItemsPerPage)
+                                            .Skip((request.Paginator.Page - 1) * request.Paginator.ItemsPerPage)
+                                            .Take(request.Paginator.ItemsPerPage)
                                             .ToList();
                                     }
                                 }

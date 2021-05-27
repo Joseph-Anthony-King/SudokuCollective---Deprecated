@@ -124,7 +124,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 RoleLevel = RoleLevel.NULL,
                 License = license,
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             // Act
@@ -150,7 +150,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 RoleLevel = RoleLevel.NULL,
                 License = license,
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             // Act

@@ -16,7 +16,7 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IUsersResult> GetUsers(
             int requestorId,
             string license,
-            IPageListModel pageListModel, 
+            IPaginator paginator, 
             bool fullRecord = true);
         Task<IUserResult> CreateUser(
             IRegisterRequest request,

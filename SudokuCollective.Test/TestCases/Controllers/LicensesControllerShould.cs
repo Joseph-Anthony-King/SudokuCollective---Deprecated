@@ -37,7 +37,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 LiveUrl = "https://TestApp3.com",
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             sutSuccess = new LicensesController(mockAppsService.AppsServiceSuccessfulRequest.Object);

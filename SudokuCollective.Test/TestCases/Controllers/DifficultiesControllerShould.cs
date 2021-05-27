@@ -40,7 +40,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 Name = "Test Difficulty",
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             createDifficultyRequest = new CreateDifficultyRequest()
@@ -49,7 +49,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 DifficultyLevel = DifficultyLevel.TEST,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             sutSuccess = new DifficultiesController(

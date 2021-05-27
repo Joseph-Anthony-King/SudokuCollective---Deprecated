@@ -83,7 +83,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 var result = await usersService.GetUsers(
                     request.RequestorId, 
                     request.License,
-                    request.PageListModel, 
+                    request.Paginator, 
                     fullRecord);
 
                 if (result.Success)

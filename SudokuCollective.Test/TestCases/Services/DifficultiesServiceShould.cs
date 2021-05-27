@@ -20,7 +20,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private IDifficultiesService sut;
         private IDifficultiesService sutCreateDifficulty;
         private string license;
-        private PageListModel pageListModel;
+        private Paginator paginator;
 
         [SetUp]
         public async Task Setup()
@@ -32,7 +32,7 @@ namespace SudokuCollective.Test.TestCases.Services
             sutCreateDifficulty = new DifficultiesService(
                 MockDifficultiesRepository.DifficultiesRepositoryCreateDifficultyRequest.Object);
             license = TestObjects.GetLicense();
-            pageListModel = TestObjects.GetPageListModel();
+            paginator = TestObjects.GetPaginator();
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulties(pageListModel);
+            var result = await sut.GetDifficulties(paginator);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -71,7 +71,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulties(pageListModel);
+            var result = await sut.GetDifficulties(paginator);
             var nullAndTestDifficultyLevelsBlocked = result.Difficulties
                 .Any(difficulty =>
                     difficulty.DifficultyLevel.Equals(DifficultyLevel.NULL)
@@ -94,7 +94,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 Name = "Null UPDATED!",
                 License = license,
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             // Act

@@ -230,7 +230,7 @@ export default {
       license: process.env.VUE_APP_LICENSE,
       requestorId: 1,
       appId: 1,
-      pageListModel: null,
+      paginator: null,
     };
 
     const response = await appService.getByLicense(data);

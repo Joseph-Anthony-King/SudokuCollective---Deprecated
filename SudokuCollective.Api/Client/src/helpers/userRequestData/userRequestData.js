@@ -6,7 +6,7 @@ export function requestDataUpdatePassword(payload) {
     license: store.getters["settingsModule/getLicense"],
     requestorId: store.getters["settingsModule/getRequestorId"],
     appId: store.getters["settingsModule/getAppId"],
-    pageListModel: payload.pageListModel
+    paginator: payload.paginator
   };
 
   let result = requestData(data);
@@ -22,7 +22,7 @@ export function requestDataUpdateUser(payload) {
     license: store.getters["settingsModule/getLicense"],
     requestorId: store.getters["settingsModule/getRequestorId"],
     appId: store.getters["settingsModule/getAppId"],
-    pageListModel: payload.pageListModel
+    paginator: payload.paginator
   };
 
   let result = requestData(data);
@@ -42,7 +42,7 @@ export function requestDataUpdateUserRoles(payload) {
     license: store.getters["settingsModule/getLicense"],
     requestorId: store.getters["settingsModule/getRequestorId"],
     appId: store.getters["settingsModule/getAppId"],
-    pageListModel: payload.pageListModel
+    paginator: payload.paginator
   };
 
   let result = requestData(data);

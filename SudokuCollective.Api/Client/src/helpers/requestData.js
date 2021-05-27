@@ -1,5 +1,5 @@
 ﻿import store from "@/store";
-import PageListModel from "@/models/viewModels/pageListModel"
+import Paginator from "@/models/viewModels/paginator"
 
 export function requestData(data) {
 
@@ -8,7 +8,7 @@ export function requestData(data) {
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      pageListModel: new PageListModel()
+      paginator: new Paginator()
     }
   }
 
@@ -16,6 +16,6 @@ export function requestData(data) {
     License: data.license,
     RequestorId: data.requestorId,
     AppId: data.appId,
-    PageListModel: data.pageListModel,
+    Paginator: data.paginator,
   };
 }

@@ -9,14 +9,14 @@ namespace SudokuCollective.Data.Models.RequestModels
         public string License { get; set; }
         public int RequestorId { get; set; }
         public int AppId { get; set; }
-        public IPageListModel PageListModel { get; set; }
+        public IPaginator Paginator { get; set; }
 
         public BaseRequest()
         {
             License = string.Empty;
             RequestorId = 0;
             AppId = 0;
-            PageListModel = new PageListModel();
+            Paginator = new Paginator();
         }
     }
 }

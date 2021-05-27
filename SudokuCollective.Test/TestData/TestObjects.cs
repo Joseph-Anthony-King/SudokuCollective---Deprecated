@@ -25,9 +25,9 @@ namespace SudokuCollective.Test.TestData
             };
         }
 
-        public static PageListModel GetPageListModel()
+        public static Paginator GetPaginator()
         {
-            return new PageListModel()
+            return new Paginator()
             {
                 Page = 1,
                 ItemsPerPage = 10,
@@ -53,7 +53,7 @@ namespace SudokuCollective.Test.TestData
                 CustomPasswordResetAction = string.Empty,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
         }
 
@@ -65,7 +65,7 @@ namespace SudokuCollective.Test.TestData
                 SudokuCells = GetUpdateSudokuCells(6),
                 License = GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
         }
 
@@ -77,7 +77,7 @@ namespace SudokuCollective.Test.TestData
                 AppId = 1,
                 License = GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
         }
 

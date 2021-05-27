@@ -41,7 +41,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 RoleLevel = RoleLevel.NULL,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             createRoleRequest = new CreateRoleRequest()
@@ -50,7 +50,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 RoleLevel = RoleLevel.NULL,
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             sutSuccess = new RolesController(

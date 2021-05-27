@@ -3,7 +3,7 @@ using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 
 namespace SudokuCollective.Data.Models.PageModels
 {
-    public class PageListModel : IPageListModel
+    public class Paginator : IPaginator
     {
         public int Page { get; set; }
         public int ItemsPerPage { get; set; }
@@ -11,7 +11,7 @@ namespace SudokuCollective.Data.Models.PageModels
         public bool OrderByDescending { get; set; }
         public bool IncludeCompletedGames { get; set; }
 
-        public PageListModel()
+        public Paginator()
         {
             Page = 0;
             ItemsPerPage = 0;
@@ -20,7 +20,7 @@ namespace SudokuCollective.Data.Models.PageModels
             IncludeCompletedGames = false;
         }
 
-        public PageListModel(
+        public Paginator(
             int page,
             int itemsPerPage,
             int sortValue,

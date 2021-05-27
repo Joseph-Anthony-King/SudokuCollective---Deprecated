@@ -74,13 +74,13 @@ const updateUser = async function (
   lastName,
   nickName,
   email,
-  pageListModel
+  paginator
 ) {
   try {
     const params = `/${id}`;
 
     const payload = {
-      pageListModel: pageListModel,
+      paginator: paginator,
       userName: userName,
       firstName: firstName,
       lastName: lastName,
@@ -103,7 +103,7 @@ const updateUser = async function (
   }
 };
 
-const deleteUser = async function(id) {
+const deleteUser = async function (id) {
   try {
     const params = `/${id}`;
 

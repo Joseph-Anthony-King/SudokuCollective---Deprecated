@@ -53,7 +53,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 Password = "password1",
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             baseRequest = TestObjects.GetBaseRequest();

@@ -1,7 +1,7 @@
 import * as axios from "axios";
 import store from "@/store";
 import App from "@/models/app";
-import PageListModel from "@/models/viewModels/pageListModel"
+import Paginator from "@/models/viewModels/paginator"
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
 import { requestDataUpdateApp } from "@/helpers/appRequestData/appRequestData";
@@ -187,12 +187,12 @@ const putActivateAdminPrivileges = async function (
   pagination) {
   try {
     const params = `/${appId}/activateAdminPrivileges/${userId}`;
-    let pageListModel;
+    let paginator;
 
     if (pagination === undefined) {
-      pageListModel = new PageListModel();
+      paginator = new Paginator();
     } else {
-      pageListModel = new PageListModel(
+      paginator = new Paginator(
         pagination.page,
         pagination.itemsPerPage,
         pagination.sortBy,
@@ -205,7 +205,7 @@ const putActivateAdminPrivileges = async function (
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      pageListModel: pageListModel
+      paginator: paginator
     }
 
     const data = requestData(payload);
@@ -232,12 +232,12 @@ const putDeactivateAdminPrivileges = async function (
   pagination) {
   try {
     const params = `/${appId}/deactivateAdminPrivileges/${userId}`;
-    let pageListModel;
+    let paginator;
 
     if (pagination === undefined) {
-      pageListModel = new PageListModel();
+      paginator = new Paginator();
     } else {
-      pageListModel = new PageListModel(
+      paginator = new Paginator(
         pagination.page,
         pagination.itemsPerPage,
         pagination.sortBy,
@@ -250,7 +250,7 @@ const putDeactivateAdminPrivileges = async function (
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      pageListModel: pageListModel
+      paginator: paginator
     }
 
     const data = requestData(payload);
@@ -271,7 +271,7 @@ const putDeactivateAdminPrivileges = async function (
   }
 };
 
-const putUpdateApp= async function (
+const putUpdateApp = async function (
   id,
   name,
   devUrl,
@@ -332,7 +332,7 @@ const deleteApp = async function (app) {
       license: app.license,
       requestorId: app.ownerId,
       appId: app.id,
-      pageListModel: null
+      paginator: null
     };
 
     const config = {
@@ -359,7 +359,7 @@ const resetApp = async function (app) {
       license: app.license,
       requestorId: app.ownerId,
       appId: app.id,
-      pageListModel: null
+      paginator: null
     };
 
     const config = {
@@ -384,12 +384,12 @@ const putAddUser = async function (
   pagination) {
   try {
     const params = `/${appId}/adduser/${userId}`;
-    let pageListModel;
+    let paginator;
 
     if (pagination === undefined) {
-      pageListModel = new PageListModel();
+      paginator = new Paginator();
     } else {
-      pageListModel = new PageListModel(
+      paginator = new Paginator(
         pagination.page,
         pagination.itemsPerPage,
         pagination.sortBy,
@@ -402,7 +402,7 @@ const putAddUser = async function (
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      pageListModel: pageListModel
+      paginator: paginator
     }
 
     const data = requestData(payload);
@@ -429,12 +429,12 @@ const deleteRemoveUser = async function (
   pagination) {
   try {
     const params = `/${appId}/removeuser/${userId}`;
-    let pageListModel;
+    let paginator;
 
     if (pagination === undefined) {
-      pageListModel = new PageListModel();
+      paginator = new Paginator();
     } else {
-      pageListModel = new PageListModel(
+      paginator = new Paginator(
         pagination.page,
         pagination.itemsPerPage,
         pagination.sortBy,
@@ -447,7 +447,7 @@ const deleteRemoveUser = async function (
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      pageListModel: pageListModel
+      paginator: paginator
     }
 
     const data = requestData(payload);

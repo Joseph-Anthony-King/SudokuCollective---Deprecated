@@ -264,7 +264,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var userId = 1;
             var getMyGameRequest = new GetGamesRequest()
             {
-                PageListModel = new PageListModel(),
+                Paginator = new Paginator(),
                 UserId = userId
             };
 

@@ -28,7 +28,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private DateTime dateCreated;
         private string license;
         private BaseRequest baseRequest;
-        private PageListModel pageListModel;
+        private Paginator paginator;
         private int userId;
         private int appId;
 
@@ -69,7 +69,7 @@ namespace SudokuCollective.Test.TestCases.Services
             dateCreated = DateTime.UtcNow;
             license = TestObjects.GetLicense();
             baseRequest = TestObjects.GetBaseRequest();
-            pageListModel = TestObjects.GetPageListModel();
+            paginator = TestObjects.GetPaginator();
             userId = 1;
             appId = 1;
         }
@@ -111,7 +111,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetApps(new PageListModel(), 1);
+            var result = await sut.GetApps(new Paginator(), 1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -235,7 +235,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetAppUsers(1, 1, pageListModel);
+            var result = await sut.GetAppUsers(1, 1, paginator);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -256,7 +256,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 {
                     License = license,
                     RequestorId = 1,
-                    PageListModel = new PageListModel(),
+                    Paginator = new Paginator(),
                     Name = "Test App 1... UPDATED!",
                     DevUrl = "https://localhost:4200",
                     LiveUrl = "https://testapp.com"
@@ -526,7 +526,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetMyApps(1, new PageListModel());
+            var result = await sut.GetMyApps(1, new Paginator());
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -541,7 +541,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutAppRepoFailure.GetMyApps(1, new PageListModel());
+            var result = await sutAppRepoFailure.GetMyApps(1, new Paginator());
 
             // Assert
             Assert.That(result.Success, Is.False);

@@ -182,7 +182,7 @@ namespace SudokuCollective.Data.Services
         public async Task<IUsersResult> GetUsers(
             int requestorId,
             string license,
-            IPageListModel pageListModel,
+            IPaginator paginator,
             bool fullRecord = true)
         {
             var result = new UsersResult();
@@ -193,17 +193,17 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    if (pageListModel != null)
+                    if (paginator != null)
                     {
-                        if (StaticDataHelpers.IsPageValid(pageListModel, response.Objects))
+                        if (StaticDataHelpers.IsPageValid(paginator, response.Objects))
                         {
-                            if (pageListModel.SortBy == SortValue.NULL)
+                            if (paginator.SortBy == SortValue.NULL)
                             {
                                 result.Users = response.Objects.ConvertAll(u => (IUser)u);
                             }
-                            else if (pageListModel.SortBy == SortValue.ID)
+                            else if (paginator.SortBy == SortValue.ID)
                             {
-                                if (!pageListModel.OrderByDescending)
+                                if (!paginator.OrderByDescending)
                                 {
                                     foreach (var obj in response.Objects)
                                     {
@@ -212,8 +212,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderBy(u => u.Id)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                                 else
@@ -225,14 +225,14 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderByDescending(u => u.Id)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                             }
-                            else if (pageListModel.SortBy == SortValue.USERNAME)
+                            else if (paginator.SortBy == SortValue.USERNAME)
                             {
-                                if (!pageListModel.OrderByDescending)
+                                if (!paginator.OrderByDescending)
                                 {
                                     foreach (var obj in response.Objects)
                                     {
@@ -241,8 +241,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderBy(u => u.UserName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                                 else
@@ -254,14 +254,14 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderByDescending(u => u.UserName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                             }
-                            else if (pageListModel.SortBy == SortValue.FIRSTNAME)
+                            else if (paginator.SortBy == SortValue.FIRSTNAME)
                             {
-                                if (!pageListModel.OrderByDescending)
+                                if (!paginator.OrderByDescending)
                                 {
                                     foreach (var obj in response.Objects)
                                     {
@@ -270,8 +270,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderBy(u => u.FirstName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                                 else
@@ -283,14 +283,14 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderByDescending(u => u.FirstName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                             }
-                            else if (pageListModel.SortBy == SortValue.LASTNAME)
+                            else if (paginator.SortBy == SortValue.LASTNAME)
                             {
-                                if (!pageListModel.OrderByDescending)
+                                if (!paginator.OrderByDescending)
                                 {
                                     foreach (var obj in response.Objects)
                                     {
@@ -299,8 +299,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderBy(u => u.LastName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                                 else
@@ -312,14 +312,14 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderByDescending(u => u.LastName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                             }
-                            else if (pageListModel.SortBy == SortValue.FULLNAME)
+                            else if (paginator.SortBy == SortValue.FULLNAME)
                             {
-                                if (!pageListModel.OrderByDescending)
+                                if (!paginator.OrderByDescending)
                                 {
                                     foreach (var obj in response.Objects)
                                     {
@@ -328,8 +328,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderBy(u => u.FullName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                                 else
@@ -341,14 +341,14 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderByDescending(u => u.FullName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                             }
-                            else if (pageListModel.SortBy == SortValue.NICKNAME)
+                            else if (paginator.SortBy == SortValue.NICKNAME)
                             {
-                                if (!pageListModel.OrderByDescending)
+                                if (!paginator.OrderByDescending)
                                 {
                                     foreach (var obj in response.Objects)
                                     {
@@ -357,8 +357,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderBy(u => u.NickName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                                 else
@@ -370,14 +370,14 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderByDescending(u => u.NickName)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                             }
-                            else if (pageListModel.SortBy == SortValue.DATECREATED)
+                            else if (paginator.SortBy == SortValue.DATECREATED)
                             {
-                                if (!pageListModel.OrderByDescending)
+                                if (!paginator.OrderByDescending)
                                 {
                                     foreach (var obj in response.Objects)
                                     {
@@ -386,8 +386,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderBy(u => u.DateCreated)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                                 else
@@ -399,14 +399,14 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderByDescending(u => u.DateCreated)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                             }
-                            else if (pageListModel.SortBy == SortValue.DATEUPDATED)
+                            else if (paginator.SortBy == SortValue.DATEUPDATED)
                             {
-                                if (!pageListModel.OrderByDescending)
+                                if (!paginator.OrderByDescending)
                                 {
                                     foreach (var obj in response.Objects)
                                     {
@@ -415,8 +415,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderBy(u => u.DateUpdated)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                                 else
@@ -428,8 +428,8 @@ namespace SudokuCollective.Data.Services
 
                                     result.Users = result.Users
                                         .OrderByDescending(u => u.DateUpdated)
-                                        .Skip((pageListModel.Page - 1) * pageListModel.ItemsPerPage)
-                                        .Take(pageListModel.ItemsPerPage)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
                                         .ToList();
                                 }
                             }

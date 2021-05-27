@@ -11,7 +11,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         public string License { get; set; }
         public int RequestorId { get; set; }
         public int AppId { get; set; }
-        public IPageListModel PageListModel { get; set; }
+        public IPaginator Paginator { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
@@ -22,9 +22,9 @@ namespace SudokuCollective.Data.Models.RequestModels
             Name = string.Empty;
             DisplayName = string.Empty;
 
-            if (PageListModel == null)
+            if (Paginator == null)
             {
-                PageListModel = new PageListModel();
+                Paginator = new Paginator();
             }
         }
     }

@@ -47,7 +47,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 Email = "testemail@example.com",
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             updatePasswordRequest = new UpdatePasswordRequest()
@@ -61,7 +61,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 RoleIds = new List<int>() { 3 },
                 License = TestObjects.GetLicense(),
                 RequestorId = 1,
-                PageListModel = new PageListModel()
+                Paginator = new Paginator()
             };
 
             sutSuccess = new UsersController(
