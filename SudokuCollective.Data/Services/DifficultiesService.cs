@@ -150,7 +150,7 @@ namespace SudokuCollective.Data.Services
                                     .ToList();
                             }
                         }
-                        else if (paginator.SortBy == SortValue.DIFFICULTY)
+                        else if (paginator.SortBy == SortValue.DIFFICULTYLEVEL)
                         {
                             if (!paginator.OrderByDescending)
                             {

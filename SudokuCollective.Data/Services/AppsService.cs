@@ -1554,28 +1554,39 @@ namespace SudokuCollective.Data.Services
                 if (await appsRepository.HasEntity(appId))
                 {
                     var app = (App)(await appsRepository.GetById(appId)).Object;
-                    var addUserToAppResponse = await appsRepository.AddAppUser(
-                        userId,
-                        app.License);
 
-                    if (addUserToAppResponse.Success)
+                    if (await usersRepository.HasEntity(userId))
                     {
-                        result.Success = addUserToAppResponse.Success;
-                        result.Message = AppsMessages.UserAddedToAppMessage;
+                        var addUserToAppResponse = await appsRepository.AddAppUser(
+                            userId,
+                            app.License);
 
-                        return result;
-                    }
-                    else if (!addUserToAppResponse.Success && addUserToAppResponse.Exception != null)
-                    {
-                        result.Success = addUserToAppResponse.Success;
-                        result.Message = addUserToAppResponse.Exception.Message;
+                        if (addUserToAppResponse.Success)
+                        {
+                            result.Success = addUserToAppResponse.Success;
+                            result.Message = AppsMessages.UserAddedToAppMessage;
 
-                        return result;
+                            return result;
+                        }
+                        else if (!addUserToAppResponse.Success && addUserToAppResponse.Exception != null)
+                        {
+                            result.Success = addUserToAppResponse.Success;
+                            result.Message = addUserToAppResponse.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.UserNotAddedToAppMessage;
+
+                            return result;
+                        }
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = AppsMessages.UserNotAddedToAppMessage;
+                        result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
                     }
@@ -1606,36 +1617,46 @@ namespace SudokuCollective.Data.Services
                 {
                     var app = (App)(await appsRepository.GetById(appId)).Object;
 
-                    if (app.OwnerId == userId)
+                    if (await usersRepository.HasEntity(userId))
                     {
-                        result.Success = false;
-                        result.Message = AppsMessages.UserIsTheAppOwnerMessage;
+                        if (app.OwnerId == userId)
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.UserIsTheAppOwnerMessage;
 
-                        return result;
-                    }
+                            return result;
+                        }
 
-                    var addUserToAppResponse = await appsRepository.RemoveAppUser(
-                        userId,
-                        app.License);
+                        var addUserToAppResponse = await appsRepository.RemoveAppUser(
+                            userId,
+                            app.License);
 
-                    if (addUserToAppResponse.Success)
-                    {
-                        result.Success = addUserToAppResponse.Success;
-                        result.Message = AppsMessages.UserRemovedFromAppMessage;
+                        if (addUserToAppResponse.Success)
+                        {
+                            result.Success = addUserToAppResponse.Success;
+                            result.Message = AppsMessages.UserRemovedFromAppMessage;
 
-                        return result;
-                    }
-                    else if (!addUserToAppResponse.Success && addUserToAppResponse.Exception != null)
-                    {
-                        result.Success = addUserToAppResponse.Success;
-                        result.Message = addUserToAppResponse.Exception.Message;
+                            return result;
+                        }
+                        else if (!addUserToAppResponse.Success && addUserToAppResponse.Exception != null)
+                        {
+                            result.Success = addUserToAppResponse.Success;
+                            result.Message = addUserToAppResponse.Exception.Message;
 
-                        return result;
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.UserNotRemovedFromAppMessage;
+
+                            return result;
+                        }
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = AppsMessages.UserNotRemovedFromAppMessage;
+                        result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
                     }
@@ -1993,7 +2014,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = userResult.Success;
-                        result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
+                        result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
                     }
@@ -2098,7 +2119,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = userResult.Success;
-                        result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
+                        result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
                     }

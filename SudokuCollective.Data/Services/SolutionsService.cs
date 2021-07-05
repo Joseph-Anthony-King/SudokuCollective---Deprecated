@@ -20,16 +20,13 @@ namespace SudokuCollective.Data.Services
     {
         #region Fields
         private readonly ISolutionsRepository<SudokuSolution> solutionsRepository;
-        private readonly IUsersRepository<User> usersRepository;
         #endregion
 
         #region Constructor
         public SolutionsService(
-            ISolutionsRepository<SudokuSolution> solutionsRepo,
-            IUsersRepository<User> usersRepo)
+            ISolutionsRepository<SudokuSolution> solutionsRepo)
         {
             solutionsRepository = solutionsRepo;
-            usersRepository = usersRepo;
         }
         #endregion
 
@@ -305,7 +302,7 @@ namespace SudokuCollective.Data.Services
 
                     result.Success = true;
                     result.Solution = solution;
-                    result.Message = SolutionsMessages.SolutionSolvedMessage;
+                    result.Message = SolutionsMessages.SudokuSolutionFoundMessage;
                 }
                 else
                 {
@@ -333,7 +330,7 @@ namespace SudokuCollective.Data.Services
                                 solutonInDB = possibleSolution;
                                 result.Success = possibleSolution;
                                 result.Solution = solution;
-                                result.Message = SolutionsMessages.SolutionSolvedMessage;
+                                result.Message = SolutionsMessages.SudokuSolutionFoundMessage;
                                 break;
                             }
                         }
@@ -342,14 +339,14 @@ namespace SudokuCollective.Data.Services
                         {
                             result.Success = false;
                             result.Solution = null;
-                            result.Message = SolutionsMessages.SolutionNotSolvedMessage;
+                            result.Message = SolutionsMessages.SudokuSolutionNotFoundMessage;
                         }
                     }
                     else
                     {
                         result.Success = false;
                         result.Solution = null;
-                        result.Message = SolutionsMessages.SolutionNotSolvedMessage;
+                        result.Message = SolutionsMessages.SudokuSolutionNotFoundMessage;
                     }
                 }
 

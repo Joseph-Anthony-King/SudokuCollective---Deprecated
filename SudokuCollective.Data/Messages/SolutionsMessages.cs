@@ -14,8 +14,8 @@ namespace SudokuCollective.Data.Messages
         public static string SolutionNotUpdatedMessage = "Solution Not Updated";
         public static string SolutionsAddedMessage = "Solutions Added";
         public static string SolutionsNotAddedMessage = "Solutions Not Added";
-        public static string SolutionSolvedMessage = "Solution Solved";
-        public static string SolutionNotSolvedMessage = "Solution Not Solved";
+        public static string SudokuSolutionFoundMessage = "Sudoku Solution Found";
+        public static string SudokuSolutionNotFoundMessage = "Sudoku Solution Not Found";
         public static string SolutionGeneratedMessage = "Solution Generated";
         public static string SolutionNotGeneratedMessage = "Solution Not Generated";
     }

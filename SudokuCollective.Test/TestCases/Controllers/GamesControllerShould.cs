@@ -168,7 +168,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.PutGame(1, updateGameRequest);
+            var result = sutSuccess.UpdateGame(1, updateGameRequest);
             var message = ((GameResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -185,7 +185,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.PutGame(1, updateGameRequest);
+            var result = sutFailure.UpdateGame(1, updateGameRequest);
             var message = ((GameResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 

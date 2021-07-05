@@ -29,7 +29,7 @@
         public static string RolesNotAddedMessage = "Roles Not Added";
         public static string RolesRemovedMessage = "Roles Removed";
         public static string RolesNotRemovedMessage = "Roles Not Removed";
-        public static string RoleInvalidMessage = "Role Invalid";
+        public static string RolesInvalidMessage = "Roles Invalid";
         public static string PasswordResetMessage = "Password Reset";
         public static string PasswordNotResetMessage = "Password Not Reset";
         public static string EmailConfirmedMessage = "Email Confirmed";

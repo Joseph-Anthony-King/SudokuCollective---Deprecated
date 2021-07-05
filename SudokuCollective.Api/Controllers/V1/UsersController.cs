@@ -68,47 +68,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/users
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers(
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await usersService.GetUsers(
-                    request.RequestorId, 
-                    request.License,
-                    request.Paginator, 
-                    fullRecord);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
         // PUT: api/users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(
+        public async Task<IActionResult> UpdateUser(
             int id, [FromBody] UpdateUserRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -141,7 +104,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 }
 
                 var result = await usersService.UpdateUser(
-                    id, 
+                    id,
                     request,
                     baseUrl,
                     emailtTemplatePath);
@@ -159,6 +122,75 @@ namespace SudokuCollective.Api.V1.Controllers
                     return NotFound(result);
                 }
 
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // DELETE: api/users/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<User>> DeleteUser(
+            int id, [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await usersService.DeleteUser(id);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // POST: api/users
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers(
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = true)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await usersService.GetUsers(
+                    request.RequestorId, 
+                    request.License,
+                    request.Paginator, 
+                    fullRecord);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
             }
             else
             {
@@ -260,41 +292,9 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // DELETE: api/users/5
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(
-            int id, [FromBody] BaseRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await usersService.DeleteUser(id);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // POST: api/users/addroles
+        // PUT: api/users/addroles
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPost, Route("{id}/AddRoles")]
+        [HttpPut, Route("{id}/AddRoles")]
         public async Task<IActionResult> AddRoles(
             int id,
             [FromBody] UpdateUserRoleRequest request)
@@ -328,9 +328,9 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // DELETE: api/users/addroles
+        // PUT: api/users/addroles
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpDelete, Route("{id}/RemoveRoles")]
+        [HttpPut, Route("{id}/RemoveRoles")]
         public async Task<IActionResult> RemoveRoles(
             int id,
             [FromBody] UpdateUserRoleRequest request)

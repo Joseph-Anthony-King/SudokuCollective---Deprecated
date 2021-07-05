@@ -155,7 +155,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutSuccess.PutUser(userId, updateUserRequest);
+            var result = sutSuccess.UpdateUser(userId, updateUserRequest);
             var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -173,7 +173,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutFailure.PutUser(userId, updateUserRequest);
+            var result = sutFailure.UpdateUser(userId, updateUserRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 

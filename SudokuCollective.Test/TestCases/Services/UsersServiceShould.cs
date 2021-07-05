@@ -593,7 +593,7 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task DeleteUsers()
         {
             // Arrange
-            var userId = 1;
+            var userId = 2;
 
             // Act
             var result = await sut.DeleteUser(userId);

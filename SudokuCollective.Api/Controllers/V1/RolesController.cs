@@ -26,26 +26,25 @@ namespace SudokuCollective.Api.V1.Controllers
             appsService = appsServ;
         }
 
-        // POST: api/roles/5
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost("{id}")]
-        public async Task<ActionResult<Role>> GetRole(
-            int id,
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+        // POST: api/roles
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPost, Route("Create")]
+        public async Task<ActionResult<Role>> PostRole(
+            [FromBody] CreateRoleRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await rolesService.GetRole(id, fullRecord);
+                var result = await rolesService
+                    .CreateRole(request.Name, request.RoleLevel);
 
                 if (result.Success)
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    result.Message = ControllerMessages.StatusCode201(result.Message);
 
-                    return Ok(result);
+                    return StatusCode((int)HttpStatusCode.Created, result);
                 }
                 else
                 {
@@ -60,43 +59,54 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/roles
+        // GET: api/roles/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles(
-            [FromBody] BaseRequest request,
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Role>> GetRole(
+            int id,
             [FromQuery] bool fullRecord = true)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            var result = await rolesService.GetRole(id, fullRecord);
+
+            if (result.Success)
             {
-                var result = await rolesService.GetRoles(fullRecord);
+                result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
+                return Ok(result);
             }
             else
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
+            }
+        }
+
+        // GET: api/roles
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles([FromQuery] bool fullRecord = true)
+        {
+            var result = await rolesService.GetRoles(fullRecord);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
             }
         }
 
         // PUT: api/roles/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRole(
+        public async Task<IActionResult> UpdateRole(
             int id,
             [FromBody] UpdateRoleRequest request)
         {
@@ -117,39 +127,6 @@ namespace SudokuCollective.Api.V1.Controllers
                     result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // POST: api/roles
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpPost, Route("Create")]
-        public async Task<ActionResult<Role>> PostRole(
-            [FromBody] CreateRoleRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await rolesService
-                    .CreateRole(request.Name, request.RoleLevel);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode201(result.Message);
-
-                    return StatusCode((int)HttpStatusCode.Created, result);
                 }
                 else
                 {

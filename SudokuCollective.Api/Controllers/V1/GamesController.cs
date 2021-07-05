@@ -26,6 +26,38 @@ namespace SudokuCollective.Api.V1.Controllers
             appsService = appsServ;
         }
 
+        // POST: api/games
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPost, Route("Create")]
+        public async Task<ActionResult<Game>> PostGame(
+            [FromBody] CreateGameRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.CreateGame(request);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode201(result.Message);
+
+                    return StatusCode((int)HttpStatusCode.Created, result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
         // POST: api/games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost("{id}")]
@@ -59,19 +91,25 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/games
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGames(
-            [FromBody] GetGamesRequest request,
-            [FromQuery] bool fullRecord = true)
+        // PUT: api/games/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateGame(
+            int id,
+            [FromBody] UpdateGameRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await gamesService.GetGames(request, fullRecord);
+                if (id != request.GameId)
+                {
+                    return BadRequest(ControllerMessages.IdIncorrectMessage);
+                }
+
+                var result =
+                    await gamesService.UpdateGame(id, request);
 
                 if (result.Success)
                 {
@@ -125,10 +163,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/games/5
+        // PUT: api/games/5/checkgame
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutGame(
+        [HttpPut, Route("{id}/CheckGame")]
+        public async Task<ActionResult<Game>> CheckGame(
             int id,
             [FromBody] UpdateGameRequest request)
         {
@@ -137,13 +175,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                if (id != request.GameId)
-                {
-                    return BadRequest(ControllerMessages.IdIncorrectMessage);
-                }
-
-                var result =
-                    await gamesService.UpdateGame(id, request);
+                var result = await gamesService.CheckGame(id, request);
 
                 if (result.Success)
                 {
@@ -165,50 +197,18 @@ namespace SudokuCollective.Api.V1.Controllers
         }
 
         // POST: api/games
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost, Route("Create")]
-        public async Task<ActionResult<Game>> PostGame(
-            [FromBody] CreateGameRequest request)
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<Game>>> GetGames(
+            [FromBody] GetGamesRequest request,
+            [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await gamesService.CreateGame(request);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode201(result.Message);
-
-                    return StatusCode((int)HttpStatusCode.Created, result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // PUT: api/games/5/checkgame
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut, Route("{id}/CheckGame")]
-        public async Task<ActionResult<Game>> CheckGame(
-            int id,
-            [FromBody] UpdateGameRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await gamesService.CheckGame(id, request);
+                var result = await gamesService.GetGames(request, fullRecord);
 
                 if (result.Success)
                 {

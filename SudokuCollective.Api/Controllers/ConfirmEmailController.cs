@@ -69,9 +69,10 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                var confirmEmailModel = new ConfirmEmail();
-
-                confirmEmailModel.Success = result.Success;
+                var confirmEmailModel = new ConfirmEmail
+                {
+                    Success = result.Success
+                };
 
                 return View(confirmEmailModel);
             }

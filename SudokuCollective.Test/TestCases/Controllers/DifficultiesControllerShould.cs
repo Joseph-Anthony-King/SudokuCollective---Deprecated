@@ -69,7 +69,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var difficultyId = 2;
 
             // Act
-            var result = sutSuccess.GetDifficulty(difficultyId, baseRequest);
+            var result = sutSuccess.GetDifficulty(difficultyId);
             var message = ((DifficultyResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var difficulty = ((DifficultyResult)((OkObjectResult)result.Result.Result).Value).Difficulty;
@@ -89,7 +89,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var difficultyId = 2;
 
             // Act
-            var result = sutFailure.GetDifficulty(difficultyId, baseRequest);
+            var result = sutFailure.GetDifficulty(difficultyId);
             var message = ((DifficultyResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 

@@ -762,7 +762,7 @@ namespace SudokuCollective.Data.Repositories
 
                     foreach (var roleId in roleIds)
                     {
-                        if (await context.Roles.AnyAsync(r => r.Id == roleId))
+                        if (await context.Roles.AnyAsync(r => r.Id == roleId) && !user.Roles.Any(ur => ur.RoleId == roleId))
                         {
                             var role = await context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
 
@@ -901,7 +901,7 @@ namespace SudokuCollective.Data.Repositories
                             .UsersRoles
                             .AnyAsync(ur => ur.UserId == userId && ur.RoleId == roleId))
                         {
-                            // Role exists so we continue...
+                            // USerRole exists so we continue...
                         }
                         else
                         {

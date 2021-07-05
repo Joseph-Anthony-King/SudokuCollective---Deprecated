@@ -17,10 +17,8 @@ namespace SudokuCollective.Test.TestCases.Services
     {
         private DatabaseContext context;
         private MockSolutionsRepository MockSolutionsRepository;
-        private MockUsersRepository MockUsersRepository;
         private ISolutionsService sut;
         private ISolutionsService sutFailure;
-        private string license;
         private BaseRequest baseRequest;
 
         [SetUp]
@@ -28,17 +26,13 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             context = await TestDatabase.GetDatabaseContext();
             MockSolutionsRepository = new MockSolutionsRepository(context);
-            MockUsersRepository = new MockUsersRepository(context);
 
             sut = new SolutionsService(
-                MockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object);
+                MockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
 
             sutFailure = new SolutionsService(
-                MockSolutionsRepository.SolutionsRepositoryFailedRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object);
+                MockSolutionsRepository.SolutionsRepositoryFailedRequest.Object);
 
-            license = TestObjects.GetLicense();
             baseRequest = TestObjects.GetBaseRequest();
         }
 
@@ -125,7 +119,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Solution Solved"));
+            Assert.That(result.Message, Is.EqualTo("Sudoku Solution Found"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
         }
 

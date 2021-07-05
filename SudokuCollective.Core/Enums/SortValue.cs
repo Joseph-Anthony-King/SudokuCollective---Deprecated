@@ -14,7 +14,7 @@
         NAME,
         DATECREATED,
         DATEUPDATED,
-        DIFFICULTY,
+        DIFFICULTYLEVEL,
         USERCOUNT,
         SCORE
     }

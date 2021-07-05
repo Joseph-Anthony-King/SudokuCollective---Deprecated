@@ -1525,7 +1525,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = UsersMessages.RoleInvalidMessage;
+                        result.Message = UsersMessages.RolesInvalidMessage;
 
                         return result;
                     }
@@ -1606,7 +1606,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.Success = false;
-                        result.Message = UsersMessages.RoleInvalidMessage;
+                        result.Message = UsersMessages.RolesInvalidMessage;
 
                         return result;
                     }
@@ -2452,7 +2452,7 @@ namespace SudokuCollective.Data.Services
                                 }
                                 else
                                 {
-                                    result.Success = result.Success ? result.Success : false;
+                                    result.Success = false;
                                     result.Message = string.IsNullOrEmpty(result.Message) ?
                                         UsersMessages.PasswordResetRequestNotCancelledMessage :
                                         string.Format("{0} and {1}", result.Message, UsersMessages.PasswordResetRequestNotCancelledMessage);

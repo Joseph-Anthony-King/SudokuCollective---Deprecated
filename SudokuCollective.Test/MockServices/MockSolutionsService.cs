@@ -75,7 +75,7 @@ namespace SudokuCollective.Test.MockServices
                 .Returns(Task.FromResult(new SolutionResult()
                 {
                     Success = true,
-                    Message = SolutionsMessages.SolutionSolvedMessage,
+                    Message = SolutionsMessages.SudokuSolutionFoundMessage,
                     Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
@@ -154,7 +154,7 @@ namespace SudokuCollective.Test.MockServices
                 .Returns(Task.FromResult(new SolutionResult()
                 {
                     Success = false,
-                    Message = SolutionsMessages.SolutionNotSolvedMessage,
+                    Message = SolutionsMessages.SudokuSolutionNotFoundMessage,
                     Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
@@ -200,7 +200,7 @@ namespace SudokuCollective.Test.MockServices
                 .Returns(Task.FromResult(new SolutionResult()
                 {
                     Success = true,
-                    Message = SolutionsMessages.SolutionNotSolvedMessage,
+                    Message = SolutionsMessages.SudokuSolutionNotFoundMessage,
                     Solution = null
                 } as ISolutionResult));
         }

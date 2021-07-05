@@ -600,27 +600,27 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.GetTimeFrames(baseRequest);
-            var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
+            var result = sutSuccess.GetTimeFrames();
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult<List<TimeFrameListItem>>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<List<EnumListItem>>>());
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
         [Test]
         [Category("Controllers")]
-        public void ReturnFalseIfSuccessfullyGetAccessTokenTimeFramesFails()
+        public void SuccessfullyGetSortValues()
         {
             // Arrange
 
             // Act
-            var result = sutInvalid.GetTimeFrames(baseRequest);
-            var statusCode = ((BadRequestObjectResult)result.Result.Result).StatusCode;
+            var result = sutSuccess.GetSortValues();
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<ActionResult<List<TimeFrameListItem>>>());
-            Assert.That(statusCode, Is.EqualTo(400));
+            Assert.That(result, Is.InstanceOf<ActionResult<List<EnumListItem>>>());
+            Assert.That(statusCode, Is.EqualTo(200));
         }
     }
 }

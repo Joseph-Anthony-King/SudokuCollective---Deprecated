@@ -114,7 +114,7 @@ const getMyApps = async function (fullRecord) {
     }
 
     const config = {
-      method: "put",
+      method: "post",
       url: `${getMyAppsEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
@@ -140,7 +140,7 @@ const getAppUsers = async function (id, fullRecord) {
     }
 
     const config = {
-      method: "put",
+      method: "post",
       url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
@@ -166,7 +166,7 @@ const getNonAppUsers = async function (id, fullRecord) {
     }
 
     const config = {
-      method: "put",
+      method: "post",
       url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),

@@ -26,37 +26,26 @@ namespace SudokuCollective.Api.V1.Controllers
             appsService = appsServ;
         }
 
-        // POST: api/difficulties/5
+        // GET: api/difficulties/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Difficulty>> GetDifficulty(
             int id,
-            [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            var result = await difficultiesService.GetDifficulty(id, fullRecord);
+
+            if (result.Success)
             {
-                var result = await difficultiesService.GetDifficulty(id, fullRecord);
+                result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
+                return Ok(result);
             }
             else
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
             }
         }
 
@@ -66,19 +55,42 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
             [FromBody] BaseRequest request, [FromQuery] bool fullRecord = true)
         {
+            var result = await difficultiesService
+                .GetDifficulties(request.Paginator, fullRecord);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
+            }
+        }
+
+        // POST: api/difficulties
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPost, Route("Create")]
+        public async Task<ActionResult<Difficulty>> PostDifficulty(
+            [FromBody] CreateDifficultyRequest request)
+        {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
                 var result = await difficultiesService
-                    .GetDifficulties(request.Paginator, fullRecord);
+                    .CreateDifficulty(request.Name, request.DisplayName, request.DifficultyLevel);
 
                 if (result.Success)
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    result.Message = ControllerMessages.StatusCode201(result.Message);
 
-                    return Ok(result);
+                    return StatusCode((int)HttpStatusCode.Created, result);
                 }
                 else
                 {
@@ -116,39 +128,6 @@ namespace SudokuCollective.Api.V1.Controllers
                     result.Message = ControllerMessages.StatusCode200(result.Message);
 
                     return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // POST: api/difficulties
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpPost, Route("Create")]
-        public async Task<ActionResult<Difficulty>> PostDifficulty(
-            [FromBody] CreateDifficultyRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await difficultiesService
-                    .CreateDifficulty(request.Name, request.DisplayName, request.DifficultyLevel);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode201(result.Message);
-
-                    return StatusCode((int)HttpStatusCode.Created, result);
                 }
                 else
                 {
