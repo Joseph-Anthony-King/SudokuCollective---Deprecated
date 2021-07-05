@@ -1,15 +1,17 @@
-﻿namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
+﻿using System.Collections.Generic;
+
+namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
 {
     public interface ISolveRequest
     {
-        int[] FirstRow { get; set; }
-        int[] SecondRow { get; set; }
-        int[] ThirdRow { get; set; }
-        int[] FourthRow { get; set; }
-        int[] FifthRow { get; set; }
-        int[] SixthRow { get; set; }
-        int[] SeventhRow { get; set; }
-        int[] EighthRow { get; set; }
-        int[] NinthRow { get; set; }
+        List<int> FirstRow { get; set; }
+        List<int> SecondRow { get; set; }
+        List<int> ThirdRow { get; set; }
+        List<int> FourthRow { get; set; }
+        List<int> FifthRow { get; set; }
+        List<int> SixthRow { get; set; }
+        List<int> SeventhRow { get; set; }
+        List<int> EighthRow { get; set; }
+        List<int> NinthRow { get; set; }
     }
 }

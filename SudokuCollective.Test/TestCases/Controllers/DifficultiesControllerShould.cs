@@ -142,7 +142,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.PutDifficulty(1, updateDifficultyRequest);
+            var result = sutSuccess.UpdateDifficulty(1, updateDifficultyRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -159,7 +159,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.PutDifficulty(1, updateDifficultyRequest);
+            var result = sutFailure.UpdateDifficulty(1, updateDifficultyRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 

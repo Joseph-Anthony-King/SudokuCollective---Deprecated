@@ -108,7 +108,7 @@ namespace SudokuCollective.Api.V1.Controllers
         // PUT: api/difficulties/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDifficulty(int id,
+        public async Task<IActionResult> UpdateDifficulty(int id,
             [FromBody] UpdateDifficultyRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(

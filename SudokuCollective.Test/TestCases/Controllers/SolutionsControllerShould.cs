@@ -37,15 +37,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             solveRequest = new SolveRequest()
             {
-                FirstRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                SecondRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                ThirdRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                FourthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                FifthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                SixthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                SeventhRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                EighthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                NinthRow = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+                FirstRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                SecondRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                ThirdRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                FourthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                FifthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                SixthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                SeventhRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                EighthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                NinthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
             };
 
             addSolutionRequest = new AddSolutionRequest()
