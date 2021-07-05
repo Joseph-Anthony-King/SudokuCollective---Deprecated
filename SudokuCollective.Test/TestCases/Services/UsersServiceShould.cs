@@ -348,17 +348,17 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task UpdateUser()
         {
             // Arrange
-            var userId = 1;
+            var userId = 2;
 
             var updateUserRequest = new UpdateUserRequest()
             {
-                UserName = "TestSuperUserUPDATED",
-                FirstName = "Test Super",
+                UserName = "TestUserUPDATED",
+                FirstName = "Test",
                 LastName = "User",
-                NickName = "Test Super User",
-                Email = "TestSuperUser@example.com",
+                NickName = "Test User UPDATED",
+                Email = "TestUser@example.com",
                 License = TestObjects.GetLicense(),
-                RequestorId = 1
+                RequestorId = 2
             };
 
             var baseUrl = "https://example.com";
@@ -371,7 +371,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("User Updated"));
-            Assert.That(result.User.UserName, Is.EqualTo("TestSuperUserUPDATED"));
+            Assert.That(result.User.UserName, Is.EqualTo("TestUserUPDATED"));
         }
 
         [Test]
@@ -551,7 +551,7 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task UpdateUserPassword()
         {
             // Arrange
-            var user = context.Users.FirstOrDefault(u => u.Id == 1);
+            var user = context.Users.FirstOrDefault(u => u.Id == 2);
             user.ReceivedRequestToUpdatePassword = true;
             context.SaveChanges();
 

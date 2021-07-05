@@ -106,7 +106,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
-                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
+                        Object = context.Users.FirstOrDefault(u => u.Id == 2)
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
