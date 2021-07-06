@@ -23,7 +23,7 @@ namespace SudokuCollective.Data.Validation.Attributes
             }
             else
             {
-                if ((int)paginator.SortBy < 1 || (int)paginator.SortBy > (int)Enum.GetValues(typeof(SortValue)).Cast<SortValue>().Last())
+                if ((int)paginator.SortBy < 0 || (int)paginator.SortBy > (int)Enum.GetValues(typeof(SortValue)).Cast<SortValue>().Last())
                 {
                     return false;
                 }
