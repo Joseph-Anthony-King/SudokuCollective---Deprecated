@@ -22,6 +22,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         List<SudokuCell> SeventhColumn { get; }
         List<SudokuCell> EighthColumn { get; }
         List<SudokuCell> NinthColumn { get; }
+        List<List<SudokuCell>> Columns { get; }
         List<SudokuCell> FirstRegion { get; }
         List<SudokuCell> SecondRegion { get; }
         List<SudokuCell> ThirdRegion { get; }
@@ -31,6 +32,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         List<SudokuCell> SeventhRegion { get; }
         List<SudokuCell> EighthRegion { get; }
         List<SudokuCell> NinthRegion { get; }
+        List<List<SudokuCell>> Regions { get; }
         List<SudokuCell> FirstRow { get; }
         List<SudokuCell> SecondRow { get; }
         List<SudokuCell> ThirdRow { get; }
@@ -40,6 +42,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         List<SudokuCell> SeventhRow { get; }
         List<SudokuCell> EighthRow { get; }
         List<SudokuCell> NinthRow { get; }
+        List<List<SudokuCell>> Rows { get; }
         List<int> FirstColumnValues { get; }
         List<int> SecondColumnValues { get; }
         List<int> ThirdColumnValues { get; }
