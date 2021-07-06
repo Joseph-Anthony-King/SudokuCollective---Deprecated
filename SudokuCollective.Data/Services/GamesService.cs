@@ -316,7 +316,20 @@ namespace SudokuCollective.Data.Services
 
                             if (fullRecord)
                             {
-                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                foreach (var userRole in game.User.Roles)
+                                {
+                                    userRole.Role.Users = null;
+                                }
+
+                                game.User.Apps = null;
+
+                                game.SudokuMatrix.Difficulty.Matrices = null;
+                            }
+                            else
+                            {
+                                game.User = null;
+                                game.SudokuMatrix = null;
+                                game.SudokuSolution = null;
                             }
 
                             result.Success = true;
@@ -536,7 +549,23 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var game in result.Games)
                             {
-                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                foreach (var userRole in game.User.Roles)
+                                {
+                                    userRole.Role.Users = null;
+                                }
+
+                                game.User.Apps = null;
+
+                                game.SudokuMatrix.Difficulty.Matrices = null;
+                            }
+                        }
+                        else
+                        {
+                            foreach (var game in result.Games)
+                            {
+                                game.User = null;
+                                game.SudokuMatrix = null;
+                                game.SudokuSolution = null;
                             }
                         }
 
@@ -602,7 +631,20 @@ namespace SudokuCollective.Data.Services
 
                             if (fullRecord)
                             {
-                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                foreach (var userRole in game.User.Roles)
+                                {
+                                    userRole.Role.Users = null;
+                                }
+
+                                game.User.Apps = null;
+
+                                game.SudokuMatrix.Difficulty.Matrices = null;
+                            }
+                            else
+                            {
+                                game.User = null;
+                                game.SudokuMatrix = null;
+                                game.SudokuSolution = null;
                             }
 
                             result.Success = true;
@@ -825,7 +867,23 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var game in result.Games)
                             {
-                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                foreach (var userRole in game.User.Roles)
+                                {
+                                    userRole.Role.Users = null;
+                                }
+
+                                game.User.Apps = null;
+
+                                game.SudokuMatrix.Difficulty.Matrices = null;
+                            }
+                        }
+                        else
+                        {
+                            foreach (var game in result.Games)
+                            {
+                                game.User = null;
+                                game.SudokuMatrix = null;
+                                game.SudokuSolution = null;
                             }
                         }
 

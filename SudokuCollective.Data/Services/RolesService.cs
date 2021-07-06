@@ -45,9 +45,9 @@ namespace SudokuCollective.Data.Services
                     {
                         foreach (var userRole in role.Users)
                         {
-                            userRole.User.Apps = new List<UserApp>();
-                            userRole.User.Roles = new List<UserRole>();
-                            userRole.User.Games = new List<Game>();
+                            userRole.User.Apps = null;
+                            userRole.User.Roles = null;
+                            userRole.User.Games = null;
                         }
                     }
 
@@ -100,9 +100,9 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var userRole in role.Users)
                             {
-                                userRole.User.Apps = new List<UserApp>();
-                                userRole.User.Roles = new List<UserRole>();
-                                userRole.User.Games = new List<Game>();
+                                userRole.User.Apps = null;
+                                userRole.User.Roles = null;
+                                userRole.User.Games = null;
                             }
                         }
                     }

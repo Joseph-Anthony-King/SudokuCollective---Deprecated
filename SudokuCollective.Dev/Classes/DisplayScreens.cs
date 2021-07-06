@@ -39,7 +39,7 @@ namespace SudokuCollective.ConsoleDev.Classes
             foreach (var row in m.Rows)
             {
                 Console.Write(string.Format("\n{0}  ", i));
-                DisplayRow(row.Value);
+                DisplayRow(row);
                 i++;
             }
         }

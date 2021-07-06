@@ -42,16 +42,6 @@ namespace SudokuCollective.Data.Services
                 {
                     var difficulty = (Difficulty)response.Object;
 
-                    if (fullRecord)
-                    {
-                        foreach (var matrix in difficulty.Matrices)
-                        {
-                            matrix.Difficulty.Matrices = new List<SudokuMatrix>();
-                            matrix.Game.User.Apps = new List<UserApp>();
-                            matrix.Game.User.Roles = new List<UserRole>();
-                        }
-                    }
-
                     result.Success = response.Success;
                     result.Message = DifficultiesMessages.DifficultyFoundMessage;
                     result.Difficulty = difficulty;

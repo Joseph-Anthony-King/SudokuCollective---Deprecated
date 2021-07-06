@@ -454,7 +454,12 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    query.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
+                    query.SudokuMatrix.SudokuCells = query
+                        .SudokuMatrix
+                        .SudokuCells
+                        .Where(c => c.Id != 0)
+                        .OrderBy(c => c.Index)
+                        .ToList();
                 }
                 else
                 {
@@ -530,7 +535,12 @@ namespace SudokuCollective.Data.Repositories
                 {
                     foreach (var game in query)
                     {
-                        game.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
+                        game.SudokuMatrix.SudokuCells = game
+                            .SudokuMatrix
+                            .SudokuCells
+                            .Where(c => c.Id != 0)
+                            .OrderBy(c => c.Index)
+                            .ToList();
                     }
                 }
 
@@ -585,7 +595,12 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    query.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
+                    query.SudokuMatrix.SudokuCells = query
+                        .SudokuMatrix
+                        .SudokuCells
+                        .Where(c => c.Id != 0)
+                        .OrderBy(c => c.Index)
+                        .ToList();
                 }
                 else
                 {
@@ -668,7 +683,12 @@ namespace SudokuCollective.Data.Repositories
                         {
                             foreach (var game in query)
                             {
-                                game.SudokuMatrix.SudokuCells.OrderBy(c => c.Index);
+                                game.SudokuMatrix.SudokuCells = game
+                                    .SudokuMatrix
+                                    .SudokuCells
+                                    .Where(c => c.Id != 0)
+                                    .OrderBy(c => c.Index)
+                                    .ToList();
                             }
                         }
 

@@ -18,9 +18,6 @@ namespace SudokuCollective.Core.Models
         #region Fields
         private List<SudokuCell> _sudokuCells = new List<SudokuCell>();
         private Stopwatch _stopwatch = new Stopwatch();
-        public Dictionary<string, List<SudokuCell>> Columns = new Dictionary<string, List<SudokuCell>>();
-        public Dictionary<string, List<SudokuCell>> Regions = new Dictionary<string, List<SudokuCell>>();
-        public Dictionary<string, List<SudokuCell>> Rows = new Dictionary<string, List<SudokuCell>>();
         #endregion
 
         #region Properties
@@ -67,6 +64,18 @@ namespace SudokuCollective.Core.Models
         public List<SudokuCell> EighthColumn { get => SudokuCells.Where(column => column.Column == 8).OrderBy(cell => cell.Index).ToList(); }
         [JsonIgnore]
         public List<SudokuCell> NinthColumn { get => SudokuCells.Where(column => column.Column == 9).OrderBy(cell => cell.Index).ToList(); }
+        
+        public List<List<SudokuCell>> Columns { get => new List<List<SudokuCell>> {
+            FirstColumn,
+            SecondColumn,
+            ThirdColumn,
+            FourthColumn,
+            FifthColumn,
+            SixthColumn,
+            SeventhColumn,
+            EighthColumn,
+            NinthColumn };
+        }
 
         [JsonIgnore]
         public List<SudokuCell> FirstRegion { get => SudokuCells.Where(region => region.Region == 1).OrderBy(cell => cell.Index).ToList(); }
@@ -87,6 +96,17 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         public List<SudokuCell> NinthRegion { get => SudokuCells.Where(region => region.Region == 9).OrderBy(cell => cell.Index).ToList(); }
 
+        public List<List<SudokuCell>> Regions { get => new List<List<SudokuCell>> {
+            FirstRegion,
+            SecondRegion,
+            ThirdRegion,
+            FourthRegion,
+            FifthRegion,
+            SixthRegion,
+            SeventhRegion,
+            EighthRegion,
+            NinthRegion };
+        }
         [JsonIgnore]
         public List<SudokuCell> FirstRow { get => SudokuCells.Where(row => row.Row == 1).OrderBy(cell => cell.Index).ToList(); }
         [JsonIgnore]
@@ -105,6 +125,17 @@ namespace SudokuCollective.Core.Models
         public List<SudokuCell> EighthRow { get => SudokuCells.Where(row => row.Row == 8).OrderBy(cell => cell.Index).ToList(); }
         [JsonIgnore]
         public List<SudokuCell> NinthRow { get => SudokuCells.Where(row => row.Row == 9).OrderBy(cell => cell.Index).ToList(); }
+        public List<List<SudokuCell>> Rows { get => new List<List<SudokuCell>> { 
+            FirstRow,
+            SecondRow,
+            ThirdRow,
+            FourthRow,
+            FifthRow,
+            SixthRow,
+            SeventhRow,
+            EighthRow,
+            NinthRow };
+        }
         #endregion
 
         #region Sudoku Cell Value Lists
@@ -349,36 +380,6 @@ namespace SudokuCollective.Core.Models
                     rowIndexer++;
                 }
             }
-
-            Columns.Add("first column", FirstColumn);
-            Columns.Add("second column", SecondColumn);
-            Columns.Add("third column", ThirdColumn);
-            Columns.Add("fourth column", FourthColumn);
-            Columns.Add("fifth column", FifthColumn);
-            Columns.Add("sixth column", SixthColumn);
-            Columns.Add("seventh column", SeventhColumn);
-            Columns.Add("eighth column", EighthColumn);
-            Columns.Add("ninth column", NinthColumn);
-
-            Regions.Add("first region", FirstRegion);
-            Regions.Add("second region", SecondRegion);
-            Regions.Add("third region", ThirdRegion);
-            Regions.Add("fourth region", FourthRegion);
-            Regions.Add("fifth region", FifthRegion);
-            Regions.Add("sixth region", SixthRegion);
-            Regions.Add("seventh region", SeventhRegion);
-            Regions.Add("eighth region", EighthRegion);
-            Regions.Add("ninth region", NinthRegion);
-
-            Rows.Add("first row", FirstRow);
-            Rows.Add("second row", SecondRow);
-            Rows.Add("third row", ThirdRow);
-            Rows.Add("fourth row", FourthRow);
-            Rows.Add("fifth row", FifthRow);
-            Rows.Add("sixth row", SixthRow);
-            Rows.Add("seventh row", SeventhRow);
-            Rows.Add("eighth row", EighthRow);
-            Rows.Add("ninth row", NinthRow);
         }
 
         [JsonConstructor]
@@ -386,36 +387,6 @@ namespace SudokuCollective.Core.Models
         {
             Id = id;
             DifficultyId = difficultyId;
-
-            Columns.Add("first column", FirstColumn);
-            Columns.Add("second column", SecondColumn);
-            Columns.Add("third column", ThirdColumn);
-            Columns.Add("fourth column", FourthColumn);
-            Columns.Add("fifth column", FifthColumn);
-            Columns.Add("sixth column", SixthColumn);
-            Columns.Add("seventh column", SeventhColumn);
-            Columns.Add("eighth column", EighthColumn);
-            Columns.Add("ninth column", NinthColumn);
-
-            Regions.Add("first region", FirstRegion);
-            Regions.Add("second region", SecondRegion);
-            Regions.Add("third region", ThirdRegion);
-            Regions.Add("fourth region", FourthRegion);
-            Regions.Add("fifth region", FifthRegion);
-            Regions.Add("sixth region", SixthRegion);
-            Regions.Add("seventh region", SeventhRegion);
-            Regions.Add("eighth region", EighthRegion);
-            Regions.Add("ninth region", NinthRegion);
-
-            Rows.Add("first row", FirstRow);
-            Rows.Add("second row", SecondRow);
-            Rows.Add("third row", ThirdRow);
-            Rows.Add("fourth row", FourthRow);
-            Rows.Add("fifth row", FifthRow);
-            Rows.Add("sixth row", SixthRow);
-            Rows.Add("seventh row", SeventhRow);
-            Rows.Add("eighth row", EighthRow);
-            Rows.Add("ninth row", NinthRow);
         }
         #endregion
 

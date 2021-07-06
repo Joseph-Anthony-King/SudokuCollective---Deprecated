@@ -45,9 +45,9 @@ namespace SudokuCollective.Data.Services
                 {
                     var solution = (SudokuSolution)solutionResponse.Object;
 
-                    if (fullRecord)
+                    if (fullRecord && solution.Game != null)
                     {
-                        solution.Game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                        solution.Game.SudokuMatrix.Difficulty.Matrices = null;
                     }
 
                     result.Success = solutionResponse.Success;
@@ -214,7 +214,7 @@ namespace SudokuCollective.Data.Services
                         {
                             if (solution.Game != null)
                             {
-                                solution.Game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                solution.Game.SudokuMatrix.Difficulty.Matrices = null;
                             }
                         }
                     }

@@ -74,18 +74,18 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var userApp in user.Apps)
                             {
-                                userApp.App.Users = new List<UserApp>();
+                                userApp.App = null;
                             }
 
                             foreach (var userRole in user.Roles)
                             {
-                                userRole.Role.Users = new List<UserRole>();
+                                userRole.Role.Users = null;
                             }
 
                             foreach (var game in user.Games)
                             {
                                 game.User = null;
-                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                game.SudokuMatrix.Difficulty.Matrices = null;
                             }
                         }
 
@@ -513,18 +513,18 @@ namespace SudokuCollective.Data.Services
                         {
                             foreach (var userApp in user.Apps)
                             {
-                                userApp.App.Users = new List<UserApp>();
+                                userApp.App = null;
                             }
 
                             foreach (var userRole in user.Roles)
                             {
-                                userRole.Role.Users = new List<UserRole>();
+                                userRole.Role.Users = null;
                             }
 
                             foreach (var game in user.Games)
                             {
                                 game.User = null;
-                                game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                                game.SudokuMatrix.Difficulty.Matrices = null;
                             }
                         }
                     }

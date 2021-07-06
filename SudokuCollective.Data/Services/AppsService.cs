@@ -136,6 +136,18 @@ namespace SudokuCollective.Data.Services
                             }
                         }
 
+                        // Filter out duplicate subentities
+                        foreach (var userApp in app.Users)
+                        {
+                            userApp.User.Apps = null;
+
+                            foreach (var userRole in userApp.User.Roles)
+                            {
+                                userRole.User = null;
+                                userRole.Role.Users = null;
+                            }
+                        }
+
                         result.Success = response.Success;
                         result.Message = AppsMessages.AppFoundMessage;
                         result.App = app;
@@ -266,6 +278,18 @@ namespace SudokuCollective.Data.Services
                                 var emailConfirmed = userApp.User.EmailConfirmed;
                                 userApp.User.Email = null;
                                 userApp.User.EmailConfirmed = emailConfirmed;
+                            }
+                        }
+
+                        // Filter out duplicate subentities
+                        foreach (var userApp in app.Users)
+                        {
+                            userApp.User.Apps = null;
+
+                            foreach (var userRole in userApp.User.Roles)
+                            {
+                                userRole.User = null;
+                                userRole.Role.Users = null;
                             }
                         }
 
@@ -583,10 +607,16 @@ namespace SudokuCollective.Data.Services
                                 }
                             }
 
+                            // Filter out duplicate subentities
                             foreach (var userApp in app.Users)
                             {
-                                userApp.App = null;
-                                userApp.User.Apps = new List<UserApp>();
+                                userApp.User.Apps = null;
+
+                                foreach (var userRole in userApp.User.Roles)
+                                {
+                                    userRole.User = null;
+                                    userRole.Role.Users = null;
+                                }
                             }
 
                             var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
@@ -925,12 +955,6 @@ namespace SudokuCollective.Data.Services
                                 }
                             }
 
-                            foreach (var userApp in app.Users)
-                            {
-                                userApp.App = null;
-                                userApp.User.Apps = new List<UserApp>();
-                            }
-
                             var requestor = (User)(await usersRepository.GetById(ownerId)).Object;
 
                             if (!requestor.IsSuperUser)
@@ -941,6 +965,18 @@ namespace SudokuCollective.Data.Services
                                     var emailConfirmed = userApp.User.EmailConfirmed;
                                     userApp.User.Email = null;
                                     userApp.User.EmailConfirmed = emailConfirmed;
+                                }
+                            }
+
+                            // Filter out duplicate subentities
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.User.Apps = null;
+
+                                foreach (var userRole in userApp.User.Roles)
+                                {
+                                    userRole.User = null;
+                                    userRole.Role.Users = null;
                                 }
                             }
                         }
