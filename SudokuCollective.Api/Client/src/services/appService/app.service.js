@@ -471,10 +471,9 @@ const deleteRemoveUser = async function (
 const getTimeFrames = async function () {
   try {
     const config = {
-      method: "put",
+      method: "get",
       url: `${getTimeFramesEnpoint}`,
-      headers: requestHeader(),
-      data: requestData(),
+      headers: requestHeader()
     };
     const response = await axios(config);
     return response.data;
