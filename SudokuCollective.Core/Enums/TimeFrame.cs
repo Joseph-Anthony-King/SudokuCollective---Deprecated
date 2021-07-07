@@ -2,6 +2,7 @@
 {
     public enum TimeFrame
     {
+        NULL,
         SECONDS,
         MINUTES,
         HOURS,

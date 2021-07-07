@@ -727,19 +727,19 @@ export default {
 
       switch (this.$data.app.timeFrame) {
 
-        case 0:
+        case 1:
           period = this.$data.app.accessDuration === 1 ? "second" : "seconds";
           break;
 
-        case 1:
+        case 2:
           period = this.$data.app.accessDuration === 1 ? "minute" : "minutes";
           break;
         
-        case 2:
+        case 3:
           period = this.$data.app.accessDuration === 1 ? "hour" : "hours";
           break;
         
-        case 3:
+        case 4:
           period = this.$data.app.accessDuration === 1 ? "day" : "days";
           break;
         

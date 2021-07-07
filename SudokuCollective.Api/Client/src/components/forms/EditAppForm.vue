@@ -337,17 +337,17 @@ export default {
     },
     "app.timeFrame": {
       handler: function (val, oldVal) {
-        if (val === 0) {
-          this.$data.durations = [];
-          for (let i = 1; i <= 59; i++) {
-            this.$data.durations.push(i);
-          }
-        } else if (val === 1) {
+        if (val === 1) {
           this.$data.durations = [];
           for (let i = 1; i <= 59; i++) {
             this.$data.durations.push(i);
           }
         } else if (val === 2) {
+          this.$data.durations = [];
+          for (let i = 1; i <= 59; i++) {
+            this.$data.durations.push(i);
+          }
+        } else if (val === 3) {
           this.$data.durations = [];
           for (let i = 1; i <= 23; i++) {
             this.$data.durations.push(i);
@@ -355,7 +355,7 @@ export default {
           if (this.app.accessDuration > 23) {
             this.app.accessDuration = 23;
           }
-        } else if (val === 3) {
+        } else if (val === 4) {
           this.$data.durations = [];
           for (let i = 1; i <= 31; i++) {
             this.$data.durations.push(i);
