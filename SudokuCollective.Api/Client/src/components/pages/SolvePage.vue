@@ -32,7 +32,7 @@
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
               v-model="sudokuMatrix[0]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -41,7 +41,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[1]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -50,7 +50,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[2]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -92,7 +92,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[6]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -101,7 +101,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[7]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -110,7 +110,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[8]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -121,7 +121,7 @@
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
               v-model="sudokuMatrix[9]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -130,7 +130,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[10]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -139,7 +139,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[11]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -181,7 +181,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[15]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -190,7 +190,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[16]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -199,7 +199,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[17]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -210,7 +210,7 @@
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
               v-model="sudokuMatrix[18]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -219,7 +219,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[19]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -228,7 +228,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[20]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -270,7 +270,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[24]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -279,7 +279,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[25]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -288,7 +288,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[26]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -332,7 +332,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[30]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -341,7 +341,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[31]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -350,7 +350,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[32]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -427,7 +427,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[39]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -436,7 +436,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[40]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -445,7 +445,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[41]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -522,7 +522,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[48]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -531,7 +531,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[49]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -540,7 +540,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[50]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -584,7 +584,7 @@
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
               v-model="sudokuMatrix[54]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -593,7 +593,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[55]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -602,7 +602,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[56]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -644,7 +644,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[60]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -653,7 +653,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[61]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -662,7 +662,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[62]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -673,7 +673,7 @@
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
               v-model="sudokuMatrix[63]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -682,7 +682,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[64]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -691,7 +691,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[65]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -733,7 +733,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[69]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -742,7 +742,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[70]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -751,7 +751,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[71]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -762,7 +762,7 @@
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
               v-model="sudokuMatrix[72]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -771,7 +771,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[73]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -780,7 +780,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[74]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -822,7 +822,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[78]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -831,7 +831,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[79]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -840,7 +840,7 @@
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[80]"
-              class="centered-input ma-0 pa-0"
+              class="centered-input text-secondary ma-0 pa-0"
               outlined
               type="number"
               min="1"
@@ -961,12 +961,14 @@
     font-weight: bold;
   }
 }
-
 .centered-input >>> input {
   text-align: center;
 }
+.text-secondary >>> input {
+  color: var(--v-secondary);
+}
 .text-white >>> input {
-  color: white !important;
+  color: white;
 }
 </style>
 

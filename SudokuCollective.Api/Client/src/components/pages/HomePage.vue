@@ -10,7 +10,7 @@
       ></v-progress-circular>
     </div>
     <v-card elevation="6" class="mx-auto" v-if="app.name !== ''">
-      <v-row class="text-center">
+      <v-row class="text-center home-banner">
         <v-col cols="12">
           <v-img src="/images/banner.jpg" height="500" />
           <h1 class="text-center centered-welcome-message text-padding">Welcome to {{ app.name }}</h1>
@@ -35,366 +35,38 @@
 
 <style scoped>
 .text-padding {
-  padding: 50px 70px 50px 70px;
+  padding: 20px 70px 20px 70px;
 }
-/* Galaxy Fold... folded */
-@media only screen and (max-width: 280px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -195%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -215%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    font-style: italic;
-    color: #021737;
-    font-size: 30px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
+.home-banner {
+    position: relative;
+    margin-bottom: 0;
+    border: 0;
+    border-color: transparent;
 }
-/* iPhone 5/SE */
-@media only screen and (min-width: 281px) and (max-width: 320px) {
-  /* centered welcome text */
-  .centered-welcome-message {
+.centered-welcome-message {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -175%);
+    top: 10%;
+    left: 0;
+    width: 100%;
     color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -178%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    font-style: italic;
-    color: #021737;
-    font-size: 30px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
+    text-shadow: 2px 2px var(--v-secondary);
 }
-/* Moto G4, Galaxy S5 */
-@media only screen and (min-width: 321px) and (max-width: 360px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -160%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -145%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    font-style: italic;
-    color: #021737;
-    font-size: 30px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
+.centered-logo {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  filter: drop-shadow(2px 2px 2px var(--v-secondary));
 }
-/* iPhone 6/7/8, iPhone X, iPhone 12 */
-@media only screen and (min-width: 361px) and (max-width: 390px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -158%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -145%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    font-style: italic;
-    color: #021737;
-    font-size: 30px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
+.motto {
+  margin: auto;
+  font-style: italic;
+  color: var(--v-secondary);
+  font-size: 2em;
 }
-/* Pixel 2, Pixel 2 XL, Galaxy Note 10+, iPhone 6/7/8 Plus */
-@media only screen and (min-width: 391px) and (max-width: 414px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -150%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -130%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    font-style: italic;
-    color: #021737;
-    font-size: 30px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
-}
-@media only screen and (min-width: 415px) and (max-width: 539px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -225%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -100%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    font-style: italic;
-    color: #021737;
-    font-size: 30px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
-}
-/* Surface Duo - Folded */
-@media only screen and (min-width: 540px) and (max-width: 716px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -145%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -120%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    margin: auto;
-    width: 50%;
-    font-style: italic;
-    color: #021737;
-    font-size: 30px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
-}
-/* Galaxy Fold - Unfolded */
-@media only screen and (min-width: 717px) and (max-width: 767px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -180%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -130%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    margin: auto;
-    width: 50%;
-    font-style: italic;
-    color: #021737;
-    font-size: 40px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
-}
-/* iPad */
-@media only screen and (min-width: 768px) and (max-width: 1023px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -175%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -130%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    margin: auto;
-    width: 50%;
-    font-style: italic;
-    color: #021737;
-    font-size: 40px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
-}
-/* iPad Pro */
-@media only screen and (min-width: 1024px) and (max-width: 1113px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -200%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -130%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    margin: auto;
-    width: 50%;
-    font-style: italic;
-    color: #021737;
-    font-size: 40px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
-}
-/* Surface Duo Unfolded */
-@media only screen and (min-width: 1114px) and (max-width: 1114px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -200%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -130%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    margin: auto;
-    width: 50%;
-    font-style: italic;
-    color: #021737;
-    font-size: 40px;
-  }
-  .description {
-    color: #021737;
-    font-size: 20px;
-  }
-}
-/* desktop */
-@media only screen and (min-width: 1115px) {
-  /* centered welcome text */
-  .centered-welcome-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -300%);
-    color: white;
-    text-shadow: 2px 2px #021737;
-  }
-  /* centered logo */
-  .centered-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -130%);
-    filter: drop-shadow(2px 2px 2px #021737);
-  }
-  .motto {
-    margin: auto;
-    width: 50%;
-    font-style: italic;
-    color: #021737;
-    font-size: 50px;
-  }
-  .description {
-    color: #021737;
-    font-size: 25px;
-  }
+.description {
+  color: var(--v-secondary);
+  font-size: 1em;
 }
 </style>
 
@@ -409,7 +81,7 @@ export default {
     app: new App(),
   }),
   computed: {
-    ...mapGetters("settingsModule", ["getApp"]),
+    ...mapGetters("settingsModule", ["getApp"])
   },
   watch: {
     "$store.state.settingsModule.app": {

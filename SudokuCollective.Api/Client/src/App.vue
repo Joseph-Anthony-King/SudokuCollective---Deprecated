@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="cssProps">
     <NavigationBar
       :userLoggedIn="user.isLoggedIn"
       :profileNavigation="profileNavigation"
@@ -230,6 +230,13 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
+   cssProps () {
+      var themeColors = {}
+      Object.keys(this.$vuetify.theme.themes.light).forEach((color) => {
+        themeColors[`--v-${color}`] = this.$vuetify.theme.themes.light[color]
+      })
+      return themeColors
+   }
   },
   watch: {
     "$store.state.settingsModule.user": {
