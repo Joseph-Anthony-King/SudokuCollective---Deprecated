@@ -138,9 +138,9 @@ namespace SudokuCollective.Core.Utilities
                 }
 
             } while (
-                (_firstRow.Take(3).OrderBy(n => n).IsThisListEqual(_secondRow.Take(3).OrderBy(n => n))) ||
-                (_firstRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(_secondRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (_firstRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(_secondRow.Skip(6).Take(3).OrderBy(n => n)))
+                _firstRow.Take(3).OrderBy(n => n).IsThisListEqual(_secondRow.Take(3).OrderBy(n => n)) ||
+                _firstRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(_secondRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                _firstRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(_secondRow.Skip(6).Take(3).OrderBy(n => n))
             );
         }
 
@@ -160,12 +160,12 @@ namespace SudokuCollective.Core.Utilities
                 }
 
             } while (
-                (firstRow.Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Take(3).OrderBy(n => n))) ||
-                (secondRow.Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Take(3).OrderBy(n => n))) ||
-                (firstRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (secondRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (firstRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Skip(6).Take(3).OrderBy(n => n))) ||
-                (secondRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Skip(6).Take(3).OrderBy(n => n)))
+                firstRow.Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Take(3).OrderBy(n => n)) ||
+                secondRow.Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Take(3).OrderBy(n => n)) ||
+                firstRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                secondRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                firstRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Skip(6).Take(3).OrderBy(n => n)) ||
+                secondRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(thirdRow.Skip(6).Take(3).OrderBy(n => n))
             );
         }
 
@@ -229,15 +229,15 @@ namespace SudokuCollective.Core.Utilities
                 }
 
             } while (
-                (firstColumn.Contains(fourthRow[0])) ||
-                (secondColumn.Contains(fourthRow[1])) ||
-                (thirdColumn.Contains(fourthRow[2])) ||
-                (fourthColumn.Contains(fourthRow[3])) ||
-                (fifthColumn.Contains(fourthRow[4])) ||
-                (sixthColumn.Contains(fourthRow[5])) ||
-                (seventhColumn.Contains(fourthRow[6])) ||
-                (eighthColumn.Contains(fourthRow[7])) ||
-                (ninthColumn.Contains(fourthRow[8]))
+                firstColumn.Contains(fourthRow[0]) ||
+                secondColumn.Contains(fourthRow[1]) ||
+                thirdColumn.Contains(fourthRow[2]) ||
+                fourthColumn.Contains(fourthRow[3]) ||
+                fifthColumn.Contains(fourthRow[4]) ||
+                sixthColumn.Contains(fourthRow[5]) ||
+                seventhColumn.Contains(fourthRow[6]) ||
+                eighthColumn.Contains(fourthRow[7]) ||
+                ninthColumn.Contains(fourthRow[8])
             );
 
             firstColumn.Add(fourthRow[0]);
@@ -270,18 +270,18 @@ namespace SudokuCollective.Core.Utilities
                 }
 
             } while (
-                (firstColumn.Contains(fifthRow[0])) ||
-                (secondColumn.Contains(fifthRow[1])) ||
-                (thirdColumn.Contains(fifthRow[2])) ||
-                (fourthColumn.Contains(fifthRow[3])) ||
-                (fifthColumn.Contains(fifthRow[4])) ||
-                (sixthColumn.Contains(fifthRow[5])) ||
-                (seventhColumn.Contains(fifthRow[6])) ||
-                (eighthColumn.Contains(fifthRow[7])) ||
-                (ninthColumn.Contains(fifthRow[8])) ||
-                (fourthRow.Take(3).OrderBy(n => n).IsThisListEqual(fifthRow.Take(3).OrderBy(n => n))) ||
-                (fourthRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(fifthRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (fourthRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(fifthRow.Skip(6).Take(3).OrderBy(n => n)))
+                firstColumn.Contains(fifthRow[0]) ||
+                secondColumn.Contains(fifthRow[1]) ||
+                thirdColumn.Contains(fifthRow[2]) ||
+                fourthColumn.Contains(fifthRow[3]) ||
+                fifthColumn.Contains(fifthRow[4]) ||
+                sixthColumn.Contains(fifthRow[5]) ||
+                seventhColumn.Contains(fifthRow[6]) ||
+                eighthColumn.Contains(fifthRow[7]) ||
+                ninthColumn.Contains(fifthRow[8]) ||
+                fourthRow.Take(3).OrderBy(n => n).IsThisListEqual(fifthRow.Take(3).OrderBy(n => n)) ||
+                fourthRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(fifthRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                fourthRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(fifthRow.Skip(6).Take(3).OrderBy(n => n))
             );
 
             firstColumn.Add(fifthRow[0]);
@@ -314,21 +314,21 @@ namespace SudokuCollective.Core.Utilities
                 }
 
             } while (
-                (firstColumn.Contains(sixthRow[0])) ||
-                (secondColumn.Contains(sixthRow[1])) ||
-                (thirdColumn.Contains(sixthRow[2])) ||
-                (fourthColumn.Contains(sixthRow[3])) ||
-                (fifthColumn.Contains(sixthRow[4])) ||
-                (sixthColumn.Contains(sixthRow[5])) ||
-                (seventhColumn.Contains(sixthRow[6])) ||
-                (eighthColumn.Contains(sixthRow[7])) ||
-                (ninthColumn.Contains(sixthRow[8])) ||
-                (fourthRow.Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Take(3).OrderBy(n => n))) ||
-                (fifthRow.Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Take(3).OrderBy(n => n))) ||
-                (fourthRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (fifthRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (fourthRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Skip(6).Take(3).OrderBy(n => n))) ||
-                (fifthRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Skip(6).Take(3).OrderBy(n => n)))
+                firstColumn.Contains(sixthRow[0]) ||
+                secondColumn.Contains(sixthRow[1]) ||
+                thirdColumn.Contains(sixthRow[2]) ||
+                fourthColumn.Contains(sixthRow[3]) ||
+                fifthColumn.Contains(sixthRow[4]) ||
+                sixthColumn.Contains(sixthRow[5]) ||
+                seventhColumn.Contains(sixthRow[6]) ||
+                eighthColumn.Contains(sixthRow[7]) ||
+                ninthColumn.Contains(sixthRow[8]) ||
+                fourthRow.Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Take(3).OrderBy(n => n)) ||
+                fifthRow.Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Take(3).OrderBy(n => n)) ||
+                fourthRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                fifthRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                fourthRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Skip(6).Take(3).OrderBy(n => n)) ||
+                fifthRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(sixthRow.Skip(6).Take(3).OrderBy(n => n))
             );
 
             firstColumn.Add(sixthRow[0]);
@@ -361,15 +361,15 @@ namespace SudokuCollective.Core.Utilities
                 }
 
             } while (
-                (firstColumn.Contains(seventhRow[0])) ||
-                (secondColumn.Contains(seventhRow[1])) ||
-                (thirdColumn.Contains(seventhRow[2])) ||
-                (fourthColumn.Contains(seventhRow[3])) ||
-                (fifthColumn.Contains(seventhRow[4])) ||
-                (sixthColumn.Contains(seventhRow[5])) ||
-                (seventhColumn.Contains(seventhRow[6])) ||
-                (eighthColumn.Contains(seventhRow[7])) ||
-                (ninthColumn.Contains(seventhRow[8]))
+                firstColumn.Contains(seventhRow[0]) ||
+                secondColumn.Contains(seventhRow[1]) ||
+                thirdColumn.Contains(seventhRow[2]) ||
+                fourthColumn.Contains(seventhRow[3]) ||
+                fifthColumn.Contains(seventhRow[4]) ||
+                sixthColumn.Contains(seventhRow[5]) ||
+                seventhColumn.Contains(seventhRow[6]) ||
+                eighthColumn.Contains(seventhRow[7]) ||
+                ninthColumn.Contains(seventhRow[8])
             );
 
             firstColumn.Add(seventhRow[0]);
@@ -402,18 +402,18 @@ namespace SudokuCollective.Core.Utilities
                 }
 
             } while (
-                (firstColumn.Contains(eighthRow[0])) ||
-                (secondColumn.Contains(eighthRow[1])) ||
-                (thirdColumn.Contains(eighthRow[2])) ||
-                (fourthColumn.Contains(eighthRow[3])) ||
-                (fifthColumn.Contains(eighthRow[4])) ||
-                (sixthColumn.Contains(eighthRow[5])) ||
-                (seventhColumn.Contains(eighthRow[6])) ||
-                (eighthColumn.Contains(eighthRow[7])) ||
-                (ninthColumn.Contains(eighthRow[8])) ||
-                (seventhRow.Take(3).OrderBy(n => n).IsThisListEqual(eighthRow.Take(3).OrderBy(n => n))) ||
-                (seventhRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(eighthRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (seventhRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(eighthRow.Skip(6).Take(3).OrderBy(n => n)))
+                firstColumn.Contains(eighthRow[0]) ||
+                secondColumn.Contains(eighthRow[1]) ||
+                thirdColumn.Contains(eighthRow[2]) ||
+                fourthColumn.Contains(eighthRow[3]) ||
+                fifthColumn.Contains(eighthRow[4]) ||
+                sixthColumn.Contains(eighthRow[5]) ||
+                seventhColumn.Contains(eighthRow[6]) ||
+                eighthColumn.Contains(eighthRow[7]) ||
+                ninthColumn.Contains(eighthRow[8]) ||
+                seventhRow.Take(3).OrderBy(n => n).IsThisListEqual(eighthRow.Take(3).OrderBy(n => n)) ||
+                seventhRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(eighthRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                seventhRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(eighthRow.Skip(6).Take(3).OrderBy(n => n))
             );
 
             firstColumn.Add(eighthRow[0]);
@@ -446,21 +446,21 @@ namespace SudokuCollective.Core.Utilities
                 }
 
             } while (
-                (firstColumn.Contains(ninthRow[0])) ||
-                (secondColumn.Contains(ninthRow[1])) ||
-                (thirdColumn.Contains(ninthRow[2])) ||
-                (fourthColumn.Contains(ninthRow[3])) ||
-                (fifthColumn.Contains(ninthRow[4])) ||
-                (sixthColumn.Contains(ninthRow[5])) ||
-                (seventhColumn.Contains(ninthRow[6])) ||
-                (eighthColumn.Contains(ninthRow[7])) ||
-                (ninthColumn.Contains(ninthRow[8])) ||
-                (seventhRow.Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Take(3).OrderBy(n => n))) ||
-                (eighthRow.Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Take(3).OrderBy(n => n))) ||
-                (seventhRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (eighthRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Skip(3).Take(3).OrderBy(n => n))) ||
-                (seventhRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Skip(6).Take(3).OrderBy(n => n))) ||
-                (eighthRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Skip(6).Take(3).OrderBy(n => n)))
+                firstColumn.Contains(ninthRow[0]) ||
+                secondColumn.Contains(ninthRow[1]) ||
+                thirdColumn.Contains(ninthRow[2]) ||
+                fourthColumn.Contains(ninthRow[3]) ||
+                fifthColumn.Contains(ninthRow[4]) ||
+                sixthColumn.Contains(ninthRow[5]) ||
+                seventhColumn.Contains(ninthRow[6]) ||
+                eighthColumn.Contains(ninthRow[7]) ||
+                ninthColumn.Contains(ninthRow[8]) ||
+                seventhRow.Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Take(3).OrderBy(n => n)) ||
+                eighthRow.Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Take(3).OrderBy(n => n)) ||
+                seventhRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                eighthRow.Skip(3).Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Skip(3).Take(3).OrderBy(n => n)) ||
+                seventhRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Skip(6).Take(3).OrderBy(n => n)) ||
+                eighthRow.Skip(6).Take(3).OrderBy(n => n).IsThisListEqual(ninthRow.Skip(6).Take(3).OrderBy(n => n))
             );
 
             firstColumn.Add(ninthRow[0]);

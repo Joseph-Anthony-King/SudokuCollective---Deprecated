@@ -30,3 +30,16 @@
   width: 100px;
   margin: auto;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove padding from mobile views */
+@media only screen and (max-width: 960px) {
+  .container {
+    padding: 0;
+  }
+}

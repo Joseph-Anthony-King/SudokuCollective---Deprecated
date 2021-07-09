@@ -50,8 +50,18 @@
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>
-      <v-list>
+      <v-list class="menu-list">
         <!-- User Functions -->
+        <v-list-item v-if="!userLoggedIn">
+          <v-list-item-content>
+            <v-list-item-title>
+              <router-link :to="solveNavigation.url" class="menu-item">
+                <v-icon>{{ solveNavigation.icon }}</v-icon>
+                {{ solveNavigation.title }}
+              </router-link>
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item v-if="!userLoggedIn">
           <v-list-item-content>
             <v-list-item-title>
@@ -152,6 +162,9 @@
   justify-content: center;
   align-items: center;
 }
+.menu-list {
+  width: 1000px;
+}
 .menu-item {
   text-decoration: none !important;
   color: #9b9b9b;
@@ -167,11 +180,15 @@ import { AppMenuItems } from "@/models/arrays/appMenuItems";
 
 export default {
   name: "AppBar",
-  props: ["userLoggedIn", "profileNavigation"],
+  props: ["userLoggedIn", "profileNavigation", "solveNavigation"],
   data: () => ({
     appMenuItems: [],
   }),
   methods: {
+    solve() {
+      this.$emit("user-solving-sudoku", null, null);
+    },
+
     login() {
       this.$emit("user-logging-in", null, null);
     },

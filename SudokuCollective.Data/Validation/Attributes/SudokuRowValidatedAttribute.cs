@@ -50,6 +50,7 @@ namespace SudokuCollective.Data.Validation.Attributes
 
         public override string FormatErrorMessage(string name)
         {
+            name = name.Replace("Row", " Row");
             return string.Format(this.ErrorMessageString, name);
         }
     }

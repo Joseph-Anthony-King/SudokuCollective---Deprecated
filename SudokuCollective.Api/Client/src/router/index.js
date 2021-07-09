@@ -19,12 +19,20 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "Dashboard" */ "../views/Dashboard.vue"),
+    beforeEnter: checkAuth,
   },
   {
     path: "/userProfile",
     name: "UserProfile",
     component: () =>
       import(/* webpackChuckName: "UserProile" */ "../views/UserProfile.vue"),
+    beforeEnter: checkAuth
+  },
+  {
+    path: "/solve",
+    name: "Solve",
+    component: () =>
+      import(/* webpackChuckName: "Solve" */ "../views/Solve.vue"),
   },
 ];
 
@@ -34,14 +42,11 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  var user = store.getters["settingsModule/getUser"];
-  if (to.fullPath !== "/") {
-    if (!user.isLoggedIn) {
-      next("/");
-    }
-  }
-  next();
-});
+function checkAuth(to, from, next) 
+{
+    var user = store.getters["settingsModule/getUser"];
+    if (user.isLoggedIn) next();
+    else next("/");
+}
 
 export default router;

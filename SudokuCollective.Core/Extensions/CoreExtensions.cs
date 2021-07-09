@@ -24,13 +24,13 @@ namespace SudokuCollective.Core.Extensions
 
         public static bool IsThisListEqual(this IEnumerable<int> aList, IEnumerable<int> bList)
         {
-            bool result = false;
+            bool result = true;
 
-            foreach (int a in aList)
+            for (var i = 0; i < 81; i++)
             {
-                if (bList.Contains(a))
+                if (aList.ElementAt(i) != bList.ElementAt(i))
                 {
-                    result = true;
+                    result = false;
                 }
             }
 

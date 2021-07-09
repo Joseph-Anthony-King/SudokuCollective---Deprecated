@@ -8,6 +8,8 @@
     <AppBar
       :userLoggedIn="user.isLoggedIn"
       :profileNavigation="profileNavigation"
+      :solveNavigation="solveNavigation"
+      v-on:user-solving-sudoku="solve"
       v-on:user-logging-in="userLoggingIn = true"
       v-on:user-logging-out="logout"
       v-on:user-signing-up="userSigningUp = true"
@@ -90,6 +92,7 @@ export default {
     Footer,
   },
   data: () => ({
+    userSolvingSudoku: false,
     userLoggingIn: false,
     userSigningUp: false,
     user: new User(),
@@ -97,6 +100,11 @@ export default {
       url: "/UserProfile",
       title: "User Profile",
       icon: "mdi-account-circle",
+    },
+    solveNavigation: {
+      url: "/Solve",
+      title: "Solve Sudoku Puzzle",
+      icon: "mdi-apps",
     },
     navDrawerStatus: null,
   }),
@@ -148,7 +156,7 @@ export default {
             this.updateSelectedApp(new App());
             this.removeApps();
 
-            if (this.$router.currentRoute.path !== "/") {
+            if (this.$router.currentRoute.path !== "/" && this.$router.currentRoute.path !== "/solve") {
               this.$router.push("/");
             }
 
@@ -202,7 +210,12 @@ export default {
       this.updateUser(this.$data.user);
       this.updateAuthToken(token);
 
-      if (this.$router.currentRoute.path !== "/dashboard") {
+      if (this.$router.currentRoute.path === "/dashboard") {
+        // do nothing...
+      }
+      else if (this.$router.currentRoute.path === "/solve"){
+        // do nothing...
+      } else {
         this.$router.push("/dashboard");
       }
     },
@@ -210,6 +223,10 @@ export default {
     updateNavDrawer() {
       this.$data.navDrawerStatus = this.$data.navDrawerStatus ? false : true;
     },
+
+    solve() {
+      console.log("solve invoked...");
+    }
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
