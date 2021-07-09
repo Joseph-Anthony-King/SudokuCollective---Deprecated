@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid >
+  <v-container fluid>
     <v-card elevation="6" class="mx-auto ma-0" v-if="processing">
       <v-card-text>
         <v-container fluid>
@@ -23,10 +23,10 @@
       <v-card-text>
         <v-container fluid>
           <v-card-title class="justify-center" v-if="solutionPending"
-            >Submit for Sudoku Puzzle for Solving</v-card-title
+            >Sudoku Puzzle in need of Solution</v-card-title
           >
           <v-card-title class="justify-center" v-if="!solutionPending"
-            >Following Solution has Been Found</v-card-title
+            >Following Solution has been Found</v-card-title
           >
           <hr class="title-spacer" />
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -907,7 +907,7 @@
   .v-text-field {
     max-width: 27px;
     max-height: 54px;
-    font-size: xx-small
+    font-size: xx-small;
   }
 }
 /* iPhone 5/SE */
@@ -953,7 +953,7 @@
     font-weight: bold;
   }
 }
-@media only screen and (min-width: 541px) {  
+@media only screen and (min-width: 541px) {
   .v-text-field {
     max-width: 66px;
     max-height: 86px;
@@ -1025,7 +1025,7 @@ export default {
           );
         } else if (response.status === 400) {
           const errorKeys = Object.keys(response.data.errors);
-          var errorMessage = "Submission failed with the folowing errors: ";
+          var errorMessage = "Submission failed with the following errors: ";
 
           if (errorKeys.length === 1) {
             errorKeys.forEach((key, index) => {
