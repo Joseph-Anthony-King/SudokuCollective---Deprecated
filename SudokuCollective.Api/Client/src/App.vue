@@ -103,7 +103,7 @@ export default {
     },
     solveNavigation: {
       url: "/Solve",
-      title: "Solve Sudoku Puzzle",
+      title: "Solve Sudoku Puzzles",
       icon: "mdi-apps",
     },
     navDrawerStatus: null,

@@ -163,7 +163,7 @@
   align-items: center;
 }
 .menu-list {
-  width: 1000px;
+  width: 220px;
 }
 .menu-item {
   text-decoration: none !important;
