@@ -23,7 +23,7 @@
           class="shrink mt-1 hidden-sm-and-down"
           contain
           min-width="269"
-          src="/name-logo.png"
+          src="/images/name-logo.png"
           width="269"
         />
       </router-link>
@@ -33,7 +33,7 @@
             alt="Vuetify Name"
             contain
             max-width="180"
-            src="/name-logo.png"
+            src="/images/name-logo.png"
             transition="scale-transition"
             width="180"
           />

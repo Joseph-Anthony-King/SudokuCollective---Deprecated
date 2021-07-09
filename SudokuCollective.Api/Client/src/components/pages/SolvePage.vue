@@ -935,7 +935,7 @@
     font-weight: bold;
   }
 }
-/* Pixel 2, Pixel 2 XL */
+/* Pixel 2, Pixel 2 XL, Galaxy Note 10+ */
 @media only screen and (min-width: 391px) and (max-width: 412px) {
   .v-text-field {
     max-width: 42px;
@@ -944,7 +944,7 @@
     font-weight: bold;
   }
 }
-/* Galaxy Note 10+, iPhone 6/7/8 Plus, Surface Duo - Folded, Galaxy Fold - Unfoleded */
+/* iPhone 6/7/8 Plus, Surface Duo - Folded */
 @media only screen and (min-width: 413px) and (max-width: 540px) {
   .v-text-field {
     max-width: 52px;
