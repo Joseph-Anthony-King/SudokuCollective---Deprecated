@@ -2,8 +2,10 @@ import _ from 'lodash';
 import { 
   UPDATE_SELECTED_APP, 
   UPDATE_APPS,
+  UPDATE_REGISTERED_APPS,
   REMOVE_APP,
   REMOVE_APPS,
+  REMOVE_REGISTERED_APPS,
   REPLACE_APP,
 } from "./mutation-types";
 
@@ -14,7 +16,8 @@ const appModule = {
 
   state: () => ({
     selectedApp: new App(),
-    apps: []
+    apps: [],
+    registeredApps: [],
   }),
 
   mutations: {
@@ -31,6 +34,16 @@ const appModule = {
         }
       });
     },
+    [UPDATE_REGISTERED_APPS](state, registeredApps) {
+      registeredApps.forEach((app) => { 
+        const index = _.findIndex(state.registeredApps, { id: app.id });
+        if (index !== -1) {
+          state.registeredApps.splice(index, 1, app);
+        } else {
+          state.registeredApps.push(app);
+        }
+      });
+    },
     [REMOVE_APP](state, app) {
       const index = _.findIndex(state.apps, { id: app.id });
       if (index !== -1) {
@@ -39,6 +52,9 @@ const appModule = {
     },
     [REMOVE_APPS](state) {
       state.apps = [];
+    },
+    [REMOVE_REGISTERED_APPS](state) {
+      state.registeredApps = [];
     },
     [REPLACE_APP](state, app) {
       const index = _.findIndex(state.apps, { id: app.id });
@@ -57,11 +73,17 @@ const appModule = {
     updateApps({ commit }, apps) {
       commit(UPDATE_APPS, apps);
     },
+    updateRegisteredApps({ commit }, registeredApps) {
+      commit(UPDATE_REGISTERED_APPS, registeredApps)
+    },
     removeApp({ commit }, app) {
       commit(REMOVE_APP, app);
     },
     removeApps({ commit }) {
       commit(REMOVE_APPS);
+    },
+    removeRegisteredApps({ commit }) {
+      commit(REMOVE_REGISTERED_APPS)
     },
     replaceApp({ commit }, app) {
       commit(REPLACE_APP, app);
@@ -77,6 +99,9 @@ const appModule = {
     },
     getApps: (state) => {
       return state.apps;
+    },
+    getRegisteredApps: (state) => {
+      return state.registeredApps
     },
   },
 };

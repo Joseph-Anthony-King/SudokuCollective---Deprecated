@@ -10,7 +10,8 @@ import {
   getByLicenseEnpoint,
   getLicenseEndpoint,
   getMyAppsEndpoint,
-  getTimeFramesEnpoint,
+  getTimeFramesEndpoint,
+  getRegisteredAppsEndpoint,
 } from "./service.endpoints";
 
 const getApp = async function (id, fullRecord) {
@@ -116,6 +117,32 @@ const getMyApps = async function (fullRecord) {
     const config = {
       method: "post",
       url: `${getMyAppsEndpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
+const getRegisteredApps = async function (userid, fullRecord) {
+  try {
+    let params = `/${userid}`;;
+
+    if (fullRecord === undefined) {
+      params = `${params}?fullRecord=false`;
+    } else {
+      params = `${params}?fullRecord=${fullRecord}`;
+    }
+
+    const config = {
+      method: "post",
+      url: `${getRegisteredAppsEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
     };
@@ -472,7 +499,7 @@ const getTimeFrames = async function () {
   try {
     const config = {
       method: "get",
-      url: `${getTimeFramesEnpoint}`,
+      url: `${getTimeFramesEndpoint}`,
       headers: requestHeader()
     };
     const response = await axios(config);
@@ -489,6 +516,7 @@ export const appService = {
   postLicense,
   getLicense,
   getMyApps,
+  getRegisteredApps,
   getAppUsers,
   getNonAppUsers,
   putActivateAdminPrivileges,

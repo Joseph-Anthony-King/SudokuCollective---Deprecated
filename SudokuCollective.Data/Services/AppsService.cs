@@ -2184,6 +2184,341 @@ namespace SudokuCollective.Data.Services
             }
         }
 
+        public async Task<IAppsResult> GetRegisteredApps(
+            int userId,
+            IPaginator paginator,
+            bool fullRecord = true)
+        {
+            var result = new AppsResult();
+
+            try
+            {
+                var response = await appsRepository.GetMyRegisteredApps(userId, fullRecord);
+
+                if (response.Success)
+                {
+                    if (paginator != null)
+                    {
+                        if (StaticDataHelpers.IsPageValid(paginator, response.Objects))
+                        {
+                            if (paginator.SortBy == SortValue.NULL)
+                            {
+                                result.Apps = response
+                                    .Objects
+                                    .ConvertAll(a => (IApp)a)
+                                    .ToList();
+                            }
+                            else if (paginator.SortBy == SortValue.ID)
+                            {
+                                if (!paginator.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.Id)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.Id)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (paginator.SortBy == SortValue.GAMECOUNT)
+                            {
+                                if (!paginator.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.GameCount)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.GameCount)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (paginator.SortBy == SortValue.USERCOUNT)
+                            {
+                                if (!paginator.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.UserCount)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.UserCount)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (paginator.SortBy == SortValue.NAME)
+                            {
+                                if (!paginator.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.Name)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.Name)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (paginator.SortBy == SortValue.DATECREATED)
+                            {
+                                if (!paginator.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.DateCreated)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.DateCreated)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else if (paginator.SortBy == SortValue.DATEUPDATED)
+                            {
+                                if (!paginator.OrderByDescending)
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderBy(a => a.DateUpdated)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                                else
+                                {
+                                    foreach (var obj in response.Objects)
+                                    {
+                                        result.Apps.Add((IApp)obj);
+                                    }
+
+                                    result.Apps = result.Apps
+                                        .OrderByDescending(a => a.DateUpdated)
+                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                        .Take(paginator.ItemsPerPage)
+                                        .ToList();
+                                }
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = ServicesMesages.SortValueNotImplementedMessage;
+
+                                return result;
+                            }
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = ServicesMesages.PageNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.Apps = response.Objects.ConvertAll(a => (IApp)a);
+                    }
+
+                    if (fullRecord)
+                    {
+                        var appAdmins = (await appAdminsRepository.GetAll())
+                            .Objects
+                            .ConvertAll(aa => (AppAdmin)aa)
+                            .ToList();
+
+                        foreach (var app in result.Apps)
+                        {
+                            foreach (var userApp in app.Users)
+                            {
+                                if (userApp
+                                    .User
+                                    .Roles
+                                    .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                {
+                                    if (!userApp.User.IsSuperUser)
+                                    {
+                                        if (!appAdmins.Any(aa =>
+                                            aa.AppId == app.Id &&
+                                            aa.UserId == userApp.User.Id &&
+                                            aa.IsActive))
+                                        {
+                                            var adminRole = userApp
+                                                .User
+                                                .Roles
+                                                .FirstOrDefault(ur =>
+                                                    ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                            userApp.User.Roles.Remove(adminRole);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!app.PermitSuperUserAccess)
+                                        {
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                                            {
+                                                var superUserRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+
+                                                userApp.User.Roles.Remove(superUserRole);
+                                            }
+
+                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                                            {
+                                                var adminRole = userApp
+                                                    .User
+                                                    .Roles
+                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                                userApp.User.Roles.Remove(adminRole);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            var requestor = (User)(await usersRepository.GetById(userId)).Object;
+
+                            if (!requestor.IsSuperUser)
+                            {
+                                // Filter out user emails from the frontend...
+                                foreach (var userApp in app.Users)
+                                {
+                                    var emailConfirmed = userApp.User.EmailConfirmed;
+                                    userApp.User.Email = null;
+                                    userApp.User.EmailConfirmed = emailConfirmed;
+                                }
+                            }
+
+                            // Filter out duplicate subentities
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.User.Apps = null;
+
+                                foreach (var userRole in userApp.User.Roles)
+                                {
+                                    userRole.User = null;
+                                    userRole.Role.Users = null;
+                                }
+                            }
+                        }
+                    }
+
+                    result.Success = response.Success;
+                    result.Message = AppsMessages.AppsFoundMessage;
+
+                    return result;
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = AppsMessages.AppsNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
         public async Task<bool> IsRequestValidOnThisLicense(int id, string license, int userId)
         {
             if (await usersRepository.HasEntity(userId))

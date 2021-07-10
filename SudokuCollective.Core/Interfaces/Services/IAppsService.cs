@@ -22,6 +22,7 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IBaseResult> DeactivateApp(int id);
         Task<IUserResult> ActivateAdminPrivileges(int appId, int userId);
         Task<IUserResult> DeactivateAdminPrivileges(int appId, int userId);
+        Task<IAppsResult> GetRegisteredApps(int userId, IPaginator paginator, bool fullRecord = true);
         Task<bool> IsRequestValidOnThisLicense(int id, string license, int userId);
         Task<bool> IsOwnerOfThisLicense(int id, string license, int userId);
     }

@@ -515,6 +515,43 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
+        // POST: api/apps/registered
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPost, Route("Registered/{userId}")]
+        public async Task<ActionResult> RegisteredApps(
+            int userId,
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = true)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.GetRegisteredApps(
+                    userId,
+                    request.Paginator,
+                    fullRecord);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
         // GET: api/apps/getTimeFrames
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpGet, Route("GetTimeFrames")]

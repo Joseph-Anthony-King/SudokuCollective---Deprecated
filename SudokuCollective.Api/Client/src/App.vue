@@ -109,7 +109,10 @@ export default {
     navDrawerStatus: null,
   }),
   methods: {
-    ...mapActions("appModule", ["updateSelectedApp", "removeApps"]),
+    ...mapActions("appModule", [
+      "updateSelectedApp", 
+      "removeApps",
+      "removeRegisteredApps"]),
     ...mapActions("settingsModule", [
       "confirmBaseURL",
       "updateAuthToken",
@@ -155,6 +158,7 @@ export default {
             this.updateAuthToken("");
             this.updateSelectedApp(new App());
             this.removeApps();
+            this.removeRegisteredApps();
 
             if (this.$router.currentRoute.path !== "/" && this.$router.currentRoute.path !== "/solve") {
               this.$router.push("/");

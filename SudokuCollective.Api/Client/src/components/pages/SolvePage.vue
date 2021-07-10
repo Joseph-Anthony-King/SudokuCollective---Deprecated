@@ -38,6 +38,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(0)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[1]"
@@ -47,6 +48,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(1)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[2]"
@@ -56,6 +58,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(2)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[3]"
@@ -67,6 +70,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(3)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[4]"
@@ -78,6 +82,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(4)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[5]"
@@ -89,6 +94,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(5)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[6]"
@@ -98,6 +104,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(6)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[7]"
@@ -107,6 +114,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(7)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[8]"
@@ -116,6 +124,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(8)"
             ></v-text-field>
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -127,6 +136,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(9)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[10]"
@@ -136,6 +146,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(10)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[11]"
@@ -145,6 +156,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(11)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[12]"
@@ -156,6 +168,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(12)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[13]"
@@ -167,6 +180,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(13)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[14]"
@@ -178,6 +192,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(14)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[15]"
@@ -187,6 +202,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(15)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[16]"
@@ -196,6 +212,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(16)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[17]"
@@ -205,6 +222,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(17)"
             ></v-text-field>
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -216,6 +234,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(18)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[19]"
@@ -225,6 +244,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(19)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[20]"
@@ -234,6 +254,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(20)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[21]"
@@ -245,6 +266,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(21)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[22]"
@@ -256,6 +278,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(22)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[23]"
@@ -267,6 +290,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(23)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[24]"
@@ -276,6 +300,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(24)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[25]"
@@ -285,6 +310,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(25)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[26]"
@@ -294,6 +320,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(26)"
             ></v-text-field>
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -307,6 +334,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(27)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[28]"
@@ -318,6 +346,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(28)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[29]"
@@ -329,6 +358,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(29)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[30]"
@@ -338,6 +368,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(30)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[31]"
@@ -347,6 +378,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(31)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[32]"
@@ -356,6 +388,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(32)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[33]"
@@ -367,6 +400,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(33)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[34]"
@@ -378,6 +412,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(34)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[35]"
@@ -389,6 +424,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(35)"
             ></v-text-field>
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -402,6 +438,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(36)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[37]"
@@ -413,6 +450,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(37)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[38]"
@@ -424,6 +462,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(38)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[39]"
@@ -433,6 +472,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(39)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[40]"
@@ -442,6 +482,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(40)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[41]"
@@ -451,6 +492,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(41)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[42]"
@@ -462,6 +504,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(42)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[43]"
@@ -473,6 +516,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(43)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[44]"
@@ -484,6 +528,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(44)"
             ></v-text-field>
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -497,6 +542,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(45)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[46]"
@@ -508,6 +554,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(46)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[47]"
@@ -519,6 +566,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(47)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[48]"
@@ -528,6 +576,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(48)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[49]"
@@ -537,6 +586,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(49)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[50]"
@@ -546,6 +596,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(50)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[51]"
@@ -557,6 +608,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(51)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[52]"
@@ -568,6 +620,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(52)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[53]"
@@ -579,6 +632,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(53)"
             ></v-text-field>
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -590,6 +644,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(54)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[55]"
@@ -599,6 +654,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(55)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[56]"
@@ -608,6 +664,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(56)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[57]"
@@ -619,6 +676,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(57)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[58]"
@@ -630,6 +688,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(58)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[59]"
@@ -641,6 +700,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(59)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[60]"
@@ -650,6 +710,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(60)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[61]"
@@ -659,6 +720,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(61)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[62]"
@@ -668,6 +730,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(62)"
             ></v-text-field>
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -679,6 +742,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(63)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[64]"
@@ -688,6 +752,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(64)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[65]"
@@ -697,6 +762,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(65)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[66]"
@@ -708,6 +774,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(66)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[67]"
@@ -719,6 +786,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(67)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[68]"
@@ -730,6 +798,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(68)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[69]"
@@ -739,6 +808,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(69)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[70]"
@@ -748,6 +818,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(70)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[71]"
@@ -757,6 +828,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(71)"
             ></v-text-field>
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
@@ -768,6 +840,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(72)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[73]"
@@ -777,6 +850,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(73)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[74]"
@@ -786,6 +860,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(74)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[75]"
@@ -797,6 +872,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(75)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[76]"
@@ -808,6 +884,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(76)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[77]"
@@ -819,6 +896,7 @@
               background-color="primary"
               color="#fff"
               hide-details
+              @blur="validateEntry(77)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[78]"
@@ -828,6 +906,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(78)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[79]"
@@ -837,6 +916,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(79)"
             ></v-text-field>
             <v-text-field
               v-model="sudokuMatrix[80]"
@@ -846,6 +926,7 @@
               min="1"
               max="9"
               hide-details
+              @blur="validateEntry(80)"
             ></v-text-field>
           </v-row>
         </v-container>
@@ -945,15 +1026,16 @@
   }
 }
 /* iPhone 6/7/8 Plus, Surface Duo - Folded */
-@media only screen and (min-width: 413px) and (max-width: 540px) {
+@media only screen and (min-width: 413px) and (max-width: 642px) {
   .v-text-field {
-    max-width: 52px;
+    max-width: 50px;
     max-height: 54px;
     font-size: x-large;
     font-weight: bold;
   }
 }
-@media only screen and (min-width: 541px) {
+/* desktop */
+@media only screen and (min-width: 643px) {
   .v-text-field {
     max-width: 66px;
     max-height: 86px;
@@ -1073,6 +1155,15 @@ export default {
       this.$data.solutionPending = true;
       this.$forceUpdate();
     },
+
+    validateEntry(index) {
+      var number = parseInt(this.$data.sudokuMatrix[index]);
+
+      if (number < 1 || number > 9) {
+        this.$data.sudokuMatrix[index] = "";
+        this.$forceUpdate();
+      }
+    }
   },
   created() {
     for (var i = 0; i < 81; i++) {

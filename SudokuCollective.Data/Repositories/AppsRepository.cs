@@ -1245,6 +1245,83 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
+        public async Task<IRepositoryResponse> GetMyRegisteredApps(int userId, bool fullRecord = true)
+        {
+            var result = new RepositoryResponse();
+            var query = new List<App>();
+
+            try
+            {
+                if (fullRecord)
+                {
+                    query = await context.Users
+                        .Where(u => u.Id == userId)
+                        .SelectMany(u => u.Apps.Where(ua => ua.App.OwnerId != userId))
+                        .Select(ua => ua.App)
+                        .ToListAsync();
+
+                    if (query.Count != 0)
+                    {
+                        // Filter games by app
+                        foreach (var app in query)
+                        {
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.User.Games = new List<Game>();
+
+                                userApp.User.Games = await context
+                                    .Games
+                                    .Include(g => g.SudokuMatrix)
+                                        .ThenInclude(g => g.Difficulty)
+                                    .Include(g => g.SudokuMatrix)
+                                        .ThenInclude(m => m.SudokuCells)
+                                    .Include(g => g.SudokuSolution)
+                                    .Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
+                                    .ToListAsync();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    query = await context.Users
+                        .Where(u => u.Id == userId)
+                        .SelectMany(u => u.Apps.Where(ua => ua.App.OwnerId != userId))
+                        .Select(ua => ua.App)
+                        .ToListAsync();
+
+                    if (query.Count != 0)
+                    {
+                        foreach (var app in query)
+                        {
+                            app.Users = null;
+                        }
+                    }
+                }
+
+                if (query.Count == 0)
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+
+                result.Success = true;
+                result.Objects = query
+                    .ConvertAll(a => (IEntityBase)a)
+                    .ToList();
+
+                return result;
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
         public async Task<bool> HasEntity(int id)
         {
             return await context.Apps.AnyAsync(a => a.Id == id);

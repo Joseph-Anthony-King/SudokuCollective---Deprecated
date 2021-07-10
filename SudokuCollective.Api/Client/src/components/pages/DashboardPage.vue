@@ -20,6 +20,16 @@
           <v-card-title v-if="!user.isLoggedIn" class="justify-center warning"
             >Please Log In</v-card-title
           >
+        </v-container>
+      </v-card-text>
+    </v-card>
+    <div class="card-spacer"></div>
+    <v-card elevation="6" class="mx-auto" v-if="!processing">
+      <v-card-text>
+        <v-container fluid>
+          <v-card-title class="justify-center"
+            >Your Apps</v-card-title
+          >
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
             <CreateAppButton v-on:click.native="openCreateAppForm" />
@@ -71,7 +81,7 @@
         </v-tabs>
       </template>
     </v-card>
-
+    <div class="card-spacer" v-if="openingAppWidgets"></div>
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
         :signUpFormStatus="creatingApp"
@@ -79,6 +89,25 @@
         v-on:app-created-event="appCreatedEvent"
       />
     </v-dialog>
+    <v-card elevation="6" class="mx-auto" v-if="!processing">
+      <v-card-text>
+        <v-container fluid>
+          <v-card-title class="justify-center"
+            >Apps For Which You've Registered</v-card-title
+          >
+          <hr class="title-spacer" />
+          <div class="app-buttons-scroll">
+            <SelectAppButton
+              v-for="(app, index) in registeredApps"
+              :app="app"
+              :key="index"
+              :index="index"
+              v-on:click.native="appAvailable(app) ? openUrl(app) : null"
+            />
+          </div>
+        </v-container>
+      </v-card-text>
+    </v-card>
 
     <v-dialog v-model="editingApp" persistent max-width="1200px">
       <EditAppForm 
@@ -154,6 +183,7 @@ export default {
     user: new User(),
     app: new App(),
     myApps: [],
+    registeredApps: [],
     processing: false,
     creatingApp: false,
     editingApp: false,
@@ -163,6 +193,7 @@ export default {
     ...mapActions("appModule", [
       "updateSelectedApp",
       "updateApps",
+      "updateRegisteredApps",
     ]),
 
     openCreateAppForm() {
@@ -219,12 +250,29 @@ export default {
         defaultToastOptions()
       );
     },
+    appAvailable(app) {
+      if (app.isActive) {
+        if (!app.inDevelopment) {
+          if (app.liveUrl !== "") {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } else {
+        return false;
+      }
+    },
+    openUrl(app) {
+      window.open(app.liveUrl, "_blank");
+    }
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
     ...mapGetters("appModule", [
       "getAppById", 
       "getApps",
+      "getRegisteredApps",
       "getSelectedApp"]),
   },
   watch: {
@@ -291,6 +339,29 @@ export default {
         this.$data.myApps.push(store);
       });
     }
+
+    const storeRegisteredApps = this.getRegisteredApps;
+
+    if (storeRegisteredApps.length === 0) {
+      const response = await appService.getRegisteredApps(this.$data.user.id, false);
+        console.log(response); 
+
+      if (response.data.success) {       
+        let tempArray = [];
+
+        for (const app of response.data.apps) {
+          const registeredApp = new App(app);
+          tempArray.push(registeredApp)
+        }
+
+        this.updateRegisteredApps(tempArray);
+      }
+    }
+      
+    storeRegisteredApps.forEach((store) => {
+
+      this.$data.registeredApps.push(store);
+    });
     
     this.$data.processing = false;
   },

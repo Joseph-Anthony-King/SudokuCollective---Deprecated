@@ -44,7 +44,7 @@ class App {
       this.dateUpdated = data.dateUpdated;
       this.users = [];
 
-      if (data.users.length > 0) {
+      if (data.users != null) {
         for (const userApp of data.users) {
           if (userApp.user !== undefined) {
             const user = new User(userApp.user);
