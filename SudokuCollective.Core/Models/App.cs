@@ -218,7 +218,7 @@ namespace SudokuCollective.Core.Models
             LiveUrl = string.Empty;
             IsActive = false;
             PermitSuperUserAccess = false;
-            PermitCollectiveLogins = true;
+            PermitCollectiveLogins = false;
             InDevelopment = true;
             DisableCustomUrls = true;
             CustomEmailConfirmationAction = string.Empty;
