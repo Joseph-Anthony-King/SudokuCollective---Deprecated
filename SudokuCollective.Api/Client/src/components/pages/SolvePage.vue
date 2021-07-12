@@ -984,31 +984,23 @@
   flex-shrink: auto;
 }
 /* Galaxy Fold... folded */
-@media only screen and (max-width: 280px) {
+@media only screen and (max-width: 319px) {
   .v-text-field {
     max-width: 27px;
     max-height: 54px;
     font-size: xx-small;
   }
 }
-/* iPhone 5/SE */
-@media only screen and (min-width: 281px) and (max-width: 320px) {
+/* Moto G4, Galaxy S5, iPhone 5/SE */
+@media only screen and (min-width: 320px) and (max-width: 373px) {
   .v-text-field {
-    max-width: 30px;
-    max-height: 54px;
-    font-size: small;
-  }
-}
-/* Moto G4, Galaxy S5 */
-@media only screen and (min-width: 321px) and (max-width: 360px) {
-  .v-text-field {
-    max-width: 36px;
+    max-width: 32px;
     max-height: 54px;
     font-size: medium;
   }
 }
 /* iPhone 6/7/8, iPhone X, iPhone 12 */
-@media only screen and (min-width: 361px) and (max-width: 390px) {
+@media only screen and (min-width: 374px) and (max-width: 409px) {
   .v-text-field {
     max-width: 38px;
     max-height: 54px;
@@ -1017,7 +1009,7 @@
   }
 }
 /* Pixel 2, Pixel 2 XL, Galaxy Note 10+ */
-@media only screen and (min-width: 391px) and (max-width: 412px) {
+@media only screen and (min-width: 410px) and (max-width: 481px) {
   .v-text-field {
     max-width: 42px;
     max-height: 54px;
@@ -1026,7 +1018,7 @@
   }
 }
 /* iPhone 6/7/8 Plus, Surface Duo - Folded */
-@media only screen and (min-width: 413px) and (max-width: 642px) {
+@media only screen and (min-width: 482px) and (max-width: 642px) {
   .v-text-field {
     max-width: 50px;
     max-height: 54px;
