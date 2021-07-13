@@ -28,17 +28,19 @@ namespace SudokuCollective.Data.Repositories
         #region Methods
         public async Task<IRepositoryResponse> Create(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
+
+            if (entity.Id != 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                if (entity.Id != 0)
-                {
-                    result.Success = false;
-
-                    return result;
-                }
-
                 context.Attach(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
@@ -78,10 +80,18 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new SudokuSolution();
+
+            if (id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
+                var query = new SudokuSolution();
+
                 if (fullRecord)
                 {
                     query = await context
@@ -125,10 +135,11 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new List<SudokuSolution>();
 
             try
             {
+                var query = new List<SudokuSolution>();
+
                 if (fullRecord)
                 {
                     query = await context
@@ -148,14 +159,14 @@ namespace SudokuCollective.Data.Repositories
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(s => (IEntityBase)s)
-                    .ToList();
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(s => (IEntityBase)s)
+                        .ToList();
+                }
 
                 return result;
             }
@@ -170,6 +181,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> AddSolutions(List<ISudokuSolution> solutions)
         {
+            if (solutions == null) throw new ArgumentNullException(nameof(solutions));
+
             var result = new RepositoryResponse();
 
             try
@@ -212,11 +225,10 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetSolvedSolutions()
         {
             var result = new RepositoryResponse();
-            var query = new List<SudokuSolution>();
 
             try
             {
-                query = await context
+                var query = await context
                     .SudokuSolutions
                     .Where(s => s.DateSolved > DateTime.MinValue)
                     .ToListAsync();

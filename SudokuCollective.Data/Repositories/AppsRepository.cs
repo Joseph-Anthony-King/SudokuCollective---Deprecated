@@ -29,17 +29,19 @@ namespace SudokuCollective.Data.Repositories
         #region Methods
         public async Task<IRepositoryResponse> Add(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
+
+            if (entity.Id != 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                if (entity.Id != 0)
-                {
-                    result.Success = false;
-
-                    return result;
-                }
-
                 context.Attach(entity);
 
                 var user = await context
@@ -189,10 +191,18 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new App();
+
+            if (id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
+                var query = new App();
+
                 if (fullRecord)
                 {
                     query = await context
@@ -253,10 +263,18 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetByLicense(string license, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new App();
+
+            if (string.IsNullOrEmpty(license))
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
+                var query = new App();
+
                 if (fullRecord)
                 {
                     query = await context
@@ -318,10 +336,11 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new List<App>();
 
             try
             {
+                var query = new List<App>();
+
                 if (fullRecord)
                 {
                     query = await context
@@ -366,14 +385,14 @@ namespace SudokuCollective.Data.Repositories
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(a => (IEntityBase)a)
-                    .ToList();
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(a => (IEntityBase)a)
+                        .ToList();
+                }
 
                 return result;
             }
@@ -389,10 +408,18 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetMyApps(int ownerId, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new List<App>();
+
+            if (ownerId == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
+                var query = new List<App>();
+
                 if (fullRecord)
                 {
                     query = await context
@@ -439,14 +466,100 @@ namespace SudokuCollective.Data.Repositories
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
+                }
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(a => (IEntityBase)a)
+                        .ToList();
                 }
 
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(a => (IEntityBase)a)
-                    .ToList();
+                return result;
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
+        public async Task<IRepositoryResponse> GetMyRegisteredApps(int userId, bool fullRecord = true)
+        {
+            var result = new RepositoryResponse();
+
+            if (userId == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
+
+            try
+            {
+                var query = new List<App>();
+
+                if (fullRecord)
+                {
+                    query = await context.Users
+                        .Where(u => u.Id == userId)
+                        .SelectMany(u => u.Apps.Where(ua => ua.App.OwnerId != userId))
+                        .Select(ua => ua.App)
+                        .ToListAsync();
+
+                    if (query.Count != 0)
+                    {
+                        // Filter games by app
+                        foreach (var app in query)
+                        {
+                            foreach (var userApp in app.Users)
+                            {
+                                userApp.User.Games = new List<Game>();
+
+                                userApp.User.Games = await context
+                                    .Games
+                                    .Include(g => g.SudokuMatrix)
+                                        .ThenInclude(g => g.Difficulty)
+                                    .Include(g => g.SudokuMatrix)
+                                        .ThenInclude(m => m.SudokuCells)
+                                    .Include(g => g.SudokuSolution)
+                                    .Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
+                                    .ToListAsync();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    query = await context.Users
+                        .Where(u => u.Id == userId)
+                        .SelectMany(u => u.Apps.Where(ua => ua.App.OwnerId != userId))
+                        .Select(ua => ua.App)
+                        .ToListAsync();
+
+                    if (query.Count != 0)
+                    {
+                        foreach (var app in query)
+                        {
+                            app.Users = null;
+                        }
+                    }
+                }
+
+                if (query.Count == 0)
+                {
+                    result.Success = false;
+                }
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(a => (IEntityBase)a)
+                        .ToList();
+                }
+
 
                 return result;
             }
@@ -462,10 +575,18 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetAppUsers(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new List<User>();
+
+            if (id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
+                var query = new List<User>();
+
                 if (fullRecord)
                 {
                     query = await context
@@ -509,14 +630,14 @@ namespace SudokuCollective.Data.Repositories
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(u => (IEntityBase)u)
-                    .ToList();
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(u => (IEntityBase)u)
+                        .ToList();
+                }
 
                 return result;
             }
@@ -532,19 +653,17 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetNonAppUsers(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new List<User>();
+
+            if (id == 0 || !await HasEntity(id))
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                if (!await HasEntity(id))
-                {
-                    result.Success = false;
-                    result.Objects = query
-                        .ConvertAll(u => (IEntityBase)u)
-                        .ToList();
-
-                    return result;
-                }
+                var query = new List<User>();
 
                 if (fullRecord)
                 {
@@ -589,14 +708,14 @@ namespace SudokuCollective.Data.Repositories
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(u => (IEntityBase)u)
-                    .ToList();
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(u => (IEntityBase)u)
+                        .ToList();
+                }
 
                 return result;
             }
@@ -611,6 +730,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Update(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -671,6 +792,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
         {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
             var result = new RepositoryResponse();
 
             try
@@ -736,6 +859,13 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> AddAppUser(int userId, string license)
         {
             var result = new RepositoryResponse();
+
+            if (userId == 0 || string.IsNullOrEmpty(license))
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
@@ -808,6 +938,13 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> RemoveAppUser(int userId, string license)
         {
             var result = new RepositoryResponse();
+
+            if (userId == 0 || string.IsNullOrEmpty(license))
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
@@ -895,14 +1032,14 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
             {
                 if (await context.Apps.AnyAsync(a => a.Id == entity.Id))
                 {
-                    context.Remove(entity);
-
                     var games = await context
                         .Games
                         .Include(g => g.SudokuMatrix)
@@ -913,6 +1050,8 @@ namespace SudokuCollective.Data.Repositories
                         .ToListAsync();
 
                     context.RemoveRange(games);
+
+                    context.Remove(entity);
 
                     foreach (var entry in context.ChangeTracker.Entries())
                     {
@@ -967,6 +1106,7 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
         {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
             var result = new RepositoryResponse();
 
             try
@@ -1052,21 +1192,23 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Reset(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
             {
-                if (await context.Apps.AnyAsync(a => a.Id == entity.Id))
-                {
-                    var games = await context
-                        .Games
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.Difficulty)
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(m => m.SudokuCells)
-                        .Where(g => g.AppId == entity.Id)
-                        .ToListAsync();
+                var games = await context
+                    .Games
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.Difficulty)
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(m => m.SudokuCells)
+                    .Where(g => g.AppId == entity.Id)
+                    .ToListAsync();
 
+                if (games.Count > 0)
+                {
                     context.RemoveRange(games);
 
                     foreach (var entry in context.ChangeTracker.Entries())
@@ -1094,15 +1236,13 @@ namespace SudokuCollective.Data.Repositories
                     await context.SaveChangesAsync();
 
                     result.Success = true;
-
-                    return result;
                 }
                 else
                 {
                     result.Success = false;
-
-                    return result;
                 }
+
+                return result;
             }
             catch (Exception exp)
             {
@@ -1117,58 +1257,54 @@ namespace SudokuCollective.Data.Repositories
         {
             var result = new RepositoryResponse();
 
+            if (id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
+
             try
             {
-                if (await context.Apps.AnyAsync(a => a.Id == id))
+                var app = await context.Apps.FindAsync(id);
+
+                if (app != null)
                 {
-                    var app = await context.Apps.FindAsync(id);
-
-                    if (app != null)
+                    if (!app.IsActive)
                     {
-                        if (!app.IsActive)
+                        app.ActivateApp();
+
+                        context.Attach(app);
+
+                        foreach (var entry in context.ChangeTracker.Entries())
                         {
-                            app.ActivateApp();
+                            var dbEntry = (IEntityBase)entry.Entity;
 
-                            context.Attach(app);
-
-                            foreach (var entry in context.ChangeTracker.Entries())
+                            if (dbEntry is UserApp)
                             {
-                                var dbEntry = (IEntityBase)entry.Entity;
-
-                                if (dbEntry is UserApp)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else if (dbEntry is UserRole)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    // Otherwise do nothing...
-                                }
+                                entry.State = EntityState.Modified;
                             }
-
-                            await context.SaveChangesAsync();
+                            else if (dbEntry is UserRole)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                // Otherwise do nothing...
+                            }
                         }
 
-                        result.Success = true;
-
-                        return result;
+                        await context.SaveChangesAsync();
                     }
-                    else
-                    {
-                        result.Success = false;
 
-                        return result;
-                    }
+                    result.Success = true;
                 }
                 else
                 {
                     result.Success = false;
-
-                    return result;
                 }
+
+                return result;
             }
             catch (Exception exp)
             {
@@ -1183,133 +1319,52 @@ namespace SudokuCollective.Data.Repositories
         {
             var result = new RepositoryResponse();
 
-            try
-            {
-                if (await context.Apps.AnyAsync(a => a.Id == id))
-                {
-                    var app = await context.Apps.FindAsync(id);
-
-                    if (app != null)
-                    {
-                        if (app.IsActive)
-                        {
-                            app.DeactivateApp();
-
-                            context.Attach(app);
-
-                            foreach (var entry in context.ChangeTracker.Entries())
-                            {
-                                var dbEntry = (IEntityBase)entry.Entity;
-
-                                if (dbEntry is UserApp)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else if (dbEntry is UserRole)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    // Otherwise do nothing...
-                                }
-                            }
-
-                            await context.SaveChangesAsync();
-                        }
-
-                        result.Success = true;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.Success = false;
-
-                        return result;
-                    }
-                }
-                else
-                {
-                    result.Success = false;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
+            if (id == 0)
             {
                 result.Success = false;
-                result.Exception = exp;
 
                 return result;
             }
-        }
-
-        public async Task<IRepositoryResponse> GetMyRegisteredApps(int userId, bool fullRecord = true)
-        {
-            var result = new RepositoryResponse();
-            var query = new List<App>();
 
             try
             {
-                if (fullRecord)
+                var app = await context.Apps.FindAsync(id);
+
+                if (app != null)
                 {
-                    query = await context.Users
-                        .Where(u => u.Id == userId)
-                        .SelectMany(u => u.Apps.Where(ua => ua.App.OwnerId != userId))
-                        .Select(ua => ua.App)
-                        .ToListAsync();
-
-                    if (query.Count != 0)
+                    if (app.IsActive)
                     {
-                        // Filter games by app
-                        foreach (var app in query)
-                        {
-                            foreach (var userApp in app.Users)
-                            {
-                                userApp.User.Games = new List<Game>();
+                        app.DeactivateApp();
 
-                                userApp.User.Games = await context
-                                    .Games
-                                    .Include(g => g.SudokuMatrix)
-                                        .ThenInclude(g => g.Difficulty)
-                                    .Include(g => g.SudokuMatrix)
-                                        .ThenInclude(m => m.SudokuCells)
-                                    .Include(g => g.SudokuSolution)
-                                    .Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
-                                    .ToListAsync();
+                        context.Attach(app);
+
+                        foreach (var entry in context.ChangeTracker.Entries())
+                        {
+                            var dbEntry = (IEntityBase)entry.Entity;
+
+                            if (dbEntry is UserApp)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else if (dbEntry is UserRole)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                // Otherwise do nothing...
                             }
                         }
+
+                        await context.SaveChangesAsync();
                     }
+
+                    result.Success = true;
                 }
                 else
                 {
-                    query = await context.Users
-                        .Where(u => u.Id == userId)
-                        .SelectMany(u => u.Apps.Where(ua => ua.App.OwnerId != userId))
-                        .Select(ua => ua.App)
-                        .ToListAsync();
-
-                    if (query.Count != 0)
-                    {
-                        foreach (var app in query)
-                        {
-                            app.Users = null;
-                        }
-                    }
-                }
-
-                if (query.Count == 0)
-                {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(a => (IEntityBase)a)
-                    .ToList();
 
                 return result;
             }
@@ -1329,47 +1384,39 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> IsAppLicenseValid(string license)
         {
-            var result = await context
+            return await context
                 .Apps
                 .AnyAsync(
                     app => app.License.ToLower().Equals(license.ToLower()));
-
-            return result;
         }
 
         public async Task<bool> IsUserRegisteredToApp(int id, string license, int userId)
         {
-            var result = await context
+            return await context
                 .Apps
                 .AnyAsync(
                     a => a.Users.Any(ua => ua.UserId == userId)
                     && a.Id == id
                     && a.License.ToLower().Equals(license.ToLower()));
-
-            return result;
         }
 
         public async Task<bool> IsUserOwnerOfApp(int id, string license, int userId)
         {
-            var result = await context
+            return await context
                 .Apps
                 .AnyAsync(
                     a => a.License.ToLower().Equals(license.ToLower())
                     && a.OwnerId == userId
                     && a.Id == id);
-
-            return result;
         }
 
         public async Task<string> GetLicense(int id)
         {
-            var license = await context
+            return await context
                 .Apps
                 .Where(a => a.Id == id)
                 .Select(a => a.License)
                 .FirstOrDefaultAsync();
-
-            return license;
         }
         #endregion
     }

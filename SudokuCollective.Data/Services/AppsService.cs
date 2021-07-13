@@ -50,8 +50,8 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await appsRepository.HasEntity(id))
-                {
+                //if (await appsRepository.HasEntity(id))
+                //{
                     var response = await appsRepository.GetById(id, fullRecord);
 
                     if (response.Success)
@@ -168,14 +168,14 @@ namespace SudokuCollective.Data.Services
 
                         return result;
                     }
-                }
-                else
-                {
-                    result.Success = false;
-                    result.Message = AppsMessages.AppNotFoundMessage;
+                //}
+                //else
+                //{
+                //    result.Success = false;
+                //    result.Message = AppsMessages.AppNotFoundMessage;
 
-                    return result;
-                }
+                //    return result;
+                //}
             }
             catch (Exception exp)
             {

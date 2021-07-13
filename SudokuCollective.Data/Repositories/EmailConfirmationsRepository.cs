@@ -28,6 +28,8 @@ namespace SudokuCollective.Data.Repositories
         #region Methods
         public async Task<IRepositoryResponse> Create(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -86,23 +88,29 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> Get(string token)
         {
             var result = new RepositoryResponse();
-            var query = new EmailConfirmation();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                query = await context
+                var query = await context
                     .EmailConfirmations
                     .FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
 
                 if (query == null)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Object = query;
+                else
+                {
+                    result.Success = true;
+                    result.Object = query;
+                }
 
                 return result;
             }
@@ -118,11 +126,10 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetAll()
         {
             var result = new RepositoryResponse();
-            var query = new List<EmailConfirmation>();
 
             try
             {
-                query = await context
+                var query = await context
                     .EmailConfirmations
                     .OrderBy(ec => ec.Id)
                     .ToListAsync();
@@ -130,14 +137,14 @@ namespace SudokuCollective.Data.Repositories
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(ec => (IEntityBase)ec)
-                    .ToList();
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(ec => (IEntityBase)ec)
+                        .ToList();
+                }
 
                 return result;
             }
@@ -152,6 +159,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Update(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -207,6 +216,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -258,26 +269,28 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> HasEntity(int id)
         {
-            var result = await context.EmailConfirmations.AnyAsync(ec => ec.Id == id);
-
-            return result;
+            return await context.EmailConfirmations.AnyAsync(ec => ec.Id == id);
         }
 
         public async Task<bool> HasOutstandingEmailConfirmation(int userId, int appid)
         {
-            var result = await context.EmailConfirmations.AnyAsync(ec => ec.UserId == userId && ec.AppId == appid);
-
-            return result;
+            return await context.EmailConfirmations.AnyAsync(ec => ec.UserId == userId && ec.AppId == appid);
         }
 
         public async Task<IRepositoryResponse> RetrieveEmailConfirmation(int userId, int appid)
         {
             var result = new RepositoryResponse();
-            var query = new EmailConfirmation();
+
+            if (userId == 0 || appid == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                query = await context
+                var query = await context
                     .EmailConfirmations
                     .FirstOrDefaultAsync(ec => 
                         ec.UserId == userId && 
@@ -286,12 +299,12 @@ namespace SudokuCollective.Data.Repositories
                 if (query == null)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Object = query;
+                else
+                {
+                    result.Success = true;
+                    result.Object = query;
+                }
 
                 return result;
             }

@@ -28,17 +28,19 @@ namespace SudokuCollective.Data.Repositories
         #region Methods
         public async Task<IRepositoryResponse> Add(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
+
+            if (await context.AppAdmins.AnyAsync(aa => aa.Id == entity.Id))
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                if (await context.AppAdmins.AnyAsync(aa => aa.Id == entity.Id))
-                {
-                    result.Success = false;
-
-                    return result;
-                }
-
                 context.Attach(entity);
 
                 foreach (var entry in context.ChangeTracker.Entries())
@@ -78,23 +80,23 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new AppAdmin();
 
             try
             {
-                query = await context
+                var query = await context
                     .AppAdmins
                     .FirstOrDefaultAsync(aa => aa.Id == id);
+
+                result.Object = query;
 
                 if (query == null)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Object = query;
+                else
+                {
+                    result.Success = true;
+                }
 
                 return result;
             }
@@ -110,25 +112,25 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new List<AppAdmin>();
 
             try
             {
-                query = await context
+                var query = await context
                     .AppAdmins
                     .ToListAsync();
 
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
                 }
+                else
+                {
+                    result.Success = true;
 
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(aa => (IEntityBase)aa)
-                    .ToList();
+                    result.Objects = query
+                        .ConvertAll(aa => (IEntityBase)aa)
+                        .ToList();
+                }
 
                 return result;
             }
@@ -143,6 +145,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Update(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -194,6 +198,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
         {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
             var result = new RepositoryResponse();
 
             try
@@ -254,6 +260,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -305,6 +313,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
         {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
             var result = new RepositoryResponse();
 
             try
@@ -382,11 +392,10 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetAdminRecord(int appId, int userId)
         {
             var result = new RepositoryResponse();
-            var query = new AppAdmin();
 
             try
             {
-                query = await context
+                var query = await context
                     .AppAdmins
                     .FirstOrDefaultAsync(aa => aa.AppId == appId && aa.UserId == userId);
 

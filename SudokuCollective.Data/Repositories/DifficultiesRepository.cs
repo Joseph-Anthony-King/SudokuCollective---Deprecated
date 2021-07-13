@@ -29,6 +29,8 @@ namespace SudokuCollective.Data.Repositories
         #region Methods
         public async Task<IRepositoryResponse> Add(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -79,10 +81,18 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
-            var query = new Difficulty();
+
+            if (id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
+                var query = new Difficulty();
+
                 if (fullRecord)
                 {
                     query = await context
@@ -103,12 +113,13 @@ namespace SudokuCollective.Data.Repositories
                 if (query == null)
                 {
                     result.Success = false;
-
-                    return result;
+                }
+                else
+                {
+                    result.Success = true;
+                    result.Object = query;
                 }
 
-                result.Success = true;
-                result.Object = query;
 
                 return result;
             }
@@ -156,14 +167,14 @@ namespace SudokuCollective.Data.Repositories
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(d => (IEntityBase)d)
-                    .ToList();
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(d => (IEntityBase)d)
+                        .ToList();
+                }
 
                 return result;
             }
@@ -178,6 +189,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Update(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -229,6 +242,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
         {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
             var result = new RepositoryResponse();
 
             try
@@ -289,6 +304,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
 
             try
@@ -361,6 +378,8 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
         {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
             var result = new RepositoryResponse();
 
             try
@@ -442,16 +461,12 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> HasEntity(int id)
         {
-            var result = await context.Difficulties.AnyAsync(d => d.Id == id);
-
-            return result;
+           return await context.Difficulties.AnyAsync(d => d.Id == id);
         }
 
         public async Task<bool> HasDifficultyLevel(DifficultyLevel level)
         {
-            var result = await context.Difficulties.AnyAsync(d => d.DifficultyLevel == level);
-
-            return result;
+            return await context.Difficulties.AnyAsync(d => d.DifficultyLevel == level);
         }
         #endregion
     }

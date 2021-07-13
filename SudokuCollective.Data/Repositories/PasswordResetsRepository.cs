@@ -28,17 +28,19 @@ namespace SudokuCollective.Data.Repositories
         #region Methods
         public async Task<IRepositoryResponse> Create(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
+
+            if (entity.Id != 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                if (entity.Id != 0)
-                {
-                    result.Success = false;
-
-                    return result;
-                }
-
                 if (await context.PasswordResets
                         .AnyAsync(pu => pu.Token.ToLower().Equals(entity.Token.ToLower())))
                 {
@@ -85,24 +87,25 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Get(string token)
         {
+            if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+
             var result = new RepositoryResponse();
-            var query = new PasswordReset();
 
             try
             {
-                query = await context
+                var query = await context
                     .PasswordResets
                     .FirstOrDefaultAsync(pu => pu.Token.ToLower().Equals(token.ToLower()));
 
                 if (query == null)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Object = query;
+                else
+                {
+                    result.Success = true;
+                    result.Object = query;
+                }
 
                 return result;
             }
@@ -118,11 +121,10 @@ namespace SudokuCollective.Data.Repositories
         public async Task<IRepositoryResponse> GetAll()
         {
             var result = new RepositoryResponse();
-            var query = new List<PasswordReset>();
 
             try
             {
-                query = await context
+                var query = await context
                     .PasswordResets
                     .OrderBy(ec => ec.Id)
                     .ToListAsync();
@@ -130,14 +132,14 @@ namespace SudokuCollective.Data.Repositories
                 if (query.Count == 0)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Objects = query
-                    .ConvertAll(pu => (IEntityBase)pu)
-                    .ToList();
+                else
+                {
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(pu => (IEntityBase)pu)
+                        .ToList();
+                }
 
                 return result;
             }
@@ -152,17 +154,19 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Update(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
+
+            if (entity.Id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                if (entity.Id == 0)
-                {
-                    result.Success = false;
-
-                    return result;
-                }
-
                 if (await context.PasswordResets.AnyAsync(a => a.Id == entity.Id))
                 {
                     context.Attach(entity);
@@ -210,7 +214,16 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var result = new RepositoryResponse();
+
+            if (entity.Id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
@@ -261,26 +274,30 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> HasEntity(int id)
         {
-            var result = await context.PasswordResets.AnyAsync(ec => ec.Id == id);
-
-            return result;
+            return await context.PasswordResets.AnyAsync(ec => ec.Id == id);
         }
 
         public async Task<bool> HasOutstandingPasswordReset(int userId, int appid)
         {
-            var result = await context.PasswordResets.AnyAsync(pw => pw.UserId == userId && pw.AppId == appid);
-
-            return result;
+            return await context
+                .PasswordResets
+                .AnyAsync(pw => pw.UserId == userId && pw.AppId == appid);
         }
 
         public async Task<IRepositoryResponse> RetrievePasswordReset(int userId, int appid)
         {
             var result = new RepositoryResponse();
-            var query = new PasswordReset();
+
+            if (userId == 0 || appid == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
 
             try
             {
-                query = await context
+                var query = await context
                     .PasswordResets
                     .FirstOrDefaultAsync(pw =>
                         pw.UserId == userId &&
@@ -289,12 +306,12 @@ namespace SudokuCollective.Data.Repositories
                 if (query == null)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Object = query;
+                else
+                {
+                    result.Success = true;
+                    result.Object = query;
+                }
 
                 return result;
             }
