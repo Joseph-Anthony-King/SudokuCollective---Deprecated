@@ -6,7 +6,7 @@ using SudokuCollective.Data.Validation.Attributes;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
-    public class GetGamesRequest : IGetGamesRequest
+    public class GamesRequest : IGamesRequest
     {
         [Required, GuidRegex(ErrorMessage = "License must be a valid Guid in the form of abcdefgh-1234-abcd-1234-abcdefghijkl")]
         public string License { get; set; }
@@ -18,7 +18,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         public IPaginator Paginator { get; set; }
         public int UserId { get; set; }
 
-        public GetGamesRequest() : base()
+        public GamesRequest() : base()
         {
             UserId = 0;
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
@@ -21,11 +22,13 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockGamesRepository MockGamesRepository;
         private MockAppsRepository MockAppsRepository;
         private MockUsersRepository MockUsersRepository;
-        private MockDifficultiesRepository MockDifficultiesRepository;
+        private MockDifficultiesRepository MockDifficultiesRepositorySuccessful;
+        private MockDifficultiesRepository MockDifficultiesRepositoryFailed;
         private IGamesService sut;
         private IGamesService sutFailure;
+        private IGamesService sutAnonFailure;
         private IGamesService sutUpdateFailure;
-        private GetGamesRequest getGamesRequest;
+        private GamesRequest getGamesRequest;
 
         [SetUp]
         public async Task Setup()
@@ -35,25 +38,32 @@ namespace SudokuCollective.Test.TestCases.Services
             MockGamesRepository = new MockGamesRepository(context);
             MockAppsRepository = new MockAppsRepository(context);
             MockUsersRepository = new MockUsersRepository(context);
-            MockDifficultiesRepository = new MockDifficultiesRepository(context);
+            MockDifficultiesRepositorySuccessful = new MockDifficultiesRepository(context);
+            MockDifficultiesRepositoryFailed = new MockDifficultiesRepository(context);
 
             sut = new GamesService(
                 MockGamesRepository.GamesRepositorySuccessfulRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockDifficultiesRepository.DifficultiesRepositorySuccessfulRequest.Object);
+                MockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object);
 
             sutFailure = new GamesService(
                 MockGamesRepository.GamesRepositoryFailedRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockDifficultiesRepository.DifficultiesRepositorySuccessfulRequest.Object);
+                MockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object);
+
+            sutAnonFailure = new GamesService(
+                MockGamesRepository.GamesRepositorySuccessfulRequest.Object,
+                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                MockDifficultiesRepositoryFailed.DifficultiesRepositoryFailedRequest.Object);
 
             sutUpdateFailure = new GamesService(
                 MockGamesRepository.GamesRepositoryUpdateFailedRequest.Object,
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockDifficultiesRepository.DifficultiesRepositorySuccessfulRequest.Object);
+                MockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object);
 
             getGamesRequest = TestObjects.GetGamesRequest();
         }
@@ -262,7 +272,7 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             // Arrange
             var userId = 1;
-            var getMyGameRequest = new GetGamesRequest()
+            var getMyGameRequest = new GamesRequest()
             {
                 Paginator = new Paginator(),
                 UserId = userId
@@ -384,6 +394,40 @@ namespace SudokuCollective.Test.TestCases.Services
             Assert.That(result.Message, Is.EqualTo("Game Not Found"));
             Assert.That(result.Game, Is.TypeOf<Game>());
             Assert.That(result.Game.Id, Is.EqualTo(0));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task CreateAnnonymousGames()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.CreateAnnonymousGame(DifficultyLevel.TEST);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Game Created"));
+            Assert.That(result.SudokuMatrix, Is.TypeOf<List<List<int>>>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task CreateAnnonymousGamesShouldReturnMessageIfDifficultyNotFound()
+        {
+            // Arrange
+            var difficulty = await context
+                .Difficulties
+                .FirstOrDefaultAsync(d => d.DifficultyLevel == DifficultyLevel.TEST);
+
+            context.Difficulties.Remove(difficulty);
+
+            // Act
+            var result = await sutAnonFailure.CreateAnnonymousGame(difficulty.DifficultyLevel);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Difficulty Not Found"));
         }
     }
 }

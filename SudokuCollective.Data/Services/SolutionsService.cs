@@ -259,7 +259,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<ISolutionResult> Solve(
-            ISolveRequest request)
+            ISolutionRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 

@@ -134,7 +134,7 @@ namespace SudokuCollective.Test.TestCases.Models
             sut = populatedTestMatrix;
 
             // Act
-            var result = sut.ToDisplayedValuesList();
+            var result = sut.ToDisplayedIntList();
 
             // Assert
             Assert.That(result, Is.TypeOf<List<int>>());

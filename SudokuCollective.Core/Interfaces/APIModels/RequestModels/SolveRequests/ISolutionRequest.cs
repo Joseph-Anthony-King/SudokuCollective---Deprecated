@@ -2,7 +2,7 @@
 
 namespace SudokuCollective.Core.Interfaces.APIModels.RequestModels
 {
-    public interface ISolveRequest
+    public interface ISolutionRequest
     {
         List<int> FirstRow { get; set; }
         List<int> SecondRow { get; set; }

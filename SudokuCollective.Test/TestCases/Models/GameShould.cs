@@ -69,6 +69,21 @@ namespace SudokuCollective.Test.TestCases.Models
 
         [Test]
         [Category("Models")]
+        public void HaveAConstructorThatAccceptsOnlyDifficulty()
+        {
+            // Arrange
+            var difficulty = new Difficulty();
+
+            // Act
+            sut = new Game(difficulty);
+
+            // Assert
+            Assert.IsNotNull(sut);
+            Assert.That(sut, Is.InstanceOf<Game>());
+        }
+
+        [Test]
+        [Category("Models")]
         public void HaveAnAssociatedMatrix()
         {
             // Arrange and Act

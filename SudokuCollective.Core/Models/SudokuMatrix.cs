@@ -256,38 +256,6 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Constructors
-        public SudokuMatrix(List<int> intList) : this()
-        {
-            for (var i = 0; i < SudokuCells.Count; i++)
-            {
-                SudokuCells[i].Value = intList[i];
-            }
-        }
-
-        public SudokuMatrix(string values) : this()
-        {
-            var intList = new List<int>();
-
-            foreach (var value in values)
-            {
-                var s = char.ToString(value);
-
-                if (Int32.TryParse(s, out var number))
-                {
-                    intList.Add(number);
-
-                }
-                else
-                {
-                    intList.Add(0);
-                }
-            }
-
-            for (var i = 0; i < SudokuCells.Count; i++)
-            {
-                SudokuCells[i].Value = intList[i];
-            }
-        }
 
         public SudokuMatrix()
         {
@@ -380,6 +348,41 @@ namespace SudokuCollective.Core.Models
                     rowIndexer++;
                 }
             }
+
+            Difficulty = new Difficulty();
+        }
+
+        public SudokuMatrix(List<int> intList) : this()
+        {
+            for (var i = 0; i < SudokuCells.Count; i++)
+            {
+                SudokuCells[i].Value = intList[i];
+            }
+        }
+
+        public SudokuMatrix(string values) : this()
+        {
+            var intList = new List<int>();
+
+            foreach (var value in values)
+            {
+                var s = char.ToString(value);
+
+                if (Int32.TryParse(s, out var number))
+                {
+                    intList.Add(number);
+
+                }
+                else
+                {
+                    intList.Add(0);
+                }
+            }
+
+            for (var i = 0; i < SudokuCells.Count; i++)
+            {
+                SudokuCells[i].Value = intList[i];
+            }
         }
 
         [JsonConstructor]
@@ -443,7 +446,7 @@ namespace SudokuCollective.Core.Models
 
         public List<int> ToIntList()
         {
-            List<int> result = new List<int>();
+            var result = new List<int>();
 
             foreach (var SudokuCell in SudokuCells)
             {
@@ -453,9 +456,9 @@ namespace SudokuCollective.Core.Models
             return result;
         }
 
-        public List<int> ToDisplayedValuesList()
+        public List<int> ToDisplayedIntList()
         {
-            List<int> result = new List<int>();
+            var result = new List<int>();
 
             foreach (var SudokuCell in SudokuCells)
             {
@@ -467,7 +470,7 @@ namespace SudokuCollective.Core.Models
 
         public override string ToString()
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
 
             foreach (var SudokuCell in SudokuCells)
             {

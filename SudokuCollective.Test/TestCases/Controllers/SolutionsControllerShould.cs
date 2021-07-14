@@ -8,8 +8,8 @@ using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
-using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -22,7 +22,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockSolutionsService mockSolutionsService;
         private MockAppsService mockAppsService;
         private BaseRequest baseRequest;
-        private SolveRequest solveRequest;
+        private SolutionRequest solutionRequest;
         private AddSolutionRequest addSolutionRequest;
         private AddSolutionRequest invalidAddSolutionRequest;
 
@@ -35,7 +35,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             baseRequest = new BaseRequest();
 
-            solveRequest = new SolveRequest()
+            solutionRequest = new SolutionRequest()
             {
                 FirstRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 SecondRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -150,7 +150,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.Solve(solveRequest);
+            var result = sutSuccess.Solve((ISolutionRequest)solutionRequest);
             var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -167,7 +167,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.Solve(solveRequest);
+            var result = sutFailure.Solve((ISolutionRequest)solutionRequest);
             var message = ((SolutionResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -218,7 +218,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSolvedFailure.Solve(solveRequest);
+            var result = sutSolvedFailure.Solve((ISolutionRequest)solutionRequest);
             var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 

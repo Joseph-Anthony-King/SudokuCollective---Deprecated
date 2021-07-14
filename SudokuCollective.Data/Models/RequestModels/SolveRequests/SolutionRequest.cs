@@ -5,7 +5,7 @@ using SudokuCollective.Data.Validation.Attributes;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
-    public class SolveRequest : ISolveRequest
+    public class SolutionRequest : ISolutionRequest
     {
         [Required, SudokuRowValidated]
         public List<int> FirstRow { get; set; }
@@ -26,7 +26,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         [Required, SudokuRowValidated]
         public List<int> NinthRow { get; set; }
 
-        public SolveRequest() : base()
+        public SolutionRequest() : base()
         {
             FirstRow = new List<int>();
             SecondRow = new List<int>();

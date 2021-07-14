@@ -69,9 +69,9 @@ namespace SudokuCollective.Test.TestData
             };
         }
 
-        public static GetGamesRequest GetGamesRequest() 
+        public static GamesRequest GetGamesRequest() 
         {
-            return new GetGamesRequest()
+            return new GamesRequest()
             {
                 UserId = 1,
                 AppId = 1,

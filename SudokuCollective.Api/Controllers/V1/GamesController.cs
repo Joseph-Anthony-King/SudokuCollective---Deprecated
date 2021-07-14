@@ -7,6 +7,8 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Models.RequestModels.GameRequests;
+using SudokuCollective.Core.Enums;
 
 namespace SudokuCollective.Api.V1.Controllers
 {
@@ -200,7 +202,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
-            [FromBody] GetGamesRequest request,
+            [FromBody] GamesRequest request,
             [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -234,7 +236,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost, Route("{id}/GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame(
             int id,
-            [FromBody] GetGamesRequest request,
+            [FromBody] GamesRequest request,
             [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -270,7 +272,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "USER")]
         [HttpPost, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            [FromBody] GetGamesRequest request,
+            [FromBody] GamesRequest request,
             [FromQuery] bool fullRecord = true)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -305,7 +307,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpDelete("{id}/DeleteMyGame")]
         public async Task<ActionResult<Game>> DeleteMyGame(
             int id,
-            [FromBody] GetGamesRequest request)
+            [FromBody] GamesRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -332,6 +334,32 @@ namespace SudokuCollective.Api.V1.Controllers
             else
             {
                 return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // GET: api/games/createAnnonymousGame
+        [AllowAnonymous]
+        [HttpGet("CreateAnnonymousGame")]
+        public async Task<ActionResult> PostAnnonymousGame([FromQuery] AnnonymousGameRequest request)
+        {
+            if (request.DifficultyLevel == DifficultyLevel.NULL)
+            {
+                return BadRequest("Difficulty level cannot be null");
+            }
+
+            var result = await gamesService.CreateAnnonymousGame(request.DifficultyLevel);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
             }
         }
     }

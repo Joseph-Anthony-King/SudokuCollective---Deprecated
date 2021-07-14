@@ -10,6 +10,8 @@ using SudokuCollective.Test.TestData;
 using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Data.Models.RequestModels.GameRequests;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -23,7 +25,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private BaseRequest baseRequest;
         private CreateGameRequest createGameRequest;
         private UpdateGameRequest updateGameRequest;
-        private GetGamesRequest getMyGameRequest;
+        private GamesRequest getMyGameRequest;
 
         [SetUp]
         public async Task Setup()
@@ -36,7 +38,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             createGameRequest = new CreateGameRequest();
 
-            getMyGameRequest = new GetGamesRequest()
+            getMyGameRequest = new GamesRequest()
             {
                 UserId = 1,
                 License = TestObjects.GetLicense(),
@@ -373,6 +375,26 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Game>>());
             Assert.That(message, Is.EqualTo("Status Code 404: Game Not Deleted"));
             Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyCreateAnnonymousGames()
+        {
+            // Arrange
+
+            // Assert
+            var result = sutSuccess.PostAnnonymousGame(
+                new AnnonymousGameRequest { 
+                    DifficultyLevel = DifficultyLevel.TEST 
+                });
+            var message = ((AnnonymousGameResult)((ObjectResult)result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Game Created"));
+            Assert.That(statusCode, Is.EqualTo(200));
         }
     }
 }

@@ -10,6 +10,7 @@ using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Test.MockRepositories;
 using SudokuCollective.Data.Messages;
+using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 
 namespace SudokuCollective.Test.MockServices
 {
@@ -71,7 +72,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ISolutionsResult));
 
             SolutionsServiceSuccessfulRequest.Setup(solutionsService =>
-                solutionsService.Solve(It.IsAny<SolveRequest>()))
+                solutionsService.Solve(It.IsAny<ISolutionRequest>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
                     Success = true,
@@ -150,7 +151,7 @@ namespace SudokuCollective.Test.MockServices
                 } as ISolutionsResult));
 
             SolutionsServiceFailedRequest.Setup(solutionsService =>
-                solutionsService.Solve(It.IsAny<SolveRequest>()))
+                solutionsService.Solve(It.IsAny<ISolutionRequest>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
                     Success = false,
@@ -196,7 +197,7 @@ namespace SudokuCollective.Test.MockServices
                     } as IBaseResult));
 
             SolutionsServiceSolveFailedRequest.Setup(solutionsService =>
-                solutionsService.Solve(It.IsAny<SolveRequest>()))
+                solutionsService.Solve(It.IsAny<ISolutionRequest>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
                     Success = true,

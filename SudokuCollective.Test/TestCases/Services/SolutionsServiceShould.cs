@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
@@ -101,7 +102,7 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task SolveSudokuMatrices()
         {
             // Arrange
-            var solveRequest = new SolveRequest()
+            var solutionRequest = new SolutionRequest()
             {
                 FirstRow = new List<int> { 0, 2, 0, 5, 0, 0, 8, 7, 6 },
                 SecondRow = new List<int> { 7, 0, 0, 1, 8, 0, 0, 5, 0 },
@@ -115,7 +116,7 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             // Act
-            var result = await sut.Solve(solveRequest);
+            var result = await sut.Solve((ISolutionRequest)solutionRequest);
 
             // Assert
             Assert.That(result.Success, Is.True);

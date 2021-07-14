@@ -35,6 +35,7 @@ namespace SudokuCollective.Core.Models
             ContinueGame = true;
             Score = 0;
             KeepScore = false;
+            SudokuMatrix = new SudokuMatrix();
             SudokuSolution = new SudokuSolution();
             AppId = 0;
             TimeToSolve = new TimeSpan();
@@ -53,6 +54,12 @@ namespace SudokuCollective.Core.Models
             AppId = appId;
 
             User.Games.Add(this);
+        }
+
+        public Game(Difficulty difficulty) : this()
+        {
+            SudokuMatrix.Difficulty = difficulty;
+            SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
         }
 
         [JsonConstructor]

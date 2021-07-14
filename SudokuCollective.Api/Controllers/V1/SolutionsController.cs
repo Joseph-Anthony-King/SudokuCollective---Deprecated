@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
@@ -96,7 +97,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [AllowAnonymous]
         [HttpPost, Route("Solve")]
         public async Task<ActionResult<SudokuSolution>> Solve(
-            [FromBody] SolveRequest request)
+            [FromBody] ISolutionRequest request)
         {
             var result = await solutionService.Solve(request);
 

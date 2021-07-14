@@ -341,7 +341,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IGamesResult> GetGames(
-            IGetGamesRequest request, 
+            IGamesRequest request, 
             bool fullRecord = true)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -572,7 +572,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IGameResult> GetMyGame(
             int id, 
-            IGetGamesRequest request, 
+            IGamesRequest request, 
             bool fullRecord = true)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -658,7 +658,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IGamesResult> GetMyGames(
-            IGetGamesRequest request,
+            IGamesRequest request,
             bool fullRecord = true)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -890,7 +890,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> DeleteMyGame(int id, IGetGamesRequest request)
+        public async Task<IBaseResult> DeleteMyGame(int id, IGamesRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
@@ -1030,6 +1030,45 @@ namespace SudokuCollective.Data.Services
 
                     return result;
                 }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IAnnonymousGameResult> CreateAnnonymousGame(DifficultyLevel difficultyLevel)
+        {
+            var result = new AnnonymousGameResult();
+
+            try
+            {
+                if (await difficultiesRepository.HasDifficultyLevel(difficultyLevel))
+                {
+                    var game = new Game(new Difficulty { DifficultyLevel = difficultyLevel });
+
+                    game.SudokuMatrix.GenerateSolution();
+
+                    var sudokuMatrix = new List<List<int>>();
+
+                    for (var i = 0; i < 73; i += 9)
+                    {
+                        result.SudokuMatrix.Add(game.SudokuMatrix.ToDisplayedIntList().GetRange(i, 9));
+                    }
+
+                    result.Success = true;
+                    result.Message = GamesMessages.GameCreatedMessage;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
+                }
+
+                return result;
             }
             catch (Exception exp)
             {

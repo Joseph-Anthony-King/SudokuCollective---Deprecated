@@ -73,7 +73,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         bool IsValid();
         bool IsSolved();
         List<int> ToIntList();
-        List<int> ToDisplayedValuesList();
+        List<int> ToDisplayedIntList();
         string ToString();
         void SetDifficulty(IDifficulty difficulty);
         void GenerateSolution();
