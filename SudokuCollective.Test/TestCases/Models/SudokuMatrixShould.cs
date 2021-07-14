@@ -21,7 +21,7 @@ namespace SudokuCollective.Test.TestCases.Models
             populatedTestMatrix = new SudokuMatrix();
             populatedTestMatrix.GenerateSolution();
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             foreach (var i in populatedTestMatrix.ToIntList())
             {
