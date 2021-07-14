@@ -364,5 +364,38 @@ namespace SudokuCollective.Api.V1.Controllers
                 return NotFound(result);
             }
         }
+
+        // POST: api/games/checkAnnonymousGame
+        [AllowAnonymous]
+        [HttpPost("CheckAnnonymousGame")]
+        public async Task<ActionResult> CheckAnnonymousGame([FromBody] AnnonymousCheckRequest request)
+        {
+            var intList = new List<int>();
+
+            intList.AddRange(request.FirstRow);
+            intList.AddRange(request.SecondRow);
+            intList.AddRange(request.ThirdRow);
+            intList.AddRange(request.FourthRow);
+            intList.AddRange(request.FifthRow);
+            intList.AddRange(request.SixthRow);
+            intList.AddRange(request.SeventhRow);
+            intList.AddRange(request.EighthRow);
+            intList.AddRange(request.NinthRow);
+
+            var result = await gamesService.CheckAnnonymousGame(intList);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
@@ -17,5 +18,6 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IBaseResult> DeleteMyGame(int gameid, IGamesRequest getMyGameRequest);
         Task<IGameResult> CheckGame(int id, IUpdateGameRequest updateGameRequest);
         Task<IAnnonymousGameResult> CreateAnnonymousGame(DifficultyLevel difficultyLevel);
+        Task<IBaseResult> CheckAnnonymousGame(List<int> intList);
     }
 }

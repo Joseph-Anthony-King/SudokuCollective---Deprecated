@@ -396,5 +396,88 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(message, Is.EqualTo("Status Code 200: Game Created"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueMessageShouldCreateAnnonymousGamesFail()
+        {
+            // Arrange
+
+            // Assert
+            var result = sutFailure.PostAnnonymousGame(
+                new AnnonymousGameRequest
+                {
+                    DifficultyLevel = DifficultyLevel.TEST
+                });
+            var message = ((AnnonymousGameResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Game not Created"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyCheckAnnonymousGames()
+        {
+            // Arrange
+
+            // Assert
+            var result = sutSuccess.CheckAnnonymousGame(
+                new AnnonymousCheckRequest
+                {
+                    FirstRow = new List<int> { 2, 9, 8, 1, 3, 4, 6, 7, 5 },
+                    SecondRow = new List<int> { 3, 1, 6, 5, 8, 7, 2, 9, 4 },
+                    ThirdRow = new List<int> { 4, 5, 7, 6, 9, 2, 1, 8, 3  },
+                    FourthRow = new List<int> { 9, 7, 1, 2, 4, 3, 5, 6, 8 },
+                    FifthRow = new List<int> { 5, 8, 3, 7, 6, 1, 4, 2, 9 },
+                    SixthRow = new List<int> { 6, 2, 4, 9, 5, 8, 3, 1, 7 },
+                    SeventhRow = new List<int> { 7, 3, 5, 8, 2, 6, 9, 4, 1 },
+                    EighthRow = new List<int> { 8, 4, 2, 3, 1, 9, 7, 5, 6 },
+                    NinthRow = new List<int> { 1, 6, 9, 4, 7, 5, 8, 3, 2 }
+                });
+
+            var success = ((BaseResult)((ObjectResult)result.Result).Value).Success;
+            var message = ((BaseResult)((ObjectResult)result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(success, Is.True);
+            Assert.That(message, Is.EqualTo("Status Code 200: Game Solved"));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueMessageShouldCheckAnnonymousGamesFail()
+        {
+            // Arrange
+
+            // Assert
+            var result = sutFailure.CheckAnnonymousGame(
+                new AnnonymousCheckRequest
+                {
+                    FirstRow = new List<int> { 5, 9, 8, 1, 3, 4, 6, 7, 2 },
+                    SecondRow = new List<int> { 3, 1, 6, 5, 8, 7, 2, 9, 4 },
+                    ThirdRow = new List<int> { 4, 5, 7, 6, 9, 2, 1, 8, 3 },
+                    FourthRow = new List<int> { 9, 7, 1, 2, 4, 3, 5, 6, 8 },
+                    FifthRow = new List<int> { 5, 8, 3, 7, 6, 1, 4, 2, 9 },
+                    SixthRow = new List<int> { 6, 2, 4, 9, 5, 8, 3, 1, 7 },
+                    SeventhRow = new List<int> { 7, 3, 5, 8, 2, 6, 9, 4, 1 },
+                    EighthRow = new List<int> { 8, 4, 2, 3, 1, 9, 7, 5, 6 },
+                    NinthRow = new List<int> { 1, 6, 9, 4, 7, 5, 8, 3, 2 }
+                });
+
+            var success = ((BaseResult)((ObjectResult)result.Result).Value).Success;
+            var message = ((BaseResult)((ObjectResult)result.Result).Value).Message;
+            var statusCode = ((ObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(success, Is.False);
+            Assert.That(message, Is.EqualTo("Status Code 404: Game not Solved"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
     }
 }

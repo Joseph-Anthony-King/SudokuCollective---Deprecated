@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
@@ -56,10 +57,18 @@ namespace SudokuCollective.Core.Models
             User.Games.Add(this);
         }
 
-        public Game(Difficulty difficulty) : this()
+        public Game(Difficulty difficulty, List<int> intList = null) : this()
         {
-            SudokuMatrix.Difficulty = difficulty;
-            SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
+            if (intList != null)
+            {
+                SudokuMatrix = new SudokuMatrix(difficulty, intList);
+            }
+            else
+            {
+                SudokuMatrix.Difficulty = difficulty;
+            }
+
+            SudokuMatrix.SetDifficulty();
         }
 
         [JsonConstructor]

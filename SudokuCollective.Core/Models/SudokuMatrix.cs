@@ -360,6 +360,14 @@ namespace SudokuCollective.Core.Models
             }
         }
 
+        public SudokuMatrix(
+            Difficulty difficulty,
+            List<int> intList) : this(intList)
+        {
+            Difficulty = difficulty;
+            SetDifficulty();
+        }
+
         public SudokuMatrix(string values) : this()
         {
             var intList = new List<int>();
@@ -480,14 +488,17 @@ namespace SudokuCollective.Core.Models
             return result.ToString();
         }
 
-        public void SetDifficulty(IDifficulty difficulty)
+        public void SetDifficulty(IDifficulty difficulty = null)
         {
+            if (difficulty != null)
+            {
+                Difficulty = (Difficulty)difficulty;
+            }
+
             foreach (var SudokuCell in SudokuCells)
             {
                 SudokuCell.Hidden = true;
             }
-
-            Difficulty = (Difficulty)difficulty;
 
             var patterns = new List<List<int>>();
 

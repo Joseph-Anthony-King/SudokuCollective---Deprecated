@@ -12,6 +12,7 @@ using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Core.Extensions;
 
 namespace SudokuCollective.Data.Services
 {
@@ -22,6 +23,7 @@ namespace SudokuCollective.Data.Services
         private readonly IAppsRepository<App> appsRepository;
         private readonly IUsersRepository<User> usersRepository;
         private readonly IDifficultiesRepository<Difficulty> difficultiesRepository;
+        private readonly ISolutionsRepository<SudokuSolution> solutionsRepository;
         #endregion
 
         #region Constructor
@@ -29,12 +31,14 @@ namespace SudokuCollective.Data.Services
             IGamesRepository<Game> gamesRepo,
             IAppsRepository<App> appsRepo,
             IUsersRepository<User> usersRepo, 
-            IDifficultiesRepository<Difficulty> difficultiesRepo)
+            IDifficultiesRepository<Difficulty> difficultiesRepo,
+            ISolutionsRepository<SudokuSolution> solutionsRepo)
         {
             gamesRepository = gamesRepo;
             appsRepository = appsRepo;
             usersRepository = usersRepo;
             difficultiesRepository = difficultiesRepo;
+            solutionsRepository = solutionsRepo;
         }
         #endregion
 
@@ -1077,6 +1081,62 @@ namespace SudokuCollective.Data.Services
 
                 return result;
             }
+        }
+
+        public async Task<IBaseResult> CheckAnnonymousGame(List<int> intList)
+        {
+            if (intList == null) throw new ArgumentNullException(nameof(intList));
+
+            var result = new BaseResult();
+
+            if (intList.Count != 81 || intList.Contains(0))
+            {
+                result.Success = false;
+                result.Message = GamesMessages.GameNotSolvedMessage;
+
+                return result;
+            }
+
+            var game = new Game(
+                new Difficulty
+                {
+                    DifficultyLevel = DifficultyLevel.TEST
+                },
+                intList);
+
+            result.Success = game.IsSolved();
+
+            if (result.Success)
+            {
+                // Add solution to the database
+                var solutionsResponse = await solutionsRepository.GetSolvedSolutions();
+
+                if (solutionsResponse.Success)
+                {
+                    var solutionInDB = false;
+
+                    foreach (var solution in solutionsResponse.Objects.ConvertAll(s => (SudokuSolution)s))
+                    {
+                        if (solution.SolutionList.IsThisListEqual(game.SudokuSolution.SolutionList))
+                        {
+                            solutionInDB = true;
+                        }
+                    }
+
+                    if (!solutionInDB)
+                    {
+                        _ = solutionsRepository.Create(game.SudokuSolution);
+                    }
+                }
+
+                result.Message = GamesMessages.GameSolvedMessage;
+            }
+            else
+            {
+                result.Message = GamesMessages.GameNotSolvedMessage;
+            }
+
+            return result;
         }
         #endregion
     }

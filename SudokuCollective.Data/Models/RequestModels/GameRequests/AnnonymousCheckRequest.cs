@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
+using SudokuCollective.Core.Interfaces.APIModels.RequestModels.GameRequests;
 using SudokuCollective.Data.Validation.Attributes;
 
 namespace SudokuCollective.Data.Models.RequestModels
 {
-    public class SolutionRequest : ISolutionRequest
+    public class AnnonymousCheckRequest : IAnnonymousCheckRequest
     {
         [Required, RowValidated]
         public List<int> FirstRow { get; set; }
@@ -26,7 +26,7 @@ namespace SudokuCollective.Data.Models.RequestModels
         [Required, RowValidated]
         public List<int> NinthRow { get; set; }
 
-        public SolutionRequest() : base()
+        public AnnonymousCheckRequest()
         {
             FirstRow = new List<int>();
             SecondRow = new List<int>();

@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace SudokuCollective.Data.Validation.Attributes
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
-    public sealed class SudokuRowValidatedAttribute : ValidationAttribute
+    public sealed class RowValidatedAttribute : ValidationAttribute
     {
         private const string defaultError = "{0} is invalid.";
 
-        public SudokuRowValidatedAttribute() : base(defaultError)
+        public RowValidatedAttribute() : base(defaultError)
         {
 
         }
@@ -21,7 +20,7 @@ namespace SudokuCollective.Data.Validation.Attributes
 
             var possibleIntList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-            var arrayContainsDuplicates = false;
+            var containsDuplicates = false;
 
             foreach (var i in instanceArray)
             {
@@ -33,12 +32,12 @@ namespace SudokuCollective.Data.Validation.Attributes
                     }
                     else
                     {
-                        arrayContainsDuplicates = true;
+                        containsDuplicates = true;
                     }
                 }
             }
 
-            if (!arrayContainsDuplicates && instanceArray.Count == 9)
+            if (!containsDuplicates && instanceArray.Count == 9)
             {
                 return true;
             }

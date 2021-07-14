@@ -97,7 +97,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [AllowAnonymous]
         [HttpPost, Route("Solve")]
         public async Task<ActionResult<SudokuSolution>> Solve(
-            [FromBody] ISolutionRequest request)
+            [FromBody] SolutionRequest request)
         {
             var result = await solutionService.Solve(request);
 

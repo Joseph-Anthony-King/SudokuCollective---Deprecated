@@ -150,7 +150,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.Solve((ISolutionRequest)solutionRequest);
+            var result = sutSuccess.Solve((SolutionRequest)solutionRequest);
             var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -167,7 +167,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.Solve((ISolutionRequest)solutionRequest);
+            var result = sutFailure.Solve((SolutionRequest)solutionRequest);
             var message = ((SolutionResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -218,7 +218,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSolvedFailure.Solve((ISolutionRequest)solutionRequest);
+            var result = sutSolvedFailure.Solve((SolutionRequest)solutionRequest);
             var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 

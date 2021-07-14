@@ -15,5 +15,6 @@
         public const string GameSolvedMessage = "Game Solved";
         public const string GameNotSolvedMessage = "Game not Solved";
         public const string DifficultyLevelIsRequiredMessage = "Difficulty Level is Required";
+        public const string CheckRequestNotValidMessage = "Check Request not Valid Message";
     }
 }

@@ -102,6 +102,24 @@ namespace SudokuCollective.Test.TestCases.Models
 
         [Test]
         [Category("Models")]
+        public void AcceptDifficultyAndIntListConstructor()
+        {
+            // Arrange
+            var difficulty = new Difficulty { DifficultyLevel = DifficultyLevel.TEST };
+            intList = populatedTestMatrix.ToIntList();
+
+            // Act
+            sut = new SudokuMatrix(difficulty, intList);
+
+            // Assert
+            Assert.That(difficulty, Is.TypeOf<Difficulty>());
+            Assert.That(intList, Is.TypeOf<List<int>>());
+            Assert.That(sut, Is.TypeOf<SudokuMatrix>());
+            Assert.That(sut.SudokuCells.Count, Is.GreaterThan(0));
+        }
+
+        [Test]
+        [Category("Models")]
         public void ReturnTrueIfValid()
         {
             // Arrange and Act

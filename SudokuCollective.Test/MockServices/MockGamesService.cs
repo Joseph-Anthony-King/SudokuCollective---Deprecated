@@ -200,6 +200,14 @@ namespace SudokuCollective.Test.MockServices
                     SudokuMatrix = new List<List<int>>(),
                 } as IAnnonymousGameResult));
 
+            GamesServiceSuccessfulRequest.Setup(gamesService =>
+                gamesService.CheckAnnonymousGame(It.IsAny<List<int>>()))
+                .Returns(Task.FromResult(new BaseResult()
+                {
+                    Success = true,
+                    Message = GamesMessages.GameSolvedMessage
+                } as IBaseResult));
+
             GamesServiceFailedRequest.Setup(gamesService =>
                 gamesService.CreateGame(It.IsAny<CreateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
@@ -357,6 +365,14 @@ namespace SudokuCollective.Test.MockServices
                     Message = GamesMessages.GameNotCreatedMessage,
                     SudokuMatrix = null,
                 } as IAnnonymousGameResult));
+
+            GamesServiceFailedRequest.Setup(gamesService =>
+                gamesService.CheckAnnonymousGame(It.IsAny<List<int>>()))
+                .Returns(Task.FromResult(new BaseResult()
+                {
+                    Success = false,
+                    Message = GamesMessages.GameNotSolvedMessage
+                } as IBaseResult));
         }
     }
 }

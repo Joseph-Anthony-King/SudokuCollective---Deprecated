@@ -57,7 +57,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulties(paginator);
+            var result = await sut.GetDifficulties();
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -71,7 +71,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulties(paginator);
+            var result = await sut.GetDifficulties();
             var nullAndTestDifficultyLevelsBlocked = result.Difficulties
                 .Any(difficulty =>
                     difficulty.DifficultyLevel.Equals(DifficultyLevel.NULL)

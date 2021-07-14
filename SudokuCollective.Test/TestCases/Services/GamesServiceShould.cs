@@ -19,11 +19,12 @@ namespace SudokuCollective.Test.TestCases.Services
     public class GamesServiceShould
     {
         private DatabaseContext context;
-        private MockGamesRepository MockGamesRepository;
-        private MockAppsRepository MockAppsRepository;
-        private MockUsersRepository MockUsersRepository;
-        private MockDifficultiesRepository MockDifficultiesRepositorySuccessful;
-        private MockDifficultiesRepository MockDifficultiesRepositoryFailed;
+        private MockGamesRepository mockGamesRepository;
+        private MockAppsRepository mockAppsRepository;
+        private MockUsersRepository mockUsersRepository;
+        private MockDifficultiesRepository mockDifficultiesRepositorySuccessful;
+        private MockDifficultiesRepository mockDifficultiesRepositoryFailed;
+        private MockSolutionsRepository mockSolutionsRepository;
         private IGamesService sut;
         private IGamesService sutFailure;
         private IGamesService sutAnonFailure;
@@ -35,35 +36,40 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             context = await TestDatabase.GetDatabaseContext();
 
-            MockGamesRepository = new MockGamesRepository(context);
-            MockAppsRepository = new MockAppsRepository(context);
-            MockUsersRepository = new MockUsersRepository(context);
-            MockDifficultiesRepositorySuccessful = new MockDifficultiesRepository(context);
-            MockDifficultiesRepositoryFailed = new MockDifficultiesRepository(context);
+            mockGamesRepository = new MockGamesRepository(context);
+            mockAppsRepository = new MockAppsRepository(context);
+            mockUsersRepository = new MockUsersRepository(context);
+            mockDifficultiesRepositorySuccessful = new MockDifficultiesRepository(context);
+            mockDifficultiesRepositoryFailed = new MockDifficultiesRepository(context);
+            mockSolutionsRepository = new MockSolutionsRepository(context);
 
             sut = new GamesService(
-                MockGamesRepository.GamesRepositorySuccessfulRequest.Object,
-                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object);
+                mockGamesRepository.GamesRepositorySuccessfulRequest.Object,
+                mockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                mockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                mockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object,
+                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
 
             sutFailure = new GamesService(
-                MockGamesRepository.GamesRepositoryFailedRequest.Object,
-                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object);
+                mockGamesRepository.GamesRepositoryFailedRequest.Object,
+                mockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                mockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                mockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object,
+                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
 
             sutAnonFailure = new GamesService(
-                MockGamesRepository.GamesRepositorySuccessfulRequest.Object,
-                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockDifficultiesRepositoryFailed.DifficultiesRepositoryFailedRequest.Object);
+                mockGamesRepository.GamesRepositorySuccessfulRequest.Object,
+                mockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                mockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                mockDifficultiesRepositoryFailed.DifficultiesRepositoryFailedRequest.Object,
+                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
 
             sutUpdateFailure = new GamesService(
-                MockGamesRepository.GamesRepositoryUpdateFailedRequest.Object,
-                MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
-                MockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object);
+                mockGamesRepository.GamesRepositoryUpdateFailedRequest.Object,
+                mockAppsRepository.AppsRepositorySuccessfulRequest.Object,
+                mockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                mockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object,
+                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
 
             getGamesRequest = TestObjects.GetGamesRequest();
         }
@@ -428,6 +434,54 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("Difficulty not Found"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task CheckAnnonymousGames()
+        {
+            // Arrange
+            var intList = new List<int> {
+                2, 9, 8, 1, 3, 4, 6, 7, 5,
+                3, 1, 6, 5, 8, 7, 2, 9, 4,
+                4, 5, 7, 6, 9, 2, 1, 8, 3,
+                9, 7, 1, 2, 4, 3, 5, 6, 8,
+                5, 8, 3, 7, 6, 1, 4, 2, 9,
+                6, 2, 4, 9, 5, 8, 3, 1, 7,
+                7, 3, 5, 8, 2, 6, 9, 4, 1,
+                8, 4, 2, 3, 1, 9, 7, 5, 6,
+                1, 6, 9, 4, 7, 5, 8, 3, 2 };
+
+            // Act
+            var result = await sut.CheckAnnonymousGame(intList);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Game Solved"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task CheckAnnonymousGamesShouldReturnMessageIfSolutionNotFound()
+        {
+            // Arrange
+            var intList = new List<int> {
+                5, 9, 8, 1, 3, 4, 6, 7, 2,
+                3, 1, 6, 5, 8, 7, 2, 9, 4,
+                4, 5, 7, 6, 9, 2, 1, 8, 3,
+                9, 7, 1, 2, 4, 3, 5, 6, 8,
+                5, 8, 3, 7, 6, 1, 4, 2, 9,
+                6, 2, 4, 9, 5, 8, 3, 1, 7,
+                7, 3, 5, 8, 2, 6, 9, 4, 1,
+                8, 4, 2, 3, 1, 9, 7, 5, 6,
+                1, 6, 9, 4, 7, 5, 8, 3, 2 };
+
+            // Act
+            var result = await sut.CheckAnnonymousGame(intList);
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Game not Solved"));
         }
     }
 }
