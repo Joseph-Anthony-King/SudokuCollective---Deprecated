@@ -547,5 +547,34 @@ namespace SudokuCollective.Test.TestCases.Services
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("Apps Not Found"));
         }
+
+        [Test]
+        [Category("Services")]
+        public async Task GetRegisteredApps()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetRegisteredApps(2, new Paginator());
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("Apps Found"));
+            Assert.That(result.Apps.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnFalseIfGetRegisteredAppsFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutAppRepoFailure.GetRegisteredApps(1, new Paginator());
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("Apps Not Found"));
+        }
     }
 }

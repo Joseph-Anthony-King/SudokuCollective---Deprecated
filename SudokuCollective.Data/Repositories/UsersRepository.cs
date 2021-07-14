@@ -518,7 +518,7 @@ namespace SudokuCollective.Data.Repositories
 
             var result = new RepositoryResponse();
 
-            if (entity.Id == 0)
+            if (entity.Id == 0 || entity.Id == 1 || entity.IsSuperUser)
             {
                 result.Success = false;
 

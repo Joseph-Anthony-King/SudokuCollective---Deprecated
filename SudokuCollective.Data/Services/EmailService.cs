@@ -19,6 +19,12 @@ namespace SudokuCollective.Data.Services
 
         public bool Send(string to, string subject, string html)
         {
+            if (string.IsNullOrEmpty(to)) throw new ArgumentNullException(nameof(to));
+
+            if (string.IsNullOrEmpty(subject)) throw new ArgumentNullException(nameof(subject));
+
+            if (string.IsNullOrEmpty(html)) throw new ArgumentNullException(nameof(html));
+
             // create message
             var email = new MimeMessage();
 

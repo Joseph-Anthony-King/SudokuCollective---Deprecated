@@ -26,12 +26,19 @@ namespace SudokuCollective.Core.Extensions
         {
             bool result = true;
 
-            for (var i = 0; i < 81; i++)
+            if (aList.Count() == bList.Count())
             {
-                if (aList.ElementAt(i) != bList.ElementAt(i))
+                for (var i = 0; i < aList.Count(); i++)
                 {
-                    result = false;
+                    if (aList.ElementAt(i) != bList.ElementAt(i))
+                    {
+                        result = false;
+                    }
                 }
+            }
+            else
+            {
+                result = false;
             }
 
             return result;

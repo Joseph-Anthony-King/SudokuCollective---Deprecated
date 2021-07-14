@@ -284,7 +284,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
             var user = context
                 .Users
-                .FirstOrDefault(u => u.Id == 1);
+                .FirstOrDefault(u => u.Id == 2);
 
             // Act
             var result = await sut.Delete(user);

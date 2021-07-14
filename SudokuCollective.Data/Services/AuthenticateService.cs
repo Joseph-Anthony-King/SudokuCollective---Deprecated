@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,7 +15,6 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Messages;
-using System.Linq;
 using SudokuCollective.Core.Enums;
 
 namespace SudokuCollective.Data.Services
@@ -46,6 +46,8 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAuthenticatedUserResult> IsAuthenticated(ITokenRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new AuthenticatedUserResult();
 
             var validateUserTask = userManagementService.IsValidUser(request.UserName, request.Password);

@@ -58,109 +58,109 @@ namespace SudokuCollective.Data.Services
             string license,
             bool fullRecord = true)
         {
+            if (string.IsNullOrEmpty(license)) throw new ArgumentNullException(nameof(license));
+
             var result = new UserResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await usersRepository.HasEntity(id))
+                var response = await usersRepository.GetById(id, fullRecord);
+
+                if (response.Success)
                 {
-                    var response = await usersRepository.GetById(id, fullRecord);
+                    var user = (User)response.Object;
 
-                    if (response.Success)
+                    if (fullRecord)
                     {
-                        var user = (User)response.Object;
-
-                        if (fullRecord)
+                        foreach (var userApp in user.Apps)
                         {
-                            foreach (var userApp in user.Apps)
-                            {
-                                userApp.App = null;
-                            }
-
-                            foreach (var userRole in user.Roles)
-                            {
-                                userRole.Role.Users = null;
-                            }
-
-                            foreach (var game in user.Games)
-                            {
-                                game.User = null;
-                                game.SudokuMatrix.Difficulty.Matrices = null;
-                            }
+                            userApp.App = null;
                         }
 
-                        result.Success = response.Success;
-                        result.Message = UsersMessages.UserFoundMessage;
-                        result.User = user;
-
-                        var app = (App)(await appsRepository.GetByLicense(license)).Object;
-                        var appAdmins = (await appAdminsRepository.GetAll())
-                            .Objects
-                            .ConvertAll(aa => (AppAdmin)aa)
-                            .ToList();
-
-                        if (result
-                            .User
-                            .Roles
-                            .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                        foreach (var userRole in user.Roles)
                         {
-                            if (!user.IsSuperUser)
+                            userRole.Role.Users = null;
+                        }
+
+                        foreach (var game in user.Games)
+                        {
+                            game.User = null;
+                            game.SudokuMatrix.Difficulty.Matrices = null;
+                        }
+                    }
+
+                    result.Success = response.Success;
+                    result.Message = UsersMessages.UserFoundMessage;
+                    result.User = user;
+
+                    var app = (App)(await appsRepository.GetByLicense(license)).Object;
+                    var appAdmins = (await appAdminsRepository.GetAll())
+                        .Objects
+                        .ConvertAll(aa => (AppAdmin)aa)
+                        .ToList();
+
+                    if (result
+                        .User
+                        .Roles
+                        .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                    {
+                        if (!user.IsSuperUser)
+                        {
+                            if (!appAdmins.Any(aa =>
+                                aa.AppId == app.Id &&
+                                aa.UserId == result.User.Id &&
+                                aa.IsActive))
                             {
-                                if (!appAdmins.Any(aa =>
-                                    aa.AppId == app.Id &&
-                                    aa.UserId == result.User.Id &&
-                                    aa.IsActive))
+                                var adminRole = result
+                                    .User
+                                    .Roles
+                                    .FirstOrDefault(ur =>
+                                        ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                                result.User.Roles.Remove(adminRole);
+                            }
+                        }
+                        else
+                        {
+                            if (!app.PermitSuperUserAccess)
+                            {
+                                if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
                                 {
-                                    var adminRole = result
-                                        .User
+                                    var superUserRole = user
                                         .Roles
-                                        .FirstOrDefault(ur =>
-                                            ur.Role.RoleLevel == RoleLevel.ADMIN);
+                                        .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
 
-                                    result.User.Roles.Remove(adminRole);
+                                    user.Roles.Remove(superUserRole);
                                 }
-                            }
-                            else
-                            {
-                                if (!app.PermitSuperUserAccess)
+
+                                if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
                                 {
-                                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                                    {
-                                        var superUserRole = user
-                                            .Roles
-                                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+                                    var adminRole = user
+                                        .Roles
+                                        .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
 
-                                        user.Roles.Remove(superUserRole);
-                                    }
-
-                                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                    {
-                                        var adminRole = user
-                                            .Roles
-                                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                        user.Roles.Remove(adminRole);
-                                    }
+                                    user.Roles.Remove(adminRole);
                                 }
                             }
                         }
-
-                        return result;
                     }
-                    else if (!response.Success && response.Exception != null)
-                    {
-                        result.Success = response.Success;
-                        result.Message = response.Exception.Message;
 
-                        return result;
-                    }
-                    else
-                    {
-                        result.Success = false;
-                        result.Message = UsersMessages.UserNotFoundMessage;
+                    return result;
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
 
-                        return result;
-                    }
+                    return result;
                 }
                 else
                 {
@@ -185,7 +185,19 @@ namespace SudokuCollective.Data.Services
             IPaginator paginator,
             bool fullRecord = true)
         {
+            if (paginator == null) throw new ArgumentNullException(nameof(paginator));
+
+            if (string.IsNullOrEmpty(license)) throw new ArgumentNullException(nameof(license));
+
             var result = new UsersResult();
+
+            if (requestorId == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
@@ -193,265 +205,258 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    if (paginator != null)
+                    if (StaticDataHelpers.IsPageValid(paginator, response.Objects))
                     {
-                        if (StaticDataHelpers.IsPageValid(paginator, response.Objects))
+                        if (paginator.SortBy == SortValue.NULL)
                         {
-                            if (paginator.SortBy == SortValue.NULL)
+                            result.Users = response.Objects.ConvertAll(u => (IUser)u);
+                        }
+                        else if (paginator.SortBy == SortValue.ID)
+                        {
+                            if (!paginator.OrderByDescending)
                             {
-                                result.Users = response.Objects.ConvertAll(u => (IUser)u);
-                            }
-                            else if (paginator.SortBy == SortValue.ID)
-                            {
-                                if (!paginator.OrderByDescending)
+                                foreach (var obj in response.Objects)
                                 {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderBy(u => u.Id)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
+                                    result.Users.Add((IUser)obj);
                                 }
-                                else
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
 
-                                    result.Users = result.Users
-                                        .OrderByDescending(u => u.Id)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                            }
-                            else if (paginator.SortBy == SortValue.USERNAME)
-                            {
-                                if (!paginator.OrderByDescending)
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderBy(u => u.UserName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                                else
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderByDescending(u => u.UserName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                            }
-                            else if (paginator.SortBy == SortValue.FIRSTNAME)
-                            {
-                                if (!paginator.OrderByDescending)
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderBy(u => u.FirstName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                                else
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderByDescending(u => u.FirstName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                            }
-                            else if (paginator.SortBy == SortValue.LASTNAME)
-                            {
-                                if (!paginator.OrderByDescending)
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderBy(u => u.LastName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                                else
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderByDescending(u => u.LastName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                            }
-                            else if (paginator.SortBy == SortValue.FULLNAME)
-                            {
-                                if (!paginator.OrderByDescending)
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderBy(u => u.FullName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                                else
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderByDescending(u => u.FullName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                            }
-                            else if (paginator.SortBy == SortValue.NICKNAME)
-                            {
-                                if (!paginator.OrderByDescending)
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderBy(u => u.NickName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                                else
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderByDescending(u => u.NickName)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                            }
-                            else if (paginator.SortBy == SortValue.DATECREATED)
-                            {
-                                if (!paginator.OrderByDescending)
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderBy(u => u.DateCreated)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                                else
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderByDescending(u => u.DateCreated)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                            }
-                            else if (paginator.SortBy == SortValue.DATEUPDATED)
-                            {
-                                if (!paginator.OrderByDescending)
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderBy(u => u.DateUpdated)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
-                                else
-                                {
-                                    foreach (var obj in response.Objects)
-                                    {
-                                        result.Users.Add((IUser)obj);
-                                    }
-
-                                    result.Users = result.Users
-                                        .OrderByDescending(u => u.DateUpdated)
-                                        .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                        .Take(paginator.ItemsPerPage)
-                                        .ToList();
-                                }
+                                result.Users = result.Users
+                                    .OrderBy(u => u.Id)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
                             }
                             else
                             {
-                                result.Success = false;
-                                result.Message = ServicesMesages.SortValueNotImplementedMessage;
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
 
-                                return result;
+                                result.Users = result.Users
+                                    .OrderByDescending(u => u.Id)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                        }
+                        else if (paginator.SortBy == SortValue.USERNAME)
+                        {
+                            if (!paginator.OrderByDescending)
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderBy(u => u.UserName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                            else
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderByDescending(u => u.UserName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                        }
+                        else if (paginator.SortBy == SortValue.FIRSTNAME)
+                        {
+                            if (!paginator.OrderByDescending)
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderBy(u => u.FirstName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                            else
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderByDescending(u => u.FirstName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                        }
+                        else if (paginator.SortBy == SortValue.LASTNAME)
+                        {
+                            if (!paginator.OrderByDescending)
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderBy(u => u.LastName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                            else
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderByDescending(u => u.LastName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                        }
+                        else if (paginator.SortBy == SortValue.FULLNAME)
+                        {
+                            if (!paginator.OrderByDescending)
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderBy(u => u.FullName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                            else
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderByDescending(u => u.FullName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                        }
+                        else if (paginator.SortBy == SortValue.NICKNAME)
+                        {
+                            if (!paginator.OrderByDescending)
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderBy(u => u.NickName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                            else
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderByDescending(u => u.NickName)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                        }
+                        else if (paginator.SortBy == SortValue.DATECREATED)
+                        {
+                            if (!paginator.OrderByDescending)
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderBy(u => u.DateCreated)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                            else
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderByDescending(u => u.DateCreated)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                        }
+                        else if (paginator.SortBy == SortValue.DATEUPDATED)
+                        {
+                            if (!paginator.OrderByDescending)
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderBy(u => u.DateUpdated)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
+                            }
+                            else
+                            {
+                                foreach (var obj in response.Objects)
+                                {
+                                    result.Users.Add((IUser)obj);
+                                }
+
+                                result.Users = result.Users
+                                    .OrderByDescending(u => u.DateUpdated)
+                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
+                                    .Take(paginator.ItemsPerPage)
+                                    .ToList();
                             }
                         }
                         else
                         {
                             result.Success = false;
-                            result.Message = ServicesMesages.PageNotFoundMessage;
+                            result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                             return result;
                         }
                     }
                     else
                     {
-                        result.Users = response.Objects.ConvertAll(u => (IUser)u);
+                        result.Success = false;
+                        result.Message = ServicesMesages.PageNotFoundMessage;
+
+                        return result;
                     }
 
                     var app = (App)(await appsRepository.GetByLicense(license)).Object;
@@ -576,6 +581,12 @@ namespace SudokuCollective.Data.Services
             string baseUrl,
             string emailTemplatePath)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            if (string.IsNullOrEmpty(baseUrl)) throw new ArgumentNullException(nameof(baseUrl));
+
+            if (string.IsNullOrEmpty(emailTemplatePath)) throw new ArgumentNullException(nameof(emailTemplatePath));
+
             var result = new UserResult();
 
             var isUserNameUnique = false;
@@ -640,10 +651,10 @@ namespace SudokuCollective.Data.Services
             {
                 try
                 {
-                    if (await appsRepository.IsAppLicenseValid(request.License))
-                    {
-                        var appResponse = await appsRepository.GetByLicense(request.License);
+                    var appResponse = await appsRepository.GetByLicense(request.License);
 
+                    if (appResponse.Success)
+                    {
                         var app = (App)appResponse.Object;
 
                         if (!app.IsActive)
@@ -654,149 +665,139 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
 
-                        if (appResponse.Success)
-                        {
-                            var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                        var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
-                            var user = new User(
-                                0,
-                                request.UserName,
-                                request.FirstName,
-                                request.LastName,
-                                request.NickName,
-                                request.Email,
-                                false,
-                                false,
-                                BCrypt.Net.BCrypt.HashPassword(request.Password, salt),
-                                false,
-                                true,
-                                DateTime.UtcNow,
-                                DateTime.MinValue);
+                        var user = new User(
+                            0,
+                            request.UserName,
+                            request.FirstName,
+                            request.LastName,
+                            request.NickName,
+                            request.Email,
+                            false,
+                            false,
+                            BCrypt.Net.BCrypt.HashPassword(request.Password, salt),
+                            false,
+                            true,
+                            DateTime.UtcNow,
+                            DateTime.MinValue);
 
-                            user.Apps.Add(
-                                new UserApp()
-                                {
-                                    User = user,
-                                    App = app,
-                                    AppId = app.Id
-                                });
-
-                            var userResponse = await usersRepository.Add(user);
-
-                            if (userResponse.Success)
+                        user.Apps.Add(
+                            new UserApp()
                             {
-                                user = (User)userResponse.Object;
+                                User = user,
+                                App = app,
+                                AppId = app.Id
+                            });
 
-                                if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                {
-                                    var appAdmin = new AppAdmin(app.Id, user.Id);
+                        var userResponse = await usersRepository.Add(user);
 
-                                    _ = await appAdminsRepository.Add(appAdmin);
-                                }
+                        if (userResponse.Success)
+                        {
+                            user = (User)userResponse.Object;
 
-                                var emailConfirmation = new EmailConfirmation(
-                                    user.Id,
-                                    app.Id);
+                            if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                            {
+                                var appAdmin = new AppAdmin(app.Id, user.Id);
 
-                                emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
+                                _ = await appAdminsRepository.Add(appAdmin);
+                            }
 
-                                emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.Create(emailConfirmation))
-                                    .Object;
+                            var emailConfirmation = new EmailConfirmation(
+                                user.Id,
+                                app.Id);
 
-                                string EmailConfirmationAction;
+                            emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
 
-                                if (app.UseCustomEmailConfirmationAction)
-                                {
-                                    if (app.InDevelopment)
-                                    {
-                                        EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                                            app.DevUrl,
-                                            app.CustomEmailConfirmationAction,
-                                            emailConfirmation.Token);
-                                    }
-                                    else
-                                    {
-                                        EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                                            app.LiveUrl,
-                                            app.CustomEmailConfirmationAction,
-                                            emailConfirmation.Token);
-                                    }
-                                }
-                                else
-                                {
-                                    EmailConfirmationAction = string.Format("https://{0}/confirmEmail/{1}",
-                                        baseUrl,
-                                        emailConfirmation.Token);
-                                }
+                            emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.Create(emailConfirmation))
+                                .Object;
 
-                                var html = File.ReadAllText(emailTemplatePath);
-                                var appTitle = app.Name;
-                                var url = string.Empty;
+                            string EmailConfirmationAction;
 
+                            if (app.UseCustomEmailConfirmationAction)
+                            {
                                 if (app.InDevelopment)
                                 {
-                                    url = app.DevUrl;
+                                    EmailConfirmationAction = string.Format("{0}/{1}/{2}",
+                                        app.DevUrl,
+                                        app.CustomEmailConfirmationAction,
+                                        emailConfirmation.Token);
                                 }
                                 else
                                 {
-                                    url = app.LiveUrl;
+                                    EmailConfirmationAction = string.Format("{0}/{1}/{2}",
+                                        app.LiveUrl,
+                                        app.CustomEmailConfirmationAction,
+                                        emailConfirmation.Token);
                                 }
-
-                                html = html.Replace("{{USER_NAME}}", user.UserName);
-                                html = html.Replace("{{CONFIRM_EMAIL_URL}}", EmailConfirmationAction);
-                                html = html.Replace("{{APP_TITLE}}", appTitle);
-                                html = html.Replace("{{URL}}", url);
-
-                                var emailSubject = string.Format("Greetings from {0}: Please Confirm Email", appTitle);
-
-                                result.ConfirmationEmailSuccessfullySent = emailService
-                                    .Send(user.Email, emailSubject, html);
-
-                                foreach (var userRole in user.Roles)
-                                {
-                                    userRole.Role.Users = new List<UserRole>();
-                                }
-
-                                foreach (var userApp in user.Apps)
-                                {
-                                    userApp.App.Users = new List<UserApp>();
-                                }
-
-                                result.Success = userResponse.Success;
-                                result.Message = UsersMessages.UserCreatedMessage;
-                                result.User = user;
-
-                                return result;
-                            }
-                            else if (!userResponse.Success && userResponse.Exception != null)
-                            {
-                                result.Success = userResponse.Success;
-                                result.Message = userResponse.Exception.Message;
-
-                                return result;
                             }
                             else
                             {
-                                result.Success = userResponse.Success;
-                                result.Message = UsersMessages.UserNotCreatedMessage;
-
-                                return result;
+                                EmailConfirmationAction = string.Format("https://{0}/confirmEmail/{1}",
+                                    baseUrl,
+                                    emailConfirmation.Token);
                             }
+
+                            var html = File.ReadAllText(emailTemplatePath);
+                            var appTitle = app.Name;
+                            var url = string.Empty;
+
+                            if (app.InDevelopment)
+                            {
+                                url = app.DevUrl;
+                            }
+                            else
+                            {
+                                url = app.LiveUrl;
+                            }
+
+                            html = html.Replace("{{USER_NAME}}", user.UserName);
+                            html = html.Replace("{{CONFIRM_EMAIL_URL}}", EmailConfirmationAction);
+                            html = html.Replace("{{APP_TITLE}}", appTitle);
+                            html = html.Replace("{{URL}}", url);
+
+                            var emailSubject = string.Format("Greetings from {0}: Please Confirm Email", appTitle);
+
+                            result.ConfirmationEmailSuccessfullySent = emailService
+                                .Send(user.Email, emailSubject, html);
+
+                            foreach (var userRole in user.Roles)
+                            {
+                                userRole.Role.Users = new List<UserRole>();
+                            }
+
+                            foreach (var userApp in user.Apps)
+                            {
+                                userApp.App.Users = new List<UserApp>();
+                            }
+
+                            result.Success = userResponse.Success;
+                            result.Message = UsersMessages.UserCreatedMessage;
+                            result.User = user;
+
+                            return result;
                         }
-                        else if (!appResponse.Success && appResponse.Exception != null)
+                        else if (!userResponse.Success && userResponse.Exception != null)
                         {
-                            result.Success = appResponse.Success;
-                            result.Message = appResponse.Exception.Message;
+                            result.Success = userResponse.Success;
+                            result.Message = userResponse.Exception.Message;
 
                             return result;
                         }
                         else
                         {
-                            result.Success = false;
-                            result.Message = AppsMessages.AppNotFoundMessage;
+                            result.Success = userResponse.Success;
+                            result.Message = UsersMessages.UserNotCreatedMessage;
 
                             return result;
                         }
+                    }
+                    else if (!appResponse.Success && appResponse.Exception != null)
+                    {
+                        result.Success = appResponse.Success;
+                        result.Message = appResponse.Exception.Message;
+
+                        return result;
                     }
                     else
                     {
@@ -822,7 +823,21 @@ namespace SudokuCollective.Data.Services
             string baseUrl,
             string emailTemplatePath)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            if (string.IsNullOrEmpty(baseUrl)) throw new ArgumentNullException(nameof(baseUrl));
+
+            if (string.IsNullOrEmpty(emailTemplatePath)) throw new ArgumentNullException(nameof(emailTemplatePath));
+
             var result = new UserResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
+
+                return result;
+            }
 
             // User name accepsts alphanumeric and special characters except double and single quotes
             var regex = new Regex("^[^-]{1}?[^\"\']*$");
@@ -876,146 +891,129 @@ namespace SudokuCollective.Data.Services
             {
                 try
                 {
-                    if (await usersRepository.HasEntity(id))
+                    var userResponse = await usersRepository.GetById(id, true);
+
+                    if (userResponse.Success)
                     {
-                        var userResponse = await usersRepository.GetById(id, true);
+                        var user = (User)userResponse.Object;
+                        var app = (App)(await appsRepository.GetById(request.AppId)).Object;
 
-                        if (userResponse.Success)
+                        user.UserName = request.UserName;
+                        user.FirstName = request.FirstName;
+                        user.LastName = request.LastName;
+                        user.NickName = request.NickName;
+                        user.DateUpdated = DateTime.UtcNow;
+
+                        if (!user.Email.ToLower().Equals(request.Email.ToLower()))
                         {
-                            var user = (User)userResponse.Object;
-                            var app = (App)(await appsRepository.GetById(request.AppId)).Object;
-
-                            user.UserName = request.UserName;
-                            user.FirstName = request.FirstName;
-                            user.LastName = request.LastName;
-                            user.NickName = request.NickName;
-                            user.DateUpdated = DateTime.UtcNow;
-
-                            if (!user.Email.ToLower().Equals(request.Email.ToLower()))
+                            if (!user.ReceivedRequestToUpdateEmail)
                             {
-                                if (!user.ReceivedRequestToUpdateEmail)
-                                {
-                                    user.ReceivedRequestToUpdateEmail = true;
-                                }
-
-                                EmailConfirmation emailConfirmation;
-
-                                if (await emailConfirmationsRepository.HasOutstandingEmailConfirmation(user.Id, app.Id))
-                                {
-                                    emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository
-                                        .RetrieveEmailConfirmation(user.Id, app.Id)).Object;
-
-                                    if (!user.EmailConfirmed)
-                                    {
-                                        user.Email = emailConfirmation.OldEmailAddress;
-                                    }
-
-                                    emailConfirmation.OldEmailAddress = user.Email;
-                                    emailConfirmation.NewEmailAddress = request.Email;
-                                }
-                                else
-                                {
-                                    emailConfirmation = new EmailConfirmation(
-                                        user.Id,
-                                        request.AppId,
-                                        user.Email,
-                                        request.Email);
-                                }
-
-                                emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
-
-                                IRepositoryResponse emailConfirmationResponse;
-
-                                if (emailConfirmation.Id == 0)
-                                {
-                                    emailConfirmationResponse = await emailConfirmationsRepository
-                                        .Create(emailConfirmation);
-                                }
-                                else
-                                {
-                                    emailConfirmationResponse = await emailConfirmationsRepository
-                                        .Update(emailConfirmation);
-                                }
-
-
-                                string EmailConfirmationAction;
-
-                                if (app.UseCustomEmailConfirmationAction)
-                                {
-                                    if (app.InDevelopment)
-                                    {
-                                        EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                                            app.DevUrl,
-                                            app.CustomEmailConfirmationAction,
-                                            emailConfirmation.Token);
-                                    }
-                                    else
-                                    {
-                                        EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                                            app.LiveUrl,
-                                            app.CustomEmailConfirmationAction,
-                                            emailConfirmation.Token);
-                                    }
-                                }
-                                else
-                                {
-                                    EmailConfirmationAction = string.Format("https://{0}/confirmEmail/{1}",
-                                        baseUrl,
-                                        ((EmailConfirmation)emailConfirmationResponse.Object).Token);
-                                }
-
-                                var html = File.ReadAllText(emailTemplatePath);
-                                var appTitle = app.Name;
-                                var url = string.Empty;
-
-                                if (app.InDevelopment)
-                                {
-                                    url = app.DevUrl;
-                                }
-                                else
-                                {
-                                    url = app.LiveUrl;
-                                }
-
-                                html = html.Replace("{{USER_NAME}}", user.UserName);
-                                html = html.Replace("{{CONFIRM_EMAIL_URL}}", EmailConfirmationAction);
-                                html = html.Replace("{{APP_TITLE}}", appTitle);
-                                html = html.Replace("{{URL}}", url);
-
-                                var emailSubject = string.Format("Greetings from {0}: Please Confirm Old Email", appTitle);
-
-                                result.ConfirmationEmailSuccessfullySent = emailService
-                                    .Send(user.Email, emailSubject, html);
+                                user.ReceivedRequestToUpdateEmail = true;
                             }
 
-                            var updateUserResponse = await usersRepository.Update(user);
+                            EmailConfirmation emailConfirmation;
 
-                            if (updateUserResponse.Success)
+                            if (await emailConfirmationsRepository.HasOutstandingEmailConfirmation(user.Id, app.Id))
                             {
-                                user = (User)updateUserResponse.Object;
+                                emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository
+                                    .RetrieveEmailConfirmation(user.Id, app.Id)).Object;
 
-                                result.Success = userResponse.Success;
-                                result.Message = UsersMessages.UserUpdatedMessage;
-                                result.User = user;
+                                if (!user.EmailConfirmed)
+                                {
+                                    user.Email = emailConfirmation.OldEmailAddress;
+                                }
 
-                                return result;
-                            }
-                            else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
-                            {
-                                result.Success = userResponse.Success;
-                                result.Message = userResponse.Exception.Message;
-
-                                return result;
+                                emailConfirmation.OldEmailAddress = user.Email;
+                                emailConfirmation.NewEmailAddress = request.Email;
                             }
                             else
                             {
-                                result.Success = false;
-                                result.Message = UsersMessages.UserNotUpdatedMessage;
-
-                                return result;
+                                emailConfirmation = new EmailConfirmation(
+                                    user.Id,
+                                    request.AppId,
+                                    user.Email,
+                                    request.Email);
                             }
+
+                            emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
+
+                            IRepositoryResponse emailConfirmationResponse;
+
+                            if (emailConfirmation.Id == 0)
+                            {
+                                emailConfirmationResponse = await emailConfirmationsRepository
+                                    .Create(emailConfirmation);
+                            }
+                            else
+                            {
+                                emailConfirmationResponse = await emailConfirmationsRepository
+                                    .Update(emailConfirmation);
+                            }
+
+
+                            string EmailConfirmationAction;
+
+                            if (app.UseCustomEmailConfirmationAction)
+                            {
+                                if (app.InDevelopment)
+                                {
+                                    EmailConfirmationAction = string.Format("{0}/{1}/{2}",
+                                        app.DevUrl,
+                                        app.CustomEmailConfirmationAction,
+                                        emailConfirmation.Token);
+                                }
+                                else
+                                {
+                                    EmailConfirmationAction = string.Format("{0}/{1}/{2}",
+                                        app.LiveUrl,
+                                        app.CustomEmailConfirmationAction,
+                                        emailConfirmation.Token);
+                                }
+                            }
+                            else
+                            {
+                                EmailConfirmationAction = string.Format("https://{0}/confirmEmail/{1}",
+                                    baseUrl,
+                                    ((EmailConfirmation)emailConfirmationResponse.Object).Token);
+                            }
+
+                            var html = File.ReadAllText(emailTemplatePath);
+                            var appTitle = app.Name;
+                            var url = string.Empty;
+
+                            if (app.InDevelopment)
+                            {
+                                url = app.DevUrl;
+                            }
+                            else
+                            {
+                                url = app.LiveUrl;
+                            }
+
+                            html = html.Replace("{{USER_NAME}}", user.UserName);
+                            html = html.Replace("{{CONFIRM_EMAIL_URL}}", EmailConfirmationAction);
+                            html = html.Replace("{{APP_TITLE}}", appTitle);
+                            html = html.Replace("{{URL}}", url);
+
+                            var emailSubject = string.Format("Greetings from {0}: Please Confirm Old Email", appTitle);
+
+                            result.ConfirmationEmailSuccessfullySent = emailService
+                                .Send(user.Email, emailSubject, html);
                         }
-                        else if (!userResponse.Success && userResponse.Exception != null)
+
+                        var updateUserResponse = await usersRepository.Update(user);
+
+                        if (updateUserResponse.Success)
+                        {
+                            user = (User)updateUserResponse.Object;
+
+                            result.Success = userResponse.Success;
+                            result.Message = UsersMessages.UserUpdatedMessage;
+                            result.User = user;
+
+                            return result;
+                        }
+                        else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
                         {
                             result.Success = userResponse.Success;
                             result.Message = userResponse.Exception.Message;
@@ -1025,10 +1023,17 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.Success = false;
-                            result.Message = UsersMessages.UserNotFoundMessage;
+                            result.Message = UsersMessages.UserNotUpdatedMessage;
 
                             return result;
                         }
+                    }
+                    else if (!userResponse.Success && userResponse.Exception != null)
+                    {
+                        result.Success = userResponse.Success;
+                        result.Message = userResponse.Exception.Message;
+
+                        return result;
                     }
                     else
                     {
@@ -1053,6 +1058,12 @@ namespace SudokuCollective.Data.Services
             string baseUrl,
             string emailTemplatePath)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            if (string.IsNullOrEmpty(baseUrl)) throw new ArgumentNullException(nameof(baseUrl));
+
+            if (string.IsNullOrEmpty(emailTemplatePath)) throw new ArgumentNullException(nameof(emailTemplatePath));
+
             var result = new BaseResult();
 
             try
@@ -1193,6 +1204,8 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IInitiatePasswordResetResult> InitiatePasswordReset(string token)
         {
+            if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+
             var result = new InitiatePasswordResetResult();
 
             try
@@ -1298,74 +1311,67 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IBaseResult> UpdatePassword(IPasswordResetRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new BaseResult();
+
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
 
             try
             {
-                if (await usersRepository.HasEntity(request.UserId))
+                var userResponse = await usersRepository.GetById(request.UserId, true);
+
+                if (userResponse.Success)
                 {
-                    var userResponse = await usersRepository.GetById(request.UserId, true);
+                    var user = (User)userResponse.Object;
 
-                    if (userResponse.Success)
+                    if (user.ReceivedRequestToUpdatePassword)
                     {
-                        var user = (User)userResponse.Object;
+                        user.Password = BCrypt.Net.BCrypt
+                                .HashPassword(request.NewPassword, salt);
 
-                        if (user.ReceivedRequestToUpdatePassword)
+                        user.DateUpdated = DateTime.UtcNow;
+
+                        user.ReceivedRequestToUpdatePassword = false;
+
+                        var updateUserResponse = await usersRepository.Update(user);
+
+                        if (updateUserResponse.Success)
                         {
-                            user.Password = BCrypt.Net.BCrypt
-                                    .HashPassword(request.NewPassword, salt);
+                            result.Success = userResponse.Success;
+                            result.Message = UsersMessages.PasswordResetMessage;
 
-                            user.DateUpdated = DateTime.UtcNow;
+                            return result;
+                        }
+                        else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
+                        {
+                            result.Success = userResponse.Success;
+                            result.Message = userResponse.Exception.Message;
 
-                            user.ReceivedRequestToUpdatePassword = false;
-
-                            var updateUserResponse = await usersRepository.Update(user);
-
-                            if (updateUserResponse.Success)
-                            {
-                                result.Success = userResponse.Success;
-                                result.Message = UsersMessages.PasswordResetMessage;
-
-                                return result;
-                            }
-                            else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
-                            {
-                                result.Success = userResponse.Success;
-                                result.Message = userResponse.Exception.Message;
-
-                                return result;
-                            }
-                            else
-                            {
-                                result.Success = false;
-                                result.Message = UsersMessages.PasswordNotResetMessage;
-
-                                return result;
-                            }
+                            return result;
                         }
                         else
                         {
                             result.Success = false;
-                            result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
+                            result.Message = UsersMessages.PasswordNotResetMessage;
 
                             return result;
                         }
                     }
-                    else if (!userResponse.Success && userResponse.Exception != null)
-                    {
-                        result.Success = false;
-                        result.Message = UsersMessages.UserNotFoundMessage;
-
-                        return result;
-                    }
                     else
                     {
                         result.Success = false;
-                        result.Message = UsersMessages.UsersFoundMessage;
+                        result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
 
                         return result;
                     }
+                }
+                else if (!userResponse.Success && userResponse.Exception != null)
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNotFoundMessage;
+
+                    return result;
                 }
                 else
                 {
@@ -1388,12 +1394,18 @@ namespace SudokuCollective.Data.Services
         {
             var result = new BaseResult();
 
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
+            }
+
             try
             {
-                if (await usersRepository.HasEntity(id))
-                {
-                    var userResponse = await usersRepository.GetById(id);
+                var userResponse = await usersRepository.GetById(id);
 
+                if (userResponse.Success)
+                {
                     if (((User)userResponse.Object).Id == 1 && ((User)userResponse.Object).IsSuperUser)
                     {
                         result.Success = false;
@@ -1402,54 +1414,44 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
 
-                    if (userResponse.Success)
+                    var deletionResponse = await usersRepository.Delete((User)userResponse.Object);
+
+                    if (deletionResponse.Success)
                     {
-                        var deletionResponse = await usersRepository.Delete((User)userResponse.Object);
+                        var admins = (await appAdminsRepository.GetAll())
+                            .Objects
+                            .ConvertAll(aa => (AppAdmin)aa)
+                            .Where(aa => aa.UserId == id)
+                            .ToList();
 
-                        if (deletionResponse.Success)
-                        {
-                            var admins = (await appAdminsRepository.GetAll())
-                                .Objects
-                                .ConvertAll(aa => (AppAdmin)aa)
-                                .Where(aa => aa.UserId == id)
-                                .ToList();
+                        _ = await appAdminsRepository.DeleteRange(admins);
 
-                            _ = await appAdminsRepository.DeleteRange(admins);
+                        result.Success = true;
+                        result.Message = UsersMessages.UserDeletedMessage;
 
-                            result.Success = true;
-                            result.Message = UsersMessages.UserDeletedMessage;
-
-                            return result;
-                        }
-                        else if (!deletionResponse.Success && deletionResponse.Exception != null)
-                        {
-                            result.Success = deletionResponse.Success;
-                            result.Message = deletionResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = UsersMessages.UserNotDeletedMessage;
-
-                            return result;
-                        }
+                        return result;
                     }
-                    else if (!userResponse.Success && userResponse.Exception != null)
+                    else if (!deletionResponse.Success && deletionResponse.Exception != null)
                     {
-                        result.Success = userResponse.Success;
-                        result.Message = userResponse.Exception.Message;
+                        result.Success = deletionResponse.Success;
+                        result.Message = deletionResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = UsersMessages.UserNotFoundMessage;
+                        result.Message = UsersMessages.UserNotDeletedMessage;
 
                         return result;
                     }
+                }
+                else if (!userResponse.Success && userResponse.Exception != null)
+                {
+                    result.Success = userResponse.Success;
+                    result.Message = userResponse.Exception.Message;
+
+                    return result;
                 }
                 else
                 {
@@ -1473,59 +1475,61 @@ namespace SudokuCollective.Data.Services
             List<int> roleIds,
             string license)
         {
+            if (roleIds == null) throw new ArgumentNullException(nameof(roleIds));
+
+            if (string.IsNullOrEmpty(license)) throw new ArgumentNullException(nameof(license));
+
             var result = new RolesResult();
+
+            if (userid == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await usersRepository.HasEntity(userid))
+                if (await rolesRepository.IsListValid(roleIds))
                 {
-                    if (await rolesRepository.IsListValid(roleIds))
+                    var response = await usersRepository.AddRoles(userid, roleIds);
+
+                    if (response.Success)
                     {
-                        var response = await usersRepository.AddRoles(userid, roleIds);
+                        var roles = response
+                            .Objects
+                            .ConvertAll(ur => (UserRole)ur)
+                            .ToList();
 
-                        if (response.Success)
+                        var app = (App)(await appsRepository.GetByLicense(license)).Object;
+
+                        foreach (var role in roles)
                         {
-                            var roles = response
-                                .Objects
-                                .ConvertAll(ur => (UserRole)ur)
-                                .ToList();
-
-                            var app = (App)(await appsRepository.GetByLicense(license)).Object;
-
-                            foreach (var role in roles)
+                            if (role.Role.RoleLevel == RoleLevel.ADMIN)
                             {
-                                if (role.Role.RoleLevel == RoleLevel.ADMIN)
-                                {
-                                    var appAdmin = (AppAdmin)(await appAdminsRepository.Add(new AppAdmin(app.Id, userid))).Object;
-                                }
-
-                                result.Roles.Add(role.Role);
+                                var appAdmin = (AppAdmin)(await appAdminsRepository.Add(new AppAdmin(app.Id, userid))).Object;
                             }
 
-                            result.Success = response.Success;
-                            result.Message = UsersMessages.RolesAddedMessage;
-
-                            return result;
+                            result.Roles.Add(role.Role);
                         }
-                        else if (!response.Success && response.Exception != null)
-                        {
-                            result.Success = response.Success;
-                            result.Message = response.Exception.Message;
 
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = UsersMessages.RolesNotAddedMessage;
+                        result.Success = response.Success;
+                        result.Message = UsersMessages.RolesAddedMessage;
 
-                            return result;
-                        }
+                        return result;
+                    }
+                    else if (!response.Success && response.Exception != null)
+                    {
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
+
+                        return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = UsersMessages.RolesInvalidMessage;
+                        result.Message = UsersMessages.RolesNotAddedMessage;
 
                         return result;
                     }
@@ -1533,7 +1537,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = UsersMessages.UserNotFoundMessage;
+                    result.Message = UsersMessages.RolesInvalidMessage;
 
                     return result;
                 }
@@ -1552,61 +1556,63 @@ namespace SudokuCollective.Data.Services
             List<int> roleIds,
             string license)
         {
+            if (roleIds == null) throw new ArgumentNullException(nameof(roleIds));
+
+            if (string.IsNullOrEmpty(license)) throw new ArgumentNullException(nameof(license));
+
             var result = new BaseResult();
+
+            if (userid == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await usersRepository.HasEntity(userid))
+                if (await rolesRepository.IsListValid(roleIds))
                 {
-                    if (await rolesRepository.IsListValid(roleIds))
+                    var response = await usersRepository.RemoveRoles(userid, roleIds);
+
+                    if (response.Success)
                     {
-                        var response = await usersRepository.RemoveRoles(userid, roleIds);
+                        var roles = response
+                            .Objects
+                            .ConvertAll(ur => (UserRole)ur)
+                            .ToList();
 
-                        if (response.Success)
+                        var app = (App)(await appsRepository.GetByLicense(license)).Object;
+
+                        foreach (var role in roles)
                         {
-                            var roles = response
-                                .Objects
-                                .ConvertAll(ur => (UserRole)ur)
-                                .ToList();
-
-                            var app = (App)(await appsRepository.GetByLicense(license)).Object;
-
-                            foreach (var role in roles)
+                            if (role.Role.RoleLevel == RoleLevel.ADMIN)
                             {
-                                if (role.Role.RoleLevel == RoleLevel.ADMIN)
-                                {
-                                    var appAdmin = (AppAdmin)
-                                        (await appAdminsRepository.GetAdminRecord(app.Id, userid))
-                                        .Object;
+                                var appAdmin = (AppAdmin)
+                                    (await appAdminsRepository.GetAdminRecord(app.Id, userid))
+                                    .Object;
 
-                                    _ = await appAdminsRepository.Delete(appAdmin);
-                                }
+                                _ = await appAdminsRepository.Delete(appAdmin);
                             }
-
-                            result.Success = response.Success;
-                            result.Message = UsersMessages.RolesRemovedMessage;
-
-                            return result;
                         }
-                        else if (!response.Success && response.Exception != null)
-                        {
-                            result.Success = response.Success;
-                            result.Message = response.Exception.Message;
 
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = UsersMessages.RolesNotRemovedMessage;
+                        result.Success = response.Success;
+                        result.Message = UsersMessages.RolesRemovedMessage;
 
-                            return result;
-                        }
+                        return result;
+                    }
+                    else if (!response.Success && response.Exception != null)
+                    {
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
+
+                        return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = UsersMessages.RolesInvalidMessage;
+                        result.Message = UsersMessages.RolesNotRemovedMessage;
 
                         return result;
                     }
@@ -1614,7 +1620,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Success = false;
-                    result.Message = UsersMessages.UserNotFoundMessage;
+                    result.Message = UsersMessages.RolesInvalidMessage;
 
                     return result;
                 }
@@ -1632,29 +1638,27 @@ namespace SudokuCollective.Data.Services
         {
             var result = new BaseResult();
 
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
+
+                return result;
+            }
+
             try
             {
-                if (await usersRepository.HasEntity(id))
+                if (await usersRepository.ActivateUser(id))
                 {
-                    if (await usersRepository.ActivateUser(id))
-                    {
-                        result.Success = true;
-                        result.Message = UsersMessages.UserActivatedMessage;
+                    result.Success = true;
+                    result.Message = UsersMessages.UserActivatedMessage;
 
-                        return result;
-                    }
-                    else
-                    {
-                        result.Success = false;
-                        result.Message = UsersMessages.UserNotActivatedMessage;
-
-                        return result;
-                    }
+                    return result;
                 }
                 else
                 {
                     result.Success = false;
-                    result.Message = UsersMessages.UserNotFoundMessage;
+                    result.Message = UsersMessages.UserNotActivatedMessage;
 
                     return result;
                 }
@@ -1672,29 +1676,27 @@ namespace SudokuCollective.Data.Services
         {
             var result = new BaseResult();
 
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage;
+
+                return result;
+            }
+
             try
             {
-                if (await usersRepository.HasEntity(id))
+                if (await usersRepository.DeactivateUser(id))
                 {
-                    if (await usersRepository.DeactivateUser(id))
-                    {
-                        result.Success = true;
-                        result.Message = UsersMessages.UserDeactivatedMessage;
+                    result.Success = true;
+                    result.Message = UsersMessages.UserDeactivatedMessage;
 
-                        return result;
-                    }
-                    else
-                    {
-                        result.Success = false;
-                        result.Message = UsersMessages.UserNotDeactivatedMessage;
-
-                        return result;
-                    }
+                    return result;
                 }
                 else
                 {
                     result.Success = false;
-                    result.Message = UsersMessages.UserNotFoundMessage;
+                    result.Message = UsersMessages.UserNotDeactivatedMessage;
 
                     return result;
                 }
@@ -1713,6 +1715,12 @@ namespace SudokuCollective.Data.Services
             string baseUrl,
             string emailTemplatePath)
         {
+            if (string.IsNullOrEmpty(token)) throw new ArgumentException(nameof(token));
+
+            if (string.IsNullOrEmpty(baseUrl)) throw new ArgumentException(nameof(baseUrl));
+
+            if (string.IsNullOrEmpty(emailTemplatePath)) throw new ArgumentException(nameof(emailTemplatePath));
+
             var result = new ConfirmEmailResult();
 
             try
@@ -1936,13 +1944,26 @@ namespace SudokuCollective.Data.Services
             string baseUrl,
             string emailTemplatePath)
         {
+            if (string.IsNullOrEmpty(baseUrl)) throw new ArgumentException(nameof(baseUrl));
+
+            if (string.IsNullOrEmpty(emailTemplatePath)) throw new ArgumentException(nameof(emailTemplatePath));
+
             var result = new UserResult();
+
+            if (userId == 0 || appId == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.EmailConfirmationEmailNotResentMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await usersRepository.HasEntity(userId))
+                var userResponse = await usersRepository.GetById(userId);
+                if (userResponse.Success)
                 {
-                    var user = (User)((await usersRepository.GetById(userId)).Object);
+                    var user = (User)userResponse.Object;
 
                     if (!user.EmailConfirmed)
                     {
@@ -2085,15 +2106,29 @@ namespace SudokuCollective.Data.Services
             int userId,
             int appId,
             string baseUrl,
-            string emailTamplatePath)
+            string emailTemplatePath)
         {
+            if (string.IsNullOrEmpty(baseUrl)) throw new ArgumentException(nameof(baseUrl));
+
+            if (string.IsNullOrEmpty(emailTemplatePath)) throw new ArgumentException(nameof(emailTemplatePath));
+
             var result = new BaseResult();
+
+            if (userId == 0 || appId == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await usersRepository.HasEntity(userId))
+                var userResponse = await usersRepository.GetById(userId);
+
+                if (userResponse.Success)
                 {
-                    var user = (User)((await usersRepository.GetById(userId)).Object);
+                    var user = (User)userResponse.Object;
 
                     if (user.ReceivedRequestToUpdatePassword)
                     {
@@ -2132,7 +2167,7 @@ namespace SudokuCollective.Data.Services
                                         passwordReset.Token);
                                 }
 
-                                var html = File.ReadAllText(emailTamplatePath);
+                                var html = File.ReadAllText(emailTemplatePath);
                                 var appTitle = app.Name;
                                 var url = string.Empty;
 
@@ -2215,16 +2250,29 @@ namespace SudokuCollective.Data.Services
         {
             var result = new UserResult();
 
+            if (id == 0 || appId == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
+
+                return result;
+            }
+
             try
             {
-                if (await usersRepository.HasEntity(id))
+                var userResponse = await usersRepository.GetById(id);
+
+                if (userResponse.Success)
                 {
                     if (await appsRepository.HasEntity(appId))
                     {
                         if (await emailConfirmationsRepository.HasOutstandingEmailConfirmation(id, appId))
                         {
-                            var user = (User)(await usersRepository.GetById(id)).Object;
-                            var emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.RetrieveEmailConfirmation(id, appId)).Object;
+                            var user = (User)userResponse.Object;
+
+                            var emailConfirmation = (EmailConfirmation)
+                                (await emailConfirmationsRepository.RetrieveEmailConfirmation(id, appId))
+                                .Object;
 
                             var response = await emailConfirmationsRepository.Delete(emailConfirmation);
 
@@ -2297,16 +2345,29 @@ namespace SudokuCollective.Data.Services
         {
             var result = new UserResult();
 
+            if (id == 0 || appId == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.PasswordResetRequestNotCancelledMessage;
+
+                return result;
+            }
+
             try
             {
-                if (await usersRepository.HasEntity(id))
+                var userResponse = await usersRepository.GetById(id);
+
+                if (userResponse.Success)
                 {
                     if (await appsRepository.HasEntity(appId))
                     {
                         if (await passwordResetsRepository.HasOutstandingPasswordReset(id, appId))
                         {
-                            var user = (User)(await usersRepository.GetById(id)).Object;
-                            var passwordReset = (PasswordReset)(await passwordResetsRepository.RetrievePasswordReset(id, appId)).Object;
+                            var user = (User)userResponse.Object;
+
+                            var passwordReset = (PasswordReset)
+                                (await passwordResetsRepository.RetrievePasswordReset(id, appId))
+                                .Object;
 
                             var response = await passwordResetsRepository.Delete(passwordReset);
 
@@ -2377,58 +2438,60 @@ namespace SudokuCollective.Data.Services
         {
             var result = new UserResult();
 
+            if (id == 0 || appId == 0)
+            {
+                result.Success = false;
+                result.Message = UsersMessages.UserNotFoundMessage + " or " + AppsMessages.AppNotFoundMessage;
+
+                return result;
+            }
+
             try
             {
-                if (await usersRepository.HasEntity(id))
+                var userResponse = await usersRepository.GetById(id);
+
+                if (userResponse.Success)
                 {
                     if (await appsRepository.HasEntity(appId))
                     {
-                        var emailConfirmationExists = await emailConfirmationsRepository.HasOutstandingEmailConfirmation(id, appId);
-                        var passwordResetExists = await passwordResetsRepository.HasOutstandingPasswordReset(id, appId);
-                        var user = (User)(await usersRepository.GetById(id)).Object;
+                        var emailConfirmationResponse = await emailConfirmationsRepository.RetrieveEmailConfirmation(id, appId);
+                        var passwordResetResponse = await passwordResetsRepository.RetrievePasswordReset(id, appId);
+                        var user = (User)userResponse.Object;
 
-                        if (emailConfirmationExists || passwordResetExists)
+                        if (emailConfirmationResponse.Success || passwordResetResponse.Success)
                         {
-                            if (emailConfirmationExists)
+                            if (emailConfirmationResponse.Success)
                             {
-                                if (await emailConfirmationsRepository.HasOutstandingEmailConfirmation(id, appId))
+                                var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.Object;
+
+                                var response = await emailConfirmationsRepository.Delete(emailConfirmation);
+
+                                if (response.Success)
                                 {
-                                    var emailConfirmation = (EmailConfirmation)(await emailConfirmationsRepository.RetrieveEmailConfirmation(id, appId)).Object;
+                                    // Role back email request
+                                    user.Email = emailConfirmation.OldEmailAddress;
+                                    user.ReceivedRequestToUpdateEmail = false;
+                                    user.EmailConfirmed = true;
 
-                                    var response = await emailConfirmationsRepository.Delete(emailConfirmation);
-
-                                    if (response.Success)
-                                    {
-                                        // Role back email request
-                                        user.Email = emailConfirmation.OldEmailAddress;
-                                        user.ReceivedRequestToUpdateEmail = false;
-                                        user.EmailConfirmed = true;
-
-                                        user = (User)(await usersRepository.Update(user)).Object;
-                                        result.Success = response.Success;
-                                        result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
-                                    }
-                                    else if (response.Success == false && response.Exception != null)
-                                    {
-                                        result.Success = response.Success;
-                                        result.Message = response.Exception.Message;
-                                    }
-                                    else
-                                    {
-                                        result.Success = false;
-                                        result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
-                                    }
+                                    user = (User)(await usersRepository.Update(user)).Object;
+                                    result.Success = response.Success;
+                                    result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
+                                }
+                                else if (response.Success == false && response.Exception != null)
+                                {
+                                    result.Success = response.Success;
+                                    result.Message = response.Exception.Message;
                                 }
                                 else
                                 {
                                     result.Success = false;
-                                    result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
+                                    result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
                                 }
                             }
 
-                            if (passwordResetExists)
+                            if (passwordResetResponse.Success)
                             {
-                                var passwordReset = (PasswordReset)(await passwordResetsRepository.RetrievePasswordReset(id, appId)).Object;
+                                var passwordReset = (PasswordReset)passwordResetResponse.Object;
 
                                 var response = await passwordResetsRepository.Delete(passwordReset);
 

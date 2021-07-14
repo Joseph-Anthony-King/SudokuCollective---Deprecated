@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
@@ -26,6 +27,10 @@ namespace SudokuCollective.Data.Services
         #region Methods
         public async Task<bool> IsValidUser(string username, string password)
         {
+            if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
+
+            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
+
             var userResponse = await usersRepository.GetByUserName(username, true);
 
             if (userResponse.Success)
@@ -48,6 +53,10 @@ namespace SudokuCollective.Data.Services
 
         public async Task<UserAuthenticationErrorType> ConfirmAuthenticationIssue(string username, string password)
         {
+            if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
+
+            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
+
             var userResponse = await usersRepository.GetByUserName(username);
 
             if (userResponse.Success)
@@ -73,6 +82,8 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAuthenticationResult> ConfirmUserName(string email)
         {
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+
             var result = new AuthenticationResult();
 
             var userResponse = await usersRepository.GetByEmail(email);

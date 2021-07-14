@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
@@ -34,17 +33,23 @@ namespace SudokuCollective.Data.Services
         {
             var result = new DifficultyResult();
 
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = DifficultiesMessages.DifficultiesNotFoundMessage;
+
+                return result;
+            }
+
             try
             {
                 var response = await difficultiesRepository.GetById(id, fullRecord);
 
                 if (response.Success)
                 {
-                    var difficulty = (Difficulty)response.Object;
-
                     result.Success = response.Success;
                     result.Message = DifficultiesMessages.DifficultyFoundMessage;
-                    result.Difficulty = difficulty;
+                    result.Difficulty = (Difficulty)response.Object;
 
                     return result;
                 }
@@ -76,6 +81,8 @@ namespace SudokuCollective.Data.Services
             IPaginator paginator,
             bool fullRecord = true)
         {
+            if (paginator == null) throw new ArgumentNullException(nameof(paginator));
+
             var result = new DifficultiesResult();
 
             try
@@ -84,125 +91,97 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    if (paginator != null)
+                    if (paginator.SortBy == SortValue.NULL)
                     {
-                        if (paginator.SortBy == SortValue.NULL)
+                        result.Difficulties = response.Objects.ConvertAll(d => (IDifficulty)d);
+                    }
+                    else if (paginator.SortBy == SortValue.ID)
+                    {
+                        if (!paginator.OrderByDescending)
                         {
-                            result.Difficulties = response.Objects.ConvertAll(d => (IDifficulty)d);
-                        }
-                        else if (paginator.SortBy == SortValue.ID)
-                        {
-                            if (!paginator.OrderByDescending)
+                            foreach (var obj in response.Objects)
                             {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Difficulties.Add((IDifficulty)obj);
-                                }
-
-                                result.Difficulties = result.Difficulties
-                                    .OrderBy(d => d.Id)
-                                    .ToList();
+                                result.Difficulties.Add((IDifficulty)obj);
                             }
-                            else
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Difficulties.Add((IDifficulty)obj);
-                                }
 
-                                result.Difficulties = result.Difficulties
-                                    .OrderByDescending(g => g.Id)
-                                    .ToList();
-                            }
-                        }
-                        else if (paginator.SortBy == SortValue.NAME)
-                        {
-                            if (!paginator.OrderByDescending)
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Difficulties.Add((IDifficulty)obj);
-                                }
-
-                                result.Difficulties = result.Difficulties
-                                    .OrderBy(d => d.DisplayName)
-                                    .ToList();
-                            }
-                            else
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Difficulties.Add((IDifficulty)obj);
-                                }
-
-                                result.Difficulties = result.Difficulties
-                                    .OrderByDescending(g => g.DisplayName)
-                                    .ToList();
-                            }
-                        }
-                        else if (paginator.SortBy == SortValue.DIFFICULTYLEVEL)
-                        {
-                            if (!paginator.OrderByDescending)
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Difficulties.Add((IDifficulty)obj);
-                                }
-
-                                result.Difficulties = result.Difficulties
-                                    .OrderBy(d => d.DifficultyLevel)
-                                    .ToList();
-                            }
-                            else
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Difficulties.Add((IDifficulty)obj);
-                                }
-
-                                result.Difficulties = result.Difficulties
-                                    .OrderByDescending(g => g.DifficultyLevel)
-                                    .ToList();
-                            }
+                            result.Difficulties = result.Difficulties
+                                .OrderBy(d => d.Id)
+                                .ToList();
                         }
                         else
                         {
-                            result.Success = false;
-                            result.Message = ServicesMesages.SortValueNotImplementedMessage;
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Difficulties.Add((IDifficulty)obj);
+                            }
 
-                            return result;
+                            result.Difficulties = result.Difficulties
+                                .OrderByDescending(g => g.Id)
+                                .ToList();
                         }
+                    }
+                    else if (paginator.SortBy == SortValue.NAME)
+                    {
+                        if (!paginator.OrderByDescending)
+                        {
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Difficulties.Add((IDifficulty)obj);
+                            }
 
-                        result.Success = response.Success;
-                        result.Message = DifficultiesMessages.DifficultiesFoundMessage;
+                            result.Difficulties = result.Difficulties
+                                .OrderBy(d => d.DisplayName)
+                                .ToList();
+                        }
+                        else
+                        {
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Difficulties.Add((IDifficulty)obj);
+                            }
 
-                        return result;
+                            result.Difficulties = result.Difficulties
+                                .OrderByDescending(g => g.DisplayName)
+                                .ToList();
+                        }
+                    }
+                    else if (paginator.SortBy == SortValue.DIFFICULTYLEVEL)
+                    {
+                        if (!paginator.OrderByDescending)
+                        {
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Difficulties.Add((IDifficulty)obj);
+                            }
+
+                            result.Difficulties = result.Difficulties
+                                .OrderBy(d => d.DifficultyLevel)
+                                .ToList();
+                        }
+                        else
+                        {
+                            foreach (var obj in response.Objects)
+                            {
+                                result.Difficulties.Add((IDifficulty)obj);
+                            }
+
+                            result.Difficulties = result.Difficulties
+                                .OrderByDescending(g => g.DifficultyLevel)
+                                .ToList();
+                        }
                     }
                     else
                     {
-                        foreach (var obj in response.Objects)
-                        {
-                            result.Difficulties.Add((IDifficulty)obj);
-                        }
-
-                        if (fullRecord)
-                        {
-                            foreach (var difficulty in result.Difficulties)
-                            {
-                                foreach (var matrix in difficulty.Matrices)
-                                {
-                                    matrix.Difficulty.Matrices = new List<SudokuMatrix>();
-                                    matrix.Game.User.Apps = new List<UserApp>();
-                                    matrix.Game.User.Roles = new List<UserRole>();
-                                }
-                            }
-                        }
-
-                        result.Success = response.Success;
-                        result.Message = DifficultiesMessages.DifficultiesFoundMessage;
+                        result.Success = false;
+                        result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                         return result;
                     }
+
+                    result.Success = response.Success;
+                    result.Message = DifficultiesMessages.DifficultiesFoundMessage;
+
+                    return result;
                 }
                 else if (!response.Success && response.Exception != null)
                 {
@@ -233,6 +212,10 @@ namespace SudokuCollective.Data.Services
             string displayName,
             DifficultyLevel difficultyLevel)
         {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+
+            if (string.IsNullOrEmpty(displayName)) throw new ArgumentNullException(nameof(displayName));
+
             var result = new DifficultyResult();
 
             try
@@ -293,59 +276,59 @@ namespace SudokuCollective.Data.Services
             int id,
             IUpdateDifficultyRequest updateDifficultyRequest)
         {
+            if (updateDifficultyRequest == null) throw new ArgumentNullException(nameof(updateDifficultyRequest));
+
             var result = new BaseResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = DifficultiesMessages.DifficultiesNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await difficultiesRepository.HasEntity(id))
+                var response = await difficultiesRepository.GetById(id);
+
+                if (response.Success)
                 {
-                    var response = await difficultiesRepository.GetById(id);
+                    ((Difficulty)response.Object).Name = updateDifficultyRequest.Name;
+                    ((Difficulty)response.Object).DisplayName = updateDifficultyRequest.DisplayName;
 
-                    if (response.Success)
+                    var updateDifficultyResponse = await difficultiesRepository
+                        .Update((Difficulty)response.Object);
+
+                    if (updateDifficultyResponse.Success)
                     {
-                        ((Difficulty)response.Object).Name = updateDifficultyRequest.Name;
-                        ((Difficulty)response.Object).DisplayName = updateDifficultyRequest.DisplayName;
+                        result.Success = updateDifficultyResponse.Success;
+                        result.Message = DifficultiesMessages.DifficultyUpdatedMessage;
 
-                        var updateDifficultyResponse = await difficultiesRepository
-                            .Update((Difficulty)response.Object);
-
-                        if (updateDifficultyResponse.Success)
-                        {
-                            result.Success = updateDifficultyResponse.Success;
-                            result.Message = DifficultiesMessages.DifficultyUpdatedMessage;
-
-                            return result;
-                        }
-                        else if (!updateDifficultyResponse.Success && updateDifficultyResponse.Exception != null)
-                        {
-                            result.Success = updateDifficultyResponse.Success;
-                            result.Message = updateDifficultyResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = DifficultiesMessages.DifficultyNotUpdatedMessage;
-
-                            return result;
-                        }
-
+                        return result;
                     }
-                    else if (!response.Success && response.Exception != null)
+                    else if (!updateDifficultyResponse.Success && updateDifficultyResponse.Exception != null)
                     {
-                        result.Success = response.Success;
-                        result.Message = response.Exception.Message;
+                        result.Success = updateDifficultyResponse.Success;
+                        result.Message = updateDifficultyResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
+                        result.Message = DifficultiesMessages.DifficultyNotUpdatedMessage;
 
                         return result;
                     }
+
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
                 }
                 else
                 {
@@ -368,53 +351,51 @@ namespace SudokuCollective.Data.Services
         {
             var result = new BaseResult();
 
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = DifficultiesMessages.DifficultiesNotFoundMessage;
+
+                return result;
+            }
+
             try
             {
-                if (await difficultiesRepository.HasEntity(id))
+                var response = await difficultiesRepository.GetById(id, true);
+
+                if (response.Success)
                 {
-                    var response = await difficultiesRepository.GetById(id, true);
+                    var updateDeleteResponse = await difficultiesRepository.Delete((Difficulty)response.Object);
 
-                    if (response.Success)
+                    if (updateDeleteResponse.Success)
                     {
-                        var updateDeleteResponse = await difficultiesRepository.Delete((Difficulty)response.Object);
+                        result.Success = updateDeleteResponse.Success;
+                        result.Message = DifficultiesMessages.DifficultyDeletedMessage;
 
-                        if (updateDeleteResponse.Success)
-                        {
-                            result.Success = updateDeleteResponse.Success;
-                            result.Message = DifficultiesMessages.DifficultyDeletedMessage;
-
-                            return result;
-                        }
-                        else if (!updateDeleteResponse.Success && updateDeleteResponse.Exception != null)
-                        {
-                            result.Success = updateDeleteResponse.Success;
-                            result.Message = updateDeleteResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = DifficultiesMessages.DifficultyNotDeletedMessage;
-
-                            return result;
-                        }
-
+                        return result;
                     }
-                    else if (!response.Success && response.Exception != null)
+                    else if (!updateDeleteResponse.Success && updateDeleteResponse.Exception != null)
                     {
-                        result.Success = response.Success;
-                        result.Message = response.Exception.Message;
+                        result.Success = updateDeleteResponse.Success;
+                        result.Message = updateDeleteResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
+                        result.Message = DifficultiesMessages.DifficultyNotDeletedMessage;
 
                         return result;
                     }
+
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
                 }
                 else
                 {

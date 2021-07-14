@@ -595,6 +595,42 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
+        public void SuccessfullyGetRegisteredApps()
+        {
+            // Arrange
+
+            // Act
+            var result = sutSuccess.RegisteredApps(2, baseRequest, true);
+            var apps = ((AppsResult)((OkObjectResult)result.Result).Value).Apps;
+            var message = ((AppsResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Apps Found"));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(apps, Is.InstanceOf<List<IApp>>());
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorAndMessageShouldSuccessfullyGetRegisteredAppsFail()
+        {
+            // Arrange
+
+            // Act
+            var result = sutFailure.RegisteredApps(1, baseRequest, true);
+            var message = ((AppsResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Apps Not Found"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
         public void SuccessfullyGetAccessTokenTimeFrames()
         {
             // Arrange

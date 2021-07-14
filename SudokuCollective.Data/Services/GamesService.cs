@@ -42,85 +42,53 @@ namespace SudokuCollective.Data.Services
         public async Task<IGameResult> CreateGame(
             ICreateGameRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new GameResult();
 
             try
             {
-                if (await usersRepository.HasEntity(request.UserId))
+                var userResponse = await usersRepository.GetById(request.UserId);
+
+                if (userResponse.Success)
                 {
-                    if (await difficultiesRepository.HasEntity(request.DifficultyId))
+                    var difficultyResponse = await difficultiesRepository.GetById(request.DifficultyId);
+
+                    if (difficultyResponse.Success)
                     {
-                        var userResponse = await usersRepository.GetById(request.UserId);
+                        var game = new Game(
+                            (User)userResponse.Object,
+                            new SudokuMatrix(),
+                            (Difficulty)difficultyResponse.Object,
+                            request.AppId);
 
-                        if (userResponse.Success)
+                        game.SudokuMatrix.GenerateSolution();
+
+                        var gameResponse = await gamesRepository.Add(game);
+
+                        if (gameResponse.Success)
                         {
-                            var difficultyResponse = await difficultiesRepository.GetById(request.DifficultyId);
+                            ((IGame)gameResponse.Object).User = null;
+                            ((IGame)gameResponse.Object).SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
+                            ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
 
-                            if (difficultyResponse.Success)
-                            {
-                                var game = new Game(
-                                    (User)userResponse.Object,
-                                    new SudokuMatrix(),
-                                    (Difficulty)difficultyResponse.Object,
-                                    request.AppId);
+                            result.Success = gameResponse.Success;
+                            result.Message = GamesMessages.GameCreatedMessage;
+                            result.Game = (IGame)gameResponse.Object;
 
-                                game.SudokuMatrix.GenerateSolution();
-
-                                var gameResponse = await gamesRepository.Add(game);
-
-                                if (gameResponse.Success)
-                                {
-                                    ((IGame)gameResponse.Object).User = null;
-                                    ((IGame)gameResponse.Object).SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
-                                    ((IGame)gameResponse.Object).SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
-
-                                    result.Success = gameResponse.Success;
-                                    result.Message = GamesMessages.GameCreatedMessage;
-                                    result.Game = (IGame)gameResponse.Object;
-
-                                    return result;
-                                }
-                                else if (!gameResponse.Success && gameResponse.Exception != null)
-                                {
-                                    result.Success = gameResponse.Success;
-                                    result.Message = gameResponse.Exception.Message;
-
-                                    return result;
-                                }
-                                else
-                                {
-                                    result.Success = false;
-                                    result.Message = GamesMessages.GameNotCreatedMessage;
-
-                                    return result;
-                                }
-                            }
-                            else if (!difficultyResponse.Success && difficultyResponse.Exception != null)
-                            {
-                                result.Success = difficultyResponse.Success;
-                                result.Message = difficultyResponse.Exception.Message;
-
-                                return result;
-                            }
-                            else
-                            {
-                                result.Success = false;
-                                result.Message = DifficultiesMessages.DifficultyDoesNotExistMessage;
-
-                                return result;
-                            }
+                            return result;
                         }
-                        else if (!userResponse.Success && userResponse.Exception != null)
+                        else if (!gameResponse.Success && gameResponse.Exception != null)
                         {
-                            result.Success = userResponse.Success;
-                            result.Message = userResponse.Exception.Message;
+                            result.Success = gameResponse.Success;
+                            result.Message = gameResponse.Exception.Message;
 
                             return result;
                         }
                         else
                         {
                             result.Success = false;
-                            result.Message = UsersMessages.UserDoesNotExistMessage;
+                            result.Message = GamesMessages.GameNotCreatedMessage;
 
                             return result;
                         }
@@ -234,52 +202,50 @@ namespace SudokuCollective.Data.Services
         {
             var result = new BaseResult();
 
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = GamesMessages.GameNotFoundMessage;
+
+                return result;
+            }
+
             try
             {
-                if (await gamesRepository.HasEntity(id))
+                var gameResponse = await gamesRepository.GetById(id);
+
+                if (gameResponse.Success)
                 {
-                    var gameResponse = await gamesRepository.GetById(id);
+                    var deleteGameResponse = await gamesRepository.Delete((Game)gameResponse.Object);
 
-                    if (gameResponse.Success)
+                    if (deleteGameResponse.Success)
                     {
-                        var deleteGameResponse = await gamesRepository.Delete((Game)gameResponse.Object);
+                        result.Success = deleteGameResponse.Success;
+                        result.Message = GamesMessages.GameDeletedMessage;
 
-                        if (deleteGameResponse.Success)
-                        {
-                            result.Success = deleteGameResponse.Success;
-                            result.Message = GamesMessages.GameDeletedMessage;
-
-                            return result;
-                        }
-                        else if (!deleteGameResponse.Success && deleteGameResponse.Exception != null)
-                        {
-                            result.Success = deleteGameResponse.Success;
-                            result.Message = deleteGameResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = GamesMessages.GameNotDeletedMessage;
-
-                            return result;
-                        }
+                        return result;
                     }
-                    else if (!gameResponse.Success && gameResponse.Exception != null)
+                    else if (!deleteGameResponse.Success && deleteGameResponse.Exception != null)
                     {
-                        result.Success = gameResponse.Success;
-                        result.Message = gameResponse.Exception.Message;
+                        result.Success = deleteGameResponse.Success;
+                        result.Message = deleteGameResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = GamesMessages.GameNotFoundMessage;
+                        result.Message = GamesMessages.GameNotDeletedMessage;
 
                         return result;
                     }
+                }
+                else if (!gameResponse.Success && gameResponse.Exception != null)
+                {
+                    result.Success = gameResponse.Success;
+                    result.Message = gameResponse.Exception.Message;
+
+                    return result;
                 }
                 else
                 {
@@ -302,56 +268,52 @@ namespace SudokuCollective.Data.Services
         {
             var result = new GameResult();
 
+            if (id == 0 || appId == 0)
+            {
+                result.Success = false;
+                result.Message = GamesMessages.GameNotFoundMessage;
+            }
+
             try
             {
                 if (await appsRepository.HasEntity(appId))
                 {
-                    if (await gamesRepository.HasEntity(id))
+                    var gameResponse = await gamesRepository.GetAppGame(id, appId, fullRecord);
+
+                    if (gameResponse.Success)
                     {
-                        var gameResponse = await gamesRepository.GetAppGame(id, appId, fullRecord);
+                        var game = (Game)gameResponse.Object;
 
-                        if (gameResponse.Success)
+                        if (fullRecord)
                         {
-                            var game = (Game)gameResponse.Object;
-
-                            if (fullRecord)
+                            foreach (var userRole in game.User.Roles)
                             {
-                                foreach (var userRole in game.User.Roles)
-                                {
-                                    userRole.Role.Users = null;
-                                }
-
-                                game.User.Apps = null;
-
-                                game.SudokuMatrix.Difficulty.Matrices = null;
-                            }
-                            else
-                            {
-                                game.User = null;
-                                game.SudokuMatrix = null;
-                                game.SudokuSolution = null;
+                                userRole.Role.Users = null;
                             }
 
-                            result.Success = true;
-                            result.Message = GamesMessages.GameFoundMessage;
-                            result.Game = game;
+                            game.User.Apps = null;
 
-                            return result;
-                        }
-                        else if (!gameResponse.Success && gameResponse.Exception != null)
-                        {
-                            result.Success = gameResponse.Success;
-                            result.Message = gameResponse.Exception.Message;
-
-                            return result;
+                            game.SudokuMatrix.Difficulty.Matrices = null;
                         }
                         else
                         {
-                            result.Success = false;
-                            result.Message = GamesMessages.GameNotFoundMessage;
-
-                            return result;
+                            game.User = null;
+                            game.SudokuMatrix = null;
+                            game.SudokuSolution = null;
                         }
+
+                        result.Success = true;
+                        result.Message = GamesMessages.GameFoundMessage;
+                        result.Game = game;
+
+                        return result;
+                    }
+                    else if (!gameResponse.Success && gameResponse.Exception != null)
+                    {
+                        result.Success = gameResponse.Success;
+                        result.Message = gameResponse.Exception.Message;
+
+                        return result;
                     }
                     else
                     {
@@ -382,6 +344,8 @@ namespace SudokuCollective.Data.Services
             IGetGamesRequest request, 
             bool fullRecord = true)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new GamesResult();
 
             try
@@ -607,66 +571,66 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IGameResult> GetMyGame(
-            int gameid, 
+            int id, 
             IGetGamesRequest request, 
             bool fullRecord = true)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new GameResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = GamesMessages.GameNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
                 if (await appsRepository.HasEntity(request.AppId))
                 {
-                    if (await gamesRepository.HasEntity(gameid))
+                    var gameResponse = await gamesRepository.GetMyGame(
+                        request.UserId, 
+                        id,
+                        request.AppId, 
+                        fullRecord);
+
+                    if (gameResponse.Success)
                     {
-                        var gameResponse = await gamesRepository.GetMyGame(
-                            request.UserId, 
-                            gameid,
-                            request.AppId, 
-                            fullRecord);
+                        var game = (Game)gameResponse.Object;
 
-                        if (gameResponse.Success)
+                        if (fullRecord)
                         {
-                            var game = (Game)gameResponse.Object;
-
-                            if (fullRecord)
+                            foreach (var userRole in game.User.Roles)
                             {
-                                foreach (var userRole in game.User.Roles)
-                                {
-                                    userRole.Role.Users = null;
-                                }
-
-                                game.User.Apps = null;
-
-                                game.SudokuMatrix.Difficulty.Matrices = null;
-                            }
-                            else
-                            {
-                                game.User = null;
-                                game.SudokuMatrix = null;
-                                game.SudokuSolution = null;
+                                userRole.Role.Users = null;
                             }
 
-                            result.Success = true;
-                            result.Message = GamesMessages.GameFoundMessage;
-                            result.Game = game;
+                            game.User.Apps = null;
 
-                            return result;
-                        }
-                        else if (!gameResponse.Success && gameResponse.Exception != null)
-                        {
-                            result.Success = gameResponse.Success;
-                            result.Message = gameResponse.Exception.Message;
-
-                            return result;
+                            game.SudokuMatrix.Difficulty.Matrices = null;
                         }
                         else
                         {
-                            result.Success = false;
-                            result.Message = GamesMessages.GameNotFoundMessage;
-
-                            return result;
+                            game.User = null;
+                            game.SudokuMatrix = null;
+                            game.SudokuSolution = null;
                         }
+
+                        result.Success = true;
+                        result.Message = GamesMessages.GameFoundMessage;
+                        result.Game = game;
+
+                        return result;
+                    }
+                    else if (!gameResponse.Success && gameResponse.Exception != null)
+                    {
+                        result.Success = gameResponse.Success;
+                        result.Message = gameResponse.Exception.Message;
+
+                        return result;
                     }
                     else
                     {
@@ -697,6 +661,8 @@ namespace SudokuCollective.Data.Services
             IGetGamesRequest request,
             bool fullRecord = true)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new GamesResult();
 
             try
@@ -924,47 +890,47 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> DeleteMyGame(int gameid, IGetGamesRequest getMyGameRequest)
+        public async Task<IBaseResult> DeleteMyGame(int id, IGetGamesRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new BaseResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = GamesMessages.GameNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await appsRepository.HasEntity(getMyGameRequest.AppId))
+                if (await appsRepository.HasEntity(request.AppId))
                 {
-                    if (await gamesRepository.HasEntity(gameid))
+                    var response = await gamesRepository.DeleteMyGame(
+                        request.UserId, 
+                        id, 
+                        request.AppId);
+
+                    if (response.Success)
                     {
-                        var response = await gamesRepository.DeleteMyGame(
-                            getMyGameRequest.UserId, 
-                            gameid, 
-                            getMyGameRequest.AppId);
+                        result.Success = true;
+                        result.Message = GamesMessages.GameDeletedMessage;
 
-                        if (response.Success)
-                        {
-                            result.Success = true;
-                            result.Message = GamesMessages.GameDeletedMessage;
+                        return result;
+                    }
+                    else if (!response.Success && response.Exception != null)
+                    {
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
 
-                            return result;
-                        }
-                        else if (!response.Success && response.Exception != null)
-                        {
-                            result.Success = response.Success;
-                            result.Message = response.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = GamesMessages.GameNotDeletedMessage;
-
-                            return result;
-                        }
+                        return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = GamesMessages.GameNotFoundMessage;
+                        result.Message = GamesMessages.GameNotDeletedMessage;
 
                         return result;
                     }
@@ -986,76 +952,76 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IGameResult> CheckGame(int id, IUpdateGameRequest updateGameRequest)
+        public async Task<IGameResult> CheckGame(int id, IUpdateGameRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new GameResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = GamesMessages.GameNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await gamesRepository.HasEntity(id))
-                {
-                    var gameResponse = await gamesRepository.GetById(id, true);
+                var gameResponse = await gamesRepository.GetById(id, true);
 
-                    if (gameResponse.Success)
+                if (gameResponse.Success)
+                {
+                    foreach (var cell in request.SudokuCells)
                     {
-                        foreach (var cell in updateGameRequest.SudokuCells)
+                        foreach (var savedCell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
                         {
-                            foreach (var savedCell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
+                            if (savedCell.Id == cell.Id && savedCell.Hidden)
                             {
-                                if (savedCell.Id == cell.Id && savedCell.Hidden)
-                                {
-                                    savedCell.DisplayedValue = cell.DisplayedValue;
-                                }
+                                savedCell.DisplayedValue = cell.DisplayedValue;
                             }
                         }
-
-                        if (((Game)gameResponse.Object).IsSolved())
-                        {
-                            result.Message = GamesMessages.GameSolvedMessage;
-                        }
-                        else
-                        {
-                            result.Message = GamesMessages.GameNotSolvedMessage;
-                        }
-
-                        var updateGameResponse = await gamesRepository.Update((Game)gameResponse.Object);
-
-                        if (updateGameResponse.Success)
-                        {
-                            result.Success = updateGameResponse.Success;
-                            result.Game = (Game)updateGameResponse.Object;
-
-                            return result;
-                        }
-                        else if (!updateGameResponse.Success && updateGameResponse.Exception != null)
-                        {
-                            result.Success = updateGameResponse.Success;
-                            result.Message = updateGameResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = GamesMessages.GameNotUpdatedMessage;
-
-                            return result;
-                        }
                     }
-                    else if (!gameResponse.Success && gameResponse.Exception != null)
+
+                    if (((Game)gameResponse.Object).IsSolved())
                     {
-                        result.Success = gameResponse.Success;
-                        result.Message = gameResponse.Exception.Message;
+                        result.Message = GamesMessages.GameSolvedMessage;
+                    }
+                    else
+                    {
+                        result.Message = GamesMessages.GameNotSolvedMessage;
+                    }
+
+                    var updateGameResponse = await gamesRepository.Update((Game)gameResponse.Object);
+
+                    if (updateGameResponse.Success)
+                    {
+                        result.Success = updateGameResponse.Success;
+                        result.Game = (Game)updateGameResponse.Object;
+
+                        return result;
+                    }
+                    else if (!updateGameResponse.Success && updateGameResponse.Exception != null)
+                    {
+                        result.Success = updateGameResponse.Success;
+                        result.Message = updateGameResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = GamesMessages.GameNotFoundMessage;
+                        result.Message = GamesMessages.GameNotUpdatedMessage;
 
                         return result;
                     }
+                }
+                else if (!gameResponse.Success && gameResponse.Exception != null)
+                {
+                    result.Success = gameResponse.Success;
+                    result.Message = gameResponse.Exception.Message;
+
+                    return result;
                 }
                 else
                 {

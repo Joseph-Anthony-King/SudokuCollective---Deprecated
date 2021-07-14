@@ -37,6 +37,14 @@ namespace SudokuCollective.Data.Services
         {
             var result = new SolutionResult();
 
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = SolutionsMessages.SolutionNotFoundMessage;
+
+                return result;
+            }
+
             try
             {
                 var solutionResponse = await solutionsRepository.GetById(id, fullRecord);
@@ -84,6 +92,8 @@ namespace SudokuCollective.Data.Services
             IBaseRequest request,
             bool fullRecord = true)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new SolutionsResult();
 
             try
@@ -251,6 +261,8 @@ namespace SudokuCollective.Data.Services
         public async Task<ISolutionResult> Solve(
             ISolveRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new SolutionResult();
 
             try
@@ -419,6 +431,14 @@ namespace SudokuCollective.Data.Services
         public async Task<IBaseResult> AddSolutions(int limitArg)
         {
             var result = new BaseResult();
+
+            if (limitArg == 0)
+            {
+                result.Success = false;
+                result.Message = SolutionsMessages.SolutionsNotAddedMessage;
+
+                return result;
+            }
 
             var limit = 1000;
 

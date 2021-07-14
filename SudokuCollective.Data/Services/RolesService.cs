@@ -9,7 +9,6 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
-using System.Collections.Generic;
 
 namespace SudokuCollective.Data.Services
 {
@@ -32,6 +31,14 @@ namespace SudokuCollective.Data.Services
             bool fullRecord = true)
         {
             var result = new RoleResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = RolesMessages.RoleNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
@@ -141,13 +148,14 @@ namespace SudokuCollective.Data.Services
             string name,
             RoleLevel roleLevel)
         {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+
             var result = new RoleResult();
 
             try
             {
                 if (!(await rolesRepository.HasRoleLevel(roleLevel)))
                 {
-
                     var role = new Role()
                     {
                         Name = name,
@@ -198,60 +206,60 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IBaseResult> UpdateRole(
             int id, 
-            IUpdateRoleRequest updateRoleRO)
+            IUpdateRoleRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var result = new BaseResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = RolesMessages.RoleNotFoundMessage;
+
+                return result;
+            }
 
             try
             {
-                if (await rolesRepository.HasEntity(id))
+                var response = await rolesRepository.GetById(id);
+
+                if (response.Success)
                 {
-                    var response = await rolesRepository.GetById(id);
+                    ((Role)response.Object).Name = request.Name;
 
-                    if (response.Success)
+                    var updateResponse = await rolesRepository
+                        .Update((Role)response.Object);
+
+                    if (updateResponse.Success)
                     {
-                        ((Role)response.Object).Name = updateRoleRO.Name;
+                        result.Success = updateResponse.Success;
+                        result.Message = RolesMessages.RoleUpdatedMessage;
 
-                        var updateResponse = await rolesRepository
-                            .Update((Role)response.Object);
-
-                        if (updateResponse.Success)
-                        {
-                            result.Success = updateResponse.Success;
-                            result.Message = RolesMessages.RoleUpdatedMessage;
-
-                            return result;
-                        }
-                        else if (!updateResponse.Success && updateResponse.Exception != null)
-                        {
-                            result.Success = updateResponse.Success;
-                            result.Message = updateResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = RolesMessages.RoleNotUpdatedMessage;
-
-                            return result;
-                        }
-
+                        return result;
                     }
-                    else if (!response.Success && response.Exception != null)
+                    else if (!updateResponse.Success && updateResponse.Exception != null)
                     {
-                        result.Success = response.Success;
-                        result.Message = response.Exception.Message;
+                        result.Success = updateResponse.Success;
+                        result.Message = updateResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = RolesMessages.RoleNotFoundMessage;
+                        result.Message = RolesMessages.RoleNotUpdatedMessage;
 
                         return result;
                     }
+
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
                 }
                 else
                 {
@@ -274,53 +282,51 @@ namespace SudokuCollective.Data.Services
         {
             var result = new BaseResult();
 
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = RolesMessages.RoleNotFoundMessage;
+
+                return result;
+            }
+
             try
             {
-                if (await rolesRepository.HasEntity(id))
+                var response = await rolesRepository.GetById(id);
+
+                if (response.Success)
                 {
-                    var response = await rolesRepository.GetById(id);
+                    var deleteResponse = await rolesRepository.Delete((Role)response.Object);
 
-                    if (response.Success)
+                    if (deleteResponse.Success)
                     {
-                        var deleteResponse = await rolesRepository.Delete((Role)response.Object);
+                        result.Success = deleteResponse.Success;
+                        result.Message = RolesMessages.RoleDeletedMessage;
 
-                        if (deleteResponse.Success)
-                        {
-                            result.Success = deleteResponse.Success;
-                            result.Message = RolesMessages.RoleDeletedMessage;
-
-                            return result;
-                        }
-                        else if (!deleteResponse.Success && deleteResponse.Exception != null)
-                        {
-                            result.Success = deleteResponse.Success;
-                            result.Message = deleteResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = RolesMessages.RoleNotDeletedMessage;
-
-                            return result;
-                        }
-
+                        return result;
                     }
-                    else if (!response.Success && response.Exception != null)
+                    else if (!deleteResponse.Success && deleteResponse.Exception != null)
                     {
-                        result.Success = response.Success;
-                        result.Message = response.Exception.Message;
+                        result.Success = deleteResponse.Success;
+                        result.Message = deleteResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
                         result.Success = false;
-                        result.Message = RolesMessages.RoleNotFoundMessage;
+                        result.Message = RolesMessages.RoleNotDeletedMessage;
 
                         return result;
                     }
+
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
                 }
                 else
                 {

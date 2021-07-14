@@ -92,6 +92,18 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
+                appsRepo.GetMyRegisteredApps(It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse() 
+                    {
+                        Success = true,
+                        Objects = context
+                            .Apps
+                            .Where(a => a.OwnerId == 1)
+                            .ToList()
+                            .ConvertAll(a => (IEntityBase)a)
+                    } as IRepositoryResponse));
+
+            AppsRepositorySuccessfulRequest.Setup(appsRepo =>
                 appsRepo.GetAppUsers(It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
@@ -232,6 +244,14 @@ namespace SudokuCollective.Test.MockRepositories
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
                 appsRepo.GetMyApps(It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false,
+                        Objects = null
+                    } as IRepositoryResponse));
+
+            AppsRepositoryFailedRequest.Setup(appsRepo =>
+                appsRepo.GetMyRegisteredApps(It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -397,6 +417,14 @@ namespace SudokuCollective.Test.MockRepositories
                             .Where(a => a.OwnerId == 1)
                             .ToList()
                             .ConvertAll(a => (IEntityBase)a)
+                    } as IRepositoryResponse));
+
+            AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
+                appsRepo.GetMyRegisteredApps(It.IsAny<int>(), It.IsAny<bool>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false,
+                        Objects = null
                     } as IRepositoryResponse));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>

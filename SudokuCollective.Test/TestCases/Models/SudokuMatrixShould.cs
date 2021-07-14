@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SudokuCollective.Core.Models;
-using SudokuCollective.Core.Utilities;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Enums;
 
@@ -19,18 +18,17 @@ namespace SudokuCollective.Test.TestCases.Models
         [SetUp]
         public void Setup()
         {
-            intList = UtilityMethods.GenerateSudokuCompliantIntList();
+            populatedTestMatrix = new SudokuMatrix();
+            populatedTestMatrix.GenerateSolution();
 
             StringBuilder sb = new StringBuilder();
 
-            foreach (var i in intList)
+            foreach (var i in populatedTestMatrix.ToIntList())
             {
-                sb.Append(i.ToString());
+                sb.Append(i);
             }
 
             stringList = sb.ToString();
-
-            populatedTestMatrix = new SudokuMatrix(intList);
         }
 
         [Test]
@@ -74,6 +72,7 @@ namespace SudokuCollective.Test.TestCases.Models
         public void AcceptIntListInConstructor()
         {
             // Arrange and Act
+            intList = populatedTestMatrix.ToIntList();
             sut = new SudokuMatrix(intList);
 
             // Assert

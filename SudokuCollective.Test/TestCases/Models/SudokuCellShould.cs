@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Models;
-using SudokuCollective.Core.Utilities;
 
 namespace SudokuCollective.Test.TestCases.Models
 {
@@ -17,7 +17,9 @@ namespace SudokuCollective.Test.TestCases.Models
         [SetUp]
         public void Setup()
         {
-            intList = UtilityMethods.GenerateSudokuCompliantIntList();
+            populatedTestMatrix = new SudokuMatrix();
+            populatedTestMatrix.GenerateSolution();
+            intList = populatedTestMatrix.ToIntList();
             firstInt = intList[0];
 
             populatedTestMatrix = new SudokuMatrix(intList);
