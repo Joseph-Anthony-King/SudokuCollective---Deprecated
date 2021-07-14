@@ -344,7 +344,9 @@ namespace SudokuCollective.Api.V1.Controllers
         {
             if (request.DifficultyLevel == DifficultyLevel.NULL)
             {
-                return BadRequest("Difficulty level cannot be null");
+                return BadRequest(
+                    ControllerMessages.StatusCode400(
+                        GamesMessages.DifficultyLevelIsRequiredMessage));
             }
 
             var result = await gamesService.CreateAnnonymousGame(request.DifficultyLevel);

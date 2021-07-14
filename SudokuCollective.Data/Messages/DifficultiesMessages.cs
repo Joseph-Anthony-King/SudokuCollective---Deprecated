@@ -2,17 +2,17 @@
 {
     public static class DifficultiesMessages
     {
-        public static string DifficultyFoundMessage = "Difficulty Found";
-        public static string DifficultyNotFoundMessage = "Difficulty Not Found";
-        public static string DifficultiesFoundMessage = "Difficulties Found";
-        public static string DifficultiesNotFoundMessage = "Difficulties Not Found";
-        public static string DifficultyCreatedMessage = "Difficulty Created";
-        public static string DifficultyNotCreatedMessage = "Difficulty Not Created";
-        public static string DifficultyUpdatedMessage = "Difficulty Updated";
-        public static string DifficultyNotUpdatedMessage = "Difficulty Not Updated";
-        public static string DifficultyDeletedMessage = "Difficulty Deleted";
-        public static string DifficultyNotDeletedMessage = "Difficulty Not Deleted";
-        public static string DifficultyAlreadyExistsMessage = "Difficulty Already Exists";
-        public static string DifficultyDoesNotExistMessage = "Difficulty Does Not Exist";
+        public const string DifficultyFoundMessage = "Difficulty Found";
+        public const string DifficultyNotFoundMessage = "Difficulty not Found";
+        public const string DifficultiesFoundMessage = "Difficulties Found";
+        public const string DifficultiesNotFoundMessage = "Difficulties not Found";
+        public const string DifficultyCreatedMessage = "Difficulty Created";
+        public const string DifficultyNotCreatedMessage = "Difficulty not Created";
+        public const string DifficultyUpdatedMessage = "Difficulty Updated";
+        public const string DifficultyNotUpdatedMessage = "Difficulty not Updated";
+        public const string DifficultyDeletedMessage = "Difficulty Deleted";
+        public const string DifficultyNotDeletedMessage = "Difficulty not Deleted";
+        public const string DifficultyAlreadyExistsMessage = "Difficulty Already Exists";
+        public const string DifficultyDoesNotExistMessage = "Difficulty does not Exist";
     }
 }

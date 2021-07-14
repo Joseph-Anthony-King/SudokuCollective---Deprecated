@@ -96,7 +96,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Role>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Role Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Role not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -130,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Role>>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Roles Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Roles not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -164,7 +164,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Role Not Updated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Role not Updated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -198,7 +198,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Role>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Role Not Created"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Role not Created"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -234,7 +234,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Role Not Deleted"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Role not Deleted"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

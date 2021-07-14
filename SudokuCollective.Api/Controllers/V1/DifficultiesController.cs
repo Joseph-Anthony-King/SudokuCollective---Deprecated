@@ -49,14 +49,13 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/difficulties
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost]
+        // GET: api/difficulties
+        [AllowAnonymous]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
-            [FromBody] BaseRequest request, [FromQuery] bool fullRecord = true)
+            [FromQuery] bool fullRecord = true)
         {
-            var result = await difficultiesService
-                .GetDifficulties(request.Paginator, fullRecord);
+            var result = await difficultiesService.GetDifficulties(fullRecord);
 
             if (result.Success)
             {

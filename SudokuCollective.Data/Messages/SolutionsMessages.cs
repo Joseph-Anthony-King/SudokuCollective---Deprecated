@@ -4,19 +4,19 @@ namespace SudokuCollective.Data.Messages
 {
     public static class SolutionsMessages
     {
-        public static string SolutionFoundMessage = "Solution Found";
-        public static string SolutionNotFoundMessage = "Solution Not Found";
-        public static string SolutionsFoundMessage = "Solutions Found";
-        public static string SolutionsNotFoundMessage = "Solutions Not Found";
-        public static string SolutionCreatedMessage = "Solution Created";
-        public static string SolutionNotCreatedMessage = "Solution Not Created";
-        public static string SolutionUpdatedMessage = "Solution Updated";
-        public static string SolutionNotUpdatedMessage = "Solution Not Updated";
-        public static string SolutionsAddedMessage = "Solutions Added";
-        public static string SolutionsNotAddedMessage = "Solutions Not Added";
-        public static string SudokuSolutionFoundMessage = "Sudoku Solution Found";
-        public static string SudokuSolutionNotFoundMessage = "Sudoku Solution Not Found";
-        public static string SolutionGeneratedMessage = "Solution Generated";
-        public static string SolutionNotGeneratedMessage = "Solution Not Generated";
+        public const string SolutionFoundMessage = "Solution Found";
+        public const string SolutionNotFoundMessage = "Solution not Found";
+        public const string SolutionsFoundMessage = "Solutions Found";
+        public const string SolutionsNotFoundMessage = "Solutions not Found";
+        public const string SolutionCreatedMessage = "Solution Created";
+        public const string SolutionNotCreatedMessage = "Solution not Created";
+        public const string SolutionUpdatedMessage = "Solution Updated";
+        public const string SolutionNotUpdatedMessage = "Solution not Updated";
+        public const string SolutionsAddedMessage = "Solutions Added";
+        public const string SolutionsNotAddedMessage = "Solutions not Added";
+        public const string SudokuSolutionFoundMessage = "Sudoku Solution Found";
+        public const string SudokuSolutionNotFoundMessage = "Sudoku Solution not Found";
+        public const string SolutionGeneratedMessage = "Solution Generated";
+        public const string SolutionNotGeneratedMessage = "Solution not Generated";
     }
 }

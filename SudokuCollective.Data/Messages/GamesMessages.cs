@@ -2,17 +2,18 @@
 {
     public static class GamesMessages
     {
-        public static string GameFoundMessage = "Game Found";
-        public static string GameNotFoundMessage = "Game Not Found";
-        public static string GamesFoundMessage = "Games Found";
-        public static string GamesNotFoundMessage = "Games Not Found";
-        public static string GameCreatedMessage = "Game Created";
-        public static string GameNotCreatedMessage = "Game Not Created";
-        public static string GameUpdatedMessage = "Game Updated";
-        public static string GameNotUpdatedMessage = "Game Not Updated";
-        public static string GameDeletedMessage = "Game Deleted";
-        public static string GameNotDeletedMessage = "Game Not Deleted";
-        public static string GameSolvedMessage = "Game Solved";
-        public static string GameNotSolvedMessage = "Game Not Solved";
+        public const string GameFoundMessage = "Game Found";
+        public const string GameNotFoundMessage = "Game not Found";
+        public const string GamesFoundMessage = "Games Found";
+        public const string GamesNotFoundMessage = "Games not Found";
+        public const string GameCreatedMessage = "Game Created";
+        public const string GameNotCreatedMessage = "Game not Created";
+        public const string GameUpdatedMessage = "Game Updated";
+        public const string GameNotUpdatedMessage = "Game not Updated";
+        public const string GameDeletedMessage = "Game Deleted";
+        public const string GameNotDeletedMessage = "Game not Deleted";
+        public const string GameSolvedMessage = "Game Solved";
+        public const string GameNotSolvedMessage = "Game not Solved";
+        public const string DifficultyLevelIsRequiredMessage = "Difficulty Level is Required";
     }
 }

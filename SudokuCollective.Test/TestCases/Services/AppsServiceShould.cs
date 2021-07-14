@@ -100,7 +100,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("App Not Found"));
+            Assert.That(result.Message, Is.EqualTo("App not Found"));
             Assert.That(result.App.IsActive, Is.False);
         }
 
@@ -163,7 +163,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Does Not Exist"));
+            Assert.That(result.Message, Is.EqualTo("User does not Exist"));
             Assert.That(apps.Count, Is.EqualTo(2));
         }
 
@@ -195,7 +195,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("App Not Found"));
+            Assert.That(result.Message, Is.EqualTo("App not Found"));
         }
 
         [Test]
@@ -224,7 +224,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("App Not Found"));
+            Assert.That(result.Message, Is.EqualTo("App not Found"));
             Assert.That(result.License, Is.Not.EqualTo(license));
         }
 
@@ -284,7 +284,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("User Added To App"));
+            Assert.That(result.Message, Is.EqualTo("User Added to App"));
         }
 
         [Test]
@@ -298,7 +298,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("User Removed From App"));
+            Assert.That(result.Message, Is.EqualTo("User Removed from App"));
         }
 
         [Test]
@@ -466,7 +466,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("User Has Been Promoted To Admin"));
+            Assert.That(result.Message, Is.EqualTo("User has been Promoted to Admin"));
         }
 
         [Test]
@@ -480,7 +480,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("App Not Found"));
+            Assert.That(result.Message, Is.EqualTo("App not Found"));
         }
 
         [Test]
@@ -514,7 +514,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("App Not Found"));
+            Assert.That(result.Message, Is.EqualTo("App not Found"));
             Assert.That(result.User, Is.TypeOf<User>());
 
         }
@@ -545,7 +545,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Apps Not Found"));
+            Assert.That(result.Message, Is.EqualTo("Apps not Found"));
         }
 
         [Test]
@@ -574,7 +574,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Apps Not Found"));
+            Assert.That(result.Message, Is.EqualTo("Apps not Found"));
         }
     }
 }

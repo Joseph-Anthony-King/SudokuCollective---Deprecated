@@ -63,7 +63,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Solution Not Found"));
+            Assert.That(result.Message, Is.EqualTo("Solution not Found"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
         }
 
@@ -93,7 +93,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Solutions Not Found"));
+            Assert.That(result.Message, Is.EqualTo("Solutions not Found"));
             Assert.That(result.Solutions, Is.TypeOf<List<ISudokuSolution>>());
         }
 
@@ -164,7 +164,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Solutions Not Added"));
+            Assert.That(result.Message, Is.EqualTo("Solutions not Added"));
         }
     }
 }

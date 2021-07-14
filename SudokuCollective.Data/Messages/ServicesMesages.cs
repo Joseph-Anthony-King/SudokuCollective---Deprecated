@@ -2,7 +2,7 @@
 {
     public static class ServicesMesages
     {
-        public static string PageNotFoundMessage = "Page Not Found";
-        public static string SortValueNotImplementedMessage = "Sorting Not Implemented For This Sort Value";
+        public const string PageNotFoundMessage = "Page not Found";
+        public const string SortValueNotImplementedMessage = "Sorting not Implemented for this Sort Value";
     }
 }

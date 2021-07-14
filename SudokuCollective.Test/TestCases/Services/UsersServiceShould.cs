@@ -134,7 +134,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.That(result.Message, Is.EqualTo("User not Found"));
             Assert.That(result.User, Is.TypeOf<User>());
         }
 
@@ -222,7 +222,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Email Not Confirmed"));
+            Assert.That(result.Message, Is.EqualTo("Email not Confirmed"));
         }
 
         [Test]
@@ -251,7 +251,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Name Not Unique"));
+            Assert.That(result.Message, Is.EqualTo("User Name not Unique"));
         }
 
         [Test]
@@ -311,7 +311,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Email Not Unique"));
+            Assert.That(result.Message, Is.EqualTo("Email not Unique"));
         }
 
         [Test]
@@ -423,7 +423,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("No User Is Using This Email"));
+            Assert.That(result.Message, Is.EqualTo("No User is using this Email"));
         }
 
         [Test]
@@ -453,7 +453,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Name Not Unique"));
+            Assert.That(result.Message, Is.EqualTo("User Name not Unique"));
         }
 
         [Test]
@@ -513,7 +513,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Email Not Unique"));
+            Assert.That(result.Message, Is.EqualTo("Email not Unique"));
         }
 
         [Test]
@@ -585,7 +585,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.That(result.Message, Is.EqualTo("User not Found"));
         }
 
         [Test]
@@ -597,7 +597,6 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sut.DeleteUser(userId);
-            var users = context.Users.ToList();
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -615,7 +614,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.That(result.Message, Is.EqualTo("User not Found"));
         }
 
         [Test]
@@ -727,7 +726,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.That(result.Message, Is.EqualTo("User not Found"));
         }
 
         [Test]
@@ -794,7 +793,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.That(result.Message, Is.EqualTo("User not Found"));
         }
 
         [Test]
@@ -828,7 +827,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("No Outstanding Request To Reset Password"));
+            Assert.That(result.Message, Is.EqualTo("No Outstanding Request to Reset Password"));
         }
 
         [Test]
@@ -861,7 +860,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.That(result.Message, Is.EqualTo("User not Found"));
         }
 
         [Test]
@@ -894,7 +893,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User Not Found"));
+            Assert.That(result.Message, Is.EqualTo("User not Found"));
             Assert.That(result.User, Is.TypeOf<User>());
         }
     }

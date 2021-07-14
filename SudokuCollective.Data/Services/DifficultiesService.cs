@@ -77,12 +77,8 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IDifficultiesResult> GetDifficulties(
-            IPaginator paginator,
-            bool fullRecord = true)
+        public async Task<IDifficultiesResult> GetDifficulties(bool fullRecord = true)
         {
-            if (paginator == null) throw new ArgumentNullException(nameof(paginator));
-
             var result = new DifficultiesResult();
 
             try
@@ -91,92 +87,7 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    if (paginator.SortBy == SortValue.NULL)
-                    {
-                        result.Difficulties = response.Objects.ConvertAll(d => (IDifficulty)d);
-                    }
-                    else if (paginator.SortBy == SortValue.ID)
-                    {
-                        if (!paginator.OrderByDescending)
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Difficulties.Add((IDifficulty)obj);
-                            }
-
-                            result.Difficulties = result.Difficulties
-                                .OrderBy(d => d.Id)
-                                .ToList();
-                        }
-                        else
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Difficulties.Add((IDifficulty)obj);
-                            }
-
-                            result.Difficulties = result.Difficulties
-                                .OrderByDescending(g => g.Id)
-                                .ToList();
-                        }
-                    }
-                    else if (paginator.SortBy == SortValue.NAME)
-                    {
-                        if (!paginator.OrderByDescending)
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Difficulties.Add((IDifficulty)obj);
-                            }
-
-                            result.Difficulties = result.Difficulties
-                                .OrderBy(d => d.DisplayName)
-                                .ToList();
-                        }
-                        else
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Difficulties.Add((IDifficulty)obj);
-                            }
-
-                            result.Difficulties = result.Difficulties
-                                .OrderByDescending(g => g.DisplayName)
-                                .ToList();
-                        }
-                    }
-                    else if (paginator.SortBy == SortValue.DIFFICULTYLEVEL)
-                    {
-                        if (!paginator.OrderByDescending)
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Difficulties.Add((IDifficulty)obj);
-                            }
-
-                            result.Difficulties = result.Difficulties
-                                .OrderBy(d => d.DifficultyLevel)
-                                .ToList();
-                        }
-                        else
-                        {
-                            foreach (var obj in response.Objects)
-                            {
-                                result.Difficulties.Add((IDifficulty)obj);
-                            }
-
-                            result.Difficulties = result.Difficulties
-                                .OrderByDescending(g => g.DifficultyLevel)
-                                .ToList();
-                        }
-                    }
-                    else
-                    {
-                        result.Success = false;
-                        result.Message = ServicesMesages.SortValueNotImplementedMessage;
-
-                        return result;
-                    }
+                    result.Difficulties = response.Objects.ConvertAll(d => (IDifficulty)d);
 
                     result.Success = response.Success;
                     result.Message = DifficultiesMessages.DifficultiesFoundMessage;

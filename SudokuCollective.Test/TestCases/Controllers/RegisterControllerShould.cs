@@ -91,7 +91,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<User>>());
-            Assert.That(errorMessage, Is.EqualTo("Status Code 404: User Not Created"));
+            Assert.That(errorMessage, Is.EqualTo("Status Code 404: User not Created"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -127,7 +127,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Email Confirmation Email Not Resent"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Email Confirmation Email not Resent"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

@@ -105,7 +105,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Solution Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Solution not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -139,7 +139,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<SudokuSolution>>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Solutions Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Solutions not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -173,7 +173,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Sudoku Solution Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Sudoku Solution not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -207,7 +207,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Solution Not Generated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Solution not Generated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -224,7 +224,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<SudokuSolution>>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Sudoku Solution Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Sudoku Solution not Found"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -275,7 +275,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Solutions Not Added"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Solutions not Added"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

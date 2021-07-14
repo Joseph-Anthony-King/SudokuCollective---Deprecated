@@ -95,7 +95,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Difficulty>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -131,7 +131,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<Difficulty>>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulties Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulties not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -165,7 +165,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty Not Updated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty not Updated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -201,7 +201,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<Difficulty>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty Not Created"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty not Created"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -237,7 +237,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty Not Deleted"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty not Deleted"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

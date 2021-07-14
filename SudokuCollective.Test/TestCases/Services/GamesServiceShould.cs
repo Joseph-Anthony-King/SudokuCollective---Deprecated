@@ -108,7 +108,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game Not Created"));
+            Assert.That(result.Message, Is.EqualTo("Game not Created"));
             Assert.That(result.Game, Is.TypeOf<Game>());
         }
 
@@ -168,7 +168,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game Not Updated"));
+            Assert.That(result.Message, Is.EqualTo("Game not Updated"));
             Assert.That(result.Game, Is.TypeOf<Game>());
         }
 
@@ -199,7 +199,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game Not Found"));
+            Assert.That(result.Message, Is.EqualTo("Game not Found"));
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game Not Found"));
+            Assert.That(result.Message, Is.EqualTo("Game not Found"));
         }
 
         [Test]
@@ -336,7 +336,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game Not Solved"));
+            Assert.That(result.Message, Is.EqualTo("Game not Solved"));
             Assert.That(result.Game, Is.TypeOf<Game>());
             Assert.That(checkValue, Is.EqualTo(updatedValue));
         }
@@ -391,7 +391,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game Not Found"));
+            Assert.That(result.Message, Is.EqualTo("Game not Found"));
             Assert.That(result.Game, Is.TypeOf<Game>());
             Assert.That(result.Game.Id, Is.EqualTo(0));
         }
@@ -427,7 +427,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Difficulty Not Found"));
+            Assert.That(result.Message, Is.EqualTo("Difficulty not Found"));
         }
     }
 }

@@ -78,7 +78,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: App Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -114,7 +114,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: App Not Created"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App not Created"));
             Assert.That(statusCode, Is.EqualTo(404));
 
         }

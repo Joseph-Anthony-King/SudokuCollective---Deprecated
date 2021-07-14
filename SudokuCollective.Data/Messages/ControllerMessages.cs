@@ -2,9 +2,9 @@
 {
     public static class ControllerMessages
     {
-        public static string InvalidLicenseRequestMessage = "Status Code 400: Invalid Request On This License";
-        public static string NotOwnerMessage = "Status Code 400: You Are Not The Owner Of This App";
-        public static string IdIncorrectMessage = "Status Code 400: Id Incorrect";
+        public const string InvalidLicenseRequestMessage = "Status Code 400: Invalid Request on this License";
+        public const string NotOwnerMessage = "Status Code 400: You are not the Owner of this App";
+        public const string IdIncorrectMessage = "Status Code 400: Id is Incorrect";
 
         public static string StatusCode200(string serviceMessage) 
         {

@@ -76,7 +76,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: App Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -112,7 +112,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<App>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: App Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -148,7 +148,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Apps Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Apps not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -182,7 +182,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: App Not Updated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App not Updated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -224,7 +224,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Users Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Users not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -241,7 +241,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 200: User Added To App"));
+            Assert.That(message, Is.EqualTo("Status Code 200: User Added to App"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -258,7 +258,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: User Not Added To App"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User not Added to App"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -275,7 +275,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 200: User Removed From App"));
+            Assert.That(message, Is.EqualTo("Status Code 200: User Removed from App"));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -292,7 +292,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: User Not Removed From App"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User not Removed from App"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -326,7 +326,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: App Not Activated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App not Activated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -360,7 +360,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: App Not Deactivated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App not Deactivated"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -398,22 +398,22 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(resultOne.Result, Is.InstanceOf<ActionResult<App>>());
-            Assert.That(messageOne, Is.EqualTo("Status Code 400: Invalid Request On This License"));
+            Assert.That(messageOne, Is.EqualTo("Status Code 400: Invalid Request on this License"));
             Assert.That(statusCodeOne, Is.EqualTo(400));
             Assert.That(resultTwo.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
-            Assert.That(messageTwo, Is.EqualTo("Status Code 400: Invalid Request On This License"));
+            Assert.That(messageTwo, Is.EqualTo("Status Code 400: Invalid Request on this License"));
             Assert.That(statusCodeTwo, Is.EqualTo(400));
             Assert.That(resultThree.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(messageThree, Is.EqualTo("Status Code 400: Invalid Request On This License"));
+            Assert.That(messageThree, Is.EqualTo("Status Code 400: Invalid Request on this License"));
             Assert.That(statusCodeThree, Is.EqualTo(400));
             Assert.That(resultFour.Result, Is.InstanceOf<ActionResult<IEnumerable<User>>>());
-            Assert.That(messageFour, Is.EqualTo("Status Code 400: Invalid Request On This License"));
+            Assert.That(messageFour, Is.EqualTo("Status Code 400: Invalid Request on this License"));
             Assert.That(statusCodeFour, Is.EqualTo(400));
             Assert.That(resultFive.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(messageFive, Is.EqualTo("Status Code 400: Invalid Request On This License"));
+            Assert.That(messageFive, Is.EqualTo("Status Code 400: Invalid Request on this License"));
             Assert.That(statusCodeFive, Is.EqualTo(400));
             Assert.That(resultSix.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(messageSix, Is.EqualTo("Status Code 400: Invalid Request On This License"));
+            Assert.That(messageSix, Is.EqualTo("Status Code 400: Invalid Request on this License"));
             Assert.That(statusCodeSix, Is.EqualTo(400));
         }
 
@@ -447,7 +447,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(errorMessage, Is.EqualTo("Status Code 400: You Are Not The Owner Of This App"));
+            Assert.That(errorMessage, Is.EqualTo("Status Code 400: You are not the Owner of this App"));
             Assert.That(statusCode, Is.EqualTo(400));
         }
 
@@ -481,7 +481,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 400: You Are Not The Owner Of This App"));
+            Assert.That(message, Is.EqualTo("Status Code 400: You are not the Owner of this App"));
             Assert.That(statusCode, Is.EqualTo(400));
         }
 
@@ -499,7 +499,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 200: User Has Been Promoted To Admin"));
+            Assert.That(message, Is.EqualTo("Status Code 200: User has been Promoted to Admin"));
             Assert.That(statusCode, Is.EqualTo(200));
             Assert.That(user, Is.InstanceOf<User>());
         }
@@ -517,7 +517,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: User Has Not Been Promoted To Admin"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User has not been Promoted to Admin"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -553,7 +553,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Deactivation Of Admin Privileges Failed"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Deactivation of Admin Privileges Failed"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -589,7 +589,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult<IEnumerable<App>>>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Apps Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Apps not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -625,7 +625,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Apps Not Found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Apps not Found"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
