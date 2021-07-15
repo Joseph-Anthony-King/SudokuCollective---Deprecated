@@ -1,15 +1,16 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Sudoku Collective</title>
-        <script src="/lib/jquery/dist/jquery.min.js"></script>
-        <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"/>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sudoku Collective</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+</head>
     <body>
         <nav class="navbar navbar-default">
             <div class="container">
@@ -93,42 +94,45 @@
 
     function checkAPI() {
 
-        $.get("api/helloworld", function (data) {
+        axios.get("api/helloworld")
+            .then((response) => {
+                console.log("hello world response: ", response);
 
-            var apiUp;
+                var apiUp;
 
-            if ('Status Code 200: Hello World from Sudoku Collective!' === data.message) {
+                if ('Status Code 200: Hello World from Sudoku Collective!' === response.data.message) {
 
-                apiUp = true;
+                    apiUp = true;
 
-            }
+                }
 
-            if (apiUp) {
+                if (apiUp) {
+
+                    $("#apiMessage")
+                        .text("The Sudoku Collective API is up and running!");
+
+                    if ($("#apiMessage").hasClass("red")) {
+
+                        $("#apiMessage").removeClass("red");
+                    }
+
+                    $("#apiMessage").show();
+
+}
+            }, (error) => {
+                let e = JSON.parse(JSON.stringify(error));
+                console.log("hello world error: ", e);
 
                 $("#apiMessage")
-                    .text("The Sudoku Collective API is up and running!");
+                    .text("There is an issue with the Sudoku Collective API: " 
+                        + e.message);
 
-                if ($("#apiMessage").hasClass("red")) {
+                if (!$("#apiMessage").hasClass("red")) {
 
-                    $("#apiMessage").removeClass("red");
+                    $("#apiMessage").addClass("red");
                 }
 
                 $("#apiMessage").show();
-
-            }
-
-        }).fail(function(e) {
-
-            $("#apiMessage")
-                .text("There is an issue with the Sudoku Collective API: " 
-                    + e.status + " - " + e.statusText);
-
-            if (!$("#apiMessage").hasClass("red")) {
-
-                $("#apiMessage").addClass("red");
-            }
-
-            $("#apiMessage").show();
-        });
+            });
     }
 </script>
