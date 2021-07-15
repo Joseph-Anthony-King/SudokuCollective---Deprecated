@@ -7,10 +7,10 @@ namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface IRolesService : IService
     {
-        Task<IRoleResult> GetRole(int id, bool fullRecord = true);
+        Task<IRoleResult> Create(string name, RoleLevel roleLevel);
+        Task<IRoleResult> Get(int id, bool fullRecord = true);
+        Task<IBaseResult> Update(int id, IUpdateRoleRequest updateRoleRO);
+        Task<IBaseResult> Delete(int id);
         Task<IRolesResult> GetRoles(bool fullRecord = true);
-        Task<IRoleResult> CreateRole(string name, RoleLevel roleLevel);
-        Task<IBaseResult> UpdateRole(int id, IUpdateRoleRequest updateRoleRO);
-        Task<IBaseResult> DeleteRole(int id);
     }
 }

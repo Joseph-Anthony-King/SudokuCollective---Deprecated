@@ -31,7 +31,7 @@ namespace SudokuCollective.Data.Services
         #endregion
 
         #region Methods
-        public async Task<ISolutionResult> GetSolution(
+        public async Task<ISolutionResult> Get(
             int id,
             bool fullRecord = true)
         {
@@ -47,7 +47,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var solutionResponse = await solutionsRepository.GetById(id, fullRecord);
+                var solutionResponse = await solutionsRepository.Get(id, fullRecord);
 
                 if (solutionResponse.Success)
                 {
@@ -428,7 +428,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> AddSolutions(int limitArg)
+        public async Task<IBaseResult> Add(int limitArg)
         {
             var result = new BaseResult();
 

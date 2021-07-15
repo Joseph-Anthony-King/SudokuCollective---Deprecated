@@ -563,7 +563,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             var user = context.Users.FirstOrDefault(u => u.Id == 1);
 
             // Act
-            var result = await sut.ActivateUser(user.Id);
+            var result = await sut.Activate(user.Id);
 
             // Assert
             Assert.That(result, Is.True);
@@ -581,7 +581,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 .Last().Id + 1;
 
             // Act
-            var result = await sut.ActivateUser(userid);
+            var result = await sut.Activate(userid);
 
             // Assert
             Assert.That(result, Is.False);
@@ -595,7 +595,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             var user = context.Users.FirstOrDefault(u => u.Id == 1);
 
             // Act
-            var result = await sut.DeactivateUser(user.Id);
+            var result = await sut.Deactivate(user.Id);
 
             // Assert
             Assert.That(result, Is.True);
@@ -613,7 +613,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 .Last().Id + 1;
 
             // Act
-            var result = await sut.DeactivateUser(userid);
+            var result = await sut.Deactivate(userid);
 
             // Assert
             Assert.That(result, Is.False);
@@ -627,7 +627,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             var user = context.Users.FirstOrDefault(u => u.Id == 3);
 
             // Act
-            var result = await sut.PromoteUserToAdmin(user.Id);
+            var result = await sut.PromoteToAdmin(user.Id);
 
             // Assert
             Assert.That(result, Is.True);
@@ -645,7 +645,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 .Last().Id + 1;
 
             // Act
-            var result = await sut.PromoteUserToAdmin(userid);
+            var result = await sut.PromoteToAdmin(userid);
 
             // Assert
             Assert.That(result, Is.False);

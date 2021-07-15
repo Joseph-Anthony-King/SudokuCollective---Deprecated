@@ -77,7 +77,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> Get(int id, bool fullRecord = true)
         {
             var result = new RepositoryResponse();
 

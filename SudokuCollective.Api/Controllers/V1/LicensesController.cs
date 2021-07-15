@@ -21,18 +21,19 @@ namespace SudokuCollective.Api.V1.Controllers
             appsService = appsServ;
         }
 
-        // GET: api/licenses/5
+        // POST: api/licenses
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpGet, Route("{id}")]
-        public async Task<ActionResult> GetLicense(int id)
+        [HttpPost]
+        public async Task<ActionResult<App>> Post(
+            [FromBody] LicenseRequest request)
         {
-            var result = await appsService.GetLicense(id);
+            var result = await appsService.Create(request);
 
             if (result.Success)
             {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
+                result.Message = ControllerMessages.StatusCode201(result.Message);
 
-                return Ok(result);
+                return StatusCode((int)HttpStatusCode.Created, result);
             }
             else
             {
@@ -42,19 +43,18 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/licenses
+        // GET: api/licenses/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPost]
-        public async Task<ActionResult<App>> PostApp(
-            [FromBody] LicenseRequest request)
+        [HttpGet, Route("{id}")]
+        public async Task<ActionResult> Get(int id)
         {
-            var result = await appsService.CreateApp(request);
+            var result = await appsService.GetLicense(id);
 
             if (result.Success)
             {
-                result.Message = ControllerMessages.StatusCode201(result.Message);
-                
-                return StatusCode((int)HttpStatusCode.Created, result);
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
             }
             else
             {

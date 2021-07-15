@@ -26,14 +26,116 @@ namespace SudokuCollective.Api.V1.Controllers
             appsService = appsServ;
         }
 
+        // POST: api/difficulties
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPost]
+        public async Task<ActionResult<Difficulty>> Post(
+            [FromBody] CreateDifficultyRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await difficultiesService
+                    .Create(request.Name, request.DisplayName, request.DifficultyLevel);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode201(result.Message);
+
+                    return StatusCode((int)HttpStatusCode.Created, result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/difficulties/5
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id,
+            [FromBody] UpdateDifficultyRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                if (id != request.Id)
+                {
+                    return BadRequest(ControllerMessages.IdIncorrectMessage);
+                }
+
+                var result = await difficultiesService.Update(id, request);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // DELETE: api/difficulties/5
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id,
+            [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await difficultiesService.Delete(id);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result.Message);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
         // GET: api/difficulties/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Difficulty>> GetDifficulty(
+        public async Task<ActionResult<Difficulty>> Get(
             int id,
             [FromQuery] bool fullRecord = true)
         {
-            var result = await difficultiesService.GetDifficulty(id, fullRecord);
+            var result = await difficultiesService.Get(id, fullRecord);
 
             if (result.Success)
             {
@@ -68,108 +170,6 @@ namespace SudokuCollective.Api.V1.Controllers
                 result.Message = ControllerMessages.StatusCode404(result.Message);
 
                 return NotFound(result);
-            }
-        }
-
-        // POST: api/difficulties
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpPost, Route("Create")]
-        public async Task<ActionResult<Difficulty>> PostDifficulty(
-            [FromBody] CreateDifficultyRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await difficultiesService
-                    .CreateDifficulty(request.Name, request.DisplayName, request.DifficultyLevel);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode201(result.Message);
-
-                    return StatusCode((int)HttpStatusCode.Created, result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // PUT: api/difficulties/5
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDifficulty(int id,
-            [FromBody] UpdateDifficultyRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                if (id != request.Id)
-                {
-                    return BadRequest(ControllerMessages.IdIncorrectMessage);
-                }
-
-                var result = await difficultiesService.UpdateDifficulty(id, request);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // DELETE: api/difficulties/5
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteDifficulty(int id,
-            [FromBody] BaseRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await difficultiesService.DeleteDifficulty(id);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result.Message);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
     }

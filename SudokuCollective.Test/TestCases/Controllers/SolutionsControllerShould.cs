@@ -79,7 +79,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var solutionId = 1;
 
             // Act
-            var result = sutSuccess.GetSolution(solutionId, baseRequest);
+            var result = sutSuccess.Get(solutionId, baseRequest);
             var message = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var solution = ((SolutionResult)((OkObjectResult)result.Result.Result).Value).Solution;
@@ -99,7 +99,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var solutionId = 2;
 
             // Act
-            var result = sutFailure.GetSolution(solutionId, baseRequest);
+            var result = sutFailure.Get(solutionId, baseRequest);
             var message = ((SolutionResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 

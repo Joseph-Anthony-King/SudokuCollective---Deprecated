@@ -49,7 +49,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var appId = 1;
 
             // Act
-            var result = sutSuccess.GetApp(appId, baseRequest);
+            var result = sutSuccess.Get(appId, baseRequest);
             var app = ((AppResult)((OkObjectResult)result.Result.Result).Value).App;
             var message = ((AppResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
@@ -70,7 +70,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var appId = 1;
 
             // Act
-            var result = sutFailure.GetApp(appId, baseRequest);
+            var result = sutFailure.Get(appId, baseRequest);
             var message = ((AppResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -159,7 +159,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.UpdateApp(1, appRequest);
+            var result = sutSuccess.Update(1, appRequest);
             var message = ((AppResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -176,7 +176,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.UpdateApp(1, appRequest);
+            var result = sutFailure.Update(1, appRequest);
             var message = ((AppResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -303,7 +303,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.ActivateApp(1);
+            var result = sutSuccess.Activate(1);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -320,7 +320,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.ActivateApp(1);
+            var result = sutFailure.Activate(1);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -337,7 +337,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.DeactivateApp(1);
+            var result = sutSuccess.Deactivate(1);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -354,7 +354,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.DeactivateApp(1);
+            var result = sutFailure.Deactivate(1);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -372,7 +372,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var appId = 1;
 
             // Act
-            var resultOne = sutInvalid.GetApp(appId, baseRequest);
+            var resultOne = sutInvalid.Get(appId, baseRequest);
             var messageOne = ((BadRequestObjectResult)resultOne.Result.Result).Value;
             var statusCodeOne = ((BadRequestObjectResult)resultOne.Result.Result).StatusCode;
 
@@ -380,7 +380,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var messageTwo = ((BadRequestObjectResult)resultTwo.Result.Result).Value;
             var statusCodeTwo = ((BadRequestObjectResult)resultTwo.Result.Result).StatusCode;
 
-            var resultThree = sutInvalid.UpdateApp(1, appRequest);
+            var resultThree = sutInvalid.Update(1, appRequest);
             var messageThree = ((BadRequestObjectResult)resultThree.Result).Value;
             var statusCodeThree = ((BadRequestObjectResult)resultThree.Result).StatusCode;
 
@@ -424,7 +424,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.DeleteApp(2, baseRequest);
+            var result = sutSuccess.Delete(2, baseRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -441,7 +441,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.DeleteApp(2, baseRequest);
+            var result = sutFailure.Delete(2, baseRequest);
             var errorMessage = ((BadRequestObjectResult)result.Result).Value;
             var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
 
@@ -458,7 +458,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.ResetApp(2, baseRequest);
+            var result = sutSuccess.Reset(2, baseRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -475,7 +475,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.ResetApp(2, baseRequest);
+            var result = sutFailure.Reset(2, baseRequest);
             var message = ((BadRequestObjectResult)result.Result).Value;
             var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
 

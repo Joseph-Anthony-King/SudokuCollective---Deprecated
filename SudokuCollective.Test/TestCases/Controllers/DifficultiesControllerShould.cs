@@ -69,7 +69,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var difficultyId = 2;
 
             // Act
-            var result = sutSuccess.GetDifficulty(difficultyId);
+            var result = sutSuccess.Get(difficultyId);
             var message = ((DifficultyResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var difficulty = ((DifficultyResult)((OkObjectResult)result.Result.Result).Value).Difficulty;
@@ -89,7 +89,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var difficultyId = 2;
 
             // Act
-            var result = sutFailure.GetDifficulty(difficultyId);
+            var result = sutFailure.Get(difficultyId);
             var message = ((DifficultyResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -142,7 +142,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.UpdateDifficulty(1, updateDifficultyRequest);
+            var result = sutSuccess.Update(1, updateDifficultyRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -159,7 +159,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.UpdateDifficulty(1, updateDifficultyRequest);
+            var result = sutFailure.Update(1, updateDifficultyRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -176,7 +176,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.PostDifficulty(createDifficultyRequest);
+            var result = sutSuccess.Post(createDifficultyRequest);
             var message = ((DifficultyResult)((ObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result.Result).StatusCode;
             var difficulty = ((DifficultyResult)((ObjectResult)result.Result.Result).Value).Difficulty;
@@ -195,7 +195,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.PostDifficulty(createDifficultyRequest);
+            var result = sutFailure.Post(createDifficultyRequest);
             var message = ((DifficultyResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -213,7 +213,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var difficultyId = 2;
 
             // Act
-            var result = sutSuccess.DeleteDifficulty(difficultyId, baseRequest);
+            var result = sutSuccess.Delete(difficultyId, baseRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -231,7 +231,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var difficultyId = 2;
 
             // Act
-            var result = sutFailure.DeleteDifficulty(difficultyId, baseRequest);
+            var result = sutFailure.Delete(difficultyId, baseRequest);
             var message = ((NotFoundObjectResult)result.Result).Value;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 

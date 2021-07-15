@@ -113,7 +113,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sut.GetUser(userId, license);
+            var result = await sut.Get(userId, license);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -130,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sutFailure.GetUser(userId, license);
+            var result = await sutFailure.Get(userId, license);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -179,7 +179,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/create-email-inlined.html";
 
             // Act
-            var result = await sut.CreateUser(registerRequest, baseUrl, html);
+            var result = await sut.Create(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -247,7 +247,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "c:/path/to/html";
 
             // Act
-            var result = await sutFailure.CreateUser(registerRequest, baseUrl, html);
+            var result = await sutFailure.Create(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -276,7 +276,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "c:/path/to/html";
 
             // Act
-            var result = await sutEmailFailure.CreateUser(registerRequest, baseUrl, html);
+            var result = await sutEmailFailure.Create(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -307,7 +307,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "c:/path/to/html";
 
             // Act
-            var result = await sutEmailFailure.CreateUser(registerRequest, baseUrl, html);
+            var result = await sutEmailFailure.Create(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -336,7 +336,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "c:/path/to/html";
 
             // Act
-            var result = await sut.CreateUser(registerRequest, baseUrl, html);
+            var result = await sut.Create(registerRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -366,7 +366,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/create-email-inlined.html";
 
             // Act
-            var result = await sut.UpdateUser(userId, updateUserRequest, baseUrl, html);
+            var result = await sut.Update(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -449,7 +449,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
             // Act
-            var result = await sutFailure.UpdateUser(userId, updateUserRequest, baseUrl, html);
+            var result = await sutFailure.Update(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -479,7 +479,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
             // Act
-            var result = await sut.UpdateUser(userId, updateUserRequest, baseUrl, html);
+            var result = await sut.Update(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -509,7 +509,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
             // Act
-            var result = await sutEmailFailure.UpdateUser(userId, updateUserRequest, baseUrl, html);
+            var result = await sutEmailFailure.Update(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -539,7 +539,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
             // Act
-            var result = await sut.UpdateUser(userId, updateUserRequest, baseUrl, html);
+            var result = await sut.Update(userId, updateUserRequest, baseUrl, html);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -596,7 +596,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var userId = 2;
 
             // Act
-            var result = await sut.DeleteUser(userId);
+            var result = await sut.Delete(userId);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -610,7 +610,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var userId = 4;
 
             // Act
-            var result = await sutFailure.DeleteUser(userId);
+            var result = await sutFailure.Delete(userId);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -677,7 +677,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var userId = 1;
 
             // Act
-            var result = await sut.ActivateUser(userId);
+            var result = await sut.Activate(userId);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -692,7 +692,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var userId = 1;
 
             // Act
-            var result = await sut.DeactivateUser(userId);
+            var result = await sut.Deactivate(userId);
 
             // Assert
             Assert.That(result.Success, Is.True);

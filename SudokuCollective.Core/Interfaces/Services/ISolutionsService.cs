@@ -6,10 +6,10 @@ namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface ISolutionsService : IService
     {
-        Task<ISolutionResult> GetSolution(int id, bool fullRecord = true);
+        Task<ISolutionResult> Get(int id, bool fullRecord = true);
         Task<ISolutionsResult> GetSolutions(IBaseRequest request, bool fullRecord = true);
         Task<ISolutionResult> Solve(ISolutionRequest solveRequestsRO);
         Task<ISolutionResult> Generate();
-        Task<IBaseResult> AddSolutions(int limit);
+        Task<IBaseResult> Add(int limit);
     }
 }

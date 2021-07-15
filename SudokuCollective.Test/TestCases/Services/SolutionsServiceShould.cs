@@ -44,7 +44,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetSolution(1);
+            var result = await sut.Get(1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -59,7 +59,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutFailure.GetSolution(1);
+            var result = await sutFailure.Get(1);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -146,7 +146,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.AddSolutions(10);
+            var result = await sut.Add(10);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -160,7 +160,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutFailure.AddSolutions(10);
+            var result = await sutFailure.Add(10);
 
             // Assert
             Assert.That(result.Success, Is.False);

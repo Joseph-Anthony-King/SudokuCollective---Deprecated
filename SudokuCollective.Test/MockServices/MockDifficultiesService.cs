@@ -29,7 +29,7 @@ namespace SudokuCollective.Test.MockServices
             DifficultiesServiceFailedRequest = new Mock<IDifficultiesService>();
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.GetDifficulty(It.IsAny<int>(), It.IsAny<bool>()))
+                difficultiesService.Get(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
                     Success = MockDifficultiesRepository
@@ -68,7 +68,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IDifficultiesResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.CreateDifficulty(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
+                difficultiesService.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
                     Success = MockDifficultiesRepository
@@ -87,7 +87,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IDifficultyResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.UpdateDifficulty(It.IsAny<int>(), It.IsAny<UpdateDifficultyRequest>()))
+                difficultiesService.Update(It.IsAny<int>(), It.IsAny<UpdateDifficultyRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockDifficultiesRepository
@@ -100,7 +100,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.DeleteDifficulty(It.IsAny<int>()))
+                difficultiesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockDifficultiesRepository
@@ -113,7 +113,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.GetDifficulty(It.IsAny<int>(), It.IsAny<bool>()))
+                difficultiesService.Get(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
                     Success = MockDifficultiesRepository
@@ -146,7 +146,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IDifficultiesResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.CreateDifficulty(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
+                difficultiesService.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
                     Success = MockDifficultiesRepository
@@ -165,7 +165,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IDifficultyResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.UpdateDifficulty(It.IsAny<int>(), It.IsAny<UpdateDifficultyRequest>()))
+                difficultiesService.Update(It.IsAny<int>(), It.IsAny<UpdateDifficultyRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockDifficultiesRepository
@@ -178,7 +178,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.DeleteDifficulty(It.IsAny<int>()))
+                difficultiesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockDifficultiesRepository

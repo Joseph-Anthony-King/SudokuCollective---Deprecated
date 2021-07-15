@@ -41,7 +41,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetRole(1);
+            var result = await sut.Get(1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutFailue.GetRole(1);
+            var result = await sutFailue.Get(1);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -128,7 +128,7 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             // Act
-            var result = await sut.UpdateRole(1, updateRoleRequest);
+            var result = await sut.Update(1, updateRoleRequest);
             var updatedDifficulty = context.Roles
                 .FirstOrDefault(role => role.Id == 1);
 
@@ -154,7 +154,7 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             // Act
-            var result = await sutFailue.UpdateRole(1, updateRoleRequest);
+            var result = await sutFailue.Update(1, updateRoleRequest);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -168,7 +168,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.DeleteRole(1);
+            var result = await sut.Delete(1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -182,7 +182,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutFailue.DeleteRole(10);
+            var result = await sutFailue.Delete(10);
 
             // Assert
             Assert.That(result.Success, Is.False);

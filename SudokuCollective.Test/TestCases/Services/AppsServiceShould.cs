@@ -81,7 +81,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetApp(1, 1);
+            var result = await sut.Get(1, 1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -96,7 +96,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutAppRepoFailure.GetApp(3, 1);
+            var result = await sutAppRepoFailure.Get(3, 1);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -126,7 +126,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.CreateApp(new LicenseRequest()
+            var result = await sut.Create(new LicenseRequest()
             {
 
                 Name = "Test App 3",
@@ -150,7 +150,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutUserRepoFailure.CreateApp(new LicenseRequest()
+            var result = await sutUserRepoFailure.Create(new LicenseRequest()
             {
 
                 Name = "Test App 3",
@@ -250,7 +250,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.UpdateApp(
+            var result = await sut.Update(
                 1,
                 new AppRequest()
                 {
@@ -308,7 +308,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.DeleteOrResetApp(2);
+            var result = await sut.DeleteOrReset(2);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -404,7 +404,7 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task PermitSuperUserSystemWideAccess()
         {
             // Arrange
-            var newAppResult = await sut.CreateApp(new LicenseRequest()
+            var newAppResult = await sut.Create(new LicenseRequest()
             {
                 Name = "Test App 3",
                 OwnerId = 2,

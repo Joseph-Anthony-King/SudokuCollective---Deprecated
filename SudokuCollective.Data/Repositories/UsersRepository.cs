@@ -1166,7 +1166,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<bool> ActivateUser(int id)
+        public async Task<bool> Activate(int id)
         {
             if (id == 0)
             {
@@ -1212,7 +1212,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<bool> DeactivateUser(int id)
+        public async Task<bool> Deactivate(int id)
         {
             if (id == 0)
             {
@@ -1258,7 +1258,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<bool> PromoteUserToAdmin(int id)
+        public async Task<bool> PromoteToAdmin(int id)
         {
             if (id == 0)
             {

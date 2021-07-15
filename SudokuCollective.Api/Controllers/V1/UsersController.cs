@@ -34,7 +34,7 @@ namespace SudokuCollective.Api.V1.Controllers
         // POST: api/users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost("{id}")]
-        public async Task<ActionResult<User>> GetUser(
+        public async Task<ActionResult<User>> Get(
             int id,
             [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
@@ -44,7 +44,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await usersService.GetUser(
+                var result = await usersService.Get(
                     id, 
                     request.License, 
                     fullRecord);
@@ -71,7 +71,7 @@ namespace SudokuCollective.Api.V1.Controllers
         // PUT: api/users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(
+        public async Task<IActionResult> Update(
             int id, [FromBody] UpdateUserRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -103,7 +103,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     emailtTemplatePath = "../../Content/EmailTemplates/confirm-old-email-inlined.html";
                 }
 
-                var result = await usersService.UpdateUser(
+                var result = await usersService.Update(
                     id,
                     request,
                     baseUrl,
@@ -132,7 +132,7 @@ namespace SudokuCollective.Api.V1.Controllers
         // DELETE: api/users/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(
+        public async Task<ActionResult<User>> Delete(
             int id, [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -140,7 +140,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await usersService.DeleteUser(id);
+                var result = await usersService.Delete(id);
 
                 if (result.Success)
                 {
@@ -195,6 +195,120 @@ namespace SudokuCollective.Api.V1.Controllers
             else
             {
                 return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/users/addroles
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("{id}/AddRoles")]
+        public async Task<IActionResult> AddRoles(
+            int id,
+            [FromBody] UpdateUserRoleRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await usersService.AddUserRoles(
+                    id,
+                    request.RoleIds.ToList(),
+                    request.License);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/users/addroles
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("{id}/RemoveRoles")]
+        public async Task<IActionResult> RemoveRoles(
+            int id,
+            [FromBody] UpdateUserRoleRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await usersService.RemoveUserRoles(
+                    id,
+                    request.RoleIds.ToList(),
+                    request.License);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/users/5/activate
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPut, Route("{id}/Activate")]
+        public async Task<IActionResult> Activate(int id)
+        {
+            var result = await usersService.Activate(id);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
+            }
+        }
+
+        // PUT: api/users/5/deactivate
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPut, Route("{id}/Deactivate")]
+        public async Task<IActionResult> Deactivate(int id)
+        {
+            var result = await usersService.Deactivate(id);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
             }
         }
 
@@ -273,124 +387,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
 
             var result = await usersService.ResendPasswordReset(
-                request.RequestorId, 
-                request.AppId, 
-                baseUrl, 
+                request.RequestorId,
+                request.AppId,
+                baseUrl,
                 emailtTemplatePath);
-
-            if (result.Success)
-            {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                return Ok(result);
-            }
-            else
-            {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                return NotFound(result);
-            }
-        }
-
-        // PUT: api/users/addroles
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut, Route("{id}/AddRoles")]
-        public async Task<IActionResult> AddRoles(
-            int id,
-            [FromBody] UpdateUserRoleRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await usersService.AddUserRoles(
-                    id,
-                    request.RoleIds.ToList(),
-                    request.License);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // PUT: api/users/addroles
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut, Route("{id}/RemoveRoles")]
-        public async Task<IActionResult> RemoveRoles(
-            int id,
-            [FromBody] UpdateUserRoleRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await usersService.RemoveUserRoles(
-                    id,
-                    request.RoleIds.ToList(),
-                    request.License);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // PUT: api/users/5/activateuser
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpPut, Route("{id}/ActivateUser")]
-        public async Task<IActionResult> ActivateUser(int id)
-        {
-            var result = await usersService.ActivateUser(id);
-
-            if (result.Success)
-            {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                return Ok(result);
-            }
-            else
-            {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                return NotFound(result);
-            }
-        }
-
-        // PUT: api/users/5/deactivateuser
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpPut, Route("{id}/DeactivateUser")]
-        public async Task<IActionResult> DeactivateUser(int id)
-        {
-            var result = await usersService.DeactivateUser(id);
 
             if (result.Success)
             {

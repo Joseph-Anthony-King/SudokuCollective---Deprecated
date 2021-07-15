@@ -42,7 +42,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.GetDifficulty(1);
+            var result = await sut.Get(1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -98,7 +98,7 @@ namespace SudokuCollective.Test.TestCases.Services
             };
 
             // Act
-            var result = await sut.UpdateDifficulty(1, updateDifficultyRequest);
+            var result = await sut.Update(1, updateDifficultyRequest);
             var updatedDifficulty = context.Difficulties
                 .FirstOrDefault(difficulty => difficulty.Id == 1);
 
@@ -115,7 +115,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.DeleteDifficulty(1);
+            var result = await sut.Delete(1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -130,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Act
             var result = await sutCreateDifficulty
-                .CreateDifficulty("Test", "Test", DifficultyLevel.TEST);
+                .Create("Test", "Test", DifficultyLevel.TEST);
 
             // Assert
             Assert.That(result.Success, Is.True);

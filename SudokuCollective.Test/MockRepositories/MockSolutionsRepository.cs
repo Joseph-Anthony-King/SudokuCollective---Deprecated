@@ -34,7 +34,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             SolutionsRepositorySuccessfulRequest.Setup(solutionsRepo =>
-                solutionsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                solutionsRepo.Get(It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -75,7 +75,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             SolutionsRepositoryFailedRequest.Setup(solutionsRepo =>
-                solutionsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                solutionsRepo.Get(It.IsAny<int>(), It.IsAny<bool>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false

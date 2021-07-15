@@ -7,10 +7,10 @@ namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface IDifficultiesService : IService
     {
-        Task<IDifficultyResult> GetDifficulty(int id, bool fullRecord = true);
+        Task<IDifficultyResult> Create(string name, string displayName, DifficultyLevel difficultyLevel);
+        Task<IDifficultyResult> Get(int id, bool fullRecord = true);
+        Task<IBaseResult> Update(int id, IUpdateDifficultyRequest updateDifficultyRO);
+        Task<IBaseResult> Delete(int id);
         Task<IDifficultiesResult> GetDifficulties(bool fullRecord = true);
-        Task<IDifficultyResult> CreateDifficulty(string name, string displayName, DifficultyLevel difficultyLevel);
-        Task<IBaseResult> UpdateDifficulty(int id, IUpdateDifficultyRequest updateDifficultyRO);
-        Task<IBaseResult> DeleteDifficulty(int id);
     }
 }

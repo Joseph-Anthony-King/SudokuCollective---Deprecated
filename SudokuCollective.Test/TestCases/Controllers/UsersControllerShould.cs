@@ -83,7 +83,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var userId = 1;
 
             // Act
-            var result = sutSuccess.GetUser(userId, baseRequest, true);
+            var result = sutSuccess.Get(userId, baseRequest, true);
             var message = ((UserResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var user = ((UserResult)((OkObjectResult)result.Result.Result).Value).User;
@@ -103,7 +103,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var userId = 1;
 
             // Act
-            var result = sutFailure.GetUser(userId, baseRequest, true);
+            var result = sutFailure.Get(userId, baseRequest, true);
             var message = ((UserResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -155,7 +155,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutSuccess.UpdateUser(userId, updateUserRequest);
+            var result = sutSuccess.Update(userId, updateUserRequest);
             var message = ((UserResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -173,7 +173,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutFailure.UpdateUser(userId, updateUserRequest);
+            var result = sutFailure.Update(userId, updateUserRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -227,7 +227,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutSuccess.DeleteUser(userId, baseRequest);
+            var result = sutSuccess.Delete(userId, baseRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -245,7 +245,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutFailure.DeleteUser(userId, baseRequest);
+            var result = sutFailure.Delete(userId, baseRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -335,7 +335,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutSuccess.ActivateUser(userId);
+            var result = sutSuccess.Activate(userId);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -353,7 +353,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutFailure.ActivateUser(userId);
+            var result = sutFailure.Activate(userId);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -371,7 +371,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutSuccess.DeactivateUser(userId);
+            var result = sutSuccess.Deactivate(userId);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -389,7 +389,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             int userId = 1;
 
             // Act
-            var result = sutFailure.DeactivateUser(userId);
+            var result = sutFailure.Deactivate(userId);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 

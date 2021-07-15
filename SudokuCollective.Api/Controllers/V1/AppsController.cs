@@ -32,7 +32,7 @@ namespace SudokuCollective.Api.V1.Controllers
         // POST: api/apps/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("{id}")]
-        public async Task<ActionResult<App>> GetApp(
+        public async Task<ActionResult<App>> Get(
             int id,
             [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
@@ -42,7 +42,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.GetApp(id, request.RequestorId, fullRecord);
+                var result = await appsService.Get(id, request.RequestorId, fullRecord);
 
                 if (result.Success)
                 {
@@ -66,7 +66,7 @@ namespace SudokuCollective.Api.V1.Controllers
         // PUT: api/apps/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPut, Route("{id}")]
-        public async Task<IActionResult> UpdateApp(
+        public async Task<IActionResult> Update(
             int id,
             [FromBody] AppRequest request)
         {
@@ -75,7 +75,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.UpdateApp(id, request);
+                var result = await appsService.Update(id, request);
 
                 if (result.Success)
                 {
@@ -99,7 +99,7 @@ namespace SudokuCollective.Api.V1.Controllers
         // DELETE: api/apps/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete, Route("{id}")]
-        public async Task<ActionResult> DeleteApp(
+        public async Task<ActionResult> Delete(
             int id,
             [FromBody] BaseRequest request)
         {
@@ -108,7 +108,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.DeleteOrResetApp(id);
+                var result = await appsService.DeleteOrReset(id);
 
                 if (result.Success)
                 {
@@ -202,6 +202,43 @@ namespace SudokuCollective.Api.V1.Controllers
                 var result = await appsService
                     .GetMyApps(
                     request.RequestorId,
+                    request.Paginator,
+                    fullRecord);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // POST: api/apps/getMyRegistered
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPost, Route("GetMyRegistered/{userId}")]
+        public async Task<ActionResult> RegisteredApps(
+            int userId,
+            [FromBody] BaseRequest request,
+            [FromQuery] bool fullRecord = true)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await appsService.GetRegisteredApps(
+                    userId,
                     request.Paginator,
                     fullRecord);
 
@@ -372,10 +409,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/apps/5/activateapp
+        // PUT: api/apps/5/activate
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut, Route("{id}/ActivateApp")]
-        public async Task<IActionResult> ActivateApp(int id)
+        [HttpPut, Route("{id}/Activate")]
+        public async Task<IActionResult> Activate(int id)
         {
             var result = await appsService.ActivateApp(id);
 
@@ -393,10 +430,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/apps/5/deactivateapp
+        // PUT: api/apps/5/deactivate
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut, Route("{id}/DeactivateApp")]
-        public async Task<IActionResult> DeactivateApp(int id)
+        [HttpPut, Route("{id}/Deactivate")]
+        public async Task<IActionResult> Deactivate(int id)
         {
             var result = await appsService.DeactivateApp(id);
 
@@ -414,10 +451,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/apps/5/resetapp
+        // PUT: api/apps/5/reset
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut, Route("{id}/ResetApp")]
-        public async Task<ActionResult> ResetApp(
+        [HttpPut, Route("{id}/Reset")]
+        public async Task<ActionResult> Reset(
             int id,
             [FromBody] BaseRequest request)
         {
@@ -426,7 +463,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.DeleteOrResetApp(id, true);
+                var result = await appsService.DeleteOrReset(id, true);
 
                 if (result.Success)
                 {
@@ -495,43 +532,6 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId))
             {
                 var result = await appsService.DeactivateAdminPrivileges(id, userId);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // POST: api/apps/registered
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost, Route("Registered/{userId}")]
-        public async Task<ActionResult> RegisteredApps(
-            int userId,
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await appsService.GetRegisteredApps(
-                    userId,
-                    request.Paginator,
-                    fullRecord);
 
                 if (result.Success)
                 {

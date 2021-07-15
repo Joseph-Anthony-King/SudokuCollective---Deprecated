@@ -26,7 +26,67 @@ namespace SudokuCollective.Data.Services
         #endregion
 
         #region Methods
-        public async Task<IRoleResult> GetRole(
+        public async Task<IRoleResult> Create(
+            string name,
+            RoleLevel roleLevel)
+        {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+
+            var result = new RoleResult();
+
+            try
+            {
+                if (!(await rolesRepository.HasRoleLevel(roleLevel)))
+                {
+                    var role = new Role()
+                    {
+                        Name = name,
+                        RoleLevel = roleLevel
+                    };
+
+                    var response = await rolesRepository.Add(role);
+
+                    if (response.Success)
+                    {
+                        result.Success = response.Success;
+                        result.Message = RolesMessages.RoleCreatedMessage;
+                        result.Role = (IRole)response.Object;
+
+                        return result;
+                    }
+                    else if (!response.Success && response.Exception != null)
+                    {
+                        result.Success = response.Success;
+                        result.Message = response.Exception.Message;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = RolesMessages.RoleNotCreatedMessage;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = RolesMessages.RoleAlreadyExistsMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IRoleResult> Get(
             int id, 
             bool fullRecord = true)
         {
@@ -88,123 +148,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IRolesResult> GetRoles(
-            bool fullRecord = true)
-        {
-            var result = new RolesResult();
-
-            try
-            {
-                var rolesResponse = await rolesRepository.GetAll(fullRecord);
-
-                if (rolesResponse.Success)
-                {
-                    var roles = rolesResponse.Objects.ConvertAll(r => (IRole)r);
-
-                    if (fullRecord)
-                    {
-                        foreach (var role in roles)
-                        {
-                            foreach (var userRole in role.Users)
-                            {
-                                userRole.User.Apps = null;
-                                userRole.User.Roles = null;
-                                userRole.User.Games = null;
-                            }
-                        }
-                    }
-
-                    result.Success = rolesResponse.Success;
-                    result.Message = RolesMessages.RolesFoundMessage;
-                    result.Roles = roles;
-
-                    return result;
-                }
-                else if (!rolesResponse.Success && rolesResponse.Exception != null)
-                {
-                    result.Success = rolesResponse.Success;
-                    result.Message = rolesResponse.Exception.Message;
-
-                    return result;
-                }
-                else
-                {
-                    result.Success = false;
-                    result.Message = RolesMessages.RolesNotFoundMessage;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
-            {
-                result.Success = false;
-                result.Message = exp.Message;
-
-                return result;
-            }
-        }
-
-        public async Task<IRoleResult> CreateRole(
-            string name,
-            RoleLevel roleLevel)
-        {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
-
-            var result = new RoleResult();
-
-            try
-            {
-                if (!(await rolesRepository.HasRoleLevel(roleLevel)))
-                {
-                    var role = new Role()
-                    {
-                        Name = name,
-                        RoleLevel = roleLevel
-                    };
-
-                    var response = await rolesRepository.Add(role);
-
-                    if (response.Success)
-                    {
-                        result.Success = response.Success;
-                        result.Message = RolesMessages.RoleCreatedMessage;
-                        result.Role = (IRole)response.Object;
-
-                        return result;
-                    }
-                    else if (!response.Success && response.Exception != null)
-                    {
-                        result.Success = response.Success;
-                        result.Message = response.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.Success = false;
-                        result.Message = RolesMessages.RoleNotCreatedMessage;
-
-                        return result;
-                    }
-                }
-                else
-                {
-                    result.Success = false;
-                    result.Message = RolesMessages.RoleAlreadyExistsMessage;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
-            {
-                result.Success = false;
-                result.Message = exp.Message;
-
-                return result;
-            }
-        }
-
-        public async Task<IBaseResult> UpdateRole(
+        public async Task<IBaseResult> Update(
             int id, 
             IUpdateRoleRequest request)
         {
@@ -278,7 +222,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> DeleteRole(int id)
+        public async Task<IBaseResult> Delete(int id)
         {
             var result = new BaseResult();
 
@@ -332,6 +276,62 @@ namespace SudokuCollective.Data.Services
                 {
                     result.Success = false;
                     result.Message = RolesMessages.RoleNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IRolesResult> GetRoles(
+            bool fullRecord = true)
+        {
+            var result = new RolesResult();
+
+            try
+            {
+                var rolesResponse = await rolesRepository.GetAll(fullRecord);
+
+                if (rolesResponse.Success)
+                {
+                    var roles = rolesResponse.Objects.ConvertAll(r => (IRole)r);
+
+                    if (fullRecord)
+                    {
+                        foreach (var role in roles)
+                        {
+                            foreach (var userRole in role.Users)
+                            {
+                                userRole.User.Apps = null;
+                                userRole.User.Roles = null;
+                                userRole.User.Games = null;
+                            }
+                        }
+                    }
+
+                    result.Success = rolesResponse.Success;
+                    result.Message = RolesMessages.RolesFoundMessage;
+                    result.Roles = roles;
+
+                    return result;
+                }
+                else if (!rolesResponse.Success && rolesResponse.Exception != null)
+                {
+                    result.Success = rolesResponse.Success;
+                    result.Message = rolesResponse.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = RolesMessages.RolesNotFoundMessage;
 
                     return result;
                 }

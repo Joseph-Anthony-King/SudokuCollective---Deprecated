@@ -37,7 +37,7 @@ namespace SudokuCollective.Test.MockServices
             UsersServiceFailedRequest = new Mock<IUsersService>();
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                userService.Create(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRepository
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.GetUser(
+                userService.Get(
                     It.IsAny<int>(),
                     It.IsAny<string>(), 
                     It.IsAny<bool>()))
@@ -102,7 +102,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUsersResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.UpdateUser(
+                userService.Update(
                     It.IsAny<int>(), 
                     It.IsAny<UpdateUserRequest>(),
                     It.IsAny<string>(),
@@ -161,7 +161,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.DeleteUser(It.IsAny<int>()))
+                userService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
@@ -207,25 +207,25 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.ActivateUser(It.IsAny<int>()))
+                userService.Activate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .ActivateUser(It.IsAny<int>())
+                        .Activate(It.IsAny<int>())
                         .Result,
                     Message = UsersMessages.UserActivatedMessage
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.DeactivateUser(It.IsAny<int>()))
+                userService.Deactivate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .DeactivateUser(It.IsAny<int>())
+                        .Deactivate(It.IsAny<int>())
                         .Result,
                     Message = UsersMessages.UserDeactivatedMessage
                 } as IBaseResult));
@@ -351,7 +351,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.CreateUser(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                userService.Create(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRepository
@@ -370,7 +370,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.GetUser(
+                userService.Get(
                     It.IsAny<int>(), 
                     It.IsAny<string>(),
                     It.IsAny<bool>()))
@@ -410,7 +410,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IUsersResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.UpdateUser(
+                userService.Update(
                     It.IsAny<int>(), 
                     It.IsAny<UpdateUserRequest>(),
                     It.IsAny<string>(),
@@ -469,7 +469,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.DeleteUser(It.IsAny<int>()))
+                userService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
@@ -515,25 +515,25 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.ActivateUser(It.IsAny<int>()))
+                userService.Activate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
-                        .ActivateUser(It.IsAny<int>())
+                        .Activate(It.IsAny<int>())
                         .Result,
                     Message = UsersMessages.UserNotActivatedMessage
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.DeactivateUser(It.IsAny<int>()))
+                userService.Deactivate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
-                        .DeactivateUser(It.IsAny<int>())
+                        .Deactivate(It.IsAny<int>())
                         .Result,
                     Message = UsersMessages.UserNotDeactivatedMessage
                 } as IBaseResult));

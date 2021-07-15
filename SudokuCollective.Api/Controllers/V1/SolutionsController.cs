@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
@@ -28,7 +27,7 @@ namespace SudokuCollective.Api.V1.Controllers
         // POST: api/solutions
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost("{id}")]
-        public async Task<ActionResult<SudokuSolution>> GetSolution(
+        public async Task<ActionResult<SudokuSolution>> Get(
             int id,
             [FromBody] BaseRequest request,
             [FromQuery] bool fullRecord = true)
@@ -38,7 +37,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await solutionService.GetSolution(id, fullRecord);
+                var result = await solutionService.Get(id, fullRecord);
 
                 if (result.Success)
                 {
@@ -158,7 +157,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 if (request.Limit <= 1000)
                 {
-                    var result = await solutionService.AddSolutions(request.Limit);
+                    var result = await solutionService.Add(request.Limit);
 
                     if (result.Success)
                     {

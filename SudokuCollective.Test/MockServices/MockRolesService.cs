@@ -28,7 +28,7 @@ namespace SudokuCollective.Test.MockServices
             RolesServiceFailedRequest = new Mock<IRolesService>();
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
-                rolesService.GetRole(It.IsAny<int>(), It.IsAny<bool>()))
+                rolesService.Get(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
                     Success = MockRolesRepository
@@ -67,7 +67,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IRolesResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
-                rolesService.CreateRole(It.IsAny<string>(), It.IsAny<RoleLevel>()))
+                rolesService.Create(It.IsAny<string>(), It.IsAny<RoleLevel>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
                     Success = MockRolesRepository
@@ -86,7 +86,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IRoleResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
-                rolesService.UpdateRole(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>()))
+                rolesService.Update(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockRolesRepository
@@ -99,7 +99,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
-                rolesService.DeleteRole(It.IsAny<int>()))
+                rolesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockRolesRepository
@@ -112,7 +112,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
-                rolesService.GetRole(It.IsAny<int>(), It.IsAny<bool>()))
+                rolesService.Get(It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
                     Success = MockRolesRepository
@@ -145,7 +145,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IRolesResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
-                rolesService.CreateRole(It.IsAny<string>(), It.IsAny<RoleLevel>()))
+                rolesService.Create(It.IsAny<string>(), It.IsAny<RoleLevel>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
                     Success = MockRolesRepository
@@ -164,7 +164,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IRoleResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
-                rolesService.UpdateRole(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>()))
+                rolesService.Update(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockRolesRepository
@@ -177,7 +177,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
-                rolesService.DeleteRole(It.IsAny<int>()))
+                rolesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockRolesRepository

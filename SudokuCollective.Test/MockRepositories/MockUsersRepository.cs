@@ -158,15 +158,15 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.ActivateUser(It.IsAny<int>()))
+                usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.DeactivateUser(It.IsAny<int>()))
+                usersRepo.Deactivate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.PromoteUserToAdmin(It.IsAny<int>()))
+                usersRepo.PromoteToAdmin(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
@@ -278,15 +278,15 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.ActivateUser(It.IsAny<int>()))
+                usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(false));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.DeactivateUser(It.IsAny<int>()))
+                usersRepo.Deactivate(It.IsAny<int>()))
                     .Returns(Task.FromResult(false));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.PromoteUserToAdmin(It.IsAny<int>()))
+                usersRepo.PromoteToAdmin(It.IsAny<int>()))
                     .Returns(Task.FromResult(false));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
@@ -425,15 +425,15 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.ActivateUser(It.IsAny<int>()))
+                usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.DeactivateUser(It.IsAny<int>()))
+                usersRepo.Deactivate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.PromoteUserToAdmin(It.IsAny<int>()))
+                usersRepo.PromoteToAdmin(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
@@ -582,15 +582,15 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
-                usersRepo.ActivateUser(It.IsAny<int>()))
+                usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
-                usersRepo.DeactivateUser(It.IsAny<int>()))
+                usersRepo.Deactivate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
-                usersRepo.PromoteUserToAdmin(It.IsAny<int>()))
+                usersRepo.PromoteToAdmin(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
@@ -739,15 +739,15 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
-                usersRepo.ActivateUser(It.IsAny<int>()))
+                usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
-                usersRepo.DeactivateUser(It.IsAny<int>()))
+                usersRepo.Deactivate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
-                usersRepo.PromoteUserToAdmin(It.IsAny<int>()))
+                usersRepo.PromoteToAdmin(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>

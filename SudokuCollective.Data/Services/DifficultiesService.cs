@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
@@ -8,7 +7,6 @@ using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
-using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
 
@@ -28,97 +26,7 @@ namespace SudokuCollective.Data.Services
         #endregion
 
         #region Methods
-        public async Task<IDifficultyResult> GetDifficulty(
-            int id, bool fullRecord = true)
-        {
-            var result = new DifficultyResult();
-
-            if (id == 0)
-            {
-                result.Success = false;
-                result.Message = DifficultiesMessages.DifficultiesNotFoundMessage;
-
-                return result;
-            }
-
-            try
-            {
-                var response = await difficultiesRepository.GetById(id, fullRecord);
-
-                if (response.Success)
-                {
-                    result.Success = response.Success;
-                    result.Message = DifficultiesMessages.DifficultyFoundMessage;
-                    result.Difficulty = (Difficulty)response.Object;
-
-                    return result;
-                }
-                else if (!response.Success && response.Exception != null)
-                {
-                    result.Success = response.Success;
-                    result.Message = response.Exception.Message;
-
-                    return result;
-                }
-                else
-                {
-                    result.Success = false;
-                    result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
-            {
-                result.Success = false;
-                result.Message = exp.Message;
-
-                return result;
-            }
-        }
-
-        public async Task<IDifficultiesResult> GetDifficulties(bool fullRecord = true)
-        {
-            var result = new DifficultiesResult();
-
-            try
-            {
-                var response = await difficultiesRepository.GetAll(fullRecord);
-
-                if (response.Success)
-                {
-                    result.Difficulties = response.Objects.ConvertAll(d => (IDifficulty)d);
-
-                    result.Success = response.Success;
-                    result.Message = DifficultiesMessages.DifficultiesFoundMessage;
-
-                    return result;
-                }
-                else if (!response.Success && response.Exception != null)
-                {
-                    result.Success = response.Success;
-                    result.Message = response.Exception.Message;
-
-                    return result;
-                }
-                else
-                {
-                    result.Success = false;
-                    result.Message = DifficultiesMessages.DifficultiesNotFoundMessage;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
-            {
-                result.Success = false;
-                result.Message = exp.Message;
-
-                return result;
-            }
-        }
-
-        public async Task<IDifficultyResult> CreateDifficulty(
+        public async Task<IDifficultyResult> Create(
             string name,
             string displayName,
             DifficultyLevel difficultyLevel)
@@ -182,8 +90,56 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
         }
+        public async Task<IDifficultyResult> Get(
+            int id, bool fullRecord = true)
+        {
+            var result = new DifficultyResult();
 
-        public async Task<IBaseResult> UpdateDifficulty(
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = DifficultiesMessages.DifficultiesNotFoundMessage;
+
+                return result;
+            }
+
+            try
+            {
+                var response = await difficultiesRepository.GetById(id, fullRecord);
+
+                if (response.Success)
+                {
+                    result.Success = response.Success;
+                    result.Message = DifficultiesMessages.DifficultyFoundMessage;
+                    result.Difficulty = (Difficulty)response.Object;
+
+                    return result;
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IBaseResult> Update(
             int id,
             IUpdateDifficultyRequest updateDifficultyRequest)
         {
@@ -258,7 +214,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> DeleteDifficulty(int id)
+        public async Task<IBaseResult> Delete(int id)
         {
             var result = new BaseResult();
 
@@ -312,6 +268,47 @@ namespace SudokuCollective.Data.Services
                 {
                     result.Success = false;
                     result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IDifficultiesResult> GetDifficulties(bool fullRecord = true)
+        {
+            var result = new DifficultiesResult();
+
+            try
+            {
+                var response = await difficultiesRepository.GetAll(fullRecord);
+
+                if (response.Success)
+                {
+                    result.Difficulties = response.Objects.ConvertAll(d => (IDifficulty)d);
+
+                    result.Success = response.Success;
+                    result.Message = DifficultiesMessages.DifficultiesFoundMessage;
+
+                    return result;
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = DifficultiesMessages.DifficultiesNotFoundMessage;
 
                     return result;
                 }

@@ -70,7 +70,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var roleId = 1;
 
             // Act
-            var result = sutSuccess.GetRole(roleId);
+            var result = sutSuccess.Get(roleId);
             var message = ((RoleResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var role = ((RoleResult)((OkObjectResult)result.Result.Result).Value).Role;
@@ -90,7 +90,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var roleId = 2;
 
             // Act
-            var result = sutFailure.GetRole(roleId);
+            var result = sutFailure.Get(roleId);
             var message = ((RoleResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -141,7 +141,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.UpdateRole(1, updateRoleRequest);
+            var result = sutSuccess.Update(1, updateRoleRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -158,7 +158,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.UpdateRole(1, updateRoleRequest);
+            var result = sutFailure.Update(1, updateRoleRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -175,7 +175,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.PostRole(createRoleRequest);
+            var result = sutSuccess.Post(createRoleRequest);
             var message = ((RoleResult)((ObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result.Result).StatusCode;
 
@@ -192,7 +192,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.PostRole(createRoleRequest);
+            var result = sutFailure.Post(createRoleRequest);
             var message = ((RoleResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -210,7 +210,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var roleId = 1;
 
             // Act
-            var result = sutSuccess.DeleteRole(roleId, baseRequest);
+            var result = sutSuccess.Delete(roleId, baseRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -228,7 +228,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var roleId = 1;
 
             // Act
-            var result = sutFailure.DeleteRole(roleId, baseRequest);
+            var result = sutFailure.Delete(roleId, baseRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 

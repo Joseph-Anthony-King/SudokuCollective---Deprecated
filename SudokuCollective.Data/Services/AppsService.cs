@@ -41,7 +41,99 @@ namespace SudokuCollective.Data.Services
         #endregion
 
         #region Methods
-        public async Task<IAppResult> GetApp(
+        public async Task<IAppResult> Create(ILicenseRequest request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            var result = new AppResult();
+
+            try
+            {
+                if (await usersRepository.IsUserRegistered(request.OwnerId))
+                {
+                    var generatingGuid = true;
+                    var license = new Guid();
+
+                    /* Ensure the license is unique by pulling all apps from the repository
+                     * and checking that the new license is unique */
+                    var checkAppsResponse = await appsRepository.GetAll();
+
+                    do
+                    {
+                        license = Guid.NewGuid();
+
+                        if (!checkAppsResponse.Objects.ConvertAll(a => (IApp)a).Any(a => a.License.Equals(license.ToString())))
+                        {
+                            generatingGuid = false;
+                        }
+                        else
+                        {
+                            generatingGuid = true;
+                        }
+
+                    } while (generatingGuid);
+
+                    var app = new App(
+                        request.Name,
+                        license.ToString(),
+                        request.OwnerId,
+                        request.DevUrl,
+                        request.LiveUrl);
+
+                    var addAppResponse = await appsRepository.Add(app);
+
+                    if (addAppResponse.Success)
+                    {
+                        var user = (User)
+                            (await usersRepository.GetById(request.OwnerId))
+                            .Object;
+
+                        if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                        {
+                            var appAdmin = new AppAdmin(app.Id, user.Id);
+
+                            _ = await appAdminsRepository.Add(appAdmin);
+                        }
+
+                        result.Success = addAppResponse.Success;
+                        result.Message = AppsMessages.AppCreatedMessage;
+                        result.App = (IApp)addAppResponse.Object;
+
+                        return result;
+                    }
+                    else if (!addAppResponse.Success && addAppResponse.Exception != null)
+                    {
+                        result.Success = addAppResponse.Success;
+                        result.Message = addAppResponse.Exception.Message;
+
+                        return result;
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = AppsMessages.AppNotCreatedMessage;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.UserDoesNotExistMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IAppResult> Get(
             int id, 
             int requestorId,
             bool fullRecord = true)
@@ -166,6 +258,223 @@ namespace SudokuCollective.Data.Services
                     result.Message = response.Exception.Message;
 
                     return result;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = AppsMessages.AppNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IAppResult> Update(int id, IAppRequest request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            var result = new AppResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = AppsMessages.AppNotFoundMessage;
+
+                return result;
+            }
+
+            try
+            {
+                var getAppResponse = await appsRepository.GetById(id);
+
+                if (getAppResponse.Success)
+                {
+                    if (getAppResponse.Success)
+                    {
+                        ((IApp)getAppResponse.Object).Name = request.Name;
+                        ((IApp)getAppResponse.Object).DevUrl = request.DevUrl;
+                        ((IApp)getAppResponse.Object).LiveUrl = request.LiveUrl;
+                        ((IApp)getAppResponse.Object).IsActive = request.IsActive;
+                        ((IApp)getAppResponse.Object).InDevelopment = request.InDevelopment;
+                        ((IApp)getAppResponse.Object).PermitSuperUserAccess = request.PermitSuperUserAccess;
+                        ((IApp)getAppResponse.Object).PermitCollectiveLogins = request.PermitCollectiveLogins;
+                        ((IApp)getAppResponse.Object).DisableCustomUrls = request.DisableCustomUrls;
+                        ((IApp)getAppResponse.Object).CustomEmailConfirmationAction = request.CustomEmailConfirmationAction;
+                        ((IApp)getAppResponse.Object).CustomPasswordResetAction = request.CustomPasswordResetAction;
+                        ((IApp)getAppResponse.Object).TimeFrame = request.TimeFrame;
+                        ((IApp)getAppResponse.Object).AccessDuration = request.AccessDuration;
+                        ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
+
+                        var updateAppResponse = await appsRepository
+                            .Update((App)getAppResponse.Object);
+
+                        if (updateAppResponse.Success)
+                        {
+                            result.Success = true;
+                            result.Message = AppsMessages.AppUpdatedMessage;
+                            result.App = (App)updateAppResponse.Object;
+
+                            return result;
+                        }
+                        else if (!updateAppResponse.Success && updateAppResponse.Exception != null)
+                        {
+                            result.Success = updateAppResponse.Success;
+                            result.Message = updateAppResponse.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.AppNotUpdatedMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = getAppResponse.Exception.Message;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = AppsMessages.AppNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
+        public async Task<IBaseResult> DeleteOrReset(int id, bool isReset = false)
+        {
+            var result = new AppResult();
+
+            if (id == 0)
+            {
+                result.Success = false;
+                result.Message = AppsMessages.AppNotFoundMessage;
+
+                return result;
+            }
+
+            try
+            {
+                var getAppResponse = await appsRepository.GetById(id, true);
+
+                if (getAppResponse.Success)
+                {
+                    if (isReset)
+                    {
+                        if (getAppResponse.Success)
+                        {
+                            var resetAppResponse = await appsRepository.Reset((App)getAppResponse.Object);
+
+                            if (resetAppResponse.Success)
+                            {
+                                result.Success = resetAppResponse.Success;
+                                result.Message = AppsMessages.AppResetMessage;
+
+                                return result;
+                            }
+                            else if (!resetAppResponse.Success && resetAppResponse.Exception != null)
+                            {
+                                result.Success = resetAppResponse.Success;
+                                result.Message = resetAppResponse.Exception.Message;
+
+                                return result;
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = AppsMessages.AppNotFoundMessage;
+
+                                return result;
+                            }
+                        }
+                        else if (!getAppResponse.Success && getAppResponse.Exception != null)
+                        {
+                            result.Success = getAppResponse.Success;
+                            result.Message = getAppResponse.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.AppNotFoundMessage;
+
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        if (id == 1)
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.AdminAppCannotBeDeletedMessage;
+
+                            return result;
+                        }
+
+                        if (getAppResponse.Success)
+                        {
+                            var deleteAppResponse = await appsRepository.Delete((App)getAppResponse.Object);
+
+                            if (deleteAppResponse.Success)
+                            {
+                                result.Success = deleteAppResponse.Success;
+                                result.Message = AppsMessages.AppDeletedMessage;
+
+                                return result;
+                            }
+                            else if (!deleteAppResponse.Success && deleteAppResponse.Exception != null)
+                            {
+                                result.Success = deleteAppResponse.Success;
+                                result.Message = deleteAppResponse.Exception.Message;
+
+                                return result;
+                            }
+                            else
+                            {
+                                result.Success = false;
+                                result.Message = AppsMessages.AppNotDeletedMessage;
+
+                                return result;
+                            }
+                        }
+                        else if (!getAppResponse.Success && getAppResponse.Exception != null)
+                        {
+                            result.Success = getAppResponse.Success;
+                            result.Message = getAppResponse.Exception.Message;
+
+                            return result;
+                        }
+                        else
+                        {
+                            result.Success = false;
+                            result.Message = AppsMessages.AppNotFoundMessage;
+
+                            return result;
+                        }
+                    }
                 }
                 else
                 {
@@ -1739,98 +2048,6 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IAppResult> CreateApp(ILicenseRequest request)
-        {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
-            var result = new AppResult();
-
-            try
-            {
-                if (await usersRepository.IsUserRegistered(request.OwnerId))
-                {
-                    var generatingGuid = true;
-                    var license = new Guid();
-
-                    /* Ensure the license is unique by pulling all apps from the repository
-                     * and checking that the new license is unique */
-                    var checkAppsResponse = await appsRepository.GetAll();
-
-                    do
-                    {
-                        license = Guid.NewGuid();
-
-                        if (!checkAppsResponse.Objects.ConvertAll(a => (IApp)a).Any(a => a.License.Equals(license.ToString())))
-                        {
-                            generatingGuid = false;
-                        }
-                        else
-                        {
-                            generatingGuid = true;
-                        }
-
-                    } while (generatingGuid);
-
-                    var app = new App(
-                        request.Name,
-                        license.ToString(),
-                        request.OwnerId,
-                        request.DevUrl,
-                        request.LiveUrl);
-
-                    var addAppResponse = await appsRepository.Add(app);
-
-                    if (addAppResponse.Success)
-                    {
-                        var user = (User)
-                            (await usersRepository.GetById(request.OwnerId))
-                            .Object;
-
-                        if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                        {
-                            var appAdmin = new AppAdmin(app.Id, user.Id);
-
-                            _ = await appAdminsRepository.Add(appAdmin);
-                        }
-
-                        result.Success = addAppResponse.Success;
-                        result.Message = AppsMessages.AppCreatedMessage;
-                        result.App = (IApp)addAppResponse.Object;
-
-                        return result;
-                    }
-                    else if (!addAppResponse.Success && addAppResponse.Exception != null)
-                    {
-                        result.Success = addAppResponse.Success;
-                        result.Message = addAppResponse.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.Success = false;
-                        result.Message = AppsMessages.AppNotCreatedMessage;
-
-                        return result;
-                    }
-                }
-                else
-                {
-                    result.Success = false;
-                    result.Message = UsersMessages.UserDoesNotExistMessage;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
-            {
-                result.Success = false;
-                result.Message = exp.Message;
-
-                return result;
-            }
-        }
-
         public async Task<ILicenseResult> GetLicense(int id)
         {
             var result = new LicenseResult();
@@ -1852,93 +2069,6 @@ namespace SudokuCollective.Data.Services
                     result.License = await appsRepository.GetLicense(id);
 
                     return result;
-                }
-                else
-                {
-                    result.Success = false;
-                    result.Message = AppsMessages.AppNotFoundMessage;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
-            {
-                result.Success = false;
-                result.Message = exp.Message;
-
-                return result;
-            }
-        }
-
-        public async Task<IAppResult> UpdateApp(int id, IAppRequest request)
-        {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
-            var result = new AppResult();
-
-            if (id == 0)
-            {
-                result.Success = false;
-                result.Message = AppsMessages.AppNotFoundMessage;
-
-                return result;
-            }
-
-            try
-            {
-                var getAppResponse = await appsRepository.GetById(id);
-
-                if (getAppResponse.Success)
-                {
-                    if (getAppResponse.Success)
-                    {
-                        ((IApp)getAppResponse.Object).Name = request.Name;
-                        ((IApp)getAppResponse.Object).DevUrl = request.DevUrl;
-                        ((IApp)getAppResponse.Object).LiveUrl = request.LiveUrl;
-                        ((IApp)getAppResponse.Object).IsActive = request.IsActive;
-                        ((IApp)getAppResponse.Object).InDevelopment = request.InDevelopment;
-                        ((IApp)getAppResponse.Object).PermitSuperUserAccess = request.PermitSuperUserAccess;
-                        ((IApp)getAppResponse.Object).PermitCollectiveLogins = request.PermitCollectiveLogins;
-                        ((IApp)getAppResponse.Object).DisableCustomUrls = request.DisableCustomUrls;
-                        ((IApp)getAppResponse.Object).CustomEmailConfirmationAction = request.CustomEmailConfirmationAction;
-                        ((IApp)getAppResponse.Object).CustomPasswordResetAction = request.CustomPasswordResetAction;
-                        ((IApp)getAppResponse.Object).TimeFrame = request.TimeFrame;
-                        ((IApp)getAppResponse.Object).AccessDuration = request.AccessDuration;
-                        ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
-
-                        var updateAppResponse = await appsRepository
-                            .Update((App)getAppResponse.Object);
-
-                        if (updateAppResponse.Success)
-                        {
-                            result.Success = true;
-                            result.Message = AppsMessages.AppUpdatedMessage;
-                            result.App = (App)updateAppResponse.Object;
-
-                            return result;
-                        }
-                        else if (!updateAppResponse.Success && updateAppResponse.Exception != null)
-                        {
-                            result.Success = updateAppResponse.Success;
-                            result.Message = updateAppResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = AppsMessages.AppNotUpdatedMessage;
-
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        result.Success = false;
-                        result.Message = getAppResponse.Exception.Message;
-
-                        return result;
-                    }
                 }
                 else
                 {
@@ -2117,136 +2247,6 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Message = exp.Message;
-
-                return result;
-            }
-        }
-
-        public async Task<IBaseResult> DeleteOrResetApp(int id, bool isReset = false)
-        {
-            var result = new AppResult();
-
-            if (id == 0)
-            {
-                result.Success = false;
-                result.Message = AppsMessages.AppNotFoundMessage;
-
-                return result;
-            }
-
-            try
-            {
-                var getAppResponse = await appsRepository.GetById(id, true);
-
-                if (getAppResponse.Success)
-                {
-                    if (isReset)
-                    {
-                        if (getAppResponse.Success)
-                        {
-                            var resetAppResponse = await appsRepository.Reset((App)getAppResponse.Object);
-
-                            if (resetAppResponse.Success)
-                            {
-                                result.Success = resetAppResponse.Success;
-                                result.Message = AppsMessages.AppResetMessage;
-
-                                return result;
-                            }
-                            else if (!resetAppResponse.Success && resetAppResponse.Exception != null)
-                            {
-                                result.Success = resetAppResponse.Success;
-                                result.Message = resetAppResponse.Exception.Message;
-
-                                return result;
-                            }
-                            else
-                            {
-                                result.Success = false;
-                                result.Message = AppsMessages.AppNotFoundMessage;
-
-                                return result;
-                            }
-                        }
-                        else if (!getAppResponse.Success && getAppResponse.Exception != null)
-                        {
-                            result.Success = getAppResponse.Success;
-                            result.Message = getAppResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = AppsMessages.AppNotFoundMessage;
-
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        if (id == 1)
-                        {
-                            result.Success = false;
-                            result.Message = AppsMessages.AdminAppCannotBeDeletedMessage;
-
-                            return result;
-                        }
-
-                        if (getAppResponse.Success)
-                        {
-                            var deleteAppResponse = await appsRepository.Delete((App)getAppResponse.Object);
-
-                            if (deleteAppResponse.Success)
-                            {
-                                result.Success = deleteAppResponse.Success;
-                                result.Message = AppsMessages.AppDeletedMessage;
-
-                                return result;
-                            }
-                            else if (!deleteAppResponse.Success && deleteAppResponse.Exception != null)
-                            {
-                                result.Success = deleteAppResponse.Success;
-                                result.Message = deleteAppResponse.Exception.Message;
-
-                                return result;
-                            }
-                            else
-                            {
-                                result.Success = false;
-                                result.Message = AppsMessages.AppNotDeletedMessage;
-
-                                return result;
-                            }
-                        }
-                        else if (!getAppResponse.Success && getAppResponse.Exception != null)
-                        {
-                            result.Success = getAppResponse.Success;
-                            result.Message = getAppResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.Success = false;
-                            result.Message = AppsMessages.AppNotFoundMessage;
-
-                            return result;
-                        }
-                    }
-                }
-                else
-                {
-                    result.Success = false;
-                    result.Message = AppsMessages.AppNotFoundMessage;
-
-                    return result;
-                }
-            }
-            catch (Exception exp)
-            {
-                result.Success = false;
                 result.Message = exp.Message;
 
                 return result;

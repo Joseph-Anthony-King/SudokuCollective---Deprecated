@@ -52,7 +52,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var appId = 1;
 
             // Act
-            var result = sutSuccess.GetLicense(appId);
+            var result = sutSuccess.Get(appId);
             var message = ((LicenseResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
             var license = ((LicenseResult)((OkObjectResult)result.Result).Value).License;
@@ -72,7 +72,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var appId = 1;
 
             // Act
-            var result = sutFailure.GetLicense(appId);
+            var result = sutFailure.Get(appId);
             var message = ((LicenseResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -89,7 +89,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.PostApp(TestObjects.GetLicenseRequest());
+            var result = sutSuccess.Post(TestObjects.GetLicenseRequest());
             var app = ((AppResult)((ObjectResult)result.Result.Result).Value).App;
             var message = ((AppResult)((ObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result.Result).StatusCode;
@@ -108,7 +108,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.PostApp(TestObjects.GetLicenseRequest());
+            var result = sutFailure.Post(TestObjects.GetLicenseRequest());
             var message = ((AppResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 

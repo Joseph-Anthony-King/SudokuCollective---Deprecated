@@ -43,7 +43,7 @@ namespace SudokuCollective.Data.Services
         #endregion
 
         #region Methods
-        public async Task<IGameResult> CreateGame(
+        public async Task<IGameResult> Create(
             ICreateGameRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -122,7 +122,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IGameResult> UpdateGame(int id, IUpdateGameRequest request)
+        public async Task<IGameResult> Update(int id, IUpdateGameRequest request)
         {
             var result = new GameResult();
 
@@ -202,7 +202,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> DeleteGame(int id)
+        public async Task<IBaseResult> Delete(int id)
         {
             var result = new BaseResult();
 
@@ -956,7 +956,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IGameResult> CheckGame(int id, IUpdateGameRequest request)
+        public async Task<IGameResult> Check(int id, IUpdateGameRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
@@ -1044,7 +1044,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IAnnonymousGameResult> CreateAnnonymousGame(DifficultyLevel difficultyLevel)
+        public async Task<IAnnonymousGameResult> CreateAnnonymous(DifficultyLevel difficultyLevel)
         {
             var result = new AnnonymousGameResult();
 
@@ -1083,7 +1083,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> CheckAnnonymousGame(List<int> intList)
+        public async Task<IBaseResult> CheckAnnonymous(List<int> intList)
         {
             if (intList == null) throw new ArgumentNullException(nameof(intList));
 

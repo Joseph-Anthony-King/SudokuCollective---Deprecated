@@ -9,7 +9,11 @@ namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface IUsersService : IService
     {
-        Task<IUserResult> GetUser(
+        Task<IUserResult> Create(
+            IRegisterRequest request,
+            string baseUrl,
+            string emailtTemplatePath);
+        Task<IUserResult> Get(
             int id,
             string license,
             bool fullRecord = true);
@@ -18,22 +22,18 @@ namespace SudokuCollective.Core.Interfaces.Services
             string license,
             IPaginator paginator, 
             bool fullRecord = true);
-        Task<IUserResult> CreateUser(
-            IRegisterRequest request,
-            string baseUrl,
-            string emailtTemplatePath);
-        Task<IUserResult> UpdateUser(
+        Task<IUserResult> Update(
             int id, 
             IUpdateUserRequest request,
             string baseUrl,
             string emailTemplatePath);
+        Task<IBaseResult> Delete(int id);
         Task<IBaseResult> RequestPasswordReset(
             IRequestPasswordResetRequest request,
             string baseUrl,
             string emailTemplatePath);
         Task<IInitiatePasswordResetResult> InitiatePasswordReset(string token);
         Task<IBaseResult> UpdatePassword(IPasswordResetRequest request);
-        Task<IBaseResult> DeleteUser(int id);
         Task<IRolesResult> AddUserRoles(
             int userid,
             List<int> roleIds,
@@ -42,8 +42,8 @@ namespace SudokuCollective.Core.Interfaces.Services
             int userid,
             List<int> roleIds,
             string license);
-        Task<IBaseResult> ActivateUser(int id);
-        Task<IBaseResult> DeactivateUser(int id);
+        Task<IBaseResult> Activate(int id);
+        Task<IBaseResult> Deactivate(int id);
         Task<IConfirmEmailResult> ConfirmEmail(
             string token,
             string baseUrl,

@@ -15,9 +15,9 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<IRepositoryResponse> RemoveRoles(int userId, List<int> roleIds);
         Task<IRepositoryResponse> ConfirmEmail(IEmailConfirmation emailConfirmation);
         Task<IRepositoryResponse> UpdateUserEmail(IEmailConfirmation emailConfirmation);
-        Task<bool> ActivateUser(int id);
-        Task<bool> DeactivateUser(int id);
-        Task<bool> PromoteUserToAdmin(int id);
+        Task<bool> Activate(int id);
+        Task<bool> Deactivate(int id);
+        Task<bool> PromoteToAdmin(int id);
         Task<bool> IsUserRegistered(int id);
         Task<bool> IsUserNameUnique(string username);
         Task<bool> IsEmailUnique(string email);

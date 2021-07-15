@@ -136,7 +136,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.DeleteGame(1, baseRequest);
+            var result = sutSuccess.Delete(1, baseRequest);
             var message = ((BaseResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -153,7 +153,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.DeleteGame(1, baseRequest);
+            var result = sutFailure.Delete(1, baseRequest);
             var message = ((BaseResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -170,7 +170,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.UpdateGame(1, updateGameRequest);
+            var result = sutSuccess.Update(1, updateGameRequest);
             var message = ((GameResult)((OkObjectResult)result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
@@ -187,7 +187,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.UpdateGame(1, updateGameRequest);
+            var result = sutFailure.Update(1, updateGameRequest);
             var message = ((GameResult)((NotFoundObjectResult)result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
@@ -204,7 +204,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.PostGame(createGameRequest);
+            var result = sutSuccess.Post(createGameRequest);
             var message = ((GameResult)((ObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result.Result).StatusCode;
             var game = ((GameResult)((ObjectResult)result.Result.Result).Value).Game;
@@ -223,7 +223,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.PostGame(createGameRequest);
+            var result = sutFailure.Post(createGameRequest);
             var message = ((GameResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -240,7 +240,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.CheckGame(1, updateGameRequest);
+            var result = sutSuccess.Check(1, updateGameRequest);
             var message = ((GameResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var game = ((GameResult)((OkObjectResult)result.Result.Result).Value).Game;
@@ -259,7 +259,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.CheckGame(1, updateGameRequest);
+            var result = sutFailure.Check(1, updateGameRequest);
             var message = ((GameResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -384,7 +384,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Assert
-            var result = sutSuccess.PostAnnonymousGame(
+            var result = sutSuccess.CreateAnnonymous(
                 new AnnonymousGameRequest { 
                     DifficultyLevel = DifficultyLevel.TEST 
                 });
@@ -404,7 +404,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Assert
-            var result = sutFailure.PostAnnonymousGame(
+            var result = sutFailure.CreateAnnonymous(
                 new AnnonymousGameRequest
                 {
                     DifficultyLevel = DifficultyLevel.TEST
@@ -425,7 +425,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Assert
-            var result = sutSuccess.CheckAnnonymousGame(
+            var result = sutSuccess.CheckAnnonymous(
                 new AnnonymousCheckRequest
                 {
                     FirstRow = new List<int> { 2, 9, 8, 1, 3, 4, 6, 7, 5 },
@@ -456,7 +456,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Assert
-            var result = sutFailure.CheckAnnonymousGame(
+            var result = sutFailure.CheckAnnonymous(
                 new AnnonymousCheckRequest
                 {
                     FirstRow = new List<int> { 5, 9, 8, 1, 3, 4, 6, 7, 2 },

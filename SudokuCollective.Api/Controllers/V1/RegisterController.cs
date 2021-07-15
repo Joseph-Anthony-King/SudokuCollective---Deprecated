@@ -59,7 +59,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 emailtTemplatePath = "../../Content/EmailTemplates/create-email-inlined.html";
             }
 
-            var result = await usersService.CreateUser(
+            var result = await usersService.Create(
                 request, 
                 baseUrl,
                 emailtTemplatePath);

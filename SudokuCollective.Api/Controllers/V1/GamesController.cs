@@ -30,8 +30,8 @@ namespace SudokuCollective.Api.V1.Controllers
 
         // POST: api/games
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPost, Route("Create")]
-        public async Task<ActionResult<Game>> PostGame(
+        [HttpPost]
+        public async Task<ActionResult<Game>> Post(
             [FromBody] CreateGameRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -39,13 +39,85 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await gamesService.CreateGame(request);
+                var result = await gamesService.Create(request);
 
                 if (result.Success)
                 {
                     result.Message = ControllerMessages.StatusCode201(result.Message);
 
                     return StatusCode((int)HttpStatusCode.Created, result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // PUT: api/games/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(
+            int id,
+            [FromBody] UpdateGameRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                if (id != request.GameId)
+                {
+                    return BadRequest(ControllerMessages.IdIncorrectMessage);
+                }
+
+                var result =
+                    await gamesService.Update(id, request);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // DELETE: api/games/5
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Game>> Delete(
+            int id,
+            [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.Delete(id);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -93,114 +165,9 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/games/5
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateGame(
-            int id,
-            [FromBody] UpdateGameRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                if (id != request.GameId)
-                {
-                    return BadRequest(ControllerMessages.IdIncorrectMessage);
-                }
-
-                var result =
-                    await gamesService.UpdateGame(id, request);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // DELETE: api/games/5
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Game>> DeleteGame(
-            int id,
-            [FromBody] BaseRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await gamesService.DeleteGame(id);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // PUT: api/games/5/checkgame
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpPut, Route("{id}/CheckGame")]
-        public async Task<ActionResult<Game>> CheckGame(
-            int id,
-            [FromBody] UpdateGameRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await gamesService.CheckGame(id, request);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
         // POST: api/games
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPost]
+        [HttpPost, Route("GetGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
             [FromBody] GamesRequest request,
             [FromQuery] bool fullRecord = true)
@@ -337,10 +304,43 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // GET: api/games/createAnnonymousGame
+        // PUT: api/games/5/check
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpPut, Route("{id}/Check")]
+        public async Task<ActionResult<Game>> Check(
+            int id,
+            [FromBody] UpdateGameRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await gamesService.Check(id, request);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // GET: api/games/createAnnonymous
         [AllowAnonymous]
-        [HttpGet("CreateAnnonymousGame")]
-        public async Task<ActionResult> PostAnnonymousGame([FromQuery] AnnonymousGameRequest request)
+        [HttpGet("CreateAnnonymous")]
+        public async Task<ActionResult> CreateAnnonymous([FromQuery] AnnonymousGameRequest request)
         {
             if (request.DifficultyLevel == DifficultyLevel.NULL)
             {
@@ -349,7 +349,7 @@ namespace SudokuCollective.Api.V1.Controllers
                         GamesMessages.DifficultyLevelIsRequiredMessage));
             }
 
-            var result = await gamesService.CreateAnnonymousGame(request.DifficultyLevel);
+            var result = await gamesService.CreateAnnonymous(request.DifficultyLevel);
 
             if (result.Success)
             {
@@ -365,10 +365,10 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/games/checkAnnonymousGame
+        // POST: api/games/checkAnnonymous
         [AllowAnonymous]
-        [HttpPost("CheckAnnonymousGame")]
-        public async Task<ActionResult> CheckAnnonymousGame([FromBody] AnnonymousCheckRequest request)
+        [HttpPost("CheckAnnonymous")]
+        public async Task<ActionResult> CheckAnnonymous([FromBody] AnnonymousCheckRequest request)
         {
             var intList = new List<int>();
 
@@ -382,7 +382,7 @@ namespace SudokuCollective.Api.V1.Controllers
             intList.AddRange(request.EighthRow);
             intList.AddRange(request.NinthRow);
 
-            var result = await gamesService.CheckAnnonymousGame(intList);
+            var result = await gamesService.CheckAnnonymous(intList);
 
             if (result.Success)
             {

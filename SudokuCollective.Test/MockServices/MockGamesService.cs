@@ -31,7 +31,7 @@ namespace SudokuCollective.Test.MockServices
             GamesServiceUpdateFailedRequest = new Mock<IGamesService>();
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.CreateGame(It.IsAny<CreateGameRequest>()))
+                gamesService.Create(It.IsAny<CreateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
@@ -50,7 +50,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.UpdateGame(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
+                gamesService.Update(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
@@ -69,7 +69,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.DeleteGame(It.IsAny<int>()))
+                gamesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockGamesRepository
@@ -173,7 +173,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.CheckGame(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
+                gamesService.Check(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
@@ -192,7 +192,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.CreateAnnonymousGame(It.IsAny<DifficultyLevel>()))
+                gamesService.CreateAnnonymous(It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new AnnonymousGameResult()
                 {
                     Success = true,
@@ -201,7 +201,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IAnnonymousGameResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.CheckAnnonymousGame(It.IsAny<List<int>>()))
+                gamesService.CheckAnnonymous(It.IsAny<List<int>>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = true,
@@ -209,7 +209,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.CreateGame(It.IsAny<CreateGameRequest>()))
+                gamesService.Create(It.IsAny<CreateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
@@ -228,7 +228,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.UpdateGame(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
+                gamesService.Update(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
@@ -247,7 +247,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.DeleteGame(It.IsAny<int>()))
+                gamesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockGamesRepository
@@ -339,7 +339,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.CheckGame(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
+                gamesService.Check(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
@@ -358,7 +358,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IGameResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.CreateAnnonymousGame(It.IsAny<DifficultyLevel>()))
+                gamesService.CreateAnnonymous(It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new AnnonymousGameResult()
                 {
                     Success = false,
@@ -367,7 +367,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IAnnonymousGameResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.CheckAnnonymousGame(It.IsAny<List<int>>()))
+                gamesService.CheckAnnonymous(It.IsAny<List<int>>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = false,

@@ -28,8 +28,8 @@ namespace SudokuCollective.Api.V1.Controllers
 
         // POST: api/roles
         [Authorize(Roles = "SUPERUSER")]
-        [HttpPost, Route("Create")]
-        public async Task<ActionResult<Role>> PostRole(
+        [HttpPost]
+        public async Task<ActionResult<Role>> Post(
             [FromBody] CreateRoleRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
@@ -38,7 +38,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId))
             {
                 var result = await rolesService
-                    .CreateRole(request.Name, request.RoleLevel);
+                    .Create(request.Name, request.RoleLevel);
 
                 if (result.Success)
                 {
@@ -59,14 +59,84 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
+        // PUT: api/roles/5
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(
+            int id,
+            [FromBody] UpdateRoleRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                if (id != request.Id)
+                {
+                    return BadRequest(ControllerMessages.IdIncorrectMessage);
+                }
+
+                var result = await rolesService.Update(id, request);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
+        // DELETE: api/roles/5
+        [Authorize(Roles = "SUPERUSER")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(
+            int id, [FromBody] BaseRequest request)
+        {
+            if (await appsService.IsRequestValidOnThisLicense(
+                request.AppId,
+                request.License,
+                request.RequestorId))
+            {
+                var result = await rolesService.Delete(id);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            else
+            {
+                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+            }
+        }
+
         // GET: api/roles/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Role>> GetRole(
+        public async Task<ActionResult<Role>> Get(
             int id,
             [FromQuery] bool fullRecord = true)
         {
-            var result = await rolesService.GetRole(id, fullRecord);
+            var result = await rolesService.Get(id, fullRecord);
 
             if (result.Success)
             {
@@ -100,76 +170,6 @@ namespace SudokuCollective.Api.V1.Controllers
                 result.Message = ControllerMessages.StatusCode404(result.Message);
 
                 return NotFound(result);
-            }
-        }
-
-        // PUT: api/roles/5
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRole(
-            int id,
-            [FromBody] UpdateRoleRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                if (id != request.Id)
-                {
-                    return BadRequest(ControllerMessages.IdIncorrectMessage);
-                }
-
-                var result = await rolesService.UpdateRole(id, request);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
-
-        // DELETE: api/roles/5
-        [Authorize(Roles = "SUPERUSER")]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteRole(
-            int id, [FromBody] BaseRequest request)
-        {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
-            {
-                var result = await rolesService.DeleteRole(id);
-
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            else
-            {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
             }
         }
     }
