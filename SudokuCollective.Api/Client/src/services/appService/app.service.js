@@ -130,7 +130,7 @@ const getRegisteredApps = async function (userid) {
 
 const getAppUsers = async function (id) {
   try {
-    let params = `/${id}`;
+    let params = `/${id}/GetAppUsers`;
 
     const config = {
       method: "post",

@@ -308,10 +308,6 @@ export default {
         let tempArray = [];
 
         for (const app of response.data.apps) {
-          /* The api loads users as reference variables thus effecting the 
-            accuracy of the 'isAdmin' field.  As such we need to clear out 
-            and reload the users. */
-          app.users = [];
           const myApp = new App(app);
           const licenseResponse = await appService.getLicense(myApp.id);
           if (licenseResponse.data.success) {
@@ -320,9 +316,10 @@ export default {
           tempArray.push(myApp);
         }
         
-        // Reload the users per app
+        // Load the users per app
         for (const app of tempArray) {
           const appUsersResponse = await appService.getAppUsers(app.id);
+          console.log("appUsersResponse: ", appUsersResponse);
           appUsersResponse.data.users.forEach((user) => {
             const tempUser = new User(user);
             app.users.push(tempUser);

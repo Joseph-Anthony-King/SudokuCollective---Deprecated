@@ -42,18 +42,6 @@ class App {
       this.dateUpdated = data.dateUpdated;
       this.users = [];
 
-      if (data.users != null) {
-        for (const userApp of data.users) {
-          if (userApp.user !== undefined) {
-            const user = new User(userApp.user);
-            this.users.push(user);
-          } else {
-            const user = new User(userApp);
-            this.users.push(user);
-          }
-        }
-      }
-
       if (data.license !== undefined) {
         this.license = data.license;
       } else {
