@@ -2,6 +2,6 @@
 {
     public static class CacheKeys
     {
-        public const string SolutionsCacheKey = "SolutionsCacheKey";
+        public const string SolutionsCacheKey = ":SolutionsCacheKey";
     }
 }
