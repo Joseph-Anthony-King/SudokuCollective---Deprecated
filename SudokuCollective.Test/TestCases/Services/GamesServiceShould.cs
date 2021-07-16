@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
@@ -25,6 +28,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockDifficultiesRepository mockDifficultiesRepositorySuccessful;
         private MockDifficultiesRepository mockDifficultiesRepositoryFailed;
         private MockSolutionsRepository mockSolutionsRepository;
+        private MemoryDistributedCache memoryCache;
         private IGamesService sut;
         private IGamesService sutFailure;
         private IGamesService sutAnonFailure;
@@ -42,34 +46,40 @@ namespace SudokuCollective.Test.TestCases.Services
             mockDifficultiesRepositorySuccessful = new MockDifficultiesRepository(context);
             mockDifficultiesRepositoryFailed = new MockDifficultiesRepository(context);
             mockSolutionsRepository = new MockSolutionsRepository(context);
+            memoryCache = new MemoryDistributedCache(
+                Options.Create(new MemoryDistributedCacheOptions()));
 
             sut = new GamesService(
                 mockGamesRepository.GamesRepositorySuccessfulRequest.Object,
                 mockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 mockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 mockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object,
-                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
+                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object,
+                memoryCache);
 
             sutFailure = new GamesService(
                 mockGamesRepository.GamesRepositoryFailedRequest.Object,
                 mockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 mockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 mockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object,
-                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
+                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object,
+                memoryCache);
 
             sutAnonFailure = new GamesService(
                 mockGamesRepository.GamesRepositorySuccessfulRequest.Object,
                 mockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 mockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 mockDifficultiesRepositoryFailed.DifficultiesRepositoryFailedRequest.Object,
-                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
+                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object,
+                memoryCache);
 
             sutUpdateFailure = new GamesService(
                 mockGamesRepository.GamesRepositoryUpdateFailedRequest.Object,
                 mockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 mockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 mockDifficultiesRepositorySuccessful.DifficultiesRepositorySuccessfulRequest.Object,
-                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
+                mockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object,
+                memoryCache);
 
             getGamesRequest = TestObjects.GetGamesRequest();
         }

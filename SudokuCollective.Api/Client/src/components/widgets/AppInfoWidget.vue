@@ -86,13 +86,6 @@
               prepend-icon="wysiwyg"
               readonly
             ></v-text-field>
-            <v-text-field
-              v-model="app.gameCount"
-              v-if="app.id !== 1"
-              label="Game Count"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6" xl="6">
             <v-text-field
@@ -459,7 +452,7 @@ export default {
     },
 
     async refreshApp() {
-      var response = await appService.getApp(this.$data.app.id, true);
+      var response = await appService.getApp(this.$data.app.id);
 
       if (response.data.success) {
         this.$data.app = new App(response.data.app);

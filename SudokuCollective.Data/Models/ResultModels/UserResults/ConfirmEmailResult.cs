@@ -5,6 +5,7 @@ namespace SudokuCollective.Data.Models.ResultModels
     public class ConfirmEmailResult : IConfirmEmailResult
     {
         public bool Success { get; set; }
+        public bool FromCache { get; set; }
         public string Message { get; set; }
         public string UserName { get; set; }
         public string AppTitle { get; set; }
@@ -15,6 +16,9 @@ namespace SudokuCollective.Data.Models.ResultModels
 
         public ConfirmEmailResult() : base()
         {
+            Success = false;
+            FromCache = false;
+            Message = string.Empty;
             UserName = string.Empty;
             AppTitle = string.Empty;
             Url = string.Empty;

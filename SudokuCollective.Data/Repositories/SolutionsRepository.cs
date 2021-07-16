@@ -15,18 +15,18 @@ namespace SudokuCollective.Data.Repositories
     public class SolutionsRepository<TEntity> : ISolutionsRepository<TEntity> where TEntity : SudokuSolution
     {
         #region Fields
-        private readonly DatabaseContext context;
+        private readonly DatabaseContext _context;
         #endregion
 
         #region Constructor
-        public SolutionsRepository(DatabaseContext databaseContext)
+        public SolutionsRepository(DatabaseContext context)
         {
-            context = databaseContext;
+            _context = context;
         }
         #endregion
 
         #region Methods
-        public async Task<IRepositoryResponse> Create(TEntity entity)
+        public async Task<IRepositoryResponse> Add(TEntity entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -41,9 +41,9 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.Attach(entity);
+                _context.Attach(entity);
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -61,7 +61,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Object = entity;
                 result.Success = true;
@@ -77,7 +77,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> Get(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> Get(int id)
         {
             var result = new RepositoryResponse();
 
@@ -90,36 +90,19 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = new SudokuSolution();
-
-                if (fullRecord)
-                {
-                    query = await context
-                        .SudokuSolutions
-                        .Include(s => s.Game)
-                            .ThenInclude(g => g.SudokuMatrix)
-                                .ThenInclude(m => m.SudokuCells)
-                        .Include(s => s.Game)
-                            .ThenInclude(g => g.SudokuMatrix)
-                                .ThenInclude(m => m.Difficulty)
-                        .FirstOrDefaultAsync(s => s.Id == id);
-                }
-                else
-                {
-                    query = await context
-                        .SudokuSolutions
-                        .FirstOrDefaultAsync(s => s.Id == id);
-                }
+                var query = await _context
+                    .SudokuSolutions
+                    .FirstOrDefaultAsync(s => s.Id == id);
 
                 if (query == null)
                 {
                     result.Success = false;
-
-                    return result;
                 }
-
-                result.Success = true;
-                result.Object = query;
+                else
+                {
+                    result.Success = true;
+                    result.Object = query;
+                }
 
                 return result;
             }
@@ -132,29 +115,15 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAll()
         {
             var result = new RepositoryResponse();
 
             try
             {
-                var query = new List<SudokuSolution>();
-
-                if (fullRecord)
-                {
-                    query = await context
-                        .SudokuSolutions
-                        .Include(s => s.Game)
-                            .ThenInclude(g => g.SudokuMatrix)
-                                .ThenInclude(m => m.SudokuCells)
-                        .ToListAsync();
-                }
-                else
-                {
-                    query = await context
-                        .SudokuSolutions
-                        .ToListAsync();
-                }
+                var query = await _context
+                    .SudokuSolutions
+                    .ToListAsync();
 
                 if (query.Count == 0)
                 {
@@ -187,9 +156,9 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
+                _context.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -207,7 +176,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
 
@@ -228,7 +197,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = await context
+                var query = await _context
                     .SudokuSolutions
                     .Where(s => s.DateSolved > DateTime.MinValue)
                     .ToListAsync();
@@ -247,6 +216,31 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
+        }
+
+        public Task<IRepositoryResponse> Update(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IRepositoryResponse> Delete(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> HasEntity(int id)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

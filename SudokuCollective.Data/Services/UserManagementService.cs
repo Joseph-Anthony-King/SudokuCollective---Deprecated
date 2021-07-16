@@ -14,13 +14,13 @@ namespace SudokuCollective.Data.Services
     public class UserManagementService : IUserManagementService
     {
         #region Fields
-        private readonly IUsersRepository<User> usersRepository;
+        private readonly IUsersRepository<User> _usersRepository;
         #endregion
 
         #region Constructors
-        public UserManagementService(IUsersRepository<User> usersRepo)
+        public UserManagementService(IUsersRepository<User> usersRepository)
         {
-            usersRepository = usersRepo;
+            _usersRepository = usersRepository;
         }
         #endregion
 
@@ -31,7 +31,7 @@ namespace SudokuCollective.Data.Services
 
             if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
 
-            var userResponse = await usersRepository.GetByUserName(username, true);
+            var userResponse = await _usersRepository.GetByUserName(username);
 
             if (userResponse.Success)
             {
@@ -57,7 +57,7 @@ namespace SudokuCollective.Data.Services
 
             if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
 
-            var userResponse = await usersRepository.GetByUserName(username);
+            var userResponse = await _usersRepository.GetByUserName(username);
 
             if (userResponse.Success)
             {
@@ -86,7 +86,7 @@ namespace SudokuCollective.Data.Services
 
             var result = new AuthenticationResult();
 
-            var userResponse = await usersRepository.GetByEmail(email);
+            var userResponse = await _usersRepository.GetByEmail(email);
 
             if (userResponse.Success)
             {

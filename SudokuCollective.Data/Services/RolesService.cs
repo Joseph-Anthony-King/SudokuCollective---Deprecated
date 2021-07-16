@@ -15,13 +15,13 @@ namespace SudokuCollective.Data.Services
     public class RolesService : IRolesService
     {
         #region Fields
-        private readonly IRolesRepository<Role> rolesRepository;
+        private readonly IRolesRepository<Role> _rolesRepository;
         #endregion
 
         #region Constructor
-        public RolesService(IRolesRepository<Role> rolesRepo)
+        public RolesService(IRolesRepository<Role> rolesRepository)
         {
-            rolesRepository = rolesRepo;
+            _rolesRepository = rolesRepository;
         }
         #endregion
 
@@ -36,7 +36,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (!(await rolesRepository.HasRoleLevel(roleLevel)))
+                if (!(await _rolesRepository.HasRoleLevel(roleLevel)))
                 {
                     var role = new Role()
                     {
@@ -44,7 +44,7 @@ namespace SudokuCollective.Data.Services
                         RoleLevel = roleLevel
                     };
 
-                    var response = await rolesRepository.Add(role);
+                    var response = await _rolesRepository.Add(role);
 
                     if (response.Success)
                     {
@@ -86,9 +86,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IRoleResult> Get(
-            int id, 
-            bool fullRecord = true)
+        public async Task<IRoleResult> Get(int id)
         {
             var result = new RoleResult();
 
@@ -102,21 +100,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await rolesRepository.GetById(id, fullRecord);
+                var response = await _rolesRepository.Get(id);
 
                 if (response.Success)
                 {
                     var role = (Role)response.Object;
-
-                    if (fullRecord)
-                    {
-                        foreach (var userRole in role.Users)
-                        {
-                            userRole.User.Apps = null;
-                            userRole.User.Roles = null;
-                            userRole.User.Games = null;
-                        }
-                    }
 
                     result.Success = response.Success;
                     result.Message = RolesMessages.RoleFoundMessage;
@@ -166,13 +154,13 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await rolesRepository.GetById(id);
+                var response = await _rolesRepository.Get(id);
 
                 if (response.Success)
                 {
                     ((Role)response.Object).Name = request.Name;
 
-                    var updateResponse = await rolesRepository
+                    var updateResponse = await _rolesRepository
                         .Update((Role)response.Object);
 
                     if (updateResponse.Success)
@@ -236,11 +224,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await rolesRepository.GetById(id);
+                var response = await _rolesRepository.Get(id);
 
                 if (response.Success)
                 {
-                    var deleteResponse = await rolesRepository.Delete((Role)response.Object);
+                    var deleteResponse = await _rolesRepository.Delete((Role)response.Object);
 
                     if (deleteResponse.Success)
                     {
@@ -289,31 +277,17 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IRolesResult> GetRoles(
-            bool fullRecord = true)
+        public async Task<IRolesResult> GetRoles()
         {
             var result = new RolesResult();
 
             try
             {
-                var rolesResponse = await rolesRepository.GetAll(fullRecord);
+                var rolesResponse = await _rolesRepository.GetAll();
 
                 if (rolesResponse.Success)
                 {
                     var roles = rolesResponse.Objects.ConvertAll(r => (IRole)r);
-
-                    if (fullRecord)
-                    {
-                        foreach (var role in roles)
-                        {
-                            foreach (var userRole in role.Users)
-                            {
-                                userRole.User.Apps = null;
-                                userRole.User.Roles = null;
-                                userRole.User.Games = null;
-                            }
-                        }
-                    }
 
                     result.Success = rolesResponse.Success;
                     result.Message = RolesMessages.RolesFoundMessage;

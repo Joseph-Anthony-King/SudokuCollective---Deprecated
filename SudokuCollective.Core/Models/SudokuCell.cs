@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Structs;
@@ -80,6 +81,7 @@ namespace SudokuCollective.Core.Models
         }
         public bool Hidden { get; set; }
         public int SudokuMatrixId { get; set; }
+        [IgnoreDataMember]
         public SudokuMatrix SudokuMatrix { get; set; }
         [JsonIgnore]
         public List<IAvailableValue> AvailableValues { get; set; }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
@@ -20,23 +19,23 @@ namespace SudokuCollective.Data.Services
     public class AppsService : IAppsService
     {
         #region Fields
-        private readonly IAppsRepository<App> appsRepository;
-        private readonly IUsersRepository<User> usersRepository;
-        private readonly IAppAdminsRepository<AppAdmin> appAdminsRepository;
-        private readonly IRolesRepository<Role> rolesRepository;
+        private readonly IAppsRepository<App> _appsRepository;
+        private readonly IUsersRepository<User> _usersRepository;
+        private readonly IAppAdminsRepository<AppAdmin> _appAdminsRepository;
+        private readonly IRolesRepository<Role> _rolesRepository;
         #endregion
 
         #region Constructor
         public AppsService(
-            IAppsRepository<App> appRepo, 
-            IUsersRepository<User> userRepo,
-            IAppAdminsRepository<AppAdmin> appAdminsRepo,
-            IRolesRepository<Role> rolesRepo)
+            IAppsRepository<App> appRepository, 
+            IUsersRepository<User> userRepository,
+            IAppAdminsRepository<AppAdmin> appAdminsRepository,
+            IRolesRepository<Role> rolesRepository)
         {
-            appsRepository = appRepo;
-            usersRepository = userRepo;
-            appAdminsRepository = appAdminsRepo;
-            rolesRepository = rolesRepo;
+            _appsRepository = appRepository;
+            _usersRepository = userRepository;
+            _appAdminsRepository = appAdminsRepository;
+            _rolesRepository = rolesRepository;
         }
         #endregion
 
@@ -49,14 +48,14 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await usersRepository.IsUserRegistered(request.OwnerId))
+                if (await _usersRepository.IsUserRegistered(request.OwnerId))
                 {
                     var generatingGuid = true;
                     var license = new Guid();
 
                     /* Ensure the license is unique by pulling all apps from the repository
                      * and checking that the new license is unique */
-                    var checkAppsResponse = await appsRepository.GetAll();
+                    var checkAppsResponse = await _appsRepository.GetAll();
 
                     do
                     {
@@ -80,19 +79,19 @@ namespace SudokuCollective.Data.Services
                         request.DevUrl,
                         request.LiveUrl);
 
-                    var addAppResponse = await appsRepository.Add(app);
+                    var addAppResponse = await _appsRepository.Add(app);
 
                     if (addAppResponse.Success)
                     {
                         var user = (User)
-                            (await usersRepository.GetById(request.OwnerId))
+                            (await _usersRepository.Get(request.OwnerId))
                             .Object;
 
                         if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
                         {
                             var appAdmin = new AppAdmin(app.Id, user.Id);
 
-                            _ = await appAdminsRepository.Add(appAdmin);
+                            _ = await _appAdminsRepository.Add(appAdmin);
                         }
 
                         result.Success = addAppResponse.Success;
@@ -135,8 +134,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAppResult> Get(
             int id, 
-            int requestorId,
-            bool fullRecord = true)
+            int requestorId)
         {
             var result = new AppResult();
 
@@ -150,78 +148,13 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await appsRepository.GetById(id, fullRecord);
+                var response = await _appsRepository.Get(id);
 
                 if (response.Success)
                 {
                     var app = (App)response.Object;
 
-                    if (fullRecord)
-                    {
-                        var appAdmins = (await appAdminsRepository.GetAll())
-                            .Objects
-                            .ConvertAll(aa => (AppAdmin)aa)
-                            .ToList();
-
-                        foreach (var userApp in app.Users)
-                        {
-                            if (userApp
-                                .User
-                                .Roles
-                                .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                            {
-                                if (!userApp.User.IsSuperUser)
-                                {
-                                    if (!appAdmins.Any(aa =>
-                                        aa.AppId == app.Id &&
-                                        aa.UserId == userApp.User.Id &&
-                                        aa.IsActive))
-                                    {
-                                        var adminRole = userApp
-                                            .User
-                                            .Roles
-                                            .FirstOrDefault(ur =>
-                                                ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                        userApp.User.Roles.Remove(adminRole);
-                                    }
-                                }
-                                else
-                                {
-                                    if (!app.PermitSuperUserAccess)
-                                    {
-                                        if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                                        {
-                                            var superUserRole = userApp
-                                                .User
-                                                .Roles
-                                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
-
-                                            userApp.User.Roles.Remove(superUserRole);
-                                        }
-
-                                        if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                        {
-                                            var adminRole = userApp
-                                                .User
-                                                .Roles
-                                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                            userApp.User.Roles.Remove(adminRole);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        foreach (var userApp in app.Users)
-                        {
-                            userApp.App = null;
-                            userApp.User.Apps = new List<UserApp>();
-                        }
-                    }
-
-                    var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
+                    var requestor = (User)(await _usersRepository.Get(requestorId)).Object;
 
                     if (requestor != null && !requestor.IsSuperUser)
                     {
@@ -292,7 +225,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var getAppResponse = await appsRepository.GetById(id);
+                var getAppResponse = await _appsRepository.Get(id);
 
                 if (getAppResponse.Success)
                 {
@@ -312,7 +245,7 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).AccessDuration = request.AccessDuration;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
-                        var updateAppResponse = await appsRepository
+                        var updateAppResponse = await _appsRepository
                             .Update((App)getAppResponse.Object);
 
                         if (updateAppResponse.Success)
@@ -377,7 +310,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var getAppResponse = await appsRepository.GetById(id, true);
+                var getAppResponse = await _appsRepository.Get(id);
 
                 if (getAppResponse.Success)
                 {
@@ -385,7 +318,7 @@ namespace SudokuCollective.Data.Services
                     {
                         if (getAppResponse.Success)
                         {
-                            var resetAppResponse = await appsRepository.Reset((App)getAppResponse.Object);
+                            var resetAppResponse = await _appsRepository.Reset((App)getAppResponse.Object);
 
                             if (resetAppResponse.Success)
                             {
@@ -436,7 +369,7 @@ namespace SudokuCollective.Data.Services
 
                         if (getAppResponse.Success)
                         {
-                            var deleteAppResponse = await appsRepository.Delete((App)getAppResponse.Object);
+                            var deleteAppResponse = await _appsRepository.Delete((App)getAppResponse.Object);
 
                             if (deleteAppResponse.Success)
                             {
@@ -495,8 +428,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAppResult> GetAppByLicense(
             string license, 
-            int requestorId,
-            bool fullRecord = true)
+            int requestorId)
         {
             var result = new AppResult();
 
@@ -510,101 +442,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await appsRepository.GetByLicense(license, fullRecord);
+                var response = await _appsRepository.GetByLicense(license);
 
                 if (response.Success)
                 {
                     var app = (IApp)response.Object;
-
-                    if (fullRecord)
-                    {
-                        var appAdmins = (await appAdminsRepository.GetAll())
-                            .Objects
-                            .ConvertAll(aa => (AppAdmin)aa)
-                            .ToList();
-
-                        foreach (var userApp in app.Users)
-                        {
-                            if (userApp
-                                .User
-                                .Roles
-                                .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                            {
-                                if (!userApp.User.IsSuperUser)
-                                {
-                                    if (!appAdmins.Any(aa =>
-                                        aa.AppId == app.Id &&
-                                        aa.UserId == userApp.User.Id &&
-                                        aa.IsActive))
-                                    {
-                                        var adminRole = userApp
-                                            .User
-                                            .Roles
-                                            .FirstOrDefault(ur =>
-                                                ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                        userApp.User.Roles.Remove(adminRole);
-                                    }
-                                }
-                                else
-                                {
-                                    if (!app.PermitSuperUserAccess)
-                                    {
-                                        if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                                        {
-                                            var superUserRole = userApp
-                                                .User
-                                                .Roles
-                                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
-
-                                            userApp.User.Roles.Remove(superUserRole);
-                                        }
-
-                                        if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                        {
-                                            var adminRole = userApp
-                                                .User
-                                                .Roles
-                                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                            userApp.User.Roles.Remove(adminRole);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        foreach (var userApp in app.Users)
-                        {
-                            userApp.App = null;
-                            userApp.User.Apps = new List<UserApp>();
-                        }
-                    }
-
-                    var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
-
-                    if (requestor != null && !requestor.IsSuperUser)
-                    {
-                        // Filter out user emails from the frontend...
-                        foreach (var userApp in app.Users)
-                        {
-                            var emailConfirmed = userApp.User.EmailConfirmed;
-                            userApp.User.Email = null;
-                            userApp.User.EmailConfirmed = emailConfirmed;
-                        }
-                    }
-
-                    // Filter out duplicate subentities
-                    foreach (var userApp in app.Users)
-                    {
-                        userApp.User.Apps = null;
-
-                        foreach (var userRole in userApp.User.Roles)
-                        {
-                            userRole.User = null;
-                            userRole.Role.Users = null;
-                        }
-                    }
 
                     result.Success = response.Success;
                     result.Message = AppsMessages.AppFoundMessage;
@@ -638,8 +480,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAppsResult> GetApps(
             IPaginator paginator,
-            int requestorId,
-            bool fullRecord = true)
+            int requestorId)
         {
             if (paginator == null) throw new ArgumentNullException(nameof(paginator));
 
@@ -655,7 +496,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await appsRepository.GetAll(fullRecord);
+                var response = await _appsRepository.GetAll();
 
                 if (response.Success)
                 {
@@ -689,35 +530,6 @@ namespace SudokuCollective.Data.Services
 
                                 result.Apps = result.Apps
                                     .OrderByDescending(a => a.Id)
-                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                    .Take(paginator.ItemsPerPage)
-                                    .ToList();
-                            }
-                        }
-                        else if (paginator.SortBy == SortValue.GAMECOUNT)
-                        {
-                            if (!paginator.OrderByDescending)
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Apps.Add((IApp)obj);
-                                }
-
-                                result.Apps = result.Apps
-                                    .OrderBy(a => a.GameCount)
-                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                    .Take(paginator.ItemsPerPage)
-                                    .ToList();
-                            }
-                            else
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Apps.Add((IApp)obj);
-                                }
-
-                                result.Apps = result.Apps
-                                    .OrderByDescending(a => a.GameCount)
                                     .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
                                     .Take(paginator.ItemsPerPage)
                                     .ToList();
@@ -855,93 +667,6 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
 
-                    if (fullRecord)
-                    {
-                        var appAdmins = (await appAdminsRepository.GetAll())
-                            .Objects
-                            .ConvertAll(aa => (AppAdmin)aa)
-                            .ToList();
-
-                        foreach (var app in result.Apps)
-                        {
-                            foreach (var userApp in app.Users)
-                            {
-                                if (userApp
-                                    .User
-                                    .Roles
-                                    .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                {
-                                    if (!userApp.User.IsSuperUser)
-                                    {
-                                        if (!appAdmins.Any(aa =>
-                                            aa.AppId == app.Id &&
-                                            aa.UserId == userApp.User.Id &&
-                                            aa.IsActive))
-                                        {
-                                            var adminRole = userApp
-                                                .User
-                                                .Roles
-                                                .FirstOrDefault(ur =>
-                                                    ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                            userApp.User.Roles.Remove(adminRole);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (!app.PermitSuperUserAccess)
-                                        {
-                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                                            {
-                                                var superUserRole = userApp
-                                                    .User
-                                                    .Roles
-                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
-
-                                                userApp.User.Roles.Remove(superUserRole);
-                                            }
-
-                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                            {
-                                                var adminRole = userApp
-                                                    .User
-                                                    .Roles
-                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                                userApp.User.Roles.Remove(adminRole);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Filter out duplicate subentities
-                            foreach (var userApp in app.Users)
-                            {
-                                userApp.User.Apps = null;
-
-                                foreach (var userRole in userApp.User.Roles)
-                                {
-                                    userRole.User = null;
-                                    userRole.Role.Users = null;
-                                }
-                            }
-
-                            var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
-
-                            if (!requestor.IsSuperUser)
-                            {
-                                // Filter out user emails from the frontend...
-                                foreach (var userApp in app.Users)
-                                {
-                                    var emailConfirmed = userApp.User.EmailConfirmed;
-                                    userApp.User.Email = null;
-                                    userApp.User.EmailConfirmed = emailConfirmed;
-                                }
-                            }
-                        }
-                    }
-
                     result.Success = response.Success;
                     result.Message = AppsMessages.AppsFoundMessage;
 
@@ -973,8 +698,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAppsResult> GetMyApps(
             int ownerId, 
-            IPaginator paginator, 
-            bool fullRecord = true)
+            IPaginator paginator)
         {
             if (paginator == null) throw new ArgumentNullException(nameof(paginator));
 
@@ -990,7 +714,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await appsRepository.GetAll(fullRecord);
+                var response = await _appsRepository.GetAll();
 
                 if (response.Success)
                 {
@@ -1035,37 +759,6 @@ namespace SudokuCollective.Data.Services
                                     .ToList();
                             }
                         }
-                        else if (paginator.SortBy == SortValue.GAMECOUNT)
-                        {
-                            if (!paginator.OrderByDescending)
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Apps.Add((IApp)obj);
-                                }
-
-                                result.Apps = result.Apps
-                                    .Where(a => a.OwnerId == ownerId)
-                                    .OrderBy(a => a.GameCount)
-                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                    .Take(paginator.ItemsPerPage)
-                                    .ToList();
-                            }
-                            else
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Apps.Add((IApp)obj);
-                                }
-
-                                result.Apps = result.Apps
-                                    .Where(a => a.OwnerId == ownerId)
-                                    .OrderByDescending(a => a.GameCount)
-                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                    .Take(paginator.ItemsPerPage)
-                                    .ToList();
-                            }
-                        }
                         else if (paginator.SortBy == SortValue.USERCOUNT)
                         {
                             if (!paginator.OrderByDescending)
@@ -1206,93 +899,6 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
 
-                    if (fullRecord)
-                    {
-                        var appAdmins = (await appAdminsRepository.GetAll())
-                            .Objects
-                            .ConvertAll(aa => (AppAdmin)aa)
-                            .ToList();
-
-                        foreach (var app in result.Apps)
-                        {
-                            foreach (var userApp in app.Users)
-                            {
-                                if (userApp
-                                    .User
-                                    .Roles
-                                    .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                {
-                                    if (!userApp.User.IsSuperUser)
-                                    {
-                                        if (!appAdmins.Any(aa =>
-                                            aa.AppId == app.Id &&
-                                            aa.UserId == userApp.User.Id &&
-                                            aa.IsActive))
-                                        {
-                                            var adminRole = userApp
-                                                .User
-                                                .Roles
-                                                .FirstOrDefault(ur =>
-                                                    ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                            userApp.User.Roles.Remove(adminRole);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (!app.PermitSuperUserAccess)
-                                        {
-                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                                            {
-                                                var superUserRole = userApp
-                                                    .User
-                                                    .Roles
-                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
-
-                                                userApp.User.Roles.Remove(superUserRole);
-                                            }
-
-                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                            {
-                                                var adminRole = userApp
-                                                    .User
-                                                    .Roles
-                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                                userApp.User.Roles.Remove(adminRole);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            var requestor = (User)(await usersRepository.GetById(ownerId)).Object;
-
-                            if (!requestor.IsSuperUser)
-                            {
-                                // Filter out user emails from the frontend...
-                                foreach (var userApp in app.Users)
-                                {
-                                    var emailConfirmed = userApp.User.EmailConfirmed;
-                                    userApp.User.Email = null;
-                                    userApp.User.EmailConfirmed = emailConfirmed;
-                                }
-                            }
-
-                            // Filter out duplicate subentities
-                            foreach (var userApp in app.Users)
-                            {
-                                userApp.User.Apps = null;
-
-                                foreach (var userRole in userApp.User.Roles)
-                                {
-                                    userRole.User = null;
-                                    userRole.Role.Users = null;
-                                }
-                            }
-                        }
-                    }
-
                     result.Success = response.Success;
                     result.Message = AppsMessages.AppsFoundMessage;
 
@@ -1324,8 +930,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAppsResult> GetRegisteredApps(
             int userId,
-            IPaginator paginator,
-            bool fullRecord = true)
+            IPaginator paginator)
         {
             if (paginator == null) throw new ArgumentNullException(nameof(paginator));
 
@@ -1341,7 +946,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await appsRepository.GetMyRegisteredApps(userId, fullRecord);
+                var response = await _appsRepository.GetMyRegisteredApps(userId);
 
                 if (response.Success)
                 {
@@ -1383,35 +988,6 @@ namespace SudokuCollective.Data.Services
                                     .ToList();
                             }
                         }
-                        else if (paginator.SortBy == SortValue.GAMECOUNT)
-                        {
-                            if (!paginator.OrderByDescending)
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Apps.Add((IApp)obj);
-                                }
-
-                                result.Apps = result.Apps
-                                    .OrderBy(a => a.GameCount)
-                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                    .Take(paginator.ItemsPerPage)
-                                    .ToList();
-                            }
-                            else
-                            {
-                                foreach (var obj in response.Objects)
-                                {
-                                    result.Apps.Add((IApp)obj);
-                                }
-
-                                result.Apps = result.Apps
-                                    .OrderByDescending(a => a.GameCount)
-                                    .Skip((paginator.Page - 1) * paginator.ItemsPerPage)
-                                    .Take(paginator.ItemsPerPage)
-                                    .ToList();
-                            }
-                        }
                         else if (paginator.SortBy == SortValue.USERCOUNT)
                         {
                             if (!paginator.OrderByDescending)
@@ -1544,93 +1120,6 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
 
-                    if (fullRecord)
-                    {
-                        var appAdmins = (await appAdminsRepository.GetAll())
-                            .Objects
-                            .ConvertAll(aa => (AppAdmin)aa)
-                            .ToList();
-
-                        foreach (var app in result.Apps)
-                        {
-                            foreach (var userApp in app.Users)
-                            {
-                                if (userApp
-                                    .User
-                                    .Roles
-                                    .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                {
-                                    if (!userApp.User.IsSuperUser)
-                                    {
-                                        if (!appAdmins.Any(aa =>
-                                            aa.AppId == app.Id &&
-                                            aa.UserId == userApp.User.Id &&
-                                            aa.IsActive))
-                                        {
-                                            var adminRole = userApp
-                                                .User
-                                                .Roles
-                                                .FirstOrDefault(ur =>
-                                                    ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                            userApp.User.Roles.Remove(adminRole);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (!app.PermitSuperUserAccess)
-                                        {
-                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                                            {
-                                                var superUserRole = userApp
-                                                    .User
-                                                    .Roles
-                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
-
-                                                userApp.User.Roles.Remove(superUserRole);
-                                            }
-
-                                            if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                            {
-                                                var adminRole = userApp
-                                                    .User
-                                                    .Roles
-                                                    .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                                userApp.User.Roles.Remove(adminRole);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            var requestor = (User)(await usersRepository.GetById(userId)).Object;
-
-                            if (!requestor.IsSuperUser)
-                            {
-                                // Filter out user emails from the frontend...
-                                foreach (var userApp in app.Users)
-                                {
-                                    var emailConfirmed = userApp.User.EmailConfirmed;
-                                    userApp.User.Email = null;
-                                    userApp.User.EmailConfirmed = emailConfirmed;
-                                }
-                            }
-
-                            // Filter out duplicate subentities
-                            foreach (var userApp in app.Users)
-                            {
-                                userApp.User.Apps = null;
-
-                                foreach (var userRole in userApp.User.Roles)
-                                {
-                                    userRole.User = null;
-                                    userRole.Role.Users = null;
-                                }
-                            }
-                        }
-                    }
-
                     result.Success = response.Success;
                     result.Message = AppsMessages.AppsFoundMessage;
 
@@ -1664,8 +1153,7 @@ namespace SudokuCollective.Data.Services
             int id,
             int requestorId,
             IPaginator paginator,
-            bool appUsers = true,
-            bool fullRecord = true)
+            bool appUsers = true)
         {
             if (paginator == null) throw new ArgumentNullException(nameof(paginator));
 
@@ -1687,7 +1175,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var app = (App)(await appsRepository.GetById(id)).Object;
+                var app = (App)(await _appsRepository.Get(id)).Object;
 
                 if (app != null)
                 {
@@ -1695,11 +1183,11 @@ namespace SudokuCollective.Data.Services
 
                     if (appUsers)
                     {
-                        response = await appsRepository.GetAppUsers(id, fullRecord);
+                        response = await _appsRepository.GetAppUsers(id);
                     }
                     else
                     {
-                        response = await appsRepository.GetNonAppUsers(id, fullRecord);
+                        response = await _appsRepository.GetNonAppUsers(id);
                     }
 
                     if (response.Success)
@@ -1919,86 +1407,7 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
 
-                        if (fullRecord)
-                        {
-                            var appAdmins = (await appAdminsRepository.GetAll())
-                                .Objects
-                                .ConvertAll(aa => (AppAdmin)aa)
-                                .ToList();
-
-                            foreach (var user in result.Users)
-                            {
-                                foreach (var userApp in user.Apps)
-                                {
-                                    if (id != 1 && userApp
-                                        .User
-                                        .Roles
-                                        .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                    {
-                                        if (!userApp.User.IsSuperUser)
-                                        {
-                                            if (!appAdmins.Any(aa =>
-                                                aa.AppId == id &&
-                                                aa.UserId == userApp.User.Id &&
-                                                aa.IsActive))
-                                            {
-                                                var adminRole = userApp
-                                                    .User
-                                                    .Roles
-                                                    .FirstOrDefault(ur =>
-                                                        ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                                userApp.User.Roles.Remove(adminRole);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (!app.PermitSuperUserAccess)
-                                            {
-                                                if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                                                {
-                                                    var superUserRole = userApp
-                                                        .User
-                                                        .Roles
-                                                        .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
-
-                                                    userApp.User.Roles.Remove(superUserRole);
-                                                }
-
-                                                if (userApp.User.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
-                                                {
-                                                    var adminRole = userApp
-                                                        .User
-                                                        .Roles
-                                                        .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
-
-                                                    userApp.User.Roles.Remove(adminRole);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                foreach (var userApp in user.Apps)
-                                {
-                                    userApp.App = null;
-                                    userApp.User.Apps = new List<UserApp>();
-                                }
-
-                                foreach (var userRole in user.Roles)
-                                {
-                                    userRole.Role.Users = new List<UserRole>();
-                                }
-
-                                foreach (var game in user.Games)
-                                {
-                                    game.User = null;
-                                    game.SudokuMatrix.Difficulty.Matrices = new List<SudokuMatrix>();
-                                }
-                            }
-                        }
-
-                        var requestor = (User)(await usersRepository.GetById(requestorId)).Object;
+                        var requestor = (User)(await _usersRepository.Get(requestorId)).Object;
 
                         if (requestor != null && !requestor.IsSuperUser)
                         {
@@ -2062,11 +1471,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await appsRepository.HasEntity(id))
+                if (await _appsRepository.HasEntity(id))
                 {
                     result.Success = true;
                     result.Message = AppsMessages.AppFoundMessage;
-                    result.License = await appsRepository.GetLicense(id);
+                    result.License = await _appsRepository.GetLicense(id);
 
                     return result;
                 }
@@ -2109,15 +1518,15 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var appResponse = await appsRepository.GetById(appId);
+                var appResponse = await _appsRepository.Get(appId);
 
                 if (appResponse.Success)
                 {
-                    var userResponse = await usersRepository.GetById(userId);
+                    var userResponse = await _usersRepository.Get(userId);
 
                     if (userResponse.Success)
                     {
-                        var addUserToAppResponse = await appsRepository.AddAppUser(
+                        var addUserToAppResponse = await _appsRepository.AddAppUser(
                             userId,
                             ((App)appResponse.Object).License);
 
@@ -2189,11 +1598,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var appResponse = await appsRepository.GetById(appId);
+                var appResponse = await _appsRepository.Get(appId);
 
                 if (appResponse.Success)
                 {
-                    if (await usersRepository.HasEntity(userId))
+                    if (await _usersRepository.HasEntity(userId))
                     {
                         if (((App)appResponse.Object).OwnerId == userId)
                         {
@@ -2203,7 +1612,7 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
 
-                        var addUserToAppResponse = await appsRepository.RemoveAppUser(
+                        var addUserToAppResponse = await _appsRepository.RemoveAppUser(
                             userId,
                             ((App)appResponse.Object).License);
 
@@ -2253,7 +1662,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> ActivateApp(int id)
+        public async Task<IBaseResult> Activate(int id)
         {
             var result = new BaseResult();
 
@@ -2267,7 +1676,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var activateAppResponse = await appsRepository.Activate(id);
+                var activateAppResponse = await _appsRepository.Activate(id);
 
                 if (activateAppResponse.Success)
                 {
@@ -2300,7 +1709,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IBaseResult> DeactivateApp(int id)
+        public async Task<IBaseResult> Deactivate(int id)
         {
             var result = new BaseResult();
 
@@ -2314,7 +1723,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var activateAppResponse = await appsRepository.Deactivate(id);
+                var activateAppResponse = await _appsRepository.Deactivate(id);
 
                 if (activateAppResponse.Success)
                 {
@@ -2369,11 +1778,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var appResult = await appsRepository.GetById(appId);
+                var appResult = await _appsRepository.Get(appId);
 
                 if (appResult.Success)
                 {
-                    var userResult = await usersRepository.GetById(userId);
+                    var userResult = await _usersRepository.Get(userId);
 
                     if (userResult.Success)
                     {
@@ -2388,18 +1797,18 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
 
-                        if (!await appsRepository.IsUserRegisteredToApp(
+                        if (!await _appsRepository.IsUserRegisteredToApp(
                             app.Id, 
                             app.License, 
                             user.Id))
                         {
-                            _ = await appsRepository.AddAppUser(user.Id, app.License);
+                            _ = await _appsRepository.AddAppUser(user.Id, app.License);
                         }
                         else
                         {
-                            if (await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
+                            if (await _appAdminsRepository.HasAdminRecord(app.Id, user.Id))
                             {
-                                var adminRecord = (AppAdmin)(await appAdminsRepository
+                                var adminRecord = (AppAdmin)(await _appAdminsRepository
                                     .GetAdminRecord(app.Id, user.Id)).Object;
 
                                 if (adminRecord.IsActive)
@@ -2413,7 +1822,7 @@ namespace SudokuCollective.Data.Services
                                 {
                                     adminRecord.IsActive = true;
 
-                                    var adminRecordUpdateResult = await appAdminsRepository
+                                    var adminRecordUpdateResult = await _appAdminsRepository
                                         .Update(adminRecord);
 
                                     result.Success = adminRecordUpdateResult.Success;
@@ -2427,7 +1836,7 @@ namespace SudokuCollective.Data.Services
 
                         if (!user.IsAdmin)
                         {
-                            var adminRole = (await rolesRepository.GetAll())
+                            var adminRole = (await _rolesRepository.GetAll())
                                 .Objects
                                 .ConvertAll(r => (Role)r)
                                 .FirstOrDefault(r => r.RoleLevel == RoleLevel.ADMIN);
@@ -2438,17 +1847,17 @@ namespace SudokuCollective.Data.Services
                                 RoleId = adminRole.Id,
                                 Role = adminRole}) ;
 
-                            user = (User)(await usersRepository.Update(user)).Object;
+                            user = (User)(await _usersRepository.Update(user)).Object;
                         }
 
                         var appAdmin = new AppAdmin(app.Id, user.Id);
 
-                        var appAdminResult = await appAdminsRepository.Add(appAdmin);
+                        var appAdminResult = await _appAdminsRepository.Add(appAdmin);
 
                         if (appAdminResult.Success)
                         {
                             result.User = (User)
-                                (await usersRepository.GetById(userId))
+                                (await _usersRepository.Get(userId))
                                 .Object;
                             result.Success = appAdminResult.Success;
                             result.Message = UsersMessages.UserHasBeenPromotedToAdminMessage;
@@ -2531,11 +1940,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var appResult = await appsRepository.GetById(appId);
+                var appResult = await _appsRepository.Get(appId);
 
                 if (appResult.Success)
                 {
-                    var userResult = await usersRepository.GetById(userId);
+                    var userResult = await _usersRepository.Get(userId);
 
                     if (userResult.Success)
                     {
@@ -2550,7 +1959,7 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
 
-                        if (!await appAdminsRepository.HasAdminRecord(app.Id, user.Id))
+                        if (!await _appAdminsRepository.HasAdminRecord(app.Id, user.Id))
                         {
                             result.Success = false;
                             result.Message = AppsMessages.UserIsNotAnAssignedAdminMessage;
@@ -2559,17 +1968,17 @@ namespace SudokuCollective.Data.Services
                         }
 
                         var appAdmin = (AppAdmin)
-                            (await appAdminsRepository.GetAdminRecord(app.Id, user.Id))
+                            (await _appAdminsRepository.GetAdminRecord(app.Id, user.Id))
                             .Object;
 
                         appAdmin.IsActive = false;
 
-                        var appAdminResult = await appAdminsRepository.Update(appAdmin);
+                        var appAdminResult = await _appAdminsRepository.Update(appAdmin);
 
                         if (appAdminResult.Success)
                         {
                             result.User = (User)
-                                (await usersRepository.GetById(user.Id))
+                                (await _usersRepository.Get(user.Id))
                                 .Object;
                             result.Success = appAdminResult.Success;
                             result.Message = AppsMessages.AdminPrivilegesDeactivatedMessage;
@@ -2639,17 +2048,17 @@ namespace SudokuCollective.Data.Services
                 return false;
             }
 
-            if (await usersRepository.HasEntity(userId) && 
-                await appsRepository.IsAppLicenseValid(license))
+            if (await _usersRepository.HasEntity(userId) && 
+                await _appsRepository.IsAppLicenseValid(license))
             {
-                var requestor = (User)(await usersRepository.GetById(userId, true)).Object;
-                var validLicense = await appsRepository.IsAppLicenseValid(license);
-                var app = (App)(await appsRepository.GetByLicense(license)).Object;
+                var requestor = (User)(await _usersRepository.Get(userId)).Object;
+                var validLicense = await _appsRepository.IsAppLicenseValid(license);
+                var app = (App)(await _appsRepository.GetByLicense(license)).Object;
                 bool userPermittedAccess;
 
                 if (!app.PermitCollectiveLogins)
                 {
-                    userPermittedAccess = await appsRepository
+                    userPermittedAccess = await _appsRepository
                         .IsUserRegisteredToApp(id, license, userId);
                 }
                 else
@@ -2692,12 +2101,12 @@ namespace SudokuCollective.Data.Services
                 return false;
             }
 
-            if (await usersRepository.HasEntity(userId) && 
-                await appsRepository.IsAppLicenseValid(license))
+            if (await _usersRepository.HasEntity(userId) && 
+                await _appsRepository.IsAppLicenseValid(license))
             {
-                var requestor = (User)(await usersRepository.GetById(userId, false)).Object;
-                var validLicense = await appsRepository.IsAppLicenseValid(license);
-                var requestorOwnerOfThisApp = await appsRepository.IsUserOwnerOfApp(id, license, userId);
+                var requestor = (User)(await _usersRepository.Get(userId)).Object;
+                var validLicense = await _appsRepository.IsAppLicenseValid(license);
+                var requestorOwnerOfThisApp = await _appsRepository.IsUserOwnerOfApp(id, license, userId);
 
                 if (requestorOwnerOfThisApp && validLicense)
                 {

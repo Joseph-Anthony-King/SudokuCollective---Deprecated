@@ -243,8 +243,7 @@ export default {
                 this.$data.app.users = [];
 
                 const appUsersResponse = await appService.getAppUsers(
-                  this.$data.app.id,
-                  true
+                  this.$data.app.id
                 );
                 appUsersResponse.data.users.forEach((user) => {
                   const tempUser = new User(user);

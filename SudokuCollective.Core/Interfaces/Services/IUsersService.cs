@@ -15,13 +15,11 @@ namespace SudokuCollective.Core.Interfaces.Services
             string emailtTemplatePath);
         Task<IUserResult> Get(
             int id,
-            string license,
-            bool fullRecord = true);
+            string license);
         Task<IUsersResult> GetUsers(
             int requestorId,
             string license,
-            IPaginator paginator, 
-            bool fullRecord = true);
+            IPaginator paginator);
         Task<IUserResult> Update(
             int id, 
             IUpdateUserRequest request,

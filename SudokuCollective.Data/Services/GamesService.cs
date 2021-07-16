@@ -12,33 +12,40 @@ using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Resiliency;
 using SudokuCollective.Core.Extensions;
+using Microsoft.Extensions.Caching.Distributed;
+using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Data.Services
 {
     public class GamesService : IGamesService
     {
         #region Fields
-        private readonly IGamesRepository<Game> gamesRepository;
-        private readonly IAppsRepository<App> appsRepository;
-        private readonly IUsersRepository<User> usersRepository;
-        private readonly IDifficultiesRepository<Difficulty> difficultiesRepository;
-        private readonly ISolutionsRepository<SudokuSolution> solutionsRepository;
+        private readonly IGamesRepository<Game> _gamesRepository;
+        private readonly IAppsRepository<App> _appsRepository;
+        private readonly IUsersRepository<User> _usersRepository;
+        private readonly IDifficultiesRepository<Difficulty> _difficultiesRepository;
+        private readonly ISolutionsRepository<SudokuSolution> _solutionsRepository;
+        private readonly IDistributedCache _distributedCache;
+        private readonly string cacheKey = CacheKeys.SolutionsCacheKey;
         #endregion
 
         #region Constructor
         public GamesService(
-            IGamesRepository<Game> gamesRepo,
-            IAppsRepository<App> appsRepo,
-            IUsersRepository<User> usersRepo, 
-            IDifficultiesRepository<Difficulty> difficultiesRepo,
-            ISolutionsRepository<SudokuSolution> solutionsRepo)
+            IGamesRepository<Game> gamesRepsitory,
+            IAppsRepository<App> appsRepository,
+            IUsersRepository<User> usersRepository, 
+            IDifficultiesRepository<Difficulty> difficultiesRepository,
+            ISolutionsRepository<SudokuSolution> solutionsRepository,
+            IDistributedCache distributedCache)
         {
-            gamesRepository = gamesRepo;
-            appsRepository = appsRepo;
-            usersRepository = usersRepo;
-            difficultiesRepository = difficultiesRepo;
-            solutionsRepository = solutionsRepo;
+            _gamesRepository = gamesRepsitory;
+            _appsRepository = appsRepository;
+            _usersRepository = usersRepository;
+            _difficultiesRepository = difficultiesRepository;
+            _solutionsRepository = solutionsRepository;
+            _distributedCache = distributedCache;
         }
         #endregion
 
@@ -52,11 +59,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var userResponse = await usersRepository.GetById(request.UserId);
+                var userResponse = await _usersRepository.Get(request.UserId);
 
                 if (userResponse.Success)
                 {
-                    var difficultyResponse = await difficultiesRepository.GetById(request.DifficultyId);
+                    var difficultyResponse = await _difficultiesRepository.Get(request.DifficultyId);
 
                     if (difficultyResponse.Success)
                     {
@@ -68,7 +75,7 @@ namespace SudokuCollective.Data.Services
 
                         game.SudokuMatrix.GenerateSolution();
 
-                        var gameResponse = await gamesRepository.Add(game);
+                        var gameResponse = await _gamesRepository.Add(game);
 
                         if (gameResponse.Success)
                         {
@@ -128,9 +135,9 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await gamesRepository.HasEntity(id))
+                if (await _gamesRepository.HasEntity(id))
                 {
-                    var gameResponse = await gamesRepository.GetById(id, true);
+                    var gameResponse = await _gamesRepository.Get(id);
 
                     if (gameResponse.Success)
                     {
@@ -145,7 +152,7 @@ namespace SudokuCollective.Data.Services
                             }
                         }
 
-                        var updateGameResponse = await gamesRepository.Update((Game)gameResponse.Object);
+                        var updateGameResponse = await _gamesRepository.Update((Game)gameResponse.Object);
 
                         if (updateGameResponse.Success)
                         {
@@ -216,11 +223,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var gameResponse = await gamesRepository.GetById(id);
+                var gameResponse = await _gamesRepository.Get(id);
 
                 if (gameResponse.Success)
                 {
-                    var deleteGameResponse = await gamesRepository.Delete((Game)gameResponse.Object);
+                    var deleteGameResponse = await _gamesRepository.Delete((Game)gameResponse.Object);
 
                     if (deleteGameResponse.Success)
                     {
@@ -268,7 +275,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IGameResult> GetGame(int id, int appId, bool fullRecord = true)
+        public async Task<IGameResult> GetGame(int id, int appId)
         {
             var result = new GameResult();
 
@@ -280,31 +287,13 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await appsRepository.HasEntity(appId))
+                if (await _appsRepository.HasEntity(appId))
                 {
-                    var gameResponse = await gamesRepository.GetAppGame(id, appId, fullRecord);
+                    var gameResponse = await _gamesRepository.GetAppGame(id, appId);
 
                     if (gameResponse.Success)
                     {
                         var game = (Game)gameResponse.Object;
-
-                        if (fullRecord)
-                        {
-                            foreach (var userRole in game.User.Roles)
-                            {
-                                userRole.Role.Users = null;
-                            }
-
-                            game.User.Apps = null;
-
-                            game.SudokuMatrix.Difficulty.Matrices = null;
-                        }
-                        else
-                        {
-                            game.User = null;
-                            game.SudokuMatrix = null;
-                            game.SudokuSolution = null;
-                        }
 
                         result.Success = true;
                         result.Message = GamesMessages.GameFoundMessage;
@@ -345,8 +334,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IGamesResult> GetGames(
-            IGamesRequest request, 
-            bool fullRecord = true)
+            IGamesRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
@@ -354,9 +342,9 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await appsRepository.HasEntity(request.AppId))
+                if (await _appsRepository.HasEntity(request.AppId))
                 {
-                    var response = await gamesRepository.GetAppGames(request.AppId, fullRecord);
+                    var response = await _gamesRepository.GetAppGames(request.AppId);
 
                     if (response.Success)
                     {
@@ -513,30 +501,6 @@ namespace SudokuCollective.Data.Services
                             result.Games = response.Objects.ConvertAll(g => (IGame)g);
                         }
 
-                        if (fullRecord)
-                        {
-                            foreach (var game in result.Games)
-                            {
-                                foreach (var userRole in game.User.Roles)
-                                {
-                                    userRole.Role.Users = null;
-                                }
-
-                                game.User.Apps = null;
-
-                                game.SudokuMatrix.Difficulty.Matrices = null;
-                            }
-                        }
-                        else
-                        {
-                            foreach (var game in result.Games)
-                            {
-                                game.User = null;
-                                game.SudokuMatrix = null;
-                                game.SudokuSolution = null;
-                            }
-                        }
-
                         result.Success = response.Success;
                         result.Message = GamesMessages.GamesFoundMessage;
 
@@ -576,8 +540,7 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IGameResult> GetMyGame(
             int id, 
-            IGamesRequest request, 
-            bool fullRecord = true)
+            IGamesRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
@@ -593,35 +556,16 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await appsRepository.HasEntity(request.AppId))
+                if (await _appsRepository.HasEntity(request.AppId))
                 {
-                    var gameResponse = await gamesRepository.GetMyGame(
+                    var gameResponse = await _gamesRepository.GetMyGame(
                         request.UserId, 
                         id,
-                        request.AppId, 
-                        fullRecord);
+                        request.AppId);
 
                     if (gameResponse.Success)
                     {
                         var game = (Game)gameResponse.Object;
-
-                        if (fullRecord)
-                        {
-                            foreach (var userRole in game.User.Roles)
-                            {
-                                userRole.Role.Users = null;
-                            }
-
-                            game.User.Apps = null;
-
-                            game.SudokuMatrix.Difficulty.Matrices = null;
-                        }
-                        else
-                        {
-                            game.User = null;
-                            game.SudokuMatrix = null;
-                            game.SudokuSolution = null;
-                        }
 
                         result.Success = true;
                         result.Message = GamesMessages.GameFoundMessage;
@@ -662,8 +606,7 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IGamesResult> GetMyGames(
-            IGamesRequest request,
-            bool fullRecord = true)
+            IGamesRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
@@ -671,12 +614,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await appsRepository.HasEntity(request.AppId))
+                if (await _appsRepository.HasEntity(request.AppId))
                 {
-                    var response = await gamesRepository.GetMyGames(
+                    var response = await _gamesRepository.GetMyGames(
                         request.UserId,
-                        request.AppId, 
-                        fullRecord);
+                        request.AppId);
 
                     if (response.Success)
                     {
@@ -833,30 +775,6 @@ namespace SudokuCollective.Data.Services
                             result.Games = response.Objects.ConvertAll(g => (IGame)g);
                         }
 
-                        if (fullRecord)
-                        {
-                            foreach (var game in result.Games)
-                            {
-                                foreach (var userRole in game.User.Roles)
-                                {
-                                    userRole.Role.Users = null;
-                                }
-
-                                game.User.Apps = null;
-
-                                game.SudokuMatrix.Difficulty.Matrices = null;
-                            }
-                        }
-                        else
-                        {
-                            foreach (var game in result.Games)
-                            {
-                                game.User = null;
-                                game.SudokuMatrix = null;
-                                game.SudokuSolution = null;
-                            }
-                        }
-
                         result.Success = response.Success;
                         result.Message = GamesMessages.GamesFoundMessage;
 
@@ -910,9 +828,9 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await appsRepository.HasEntity(request.AppId))
+                if (await _appsRepository.HasEntity(request.AppId))
                 {
-                    var response = await gamesRepository.DeleteMyGame(
+                    var response = await _gamesRepository.DeleteMyGame(
                         request.UserId, 
                         id, 
                         request.AppId);
@@ -972,7 +890,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var gameResponse = await gamesRepository.GetById(id, true);
+                var gameResponse = await _gamesRepository.Get(id);
 
                 if (gameResponse.Success)
                 {
@@ -996,7 +914,7 @@ namespace SudokuCollective.Data.Services
                         result.Message = GamesMessages.GameNotSolvedMessage;
                     }
 
-                    var updateGameResponse = await gamesRepository.Update((Game)gameResponse.Object);
+                    var updateGameResponse = await _gamesRepository.Update((Game)gameResponse.Object);
 
                     if (updateGameResponse.Success)
                     {
@@ -1050,7 +968,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await difficultiesRepository.HasDifficultyLevel(difficultyLevel))
+                if (await _difficultiesRepository.HasDifficultyLevel(difficultyLevel))
                 {
                     var game = new Game(new Difficulty { DifficultyLevel = difficultyLevel });
 
@@ -1109,13 +1027,27 @@ namespace SudokuCollective.Data.Services
             if (result.Success)
             {
                 // Add solution to the database
-                var solutionsResponse = await solutionsRepository.GetSolvedSolutions();
+                var response = new RepositoryResponse();
 
-                if (solutionsResponse.Success)
+                var fromCacheOrDB = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
+                    _solutionsRepository,
+                    _distributedCache,
+                    response,
+                    result,
+                    cacheKey,
+                    DateTime.Now.AddHours(1));
+
+                response = (RepositoryResponse)fromCacheOrDB.Item1;
+                result = (BaseResult)fromCacheOrDB.Item2;
+
+                if (response.Success)
                 {
                     var solutionInDB = false;
 
-                    foreach (var solution in solutionsResponse.Objects.ConvertAll(s => (SudokuSolution)s))
+                    foreach (var solution in response
+                        .Objects
+                        .ConvertAll(s => (SudokuSolution)s)
+                        .Where(s => s.DateSolved > DateTime.MinValue))
                     {
                         if (solution.SolutionList.IsThisListEqual(game.SudokuSolution.SolutionList))
                         {
@@ -1125,7 +1057,7 @@ namespace SudokuCollective.Data.Services
 
                     if (!solutionInDB)
                     {
-                        _ = solutionsRepository.Create(game.SudokuSolution);
+                        _ = _solutionsRepository.Add(game.SudokuSolution);
                     }
                 }
 

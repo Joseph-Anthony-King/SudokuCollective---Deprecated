@@ -34,7 +34,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             RolesRepositorySuccessfulRequest.Setup(rolesRepo =>
-                rolesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                rolesRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -42,7 +42,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             RolesRepositorySuccessfulRequest.Setup(rolesRepo =>
-                rolesRepo.GetAll(It.IsAny<bool>()))
+                rolesRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -101,14 +101,14 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             RolesRepositoryFailedRequest.Setup(rolesRepo =>
-                rolesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                rolesRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             RolesRepositoryFailedRequest.Setup(rolesRepo =>
-                rolesRepo.GetAll(It.IsAny<bool>()))
+                rolesRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false

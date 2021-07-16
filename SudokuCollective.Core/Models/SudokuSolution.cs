@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Interfaces.Models;
@@ -38,6 +39,7 @@ namespace SudokuCollective.Core.Models
         public List<int> SeventhRow { get => GetValues(54, 9); }
         public List<int> EighthRow { get => GetValues(63, 9); }
         public List<int> NinthRow { get => GetValues(72, 9); }
+        [IgnoreDataMember]
         public virtual Game Game { get; set; }
         #endregion
 

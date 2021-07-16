@@ -39,21 +39,10 @@
         </v-card-title>
         <v-data-table
           v-model="selectedUsers"
-          :headers="adminHeaders"
-          :items="app.users"
-          show-select
-          class="elevation-1"
-          v-if="app.id === 1"
-          :search="search"
-        >
-        </v-data-table>
-        <v-data-table
-          v-model="selectedUsers"
           :headers="headers"
           :items="app.users"
           show-select
           class="elevation-1"
-          v-if="app.id !== 1"
           :search="search"
         >
         </v-data-table>
@@ -162,19 +151,6 @@ export default {
     app: new App(),
     search: "",
     selectedUsers: [],
-    adminHeaders: [
-      {
-        text: "App Users",
-        align: "start",
-        sortable: true,
-        value: "userName",
-      },
-      { text: "Id", value: "id" },
-      { text: "First Name", value: "firstName" },
-      { text: "Last Name", value: "lastName" },
-      { text: "Admin", value: "isAdmin" },
-      { text: "Signed Up Date", value: "signedUpDate" },
-    ],
     headers: [
       {
         text: "App Users",
@@ -185,7 +161,6 @@ export default {
       { text: "Id", value: "id" },
       { text: "First Name", value: "firstName" },
       { text: "Last Name", value: "lastName" },
-      { text: "Game Count", value: "gameCount" },
       { text: "Admin", value: "isAdmin" },
       { text: "Signed Up Date", value: "signedUpDate" },
     ],
@@ -194,7 +169,7 @@ export default {
     ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
 
     async refreshApp() {
-      var response = await appService.getApp(this.$data.app.id, true);
+      var response = await appService.getApp(this.$data.app.id);
 
       if (response.data.success) {
         this.$data.app = new App(response.data.app);

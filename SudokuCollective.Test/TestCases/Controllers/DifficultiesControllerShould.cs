@@ -106,7 +106,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.GetDifficulties(true);
+            var result = sutSuccess.GetDifficulties();
             var message = ((DifficultiesResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var difficulties = ((DifficultiesResult)((OkObjectResult)result.Result.Result).Value).Difficulties;
@@ -125,7 +125,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.GetDifficulties(true);
+            var result = sutFailure.GetDifficulties();
             var message = ((DifficultiesResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 

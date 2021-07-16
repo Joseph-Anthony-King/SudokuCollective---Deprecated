@@ -13,15 +13,9 @@ import {
   getCancelAllEmailRequestsEndpoint,
 } from "./service.endpoints";
 
-const getUser = async function (id, fullRecord) {
+const getUser = async function (id) {
   try {
-    let params = "";
-
-    if (fullRecord === undefined) {
-      params = `/${id}?fullrecord=false`;
-    } else {
-      params = `/${id}?fullrecord=${fullRecord}`;
-    }
+    let params = `/${id}`;
 
     const config = {
       method: "post",
@@ -41,19 +35,11 @@ const getUser = async function (id, fullRecord) {
   }
 };
 
-const getUsers = async function (data, fullRecord) {
+const getUsers = async function (data) {
   try {
-    let params = "";
-
-    if (fullRecord === undefined) {
-      params = `?fullrecord=false`;
-    } else {
-      params = `?fullrecord=${fullRecord}`;
-    }
-
     const config = {
       method: "post",
-      url: `${getUserEnpoint}${params}`,
+      url: `${getUserEnpoint}`,
       headers: requestHeader(),
       data: requestData(data),
     };

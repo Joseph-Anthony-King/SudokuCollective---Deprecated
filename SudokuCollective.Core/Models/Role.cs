@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
@@ -18,6 +19,7 @@ namespace SudokuCollective.Core.Models
         public string Name { get; set; }
         [Required]
         public RoleLevel RoleLevel { get; set; }
+        [IgnoreDataMember]
         public virtual List<UserRole> Users {
 
             get

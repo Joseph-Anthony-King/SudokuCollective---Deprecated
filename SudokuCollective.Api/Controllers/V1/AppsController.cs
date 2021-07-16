@@ -17,11 +17,9 @@ namespace SudokuCollective.Api.V1.Controllers
     {
         private readonly IAppsService appsService;
         private readonly List<string> all = new List<string> { "app", "difficulty", "game", "user" };
-        private readonly List<string> appAndDifficulty = new List<string> { "app", "difficulty" };
         private readonly List<string> app = new List<string> { "app" };
         private readonly List<string> authToken = new List<string> { "auth token access period" };
         private readonly List<string> game = new List<string> { "game" };
-        private readonly List<string> gameAndDifficulty = new List<string> { "difficulty", "game" };
         private readonly List<string> user = new List<string> { "user" };
 
         public AppsController(IAppsService appsServ)
@@ -34,15 +32,14 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost, Route("{id}")]
         public async Task<ActionResult<App>> Get(
             int id,
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.Get(id, request.RequestorId, fullRecord);
+                var result = await appsService.Get(id, request.RequestorId);
 
                 if (result.Success)
                 {
@@ -133,11 +130,10 @@ namespace SudokuCollective.Api.V1.Controllers
         [AllowAnonymous]
         [HttpPost, Route("GetByLicense")]
         public async Task<ActionResult<App>> GetByLicense(
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             var result = await appsService
-                .GetAppByLicense(request.License, request.RequestorId, fullRecord);
+                .GetAppByLicense(request.License, request.RequestorId);
 
             if (result.Success)
             {
@@ -157,8 +153,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<App>>> GetApps(
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -166,7 +161,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId))
             {
                 var result = await appsService
-                    .GetApps(request.Paginator, request.RequestorId, fullRecord);
+                    .GetApps(request.Paginator, request.RequestorId);
 
                 if (result.Success)
                 {
@@ -191,8 +186,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("GetMyApps")]
         public async Task<ActionResult<IEnumerable<App>>> GetMyApps(
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -202,8 +196,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 var result = await appsService
                     .GetMyApps(
                     request.RequestorId,
-                    request.Paginator,
-                    fullRecord);
+                    request.Paginator);
 
                 if (result.Success)
                 {
@@ -229,8 +222,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost, Route("GetMyRegistered/{userId}")]
         public async Task<ActionResult> RegisteredApps(
             int userId,
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -239,8 +231,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await appsService.GetRegisteredApps(
                     userId,
-                    request.Paginator,
-                    fullRecord);
+                    request.Paginator);
 
                 if (result.Success)
                 {
@@ -266,8 +257,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost, Route("{id}/GetAppUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetAppUsers(
             int id,
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -279,8 +269,7 @@ namespace SudokuCollective.Api.V1.Controllers
                         id,
                         request.RequestorId,
                         request.Paginator,
-                        true,
-                        fullRecord);
+                        true);
 
                 if (result.Success)
                 {
@@ -306,8 +295,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost, Route("{id}/GetNonAppUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetNonAppUsers(
             int id,
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -319,8 +307,7 @@ namespace SudokuCollective.Api.V1.Controllers
                         id,
                         request.RequestorId,
                         request.Paginator,
-                        false,
-                        fullRecord);
+                        false);
 
                 if (result.Success)
                 {
@@ -414,7 +401,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPut, Route("{id}/Activate")]
         public async Task<IActionResult> Activate(int id)
         {
-            var result = await appsService.ActivateApp(id);
+            var result = await appsService.Activate(id);
 
             if (result.Success)
             {
@@ -435,7 +422,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPut, Route("{id}/Deactivate")]
         public async Task<IActionResult> Deactivate(int id)
         {
-            var result = await appsService.DeactivateApp(id);
+            var result = await appsService.Deactivate(id);
 
             if (result.Success)
             {
@@ -618,7 +605,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 new EnumListItem { 
                     Label = "Game Count", 
                     Value = (int)SortValue.GAMECOUNT,
-                    AppliesTo = app },
+                    AppliesTo = user },
                 new EnumListItem { 
                     Label = "App Count", 
                     Value = (int)SortValue.APPCOUNT,
@@ -626,7 +613,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 new EnumListItem { 
                     Label = "Name", 
                     Value = (int)SortValue.NAME,
-                    AppliesTo = appAndDifficulty },
+                    AppliesTo = app },
                 new EnumListItem { 
                     Label = "Date Created", 
                     Value = (int)SortValue.DATECREATED,
@@ -638,7 +625,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 new EnumListItem { 
                     Label = "Difficulty Level", 
                     Value = (int)SortValue.DIFFICULTYLEVEL,
-                    AppliesTo = gameAndDifficulty },
+                    AppliesTo = game },
                 new EnumListItem {
                     Label = "User Count",
                     Value = (int)SortValue.USERCOUNT,

@@ -16,13 +16,13 @@ namespace SudokuCollective.Data.Repositories
     public class DifficultiesRepository<TEntity> : IDifficultiesRepository<TEntity> where TEntity : Difficulty
     {
         #region Fields
-        private readonly DatabaseContext context;
+        private readonly DatabaseContext _context;
         #endregion
 
         #region Constructor
-        public DifficultiesRepository(DatabaseContext databaseContext)
+        public DifficultiesRepository(DatabaseContext context)
         {
-            context = databaseContext;
+            _context = context;
         }
         #endregion
 
@@ -35,16 +35,16 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.Difficulties.AnyAsync(d => d.DifficultyLevel == entity.DifficultyLevel))
+                if (await _context.Difficulties.AnyAsync(d => d.DifficultyLevel == entity.DifficultyLevel))
                 {
                     result.Success = false;
 
                     return result;
                 }
 
-                context.Attach(entity);
+                _context.Attach(entity);
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -62,7 +62,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Object = entity;
@@ -78,7 +78,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> Get(int id)
         {
             var result = new RepositoryResponse();
 
@@ -93,22 +93,9 @@ namespace SudokuCollective.Data.Repositories
             {
                 var query = new Difficulty();
 
-                if (fullRecord)
-                {
-                    query = await context
-                        .Difficulties
-                        .Include(d => d.Matrices)
-                            .ThenInclude(m => m.SudokuCells)
-                        .Include(d => d.Matrices)
-                            .ThenInclude(m => m.Game)
-                        .FirstOrDefaultAsync(d => d.Id == id);
-                }
-                else
-                {
-                    query = await context
-                        .Difficulties
-                        .FirstOrDefaultAsync(d => d.Id == id);
-                }
+                query = await _context
+                    .Difficulties
+                    .FirstOrDefaultAsync(d => d.Id == id);
 
                 if (query == null)
                 {
@@ -132,37 +119,20 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAll()
         {
             var result = new RepositoryResponse();
             var query = new List<Difficulty>();
 
             try
             {
-                if (fullRecord)
-                {
-                    query = await context
-                        .Difficulties
-                        .Include(d => d.Matrices)
-                            .ThenInclude(m => m.SudokuCells)
-                        .Include(d => d.Matrices)
-                            .ThenInclude(m => m.Game)
-                        .Where(d => 
-                            d.DifficultyLevel != DifficultyLevel.NULL 
-                            && d.DifficultyLevel != DifficultyLevel.TEST)
-                        .OrderBy(d => d.DifficultyLevel)
-                        .ToListAsync();
-                }
-                else
-                {
-                    query = await context
-                        .Difficulties
-                        .Where(d =>
-                            d.DifficultyLevel != DifficultyLevel.NULL
-                            && d.DifficultyLevel != DifficultyLevel.TEST)
-                        .OrderBy(d => d.DifficultyLevel)
-                        .ToListAsync();
-                }
+                query = await _context
+                    .Difficulties
+                    .Where(d =>
+                        d.DifficultyLevel != DifficultyLevel.NULL
+                        && d.DifficultyLevel != DifficultyLevel.TEST)
+                    .OrderBy(d => d.DifficultyLevel)
+                    .ToListAsync();
 
                 if (query.Count == 0)
                 {
@@ -195,11 +165,11 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.Difficulties.AnyAsync(d => d.Id == entity.Id))
+                if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                 {
-                    context.Attach(entity);
+                    _context.Attach(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -217,7 +187,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -257,9 +227,9 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    if (await context.Difficulties.AnyAsync(d => d.Id == entity.Id))
+                    if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                     {
-                        context.Attach(entity);
+                        _context.Attach(entity);
                     }
                     else
                     {
@@ -269,7 +239,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -287,7 +257,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
 
@@ -310,13 +280,13 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.Difficulties.AnyAsync(d => d.Id == entity.Id))
+                if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                 {
-                    context.Remove(entity);
+                    _context.Remove(entity);
 
                     if (entity.Matrices.Count == 0)
                     {
-                        var games = await context
+                        var games = await _context
                             .Games
                             .Include(g => g.SudokuMatrix)
                                 .ThenInclude(m => m.SudokuCells)
@@ -326,12 +296,12 @@ namespace SudokuCollective.Data.Repositories
                         {
                             if (game.SudokuMatrix.DifficultyId == entity.Id)
                             {
-                                context.Remove(game);
+                                _context.Remove(game);
                             }
                         }
                     }
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -353,7 +323,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -393,13 +363,13 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    if (await context.Difficulties.AnyAsync(d => d.Id == entity.Id))
+                    if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                     {
-                        context.Remove(entity);
+                        _context.Remove(entity);
 
                         if (entity.Matrices.Count == 0)
                         {
-                            var games = await context
+                            var games = await _context
                                 .Games
                                 .Include(g => g.SudokuMatrix)
                                     .ThenInclude(m => m.SudokuCells)
@@ -409,7 +379,7 @@ namespace SudokuCollective.Data.Repositories
                             {
                                 if (game.SudokuMatrix.DifficultyId == entity.Id)
                                 {
-                                    context.Remove(game);
+                                    _context.Remove(game);
                                 }
                             }
                         }
@@ -422,7 +392,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -444,7 +414,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
 
@@ -461,12 +431,12 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> HasEntity(int id)
         {
-           return await context.Difficulties.AnyAsync(d => d.Id == id);
+           return await _context.Difficulties.AnyAsync(d => d.Id == id);
         }
 
         public async Task<bool> HasDifficultyLevel(DifficultyLevel level)
         {
-            return await context.Difficulties.AnyAsync(d => d.DifficultyLevel == level);
+            return await _context.Difficulties.AnyAsync(d => d.DifficultyLevel == level);
         }
         #endregion
     }

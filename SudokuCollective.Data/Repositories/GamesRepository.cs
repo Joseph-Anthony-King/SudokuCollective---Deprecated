@@ -16,13 +16,13 @@ namespace SudokuCollective.Data.Repositories
     public class GamesRepository<TEntity> : IGamesRepository<TEntity> where TEntity : Game
     {
         #region Fields
-        private readonly DatabaseContext context;
+        private readonly DatabaseContext _context;
         #endregion
 
         #region Constructor
-        public GamesRepository(DatabaseContext databaseContext)
+        public GamesRepository(DatabaseContext context)
         {
-            context = databaseContext;
+            _context = context;
         }
         #endregion
 
@@ -42,9 +42,9 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.Attach(entity);
+                _context.Attach(entity);
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -62,7 +62,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Object = entity;
@@ -78,7 +78,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> Get(int id)
         {
             var result = new RepositoryResponse();
 
@@ -93,41 +93,29 @@ namespace SudokuCollective.Data.Repositories
             {
                 var query = new Game();
 
-                if (fullRecord)
-                {
-                    query = await context
-                        .Games
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.Difficulty)
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.SudokuCells)
-                        .Include(g => g.SudokuSolution)
-                        .FirstOrDefaultAsync(g => g.Id == id);
+                query = await _context
+                    .Games
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.Difficulty)
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.SudokuCells)
+                    .Include(g => g.SudokuSolution)
+                    .FirstOrDefaultAsync(g => g.Id == id);
 
-                    if (query != null)
-                    {
-                        query.SudokuMatrix.SudokuCells = query
-                            .SudokuMatrix
-                            .SudokuCells
-                            .OrderBy(c => c.Index)
-                            .ToList();
-                    }
-                }
-                else
+                if (query != null)
                 {
-                    query = await context
-                        .Games
-                        .FirstOrDefaultAsync(g => g.Id == id);
-                }
+                    query.SudokuMatrix.SudokuCells = query
+                        .SudokuMatrix
+                        .SudokuCells
+                        .OrderBy(c => c.Index)
+                        .ToList();
 
-                if (query == null)
-                {
-                    result.Success = false;
-                }
-                else
-                {
                     result.Success = true;
                     result.Object = query;
+                }
+                else
+                {
+                    result.Success = false;
                 }
 
                 return result;
@@ -141,51 +129,41 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAll()
         {
             var result = new RepositoryResponse();
             var query = new List<Game>();
 
             try
             {
-                if (fullRecord)
-                {
-                    query = await context
-                        .Games
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.Difficulty)
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.SudokuCells)
-                        .Include(g => g.SudokuSolution)
-                        .ToListAsync();
+                query = await _context
+                    .Games
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.Difficulty)
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.SudokuCells)
+                    .Include(g => g.SudokuSolution)
+                    .ToListAsync();
 
-                    if (query.Count > 0)
+                if (query.Count > 0)
+                {
+                    foreach (var game in query)
                     {
-                        foreach (var game in query)
-                        {
-                            game.SudokuMatrix.SudokuCells = game
-                                .SudokuMatrix
-                                .SudokuCells
-                                .OrderBy(c => c.Index)
-                                .ToList();
-                        }
+                        game.SudokuMatrix.SudokuCells = game
+                            .SudokuMatrix
+                            .SudokuCells
+                            .OrderBy(c => c.Index)
+                            .ToList();
                     }
-                }
-                else
-                {
-                    query = await context.Games.ToListAsync();
-                }
 
-                if (query.Count == 0)
-                {
-                    result.Success = false;
-                }
-                else
-                {
                     result.Success = true;
                     result.Objects = query
                         .ConvertAll(g => (IEntityBase)g)
                         .ToList();
+                }
+                else
+                {
+                    result.Success = false;
                 }
 
                 return result;
@@ -214,13 +192,13 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.Games.AnyAsync(g => g.Id == entity.Id))
+                if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                 {
                     entity.DateUpdated = DateTime.UtcNow;
 
-                    context.Attach(entity);
+                    _context.Attach(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -238,7 +216,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -278,11 +256,11 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    if (await context.Games.AnyAsync(g => g.Id == entity.Id))
+                    if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                     {
                         entity.DateUpdated = dateUpdated;
 
-                        context.Attach(entity);
+                        _context.Attach(entity);
                     }
                     else
                     {
@@ -292,7 +270,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -310,7 +288,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
 
@@ -340,11 +318,11 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.Games.AnyAsync(g => g.Id == entity.Id))
+                if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                 {
-                    context.Remove(entity);
+                    _context.Remove(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -362,7 +340,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
 
@@ -401,9 +379,9 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    if (await context.Games.AnyAsync(g => g.Id == entity.Id))
+                    if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                     {
-                        context.Remove(entity);
+                        _context.Remove(entity);
                     }
                     else
                     {
@@ -413,7 +391,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -446,10 +424,10 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> HasEntity(int id)
         {
-            return await context.Games.AnyAsync(g => g.Id == id);
+            return await _context.Games.AnyAsync(g => g.Id == id);
         }
 
-        public async Task<IRepositoryResponse> GetAppGame(int id, int appid, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAppGame(int id, int appid)
         {
             var result = new RepositoryResponse();
 
@@ -464,42 +442,30 @@ namespace SudokuCollective.Data.Repositories
             {
                 var query = new Game();
 
-                if (fullRecord)
-                {
-                    query = await context
-                        .Games
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.Difficulty)
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.SudokuCells)
-                        .Include(g => g.SudokuSolution)
-                        .FirstOrDefaultAsync(g => g.Id == id && g.AppId == appid);
+                query = await _context
+                    .Games
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.Difficulty)
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.SudokuCells)
+                    .Include(g => g.SudokuSolution)
+                    .FirstOrDefaultAsync(g => g.Id == id && g.AppId == appid);
 
-                    if (query != null)
-                    {
-                        query.SudokuMatrix.SudokuCells = query
-                            .SudokuMatrix
-                            .SudokuCells
-                            .Where(c => c.Id != 0)
-                            .OrderBy(c => c.Index)
-                            .ToList();
-                    }
-                }
-                else
+                if (query != null)
                 {
-                    query = await context
-                        .Games
-                        .FirstOrDefaultAsync(g => g.Id == id && g.AppId == appid);
-                }
+                    query.SudokuMatrix.SudokuCells = query
+                        .SudokuMatrix
+                        .SudokuCells
+                        .Where(c => c.Id != 0)
+                        .OrderBy(c => c.Index)
+                        .ToList();
 
-                if (query == null)
-                {
-                    result.Success = false;
-                }
-                else
-                {
                     result.Success = true;
                     result.Object = query;
+                }
+                else
+                {
+                    result.Success = false;
                 }
 
                 return result;
@@ -513,7 +479,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetAppGames(int appid, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAppGames(int appid)
         {
             var result = new RepositoryResponse();
 
@@ -528,47 +494,34 @@ namespace SudokuCollective.Data.Repositories
             {
                 var query = new List<Game>();
 
-                if (fullRecord)
-                {
-                    query = await context
-                        .Games
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.Difficulty)
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.SudokuCells)
-                        .Include(g => g.SudokuSolution)
-                        .Where(g => g.AppId == appid)
-                        .ToListAsync();
+                query = await _context
+                    .Games
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.Difficulty)
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.SudokuCells)
+                    .Include(g => g.SudokuSolution)
+                    .Where(g => g.AppId == appid)
+                    .ToListAsync();
 
-                    if (query.Count > 0)
+                if (query.Count > 0)
+                {
+                    foreach (var game in query)
                     {
-                        foreach (var game in query)
-                        {
-                            game.SudokuMatrix.SudokuCells = game
-                                .SudokuMatrix
-                                .SudokuCells
-                                .Where(c => c.Id != 0)
-                                .OrderBy(c => c.Index)
-                                .ToList();
-                        }
+                        game.SudokuMatrix.SudokuCells = game
+                            .SudokuMatrix
+                            .SudokuCells
+                            .Where(c => c.Id != 0)
+                            .OrderBy(c => c.Index)
+                            .ToList();
                     }
-                }
-                else
-                {
-                    query = await context
-                        .Games
-                        .Where(g => g.AppId == appid)
-                        .ToListAsync();
-                }
 
-                if (query.Count == 0)
-                {
-                    result.Success = false;
-                }
-                else
-                {
                     result.Success = true;
                     result.Objects = query.ConvertAll(g => (IEntityBase)g);
+                }
+                else
+                {
+                    result.Success = false;
                 }
 
                 return result;
@@ -582,7 +535,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetMyGame(int userid, int gameid, int appid, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetMyGame(int userid, int gameid, int appid)
         {
             var result = new RepositoryResponse();
 
@@ -597,49 +550,34 @@ namespace SudokuCollective.Data.Repositories
             {
                 var query = new Game();
 
-                if (fullRecord)
-                {
-                    query = await context
-                        .Games
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.Difficulty)
-                        .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.SudokuCells)
-                        .Include(g => g.SudokuSolution)
-                        .Where(g => g.AppId == appid)
-                        .FirstOrDefaultAsync(predicate:
-                            g => g.Id == gameid
-                            && g.AppId == appid
-                            && g.UserId == userid);
+                query = await _context
+                    .Games
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.Difficulty)
+                    .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.SudokuCells)
+                    .Include(g => g.SudokuSolution)
+                    .Where(g => g.AppId == appid)
+                    .FirstOrDefaultAsync(predicate:
+                        g => g.Id == gameid
+                        && g.AppId == appid
+                        && g.UserId == userid);
 
-                    if (query != null)
-                    {
-                        query.SudokuMatrix.SudokuCells = query
-                            .SudokuMatrix
-                            .SudokuCells
-                            .Where(c => c.Id != 0)
-                            .OrderBy(c => c.Index)
-                            .ToList();
-                    }
-                }
-                else
+                if (query != null)
                 {
-                    query = await context
-                        .Games
-                        .FirstOrDefaultAsync(predicate:
-                            g => g.Id == gameid
-                            && g.AppId == appid
-                            && g.UserId == userid);
-                }
+                    query.SudokuMatrix.SudokuCells = query
+                        .SudokuMatrix
+                        .SudokuCells
+                        .Where(c => c.Id != 0)
+                        .OrderBy(c => c.Index)
+                        .ToList();
 
-                if (query == null)
-                {
-                    result.Success = false;
-                }
-                else
-                {
                     result.Success = true;
                     result.Object = query;
+                }
+                else
+                {
+                    result.Success = false;
                 }
 
                 return result;
@@ -653,7 +591,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetMyGames(int userid, int appid, bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetMyGames(int userid, int appid)
         {
             var result = new RepositoryResponse();
 
@@ -666,51 +604,38 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.Users.AnyAsync(u => u.Id == userid) && await context.Apps.AnyAsync(a => a.Id == appid))
+                if (await _context.Users.AnyAsync(u => u.Id == userid) && await _context.Apps.AnyAsync(a => a.Id == appid))
                 {
                     var query = new List<Game>();
 
-                    if (fullRecord)
-                    {
-                        query = await context
-                            .Games
-                            .Include(g => g.SudokuMatrix)
-                                .ThenInclude(g => g.Difficulty)
-                            .Include(g => g.SudokuMatrix)
-                                .ThenInclude(g => g.SudokuCells)
-                            .Include(g => g.SudokuSolution)
-                            .Where(g => g.AppId == appid && g.UserId == userid)
-                            .ToListAsync();
+                    query = await _context
+                        .Games
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.Difficulty)
+                        .Include(g => g.SudokuMatrix)
+                            .ThenInclude(g => g.SudokuCells)
+                        .Include(g => g.SudokuSolution)
+                        .Where(g => g.AppId == appid && g.UserId == userid)
+                        .ToListAsync();
 
-                        if (query.Count > 0)
+                    if (query.Count > 0)
+                    {
+                        foreach (var game in query)
                         {
-                            foreach (var game in query)
-                            {
-                                game.SudokuMatrix.SudokuCells = game
-                                    .SudokuMatrix
-                                    .SudokuCells
-                                    .Where(c => c.Id != 0)
-                                    .OrderBy(c => c.Index)
-                                    .ToList();
-                            }
+                            game.SudokuMatrix.SudokuCells = game
+                                .SudokuMatrix
+                                .SudokuCells
+                                .Where(c => c.Id != 0)
+                                .OrderBy(c => c.Index)
+                                .ToList();
                         }
-                    }
-                    else
-                    {
-                        query = await context
-                            .Games
-                            .Where(g => g.AppId == appid && g.UserId == userid)
-                            .ToListAsync();
-                    }
 
-                    if (query.Count == 0)
-                    {
-                        result.Success = false;
-                    }
-                    else
-                    {
                         result.Success = true;
                         result.Objects = query.ConvertAll(g => (IEntityBase)g);
+                    }
+                    else
+                    {
+                        result.Success = false;
                     }
 
                     return result;
@@ -744,13 +669,13 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.Users.AnyAsync(u => u.Id == userid) && 
-                    await context.Games.AnyAsync(g => g.Id == gameid) &&
-                    await context.Apps.AnyAsync(a => a.Id == appid))
+                if (await _context.Users.AnyAsync(u => u.Id == userid) && 
+                    await _context.Games.AnyAsync(g => g.Id == gameid) &&
+                    await _context.Apps.AnyAsync(a => a.Id == appid))
                 {
                     var query = new Game();
 
-                    query = await context
+                    query = await _context
                         .Games
                         .Include(g => g.SudokuMatrix)
                             .ThenInclude(g => g.Difficulty)
@@ -761,9 +686,9 @@ namespace SudokuCollective.Data.Repositories
                             && g.AppId == appid
                             && g.UserId == userid);
 
-                    context.Remove(query);
+                    _context.Remove(query);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -781,7 +706,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
 

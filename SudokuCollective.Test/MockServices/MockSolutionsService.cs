@@ -33,39 +33,39 @@ namespace SudokuCollective.Test.MockServices
             SolutionsServiceSolveFailedRequest = new Mock<ISolutionsService>();
 
             SolutionsServiceSuccessfulRequest.Setup(solutionsService =>
-                solutionsService.Get(It.IsAny<int>(), It.IsAny<bool>()))
+                solutionsService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
                     Success = MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
-                        .Get(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = SolutionsMessages.SolutionFoundMessage,
                     Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
-                        .Get(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as ISolutionResult));
 
             SolutionsServiceSuccessfulRequest.Setup(solutionsService =>
-                solutionsService.GetSolutions(It.IsAny<BaseRequest>(), It.IsAny<bool>()))
+                solutionsService.GetSolutions(It.IsAny<BaseRequest>()))
                 .Returns(Task.FromResult(new SolutionsResult()
                 {
                     Success = MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = SolutionsMessages.SolutionsFoundMessage,
                     Solutions = MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(s => (ISudokuSolution)s)
@@ -80,7 +80,7 @@ namespace SudokuCollective.Test.MockServices
                     Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<SudokuSolution>())
+                        .Add(It.IsAny<SudokuSolution>())
                         .Result
                         .Object
                 } as ISolutionResult));
@@ -92,14 +92,14 @@ namespace SudokuCollective.Test.MockServices
                         Success = MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<SudokuSolution>())
+                        .Add(It.IsAny<SudokuSolution>())
                         .Result
                         .Success,
                         Message = SolutionsMessages.SolutionGeneratedMessage,
                         Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
-                        .Create(It.IsAny<SudokuSolution>())
+                        .Add(It.IsAny<SudokuSolution>())
                         .Result
                         .Object
                     } as ISolutionResult));
@@ -118,32 +118,32 @@ namespace SudokuCollective.Test.MockServices
                     } as IBaseResult));
 
             SolutionsServiceFailedRequest.Setup(solutionsService =>
-                solutionsService.Get(It.IsAny<int>(), It.IsAny<bool>()))
+                solutionsService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
                     Success = MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
-                        .Get(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = SolutionsMessages.SolutionNotFoundMessage,
                     Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
-                        .Get(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as ISolutionResult));
 
             SolutionsServiceFailedRequest.Setup(solutionsService =>
-                solutionsService.GetSolutions(It.IsAny<BaseRequest>(), It.IsAny<bool>()))
+                solutionsService.GetSolutions(It.IsAny<BaseRequest>()))
                 .Returns(Task.FromResult(new SolutionsResult()
                 {
                     Success = MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = SolutionsMessages.SolutionsNotFoundMessage,
@@ -159,7 +159,7 @@ namespace SudokuCollective.Test.MockServices
                     Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<SudokuSolution>())
+                        .Add(It.IsAny<SudokuSolution>())
                         .Result
                         .Object
                 } as ISolutionResult));
@@ -171,14 +171,14 @@ namespace SudokuCollective.Test.MockServices
                         Success = MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<SudokuSolution>())
+                        .Add(It.IsAny<SudokuSolution>())
                         .Result
                         .Success,
                         Message = SolutionsMessages.SolutionNotGeneratedMessage,
                         Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
-                        .Create(It.IsAny<SudokuSolution>())
+                        .Add(It.IsAny<SudokuSolution>())
                         .Result
                         .Object
                     } as ISolutionResult));

@@ -14,15 +14,9 @@ import {
   getRegisteredAppsEndpoint,
 } from "./service.endpoints";
 
-const getApp = async function (id, fullRecord) {
+const getApp = async function (id) {
   try {
-    let params;
-
-    if (fullRecord === undefined) {
-      params = `/${id}?fullRecord=false`;
-    } else {
-      params = `/${id}?fullRecord=${fullRecord}`;
-    }
+    let params = `/${id}`;
 
     const config = {
       method: "post",
@@ -40,19 +34,11 @@ const getApp = async function (id, fullRecord) {
   }
 }
 
-const getByLicense = async function (data, fullRecord) {
+const getByLicense = async function (data) {
   try {
-    let params;
-
-    if (fullRecord === undefined) {
-      params = "?fullRecord=false";
-    } else {
-      params = `?fullRecord=${fullRecord}`;
-    }
-
     const config = {
       method: "post",
-      url: `${getByLicenseEnpoint}${params}`,
+      url: `${getByLicenseEnpoint}`,
       headers: requestHeader(),
       data: requestData(data),
     };
@@ -104,19 +90,11 @@ const getLicense = async function (id) {
   }
 }
 
-const getMyApps = async function (fullRecord) {
+const getMyApps = async function () {
   try {
-    let params;
-
-    if (fullRecord === undefined) {
-      params = "?fullRecord=false";
-    } else {
-      params = `?fullRecord=${fullRecord}`;
-    }
-
     const config = {
       method: "post",
-      url: `${getMyAppsEndpoint}${params}`,
+      url: `${getMyAppsEndpoint}`,
       headers: requestHeader(),
       data: requestData(),
     };
@@ -130,15 +108,9 @@ const getMyApps = async function (fullRecord) {
   }
 }
 
-const getRegisteredApps = async function (userid, fullRecord) {
+const getRegisteredApps = async function (userid) {
   try {
-    let params = `/${userid}`;;
-
-    if (fullRecord === undefined) {
-      params = `${params}?fullRecord=false`;
-    } else {
-      params = `${params}?fullRecord=${fullRecord}`;
-    }
+    let params = `/${userid}`;
 
     const config = {
       method: "post",
@@ -156,15 +128,9 @@ const getRegisteredApps = async function (userid, fullRecord) {
   }
 }
 
-const getAppUsers = async function (id, fullRecord) {
+const getAppUsers = async function (id) {
   try {
-    let params;
-
-    if (fullRecord === undefined) {
-      params = `/${id}/getAppUsers?fullRecord=false`;
-    } else {
-      params = `/${id}/getAppUsers?fullRecord=${fullRecord}`;
-    }
+    let params = `/${id}`;
 
     const config = {
       method: "post",
@@ -182,15 +148,9 @@ const getAppUsers = async function (id, fullRecord) {
   }
 }
 
-const getNonAppUsers = async function (id, fullRecord) {
+const getNonAppUsers = async function (id) {
   try {
-    let params;
-
-    if (fullRecord === undefined) {
-      params = `/${id}/getNonAppUsers?fullRecord=false`;
-    } else {
-      params = `/${id}/getNonAppUsers?fullRecord=${fullRecord}`;
-    }
+    let params = `/${id}/getNonAppUsers`;
 
     const config = {
       method: "post",

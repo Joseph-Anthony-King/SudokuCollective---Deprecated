@@ -102,7 +102,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.GetGames(getMyGameRequest, true);
+            var result = sutSuccess.GetGames(getMyGameRequest);
             var message = ((GamesResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -119,7 +119,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.GetGames(getMyGameRequest, true);
+            var result = sutFailure.GetGames(getMyGameRequest);
             var message = ((GamesResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -277,7 +277,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var userId = 1;
 
             // Act
-            var result = sutSuccess.GetMyGame(userId, getMyGameRequest, true);
+            var result = sutSuccess.GetMyGame(userId, getMyGameRequest);
             var message = ((GameResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var game = ((GameResult)((OkObjectResult)result.Result.Result).Value).Game;
@@ -297,7 +297,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var userId = 1;
 
             // Act
-            var result = sutFailure.GetMyGame(userId, getMyGameRequest, true);
+            var result = sutFailure.GetMyGame(userId, getMyGameRequest);
             var message = ((GameResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 
@@ -314,7 +314,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.GetMyGames(getMyGameRequest, true);
+            var result = sutSuccess.GetMyGames(getMyGameRequest);
             var message = ((GamesResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
 
@@ -331,7 +331,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutFailure.GetMyGames(getMyGameRequest, true);
+            var result = sutFailure.GetMyGames(getMyGameRequest);
             var message = ((GamesResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 

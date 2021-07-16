@@ -82,78 +82,78 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.GetGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesService.GetGame(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = GamesMessages.GameFoundMessage,
                     Game = (Game)MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object,
                 } as IGameResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.GetGames(It.IsAny<GamesRequest>(), It.IsAny<bool>()))
+                gamesService.GetGames(It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
                     Success = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = GamesMessages.GamesFoundMessage,
                     Games = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(g => (IGame)g)
                 } as IGamesResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.GetMyGame(It.IsAny<int>(), It.IsAny<GamesRequest>(), It.IsAny<bool>()))
+                gamesService.GetMyGame(It.IsAny<int>(), It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Success,
                     Message = GamesMessages.GameFoundMessage,
                     Game = (Game)MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Object
                 } as IGameResult));
 
             GamesServiceSuccessfulRequest.Setup(gamesService =>
-                gamesService.GetMyGames(It.IsAny<GamesRequest>(), It.IsAny<bool>()))
+                gamesService.GetMyGames(It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
                     Success = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .GetMyGames(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetMyGames(It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Success,
                     Message = GamesMessages.GamesFoundMessage,
                     Games = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
-                        .GetMyGames(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetMyGames(It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Objects
                         .ConvertAll(g => (IGame)g)
@@ -260,32 +260,32 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.GetGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesService.GetGame(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppGame(It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Success,
                     Message = GamesMessages.GameNotFoundMessage,
                     Game = (Game)MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppGame(It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Object,
                 } as IGameResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.GetGames(It.IsAny<GamesRequest>(), It.IsAny<bool>()))
+                gamesService.GetGames(It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
                     Success = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetAppGames(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppGames(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = GamesMessages.GamesNotFoundMessage,
@@ -293,32 +293,32 @@ namespace SudokuCollective.Test.MockServices
                 } as IGamesResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.GetMyGame(It.IsAny<int>(), It.IsAny<GamesRequest>(), It.IsAny<bool>()))
+                gamesService.GetMyGame(It.IsAny<int>(), It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
                     Success = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Success,
                     Message = GamesMessages.GameNotFoundMessage,
                     Game = (Game)MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Object
                 } as IGameResult));
 
             GamesServiceFailedRequest.Setup(gamesService =>
-                gamesService.GetMyGames(It.IsAny<GamesRequest>(), It.IsAny<bool>()))
+                gamesService.GetMyGames(It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
                     Success = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
-                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())
+                        .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
                         .Result
                         .Success,
                     Message = GamesMessages.GamesNotFoundMessage,

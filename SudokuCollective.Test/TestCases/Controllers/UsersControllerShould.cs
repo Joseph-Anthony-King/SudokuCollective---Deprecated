@@ -83,7 +83,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var userId = 1;
 
             // Act
-            var result = sutSuccess.Get(userId, baseRequest, true);
+            var result = sutSuccess.Get(userId, baseRequest);
             var message = ((UserResult)((OkObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((OkObjectResult)result.Result.Result).StatusCode;
             var user = ((UserResult)((OkObjectResult)result.Result.Result).Value).User;
@@ -103,7 +103,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var userId = 1;
 
             // Act
-            var result = sutFailure.Get(userId, baseRequest, true);
+            var result = sutFailure.Get(userId, baseRequest);
             var message = ((UserResult)((NotFoundObjectResult)result.Result.Result).Value).Message;
             var statusCode = ((NotFoundObjectResult)result.Result.Result).StatusCode;
 

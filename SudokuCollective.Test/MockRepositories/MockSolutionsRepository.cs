@@ -26,7 +26,7 @@ namespace SudokuCollective.Test.MockRepositories
             SolutionsRepositoryFailedRequest = new Mock<ISolutionsRepository<SudokuSolution>>();
 
             SolutionsRepositorySuccessfulRequest.Setup(solutionsRepo =>
-                solutionsRepo.Create(It.IsAny<SudokuSolution>()))
+                solutionsRepo.Add(It.IsAny<SudokuSolution>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -34,7 +34,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             SolutionsRepositorySuccessfulRequest.Setup(solutionsRepo =>
-                solutionsRepo.Get(It.IsAny<int>(), It.IsAny<bool>()))
+                solutionsRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -42,7 +42,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             SolutionsRepositorySuccessfulRequest.Setup(solutionsRepo =>
-                solutionsRepo.GetAll(It.IsAny<bool>()))
+                solutionsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -68,21 +68,21 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             SolutionsRepositoryFailedRequest.Setup(solutionsRepo =>
-                solutionsRepo.Create(It.IsAny<SudokuSolution>()))
+                solutionsRepo.Add(It.IsAny<SudokuSolution>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             SolutionsRepositoryFailedRequest.Setup(solutionsRepo =>
-                solutionsRepo.Get(It.IsAny<int>(), It.IsAny<bool>()))
+                solutionsRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             SolutionsRepositoryFailedRequest.Setup(solutionsRepo =>
-                solutionsRepo.GetAll(It.IsAny<bool>()))
+                solutionsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false

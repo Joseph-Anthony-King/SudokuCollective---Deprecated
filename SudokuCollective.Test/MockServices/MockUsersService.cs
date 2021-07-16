@@ -58,21 +58,20 @@ namespace SudokuCollective.Test.MockServices
             UsersServiceSuccessfulRequest.Setup(userService =>
                 userService.Get(
                     It.IsAny<int>(),
-                    It.IsAny<string>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UserFoundMessage,
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IUserResult));
@@ -81,21 +80,20 @@ namespace SudokuCollective.Test.MockServices
                 userService.GetUsers(
                     It.IsAny<int>(),
                     It.IsAny<string>(), 
-                    It.IsAny<Paginator>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = UsersMessages.UsersFoundMessage,
                     Users = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(u => (IUser)u)
@@ -262,13 +260,13 @@ namespace SudokuCollective.Test.MockServices
                     App = (App)MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object,
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IInitiatePasswordResetResult));
@@ -306,7 +304,7 @@ namespace SudokuCollective.Test.MockServices
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IUserResult));
@@ -327,7 +325,7 @@ namespace SudokuCollective.Test.MockServices
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IUserResult));
@@ -345,7 +343,7 @@ namespace SudokuCollective.Test.MockServices
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IUserResult));
@@ -372,21 +370,20 @@ namespace SudokuCollective.Test.MockServices
             UsersServiceFailedRequest.Setup(userService =>
                 userService.Get(
                     It.IsAny<int>(), 
-                    It.IsAny<string>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UserNotFoundMessage,
                     User = (User)MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object,
                 } as IUserResult));
@@ -395,14 +392,13 @@ namespace SudokuCollective.Test.MockServices
                 userService.GetUsers(
                     It.IsAny<int>(),
                     It.IsAny<string>(),
-                    It.IsAny<Paginator>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = UsersMessages.UsersNotFoundMessage,
@@ -604,7 +600,7 @@ namespace SudokuCollective.Test.MockServices
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IUserResult));
@@ -625,7 +621,7 @@ namespace SudokuCollective.Test.MockServices
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IUserResult));
@@ -641,7 +637,7 @@ namespace SudokuCollective.Test.MockServices
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IUserResult));

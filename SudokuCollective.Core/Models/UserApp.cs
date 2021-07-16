@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Interfaces.Models;
 
@@ -8,8 +9,10 @@ namespace SudokuCollective.Core.Models
         #region Properties
         public int Id { get; set; }
         public int UserId { get; set; }
+        [IgnoreDataMember]
         public User User { get; set; }
         public int AppId { get; set; }
+        [IgnoreDataMember]
         public App App { get; set; }
         #endregion
 

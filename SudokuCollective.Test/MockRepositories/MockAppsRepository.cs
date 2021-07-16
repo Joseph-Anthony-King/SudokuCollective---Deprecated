@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -64,7 +64,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetByLicense(It.IsAny<string>(), It.IsAny<bool>()))
+                appsRepo.GetByLicense(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -72,7 +72,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetAll(It.IsAny<bool>()))
+                appsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -80,7 +80,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetMyApps(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetMyApps(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -92,7 +92,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetMyRegisteredApps(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetMyRegisteredApps(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -104,7 +104,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetAppUsers(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetAppUsers(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -115,7 +115,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositorySuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetNonAppUsers(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetNonAppUsers(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -219,7 +219,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -227,7 +227,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.GetByLicense(It.IsAny<string>(), It.IsAny<bool>()))
+                appsRepo.GetByLicense(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -235,7 +235,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.GetAll(It.IsAny<bool>()))
+                appsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -243,7 +243,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.GetMyApps(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetMyApps(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -251,7 +251,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.GetMyRegisteredApps(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetMyRegisteredApps(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -259,7 +259,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.GetAppUsers(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetAppUsers(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -267,7 +267,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryFailedRequest.Setup(appsRepo =>
-                appsRepo.GetNonAppUsers(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetNonAppUsers(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -384,7 +384,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -392,7 +392,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetByLicense(It.IsAny<string>(), It.IsAny<bool>()))
+                appsRepo.GetByLicense(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -400,7 +400,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetAll(It.IsAny<bool>()))
+                appsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -408,7 +408,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetMyApps(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetMyApps(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -420,7 +420,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetMyRegisteredApps(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetMyRegisteredApps(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false,
@@ -428,7 +428,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetAppUsers(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetAppUsers(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -439,7 +439,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppsRepositoryInitiatePasswordSuccessfulRequest.Setup(appsRepo =>
-                appsRepo.GetNonAppUsers(It.IsAny<int>(), It.IsAny<bool>()))
+                appsRepo.GetNonAppUsers(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

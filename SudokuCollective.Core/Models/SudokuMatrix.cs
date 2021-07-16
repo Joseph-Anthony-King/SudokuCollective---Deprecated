@@ -10,6 +10,7 @@ using SudokuCollective.Core.Extensions;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Structs;
 using SudokuCollective.Core.Utilities;
+using System.Runtime.Serialization;
 
 namespace SudokuCollective.Core.Models
 {
@@ -22,6 +23,7 @@ namespace SudokuCollective.Core.Models
 
         #region Properties
         public int Id { get; set; }
+        [IgnoreDataMember]
         public Game Game { get; set; }
         public int DifficultyId { get; set; }
         public Difficulty Difficulty { get; set; }

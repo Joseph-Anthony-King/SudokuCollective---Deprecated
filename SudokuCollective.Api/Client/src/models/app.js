@@ -15,7 +15,6 @@ class App {
       this.disableCustomUrls = false;
       this.customEmailConfirmationAction = "";
       this.customPasswordResetAction = "";
-      this.gameCount = 0;
       this.userCount = 0;
       this.timeFrame = 0;
       this.accessDuration = 0;
@@ -36,7 +35,6 @@ class App {
       this.disableCustomUrls = data.disableCustomUrls;
       this.customEmailConfirmationAction = data.customEmailConfirmationAction;
       this.customPasswordResetAction = data.customPasswordResetAction;
-      this.gameCount = data.gameCount;
       this.userCount = data.userCount;
       this.timeFrame = data.timeFrame;
       this.accessDuration = data.accessDuration;

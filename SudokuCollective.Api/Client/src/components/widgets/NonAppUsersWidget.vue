@@ -212,7 +212,7 @@ export default {
               );
             }
             
-            var appResponse = await appService.getApp(this.$data.app.id, true);
+            var appResponse = await appService.getApp(this.$data.app.id);
 
             if (appResponse.data.success) {
               this.$data.app = new App(appResponse.data.app);

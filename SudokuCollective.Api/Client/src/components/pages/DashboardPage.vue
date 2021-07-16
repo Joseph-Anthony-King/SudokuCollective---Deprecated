@@ -302,7 +302,7 @@ export default {
     
     if (storeApps.length === 0) {
 
-      const response = await appService.getMyApps(true);
+      const response = await appService.getMyApps();
 
       if (response.data.success) {
         let tempArray = [];
@@ -322,7 +322,7 @@ export default {
         
         // Reload the users per app
         for (const app of tempArray) {
-          const appUsersResponse = await appService.getAppUsers(app.id, true);
+          const appUsersResponse = await appService.getAppUsers(app.id);
           appUsersResponse.data.users.forEach((user) => {
             const tempUser = new User(user);
             app.users.push(tempUser);
@@ -343,7 +343,7 @@ export default {
     const storeRegisteredApps = this.getRegisteredApps;
 
     if (storeRegisteredApps.length === 0) {
-      const response = await appService.getRegisteredApps(this.$data.user.id, false);
+      const response = await appService.getRegisteredApps(this.$data.user.id);
         console.log(response); 
 
       if (response.data.success) {       

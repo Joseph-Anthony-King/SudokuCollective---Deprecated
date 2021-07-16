@@ -21,7 +21,6 @@ namespace SudokuCollective.Core.Interfaces.Models
         bool DisableCustomUrls { get; set; }
         string CustomEmailConfirmationAction { get; set; }
         string CustomPasswordResetAction { get; set; }
-        int GameCount { get; }
         int UserCount { get; }
         TimeFrame TimeFrame { get; set; }
         int AccessDuration { get; set; }

@@ -10,8 +10,8 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210304210510_InitializeDatabase")]
-    partial class InitializeDatabase
+    [Migration("20210716070448_InitiateDatabase")]
+    partial class InitiateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

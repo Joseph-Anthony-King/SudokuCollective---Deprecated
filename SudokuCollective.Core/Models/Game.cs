@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
@@ -11,6 +12,7 @@ namespace SudokuCollective.Core.Models
         #region Properties
         public int Id { get; set; }
         public int UserId { get; set; }
+        [IgnoreDataMember]
         public User User { get; set; }
         public int SudokuMatrixId { get; set; }
         public SudokuMatrix SudokuMatrix { get; set; }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -15,13 +14,13 @@ namespace SudokuCollective.Data.Repositories
     public class PasswordResetsRepository<TEntity> : IPasswordResetsRepository<TEntity> where TEntity : PasswordReset
     {
         #region Fields
-        private readonly DatabaseContext context;
+        private readonly DatabaseContext _context;
         #endregion
 
         #region Constructor
-        public PasswordResetsRepository(DatabaseContext databaseContext)
+        public PasswordResetsRepository(DatabaseContext context)
         {
-            context = databaseContext;
+            _context = context;
         }
         #endregion
 
@@ -41,7 +40,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.PasswordResets
+                if (await _context.PasswordResets
                         .AnyAsync(pu => pu.Token.ToLower().Equals(entity.Token.ToLower())))
                 {
                     result.Success = false;
@@ -49,9 +48,9 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
 
-                context.Attach(entity);
+                _context.Attach(entity);
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -69,7 +68,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Object = entity;
@@ -93,7 +92,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = await context
+                var query = await _context
                     .PasswordResets
                     .FirstOrDefaultAsync(pu => pu.Token.ToLower().Equals(token.ToLower()));
 
@@ -124,7 +123,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = await context
+                var query = await _context
                     .PasswordResets
                     .OrderBy(ec => ec.Id)
                     .ToListAsync();
@@ -167,11 +166,11 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.PasswordResets.AnyAsync(a => a.Id == entity.Id))
+                if (await _context.PasswordResets.AnyAsync(a => a.Id == entity.Id))
                 {
-                    context.Attach(entity);
+                    _context.Attach(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -189,7 +188,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -227,11 +226,11 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.PasswordResets.AnyAsync(pu => pu.Id == entity.Id))
+                if (await _context.PasswordResets.AnyAsync(pu => pu.Id == entity.Id))
                 {
-                    context.Remove(entity);
+                    _context.Remove(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -249,7 +248,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -274,12 +273,12 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> HasEntity(int id)
         {
-            return await context.PasswordResets.AnyAsync(ec => ec.Id == id);
+            return await _context.PasswordResets.AnyAsync(ec => ec.Id == id);
         }
 
         public async Task<bool> HasOutstandingPasswordReset(int userId, int appid)
         {
-            return await context
+            return await _context
                 .PasswordResets
                 .AnyAsync(pw => pw.UserId == userId && pw.AppId == appid);
         }
@@ -297,7 +296,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = await context
+                var query = await _context
                     .PasswordResets
                     .FirstOrDefaultAsync(pw =>
                         pw.UserId == userId &&

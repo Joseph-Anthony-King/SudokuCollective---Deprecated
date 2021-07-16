@@ -15,13 +15,13 @@ namespace SudokuCollective.Data.Services
     public class DifficultiesService : IDifficultiesService
     {
         #region Fields
-        private readonly IDifficultiesRepository<Difficulty> difficultiesRepository;
+        private readonly IDifficultiesRepository<Difficulty> _difficultiesRepository;
         #endregion
 
         #region Constructor
-        public DifficultiesService(IDifficultiesRepository<Difficulty> difficultiesRepo)
+        public DifficultiesService(IDifficultiesRepository<Difficulty> difficultiesRepository)
         {
-            difficultiesRepository = difficultiesRepo;
+            _difficultiesRepository = difficultiesRepository;
         }
         #endregion
 
@@ -39,7 +39,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (!(await difficultiesRepository.HasDifficultyLevel(difficultyLevel)))
+                if (!(await _difficultiesRepository.HasDifficultyLevel(difficultyLevel)))
                 {
 
                     var difficulty = new Difficulty()
@@ -49,7 +49,7 @@ namespace SudokuCollective.Data.Services
                         DifficultyLevel = difficultyLevel
                     };
 
-                    var response = await difficultiesRepository.Add(difficulty);
+                    var response = await _difficultiesRepository.Add(difficulty);
 
                     if (response.Success)
                     {
@@ -90,8 +90,9 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
         }
+
         public async Task<IDifficultyResult> Get(
-            int id, bool fullRecord = true)
+            int id)
         {
             var result = new DifficultyResult();
 
@@ -105,7 +106,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await difficultiesRepository.GetById(id, fullRecord);
+                var response = await _difficultiesRepository.Get(id);
 
                 if (response.Success)
                 {
@@ -157,14 +158,14 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await difficultiesRepository.GetById(id);
+                var response = await _difficultiesRepository.Get(id);
 
                 if (response.Success)
                 {
                     ((Difficulty)response.Object).Name = updateDifficultyRequest.Name;
                     ((Difficulty)response.Object).DisplayName = updateDifficultyRequest.DisplayName;
 
-                    var updateDifficultyResponse = await difficultiesRepository
+                    var updateDifficultyResponse = await _difficultiesRepository
                         .Update((Difficulty)response.Object);
 
                     if (updateDifficultyResponse.Success)
@@ -228,11 +229,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await difficultiesRepository.GetById(id, true);
+                var response = await _difficultiesRepository.Get(id);
 
                 if (response.Success)
                 {
-                    var updateDeleteResponse = await difficultiesRepository.Delete((Difficulty)response.Object);
+                    var updateDeleteResponse = await _difficultiesRepository.Delete((Difficulty)response.Object);
 
                     if (updateDeleteResponse.Success)
                     {
@@ -281,13 +282,13 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IDifficultiesResult> GetDifficulties(bool fullRecord = true)
+        public async Task<IDifficultiesResult> GetDifficulties()
         {
             var result = new DifficultiesResult();
 
             try
             {
-                var response = await difficultiesRepository.GetAll(fullRecord);
+                var response = await _difficultiesRepository.GetAll();
 
                 if (response.Success)
                 {

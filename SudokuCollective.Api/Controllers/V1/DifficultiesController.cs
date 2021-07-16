@@ -131,11 +131,9 @@ namespace SudokuCollective.Api.V1.Controllers
         // GET: api/difficulties/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Difficulty>> Get(
-            int id,
-            [FromQuery] bool fullRecord = true)
+        public async Task<ActionResult<Difficulty>> Get(int id)
         {
-            var result = await difficultiesService.Get(id, fullRecord);
+            var result = await difficultiesService.Get(id);
 
             if (result.Success)
             {
@@ -154,10 +152,9 @@ namespace SudokuCollective.Api.V1.Controllers
         // GET: api/difficulties
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties(
-            [FromQuery] bool fullRecord = true)
+        public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties()
         {
-            var result = await difficultiesService.GetDifficulties(fullRecord);
+            var result = await difficultiesService.GetDifficulties();
 
             if (result.Success)
             {

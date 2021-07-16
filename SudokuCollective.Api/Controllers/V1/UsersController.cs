@@ -36,8 +36,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost("{id}")]
         public async Task<ActionResult<User>> Get(
             int id,
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -46,8 +45,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await usersService.Get(
                     id, 
-                    request.License, 
-                    fullRecord);
+                    request.License);
 
                 if (result.Success)
                 {
@@ -165,8 +163,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers(
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -176,8 +173,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 var result = await usersService.GetUsers(
                     request.RequestorId, 
                     request.License,
-                    request.Paginator, 
-                    fullRecord);
+                    request.Paginator);
 
                 if (result.Success)
                 {

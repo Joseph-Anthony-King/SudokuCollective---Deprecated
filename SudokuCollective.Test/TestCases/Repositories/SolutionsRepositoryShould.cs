@@ -32,7 +32,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
 
             // Act
-            var result = await sut.Create(newSolution);
+            var result = await sut.Add(newSolution);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -47,7 +47,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             newSolution.Id = 10;
 
             // Act
-            var result = await sut.Create(newSolution);
+            var result = await sut.Add(newSolution);
 
             // Assert
             Assert.That(result.Success, Is.False);

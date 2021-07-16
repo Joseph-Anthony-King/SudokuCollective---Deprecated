@@ -169,15 +169,14 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("GetGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
-            [FromBody] GamesRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] GamesRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await gamesService.GetGames(request, fullRecord);
+                var result = await gamesService.GetGames(request);
 
                 if (result.Success)
                 {
@@ -203,8 +202,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost, Route("{id}/GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame(
             int id,
-            [FromBody] GamesRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] GamesRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -213,8 +211,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await gamesService.GetMyGame(
                     id,
-                    request,
-                    fullRecord);
+                    request);
 
                 if (result.Success)
                 {
@@ -239,8 +236,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "USER")]
         [HttpPost, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
-            [FromBody] GamesRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] GamesRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -248,7 +244,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId))
             {
                 var result = await gamesService
-                    .GetMyGames(request, fullRecord);
+                    .GetMyGames(request);
 
                 if (result.Success)
                 {

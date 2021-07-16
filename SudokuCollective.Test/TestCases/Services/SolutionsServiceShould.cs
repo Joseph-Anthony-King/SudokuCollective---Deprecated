@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.Models;
@@ -18,6 +20,7 @@ namespace SudokuCollective.Test.TestCases.Services
     {
         private DatabaseContext context;
         private MockSolutionsRepository MockSolutionsRepository;
+        private MemoryDistributedCache memoryCache;
         private ISolutionsService sut;
         private ISolutionsService sutFailure;
         private BaseRequest baseRequest;
@@ -27,12 +30,16 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             context = await TestDatabase.GetDatabaseContext();
             MockSolutionsRepository = new MockSolutionsRepository(context);
+            memoryCache = new MemoryDistributedCache(
+                Options.Create(new MemoryDistributedCacheOptions()));
 
             sut = new SolutionsService(
-                MockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object);
+                MockSolutionsRepository.SolutionsRepositorySuccessfulRequest.Object,
+                memoryCache);
 
             sutFailure = new SolutionsService(
-                MockSolutionsRepository.SolutionsRepositoryFailedRequest.Object);
+                MockSolutionsRepository.SolutionsRepositoryFailedRequest.Object,
+                memoryCache);
 
             baseRequest = TestObjects.GetBaseRequest();
         }

@@ -39,7 +39,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppAdminsRepositorySuccessfulRequest.Setup(appAdminsRepo =>
-                appAdminsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                appAdminsRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -47,7 +47,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppAdminsRepositorySuccessfulRequest.Setup(appAdminsRepo =>
-                appAdminsRepo.GetAll(It.IsAny<bool>()))
+                appAdminsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -109,14 +109,14 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppAdminsRepositoryFailedRequest.Setup(appAdminsRepo =>
-                appAdminsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                appAdminsRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             AppAdminsRepositoryFailedRequest.Setup(appAdminsRepo =>
-                appAdminsRepo.GetAll(It.IsAny<bool>()))
+                appAdminsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -180,7 +180,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppAdminsRepositoryPromoteUser.Setup(appAdminsRepo =>
-                appAdminsRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                appAdminsRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -188,7 +188,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             AppAdminsRepositoryPromoteUser.Setup(appAdminsRepo =>
-                appAdminsRepo.GetAll(It.IsAny<bool>()))
+                appAdminsRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

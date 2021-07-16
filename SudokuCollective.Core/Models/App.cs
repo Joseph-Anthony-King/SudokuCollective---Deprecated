@@ -83,23 +83,6 @@ namespace SudokuCollective.Core.Models
         public bool DisableCustomUrls { get; set; }
         public string CustomEmailConfirmationAction { get; set; }
         public string CustomPasswordResetAction { get; set; }
-        public int GameCount
-        {
-            get
-            {
-                var result = 0;
-
-                if (Users != null)
-                {
-                    foreach (var user in Users)
-                    {
-                        result += user.User.Games.Count;
-                    }
-                }
-
-                return result;
-            }
-        }
         public int UserCount
         {
             get

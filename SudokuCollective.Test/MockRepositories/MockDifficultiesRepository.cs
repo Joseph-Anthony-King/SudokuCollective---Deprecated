@@ -36,7 +36,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             DifficultiesRepositorySuccessfulRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                difficultiesRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -44,7 +44,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             DifficultiesRepositorySuccessfulRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetAll(It.IsAny<bool>()))
+                difficultiesRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -100,14 +100,14 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             DifficultiesRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                difficultiesRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             DifficultiesRepositoryFailedRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetAll(It.IsAny<bool>()))
+                difficultiesRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -158,7 +158,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             DifficultiesRepositoryCreateDifficultyRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                difficultiesRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -166,7 +166,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             DifficultiesRepositoryCreateDifficultyRequest.Setup(difficultiesRepo =>
-                difficultiesRepo.GetAll(It.IsAny<bool>()))
+                difficultiesRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

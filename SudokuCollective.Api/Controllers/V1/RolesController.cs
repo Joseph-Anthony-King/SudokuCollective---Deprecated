@@ -133,10 +133,9 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>> Get(
-            int id,
-            [FromQuery] bool fullRecord = true)
+            int id)
         {
-            var result = await rolesService.Get(id, fullRecord);
+            var result = await rolesService.Get(id);
 
             if (result.Success)
             {
@@ -155,9 +154,9 @@ namespace SudokuCollective.Api.V1.Controllers
         // GET: api/roles
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles([FromQuery] bool fullRecord = true)
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
-            var result = await rolesService.GetRoles(fullRecord);
+            var result = await rolesService.GetRoles();
 
             if (result.Success)
             {

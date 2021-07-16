@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -15,13 +14,13 @@ namespace SudokuCollective.Data.Repositories
     public class EmailConfirmationsRepository<TEntity> : IEmailConfirmationsRepository<TEntity> where TEntity : EmailConfirmation
     {
         #region Fields
-        private readonly DatabaseContext context;
+        private readonly DatabaseContext _context;
         #endregion
 
         #region Constructor
-        public EmailConfirmationsRepository(DatabaseContext databaseContext)
+        public EmailConfirmationsRepository(DatabaseContext context)
         {
-            context = databaseContext;
+            _context = context;
         }
         #endregion
 
@@ -41,7 +40,7 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
 
-                if (await context.EmailConfirmations
+                if (await _context.EmailConfirmations
                         .AnyAsync(pu => pu.Token.ToLower().Equals(entity.Token.ToLower())))
                 {
                     result.Success = false;
@@ -49,9 +48,9 @@ namespace SudokuCollective.Data.Repositories
                     return result;
                 }
 
-                context.Attach(entity);
+                _context.Attach(entity);
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -69,7 +68,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Object = entity;
@@ -98,7 +97,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = await context
+                var query = await _context
                     .EmailConfirmations
                     .FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
 
@@ -129,7 +128,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = await context
+                var query = await _context
                     .EmailConfirmations
                     .OrderBy(ec => ec.Id)
                     .ToListAsync();
@@ -165,15 +164,15 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var tokenNotUniqueList = await context.EmailConfirmations
+                var tokenNotUniqueList = await _context.EmailConfirmations
                     .Where(ec => ec.Token.ToLower().Equals(entity.Token.ToLower()) && ec.Id != entity.Id)
                     .ToListAsync();
 
-                if (await context.EmailConfirmations.AnyAsync(ec => ec.Id == entity.Id) && tokenNotUniqueList.Count == 0)
+                if (await _context.EmailConfirmations.AnyAsync(ec => ec.Id == entity.Id) && tokenNotUniqueList.Count == 0)
                 {
-                    context.Attach(entity);
+                    _context.Attach(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -191,7 +190,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -222,11 +221,11 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.EmailConfirmations.AnyAsync(ec => ec.Id == entity.Id))
+                if (await _context.EmailConfirmations.AnyAsync(ec => ec.Id == entity.Id))
                 {
-                    context.Remove(entity);
+                    _context.Remove(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -244,7 +243,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -269,12 +268,12 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> HasEntity(int id)
         {
-            return await context.EmailConfirmations.AnyAsync(ec => ec.Id == id);
+            return await _context.EmailConfirmations.AnyAsync(ec => ec.Id == id);
         }
 
         public async Task<bool> HasOutstandingEmailConfirmation(int userId, int appid)
         {
-            return await context.EmailConfirmations.AnyAsync(ec => ec.UserId == userId && ec.AppId == appid);
+            return await _context.EmailConfirmations.AnyAsync(ec => ec.UserId == userId && ec.AppId == appid);
         }
 
         public async Task<IRepositoryResponse> RetrieveEmailConfirmation(int userId, int appid)
@@ -290,7 +289,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = await context
+                var query = await _context
                     .EmailConfirmations
                     .FirstOrDefaultAsync(ec => 
                         ec.UserId == userId && 

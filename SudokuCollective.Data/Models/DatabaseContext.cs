@@ -259,9 +259,6 @@ namespace SudokuCollective.Data.Models
                 .HasKey(app => app.Id);
 
             modelBuilder.Entity<App>()
-                .Ignore(app => app.GameCount);
-
-            modelBuilder.Entity<App>()
                 .Ignore(app => app.UserCount);
 
             modelBuilder.Entity<App>()

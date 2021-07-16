@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
@@ -20,6 +21,7 @@ namespace SudokuCollective.Core.Models
         public string DisplayName { get; set; }
         [Required]
         public DifficultyLevel DifficultyLevel { get; set; }
+        [IgnoreDataMember]
         public virtual List<SudokuMatrix> Matrices
         {
             get

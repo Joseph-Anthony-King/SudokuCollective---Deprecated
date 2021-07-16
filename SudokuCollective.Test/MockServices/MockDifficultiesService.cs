@@ -29,39 +29,39 @@ namespace SudokuCollective.Test.MockServices
             DifficultiesServiceFailedRequest = new Mock<IDifficultiesService>();
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.Get(It.IsAny<int>(), It.IsAny<bool>()))
+                difficultiesService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
                     Success = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = DifficultiesMessages.DifficultyFoundMessage,
                     Difficulty = (Difficulty)MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IDifficultyResult));
 
             DifficultiesServiceSuccessfulRequest.Setup(difficultiesService =>
-                difficultiesService.GetDifficulties(It.IsAny<bool>()))
+                difficultiesService.GetDifficulties())
                 .Returns(Task.FromResult(new DifficultiesResult()
                 {
                     Success = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = DifficultiesMessages.DifficultiesFoundMessage,
                     Difficulties = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(d => (IDifficulty)d)
@@ -113,7 +113,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.Get(It.IsAny<int>(), It.IsAny<bool>()))
+                difficultiesService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
                     Success = MockDifficultiesRepository
@@ -132,13 +132,13 @@ namespace SudokuCollective.Test.MockServices
                 } as IDifficultyResult));
 
             DifficultiesServiceFailedRequest.Setup(difficultiesService =>
-                difficultiesService.GetDifficulties(It.IsAny<bool>()))
+                difficultiesService.GetDifficulties())
                 .Returns(Task.FromResult(new DifficultiesResult()
                 {
                     Success = MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = DifficultiesMessages.DifficultiesNotFoundMessage,

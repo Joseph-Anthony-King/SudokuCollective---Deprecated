@@ -8,9 +8,9 @@ namespace SudokuCollective.Core.Interfaces.Services
     public interface IDifficultiesService : IService
     {
         Task<IDifficultyResult> Create(string name, string displayName, DifficultyLevel difficultyLevel);
-        Task<IDifficultyResult> Get(int id, bool fullRecord = true);
+        Task<IDifficultyResult> Get(int id);
         Task<IBaseResult> Update(int id, IUpdateDifficultyRequest updateDifficultyRO);
         Task<IBaseResult> Delete(int id);
-        Task<IDifficultiesResult> GetDifficulties(bool fullRecord = true);
+        Task<IDifficultiesResult> GetDifficulties();
     }
 }

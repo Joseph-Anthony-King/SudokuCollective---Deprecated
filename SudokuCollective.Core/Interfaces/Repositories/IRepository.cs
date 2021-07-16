@@ -8,8 +8,8 @@ namespace SudokuCollective.Core.Interfaces.Repositories
     public interface IRepository<TEntity> where TEntity : IEntityBase
     {
         Task<IRepositoryResponse> Add(TEntity entity);
-        Task<IRepositoryResponse> GetById(int id, bool fullRecord = true);
-        Task<IRepositoryResponse> GetAll(bool fullRecord = true);
+        Task<IRepositoryResponse> Get(int id);
+        Task<IRepositoryResponse> GetAll();
         Task<IRepositoryResponse> Update(TEntity entity);
         Task<IRepositoryResponse> UpdateRange(List<TEntity> entities);
         Task<IRepositoryResponse> Delete(TEntity entity);

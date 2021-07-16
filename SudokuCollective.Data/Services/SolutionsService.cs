@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.Models;
@@ -13,27 +14,32 @@ using SudokuCollective.Data.Helpers;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Extensions;
+using SudokuCollective.Data.Models.DataModels;
+using SudokuCollective.Data.Resiliency;
 
 namespace SudokuCollective.Data.Services
 {
     public class SolutionsService : ISolutionsService
     {
         #region Fields
-        private readonly ISolutionsRepository<SudokuSolution> solutionsRepository;
+        private readonly ISolutionsRepository<SudokuSolution> _solutionsRepository;
+        private readonly IDistributedCache _distributedCache;
+        private readonly string cacheKey = CacheKeys.SolutionsCacheKey;
         #endregion
 
         #region Constructor
         public SolutionsService(
-            ISolutionsRepository<SudokuSolution> solutionsRepo)
+            ISolutionsRepository<SudokuSolution> solutionsRepository,
+            IDistributedCache distributedCache)
         {
-            solutionsRepository = solutionsRepo;
+            _solutionsRepository = solutionsRepository;
+            _distributedCache = distributedCache;
         }
         #endregion
 
         #region Methods
         public async Task<ISolutionResult> Get(
-            int id,
-            bool fullRecord = true)
+            int id)
         {
             var result = new SolutionResult();
 
@@ -47,16 +53,11 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var solutionResponse = await solutionsRepository.Get(id, fullRecord);
+                var solutionResponse = await _solutionsRepository.Get(id);
 
                 if (solutionResponse.Success)
                 {
                     var solution = (SudokuSolution)solutionResponse.Object;
-
-                    if (fullRecord && solution.Game != null)
-                    {
-                        solution.Game.SudokuMatrix.Difficulty.Matrices = null;
-                    }
 
                     result.Success = solutionResponse.Success;
                     result.Message = SolutionsMessages.SolutionFoundMessage;
@@ -89,16 +90,25 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<ISolutionsResult> GetSolutions(
-            IBaseRequest request,
-            bool fullRecord = true)
+            IBaseRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             var result = new SolutionsResult();
+            var response = new RepositoryResponse();
 
             try
             {
-                var response = await solutionsRepository.GetAll(fullRecord);
+                var fromCacheOrDB = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
+                    _solutionsRepository,
+                    _distributedCache,
+                    response,
+                    result,
+                    cacheKey,
+                    DateTime.Now.AddHours(1));
+
+                response = (RepositoryResponse)fromCacheOrDB.Item1;
+                result = (SolutionsResult)fromCacheOrDB.Item2;
 
                 if (response.Success)
                 {
@@ -218,17 +228,6 @@ namespace SudokuCollective.Data.Services
                         result.Solutions = response.Objects.ConvertAll(s => (ISudokuSolution)s);
                     }
 
-                    if (fullRecord)
-                    {
-                        foreach (var solution in result.Solutions)
-                        {
-                            if (solution.Game != null)
-                            {
-                                solution.Game.SudokuMatrix.Difficulty.Matrices = null;
-                            }
-                        }
-                    }
-
                     result.Success = response.Success;
                     result.Message = SolutionsMessages.SolutionsFoundMessage;
 
@@ -267,8 +266,16 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var solvedSolutions = ((await solutionsRepository.GetSolvedSolutions()).Objects)
-                    .ConvertAll(s => (SudokuSolution)s);
+                var fromCacheOrDB = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
+                    _solutionsRepository,
+                    _distributedCache,
+                    new RepositoryResponse(),
+                    result,
+                    cacheKey,
+                    DateTime.Now.AddHours(1));
+
+                var solvedSolutions = fromCacheOrDB.Item1.Objects.ConvertAll(s => (SudokuSolution)s).ToList();
+                result = (SolutionResult)fromCacheOrDB.Item2;
 
                 var intList = new List<int>();
 
@@ -305,7 +312,7 @@ namespace SudokuCollective.Data.Services
 
                     if (addResultToDataContext)
                     {
-                        solution = (SudokuSolution)(await solutionsRepository.Create(solution)).Object;
+                        solution = (SudokuSolution)(await _solutionsRepository.Add(solution)).Object;
                     }
                     else
                     {
@@ -385,13 +392,25 @@ namespace SudokuCollective.Data.Services
 
                 matrix.GenerateSolution();
 
-                var response = (await solutionsRepository.GetSolvedSolutions());
+                var fromCacheOrDB = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
+                    _solutionsRepository,
+                    _distributedCache,
+                    new RepositoryResponse(),
+                    result,
+                    cacheKey,
+                    DateTime.Now.AddHours(1));
+
+                var response = fromCacheOrDB.Item1;
+                result = (SolutionResult)fromCacheOrDB.Item2;
 
                 var matrixNotInDB = true;
 
                 if (response.Success)
                 {
-                    foreach (var solution in response.Objects.ConvertAll(s => (SudokuSolution)s))
+                    foreach (var solution in response
+                        .Objects
+                        .ConvertAll(s => (SudokuSolution)s)
+                        .Where(s => s.DateSolved > DateTime.MinValue))
                     {
                         if (solution.SolutionList.Count > 0 && solution.ToString().Equals(matrix))
                         {
@@ -410,7 +429,7 @@ namespace SudokuCollective.Data.Services
 
             } while (continueLoop);
 
-            var solutionResponse = await solutionsRepository.Create((SudokuSolution)result.Solution);
+            var solutionResponse = await _solutionsRepository.Add((SudokuSolution)result.Solution);
 
             if (solutionResponse.Success)
             {
@@ -453,7 +472,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var solutions = (await solutionsRepository.GetSolvedSolutions())
+                var solutions = (await _solutionsRepository.GetSolvedSolutions())
                     .Objects.ConvertAll(s => (SudokuSolution)s);
 
                 foreach (var solution in solutions)
@@ -511,7 +530,7 @@ namespace SudokuCollective.Data.Services
                     newSolutions.Add(new SudokuSolution(solutionList));
                 }
 
-                var solutionsResponse = await solutionsRepository
+                var solutionsResponse = await _solutionsRepository
                     .AddSolutions(newSolutions.ConvertAll(s => (ISudokuSolution)s));
 
                 if (solutionsResponse.Success)

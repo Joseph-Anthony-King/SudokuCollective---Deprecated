@@ -21,27 +21,27 @@ namespace SudokuCollective.Data.Services
 {
     public class AuthenticateService : IAuthenticateService
     {
-        private readonly IUsersRepository<User> usersRepository;
-        private readonly IRolesRepository<Role> rolesRepository;
-        private readonly IAppsRepository<App> appsRepository;
-        private readonly IAppAdminsRepository<AppAdmin> appAdminsRepository;
-        private readonly IUserManagementService userManagementService;
-        private readonly ITokenManagement tokenManagement;
+        private readonly IUsersRepository<User> _usersRepository;
+        private readonly IRolesRepository<Role> _rolesRepository;
+        private readonly IAppsRepository<App> _appsRepository;
+        private readonly IAppAdminsRepository<AppAdmin> _appAdminsRepository;
+        private readonly IUserManagementService _userManagementService;
+        private readonly ITokenManagement _tokenManagement;
 
         public AuthenticateService(
-            IUsersRepository<User> usersRepo,
-            IRolesRepository<Role> rolesRepo,
-            IAppsRepository<App> appsRepo,
-            IAppAdminsRepository<AppAdmin> appsAdminRepo,
-            IUserManagementService userManagementServ,
-            IOptions<TokenManagement> tokenManage)
+            IUsersRepository<User> usersRepository,
+            IRolesRepository<Role> rolesRepository,
+            IAppsRepository<App> appsRepository,
+            IAppAdminsRepository<AppAdmin> appsAdminRepository,
+            IUserManagementService userManagementService,
+            IOptions<TokenManagement> tokenManagement)
         {
-            usersRepository = usersRepo;
-            rolesRepository = rolesRepo;
-            appsRepository = appsRepo;
-            appAdminsRepository = appsAdminRepo;
-            userManagementService = userManagementServ;
-            tokenManagement = tokenManage.Value;
+            _usersRepository = usersRepository;
+            _rolesRepository = rolesRepository;
+            _appsRepository = appsRepository;
+            _appAdminsRepository = appsAdminRepository;
+            _userManagementService = userManagementService;
+            _tokenManagement = tokenManagement.Value;
         }
 
         public async Task<IAuthenticatedUserResult> IsAuthenticated(ITokenRequest request)
@@ -50,7 +50,7 @@ namespace SudokuCollective.Data.Services
 
             var result = new AuthenticatedUserResult();
 
-            var validateUserTask = userManagementService.IsValidUser(request.UserName, request.Password);
+            var validateUserTask = _userManagementService.IsValidUser(request.UserName, request.Password);
 
             validateUserTask.Wait();
 
@@ -62,9 +62,9 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
 
-            var user = (User)(await usersRepository.GetByUserName(request.UserName, true)).Object;
+            var user = (User)(await _usersRepository.GetByUserName(request.UserName)).Object;
 
-            var app = (App)(await appsRepository.GetByLicense(request.License)).Object;
+            var app = (App)(await _appsRepository.GetByLicense(request.License)).Object;
 
             if (!app.IsActive)
             {
@@ -82,7 +82,7 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
 
-            var appAdmins = (await appAdminsRepository.GetAll()).Objects.ConvertAll(aa => (AppAdmin)aa);
+            var appAdmins = (await _appAdminsRepository.GetAll()).Objects.ConvertAll(aa => (AppAdmin)aa);
 
             if (!user.IsSuperUser)
             {
@@ -131,12 +131,12 @@ namespace SudokuCollective.Data.Services
 
             foreach (var role in user.Roles)
             {
-                var r = (Role)(await rolesRepository.GetById(role.Role.Id)).Object;
+                var r = (Role)(await _rolesRepository.Get(role.Role.Id)).Object;
 
                 claim.Add(new Claim(ClaimTypes.Role, r.RoleLevel.ToString()));
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenManagement.Secret));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenManagement.Secret));
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -164,8 +164,8 @@ namespace SudokuCollective.Data.Services
             }
 
             var jwtToken = new JwtSecurityToken(
-                    tokenManagement.Issuer,
-                    tokenManagement.Audience,
+                    _tokenManagement.Issuer,
+                    _tokenManagement.Audience,
                     claim.ToArray(),
                     notBefore: DateTime.UtcNow,
                     expires: expirationLimit,

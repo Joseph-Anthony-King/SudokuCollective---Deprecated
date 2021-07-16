@@ -7,8 +7,8 @@ namespace SudokuCollective.Core.Interfaces.Repositories
 {
     public interface IUsersRepository<TEntity> : IRepository<TEntity> where TEntity : IUser
     {
-        Task<IRepositoryResponse> GetByUserName(string username, bool fullRecord = true);
-        Task<IRepositoryResponse> GetByEmail(string email, bool fullRecord = true);
+        Task<IRepositoryResponse> GetByUserName(string username);
+        Task<IRepositoryResponse> GetByEmail(string email);
         Task<IRepositoryResponse> AddRole(int userId, int roleId);
         Task<IRepositoryResponse> AddRoles(int userId, List<int> roleIds);
         Task<IRepositoryResponse> RemoveRole(int userId, int roleId);

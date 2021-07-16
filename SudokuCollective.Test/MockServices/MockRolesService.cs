@@ -28,39 +28,39 @@ namespace SudokuCollective.Test.MockServices
             RolesServiceFailedRequest = new Mock<IRolesService>();
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
-                rolesService.Get(It.IsAny<int>(), It.IsAny<bool>()))
+                rolesService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
                     Success = MockRolesRepository
                         .RolesRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = RolesMessages.RoleFoundMessage,
                     Role = (Role)MockRolesRepository
                         .RolesRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IRoleResult));
 
             RolesServiceSuccessfulRequest.Setup(rolesService =>
-                rolesService.GetRoles(It.IsAny<bool>()))
+                rolesService.GetRoles())
                 .Returns(Task.FromResult(new RolesResult()
                 {
                     Success = MockRolesRepository
                         .RolesRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = RolesMessages.RolesFoundMessage,
                     Roles = MockRolesRepository
                         .RolesRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(r => (IRole)r)
@@ -112,32 +112,32 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
-                rolesService.Get(It.IsAny<int>(), It.IsAny<bool>()))
+                rolesService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new RoleResult()
                 {
                     Success = MockRolesRepository
                         .RolesRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = RolesMessages.RoleNotFoundMessage,
                     Role = (Role)MockRolesRepository
                         .RolesRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IRoleResult));
 
             RolesServiceFailedRequest.Setup(rolesService =>
-                rolesService.GetRoles(It.IsAny<bool>()))
+                rolesService.GetRoles())
                 .Returns(Task.FromResult(new RolesResult()
                 {
                     Success = MockRolesRepository
                         .RolesRepositoryFailedRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = RolesMessages.RolesNotFoundMessage,

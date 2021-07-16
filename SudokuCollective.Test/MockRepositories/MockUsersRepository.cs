@@ -63,7 +63,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                usersRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -71,7 +71,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.GetByUserName(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByUserName(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -81,7 +81,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.GetByEmail(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByEmail(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -91,7 +91,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
-                usersRepo.GetAll(It.IsAny<bool>()))
+                usersRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -197,28 +197,28 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                usersRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.GetByUserName(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByUserName(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.GetByEmail(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByEmail(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
-                usersRepo.GetAll(It.IsAny<bool>()))
+                usersRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -331,7 +331,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                usersRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -339,7 +339,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.GetByUserName(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByUserName(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -349,7 +349,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.GetByEmail(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByEmail(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -359,7 +359,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
-                usersRepo.GetAll(It.IsAny<bool>()))
+                usersRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -487,7 +487,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
-                usersRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                usersRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -495,7 +495,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
-                usersRepo.GetByUserName(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByUserName(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -505,7 +505,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
-                usersRepo.GetByEmail(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByEmail(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -515,7 +515,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
-                usersRepo.GetAll(It.IsAny<bool>()))
+                usersRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -644,7 +644,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
-                usersRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                usersRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -652,7 +652,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
-                usersRepo.GetByUserName(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByUserName(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -662,7 +662,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
-                usersRepo.GetByEmail(It.IsAny<string>(), It.IsAny<bool>()))
+                usersRepo.GetByEmail(It.IsAny<string>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -672,7 +672,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
-                usersRepo.GetAll(It.IsAny<bool>()))
+                usersRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

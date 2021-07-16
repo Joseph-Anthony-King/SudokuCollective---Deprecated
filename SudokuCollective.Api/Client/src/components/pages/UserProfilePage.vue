@@ -804,7 +804,7 @@ export default {
     },
 
     async reset() {
-      let user = await userService.getUser(this.$data.user.id, false);
+      let user = await userService.getUser(this.$data.user.id);
 
       this.$data.user = new User(user);
       this.$data.user.login();

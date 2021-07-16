@@ -59,7 +59,6 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.DisableCustomUrls, Is.TypeOf<bool>());
             Assert.That(sut.CustomEmailConfirmationAction, Is.TypeOf<string>());
             Assert.That(sut.CustomPasswordResetAction, Is.TypeOf<string>());
-            Assert.That(sut.GameCount, Is.TypeOf<int>());
             Assert.That(sut.UserCount, Is.TypeOf<int>());
             Assert.That(sut.TimeFrame, Is.TypeOf<TimeFrame>());
             Assert.That(sut.AccessDuration, Is.TypeOf<int>());
@@ -175,41 +174,6 @@ namespace SudokuCollective.Test.TestCases.Models
             // Assert
             Assert.That(sut.UseCustomPasswordResetAction, Is.True);
             Assert.That(sut.CustomPasswordResetAction, Is.EqualTo(customAction));
-        }
-
-        [Test]
-        [Category("Models")]
-        public void TrackGameCountThatDefaultsToZero()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            Assert.That(sut.GameCount, Is.InstanceOf<int>());
-            Assert.That(sut.GameCount, Is.EqualTo(0));
-
-        }
-
-        [Test]
-        [Category("Models")]
-        public void TrackGameCount()
-        {
-            // Arrange
-
-            // Act
-            var initialGameCount = sut.GameCount;
-
-            var user = new User();
-            sut.Users.Add(new UserApp { App = (App)sut, User = user });
-            _ = new Game(user, new SudokuMatrix(), new Difficulty(), 0);
-
-            var finalGameCount = sut.GameCount;
-
-            // Assert
-            Assert.That(initialGameCount, Is.EqualTo(0));
-            Assert.That(finalGameCount, Is.EqualTo(1));
-
         }
 
         [Test]

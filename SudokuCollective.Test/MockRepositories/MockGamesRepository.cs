@@ -42,7 +42,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         Success = true,
@@ -50,7 +50,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.GetAll(It.IsAny<bool>()))
+                gamesRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -92,7 +92,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -100,7 +100,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.GetAppGames(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGames(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -108,7 +108,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -116,7 +116,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositorySuccessfulRequest.Setup(gamesRepo =>
-                gamesRepo.GetMyGames(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetMyGames(It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -138,14 +138,14 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetAll(It.IsAny<bool>()))
+                gamesRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -184,28 +184,28 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(false));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetAppGames(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGames(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
                     } as IRepositoryResponse));
 
             GamesRepositoryFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetMyGames(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetMyGames(It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
@@ -231,7 +231,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetById(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.Get(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -239,7 +239,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetAll(It.IsAny<bool>()))
+                gamesRepo.GetAll())
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -280,7 +280,7 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(true));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGame(It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -288,7 +288,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetAppGames(It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetAppGames(It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -296,7 +296,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,
@@ -304,7 +304,7 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             GamesRepositoryUpdateFailedRequest.Setup(gamesRepo =>
-                gamesRepo.GetMyGames(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                gamesRepo.GetMyGames(It.IsAny<int>(), It.IsAny<int>()))
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true,

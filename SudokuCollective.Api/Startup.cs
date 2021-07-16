@@ -111,6 +111,12 @@ namespace SudokuCollective.Api
 
             services.AddSingleton(emailMetaData);
 
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+                options.InstanceName = "SudokuCollectiveCache";
+            });
+
             services.AddScoped<IAppsRepository<App>, AppsRepository<App>>();
             services.AddScoped<IUsersRepository<User>, UsersRepository<User>>();
             services.AddScoped<IAppAdminsRepository<AppAdmin>, AppAdminsRepository<AppAdmin>>();

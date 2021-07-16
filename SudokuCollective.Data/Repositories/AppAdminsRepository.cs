@@ -15,13 +15,13 @@ namespace SudokuCollective.Data.Repositories
     public class AppAdminsRepository<TEntity> : IAppAdminsRepository<TEntity> where TEntity : AppAdmin
     {
         #region Fields
-        private readonly DatabaseContext context;
+        private readonly DatabaseContext _context;
         #endregion
 
         #region Constructor
-        public AppAdminsRepository(DatabaseContext databaseContext)
+        public AppAdminsRepository(DatabaseContext context)
         {
-            context = databaseContext;
+            _context = context;
         }
         #endregion
 
@@ -32,7 +32,7 @@ namespace SudokuCollective.Data.Repositories
 
             var result = new RepositoryResponse();
 
-            if (await context.AppAdmins.AnyAsync(aa => aa.Id == entity.Id))
+            if (await _context.AppAdmins.AnyAsync(aa => aa.Id == entity.Id))
             {
                 result.Success = false;
 
@@ -41,9 +41,9 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                context.Attach(entity);
+                _context.Attach(entity);
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -61,7 +61,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
                 result.Object = entity;
@@ -77,13 +77,13 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetById(int id, bool fullRecord = true)
+        public async Task<IRepositoryResponse> Get(int id)
         {
             var result = new RepositoryResponse();
 
             try
             {
-                var query = await context
+                var query = await _context
                     .AppAdmins
                     .FirstOrDefaultAsync(aa => aa.Id == id);
 
@@ -109,13 +109,13 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> GetAll(bool fullRecord = true)
+        public async Task<IRepositoryResponse> GetAll()
         {
             var result = new RepositoryResponse();
 
             try
             {
-                var query = await context
+                var query = await _context
                     .AppAdmins
                     .ToListAsync();
 
@@ -151,11 +151,11 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
+                if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
                 {
-                    context.Attach(entity);
+                    _context.Attach(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -173,7 +173,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -213,9 +213,9 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    if (await context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
+                    if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
                     {
-                        context.Attach(entity);
+                        _context.Attach(entity);
                     }
                     else
                     {
@@ -225,7 +225,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -243,7 +243,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
 
@@ -266,11 +266,11 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
+                if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
                 {
-                    context.Remove(entity);
+                    _context.Remove(entity);
 
-                    foreach (var entry in context.ChangeTracker.Entries())
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
@@ -288,7 +288,7 @@ namespace SudokuCollective.Data.Repositories
                         }
                     }
 
-                    await context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     result.Success = true;
                     result.Object = entity;
@@ -328,9 +328,9 @@ namespace SudokuCollective.Data.Repositories
                         return result;
                     }
 
-                    if (await context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
+                    if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
                     {
-                        context.Remove(entity);
+                        _context.Remove(entity);
                     }
                     else
                     {
@@ -340,7 +340,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                foreach (var entry in context.ChangeTracker.Entries())
+                foreach (var entry in _context.ChangeTracker.Entries())
                 {
                     var dbEntry = (IEntityBase)entry.Entity;
 
@@ -358,7 +358,7 @@ namespace SudokuCollective.Data.Repositories
                     }
                 }
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 result.Success = true;
 
@@ -375,14 +375,14 @@ namespace SudokuCollective.Data.Repositories
 
         public async Task<bool> HasEntity(int id)
         {
-            var result = await context.AppAdmins.AnyAsync(aa => aa.Id == id);
+            var result = await _context.AppAdmins.AnyAsync(aa => aa.Id == id);
 
             return result;
         }
 
         public async Task<bool> HasAdminRecord(int appId, int userId)
         {
-            var result = await context
+            var result = await _context
                 .AppAdmins
                 .AnyAsync(aa => aa.AppId == appId && aa.UserId == userId);
 
@@ -395,7 +395,7 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                var query = await context
+                var query = await _context
                     .AppAdmins
                     .FirstOrDefaultAsync(aa => aa.AppId == appId && aa.UserId == userId);
 

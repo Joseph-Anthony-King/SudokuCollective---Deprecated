@@ -322,7 +322,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.ActivateApp(1);
+            var result = await sut.Activate(1);
             var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Assert
@@ -338,7 +338,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.DeactivateApp(1);
+            var result = await sut.Deactivate(1);
             var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Assert

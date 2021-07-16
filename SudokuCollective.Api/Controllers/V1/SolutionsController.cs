@@ -29,15 +29,14 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost("{id}")]
         public async Task<ActionResult<SudokuSolution>> Get(
             int id,
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
                 request.License,
                 request.RequestorId))
             {
-                var result = await solutionService.Get(id, fullRecord);
+                var result = await solutionService.Get(id);
 
                 if (result.Success)
                 {
@@ -62,8 +61,7 @@ namespace SudokuCollective.Api.V1.Controllers
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<SudokuSolution>>> GetSolutions(
-            [FromBody] BaseRequest request,
-            [FromQuery] bool fullRecord = true)
+            [FromBody] BaseRequest request)
         {
             if (await appsService.IsRequestValidOnThisLicense(
                 request.AppId,
@@ -71,7 +69,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId))
             {
                 var result = await solutionService
-                    .GetSolutions(request, fullRecord);
+                    .GetSolutions(request);
 
                 if (result.Success)
                 {

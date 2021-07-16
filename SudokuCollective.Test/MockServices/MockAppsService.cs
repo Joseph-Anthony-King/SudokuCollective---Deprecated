@@ -39,21 +39,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.Get(
                     It.IsAny<int>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppFoundMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IAppResult));
@@ -61,21 +60,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.GetAppByLicense(
                     It.IsAny<string>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetByLicense(It.IsAny<string>(), It.IsAny<bool>())
+                        .GetByLicense(It.IsAny<string>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppFoundMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IAppResult));
@@ -83,21 +81,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.GetApps(
                     It.IsAny<Paginator>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -106,21 +103,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.GetMyApps(
                     It.IsAny<int>(), 
-                    It.IsAny<Paginator>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -129,21 +125,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.GetRegisteredApps(
                     It.IsAny<int>(),
-                    It.IsAny<Paginator>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -206,21 +201,20 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>(), 
                     It.IsAny<int>(),
                     It.IsAny<Paginator>(),
-                    It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAppUsers(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppUsers(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UsersFoundMessage,
                     Users = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAppUsers(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppUsers(It.IsAny<int>())
                         .Result
                         .Objects
                         .ConvertAll(u => (IUser)u)
@@ -266,7 +260,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
-                appService.ActivateApp(It.IsAny<int>()))
+                appService.Activate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -279,7 +273,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceSuccessfulRequest.Setup(appService =>
-                appService.DeactivateApp(It.IsAny<int>()))
+                appService.Deactivate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -311,7 +305,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UserHasBeenPromotedToAdminMessage,
@@ -330,7 +324,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AdminPrivilegesDeactivatedMessage,
@@ -345,21 +339,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceFailedRequest.Setup(appService =>
                 appService.Get(
                     It.IsAny<int>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppNotFoundMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object,
                 } as IAppResult));
@@ -367,21 +360,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceFailedRequest.Setup(appService =>
                 appService.GetAppByLicense(
                     It.IsAny<string>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .GetByLicense(It.IsAny<string>(), It.IsAny<bool>())
+                        .GetByLicense(It.IsAny<string>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppNotFoundMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .GetByLicense(It.IsAny<string>(), It.IsAny<bool>())
+                        .GetByLicense(It.IsAny<string>())
                         .Result
                         .Object,
                 } as IAppResult));
@@ -389,14 +381,13 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceFailedRequest.Setup(appService =>
                 appService.GetApps(
                     It.IsAny<Paginator>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsNotFoundMessage,
@@ -406,14 +397,13 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceFailedRequest.Setup(appService =>
                 appService.GetMyApps(
                     It.IsAny<int>(), 
-                    It.IsAny<Paginator>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsNotFoundMessage,
@@ -423,14 +413,13 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceFailedRequest.Setup(appService =>
                 appService.GetRegisteredApps(
                     It.IsAny<int>(),
-                    It.IsAny<Paginator>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsNotFoundMessage,
@@ -489,14 +478,13 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>(),
                     It.IsAny<int>(), 
                     It.IsAny<Paginator>(),
-                    It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositoryFailedRequest
                         .Object
-                        .GetAppUsers(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppUsers(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UsersNotFoundMessage,
@@ -543,7 +531,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceFailedRequest.Setup(appService =>
-                appService.ActivateApp(It.IsAny<int>()))
+                appService.Activate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -556,7 +544,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceFailedRequest.Setup(appService =>
-                appService.DeactivateApp(It.IsAny<int>()))
+                appService.Deactivate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -588,7 +576,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UserHasNotBeenPromotedToAdminMessage,
@@ -607,7 +595,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.DeactivationOfAdminPrivilegesFailedMessage,
@@ -622,21 +610,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceInvalidRequest.Setup(appService =>
                 appService.Get(
                     It.IsAny<int>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppFoundMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IAppResult));
@@ -644,21 +631,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceInvalidRequest.Setup(appService =>
                 appService.GetAppByLicense(
                     It.IsAny<string>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetByLicense(It.IsAny<string>(), It.IsAny<bool>())
+                        .GetByLicense(It.IsAny<string>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppFoundMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IAppResult));
@@ -666,21 +652,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceInvalidRequest.Setup(appService =>
                 appService.GetApps(
                     It.IsAny<Paginator>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -689,21 +674,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceInvalidRequest.Setup(appService =>
                 appService.GetMyApps(
                     It.IsAny<int>(), 
-                    It.IsAny<Paginator>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -712,21 +696,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServiceInvalidRequest.Setup(appService =>
                 appService.GetRegisteredApps(
                     It.IsAny<int>(),
-                    It.IsAny<Paginator>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -789,21 +772,20 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>(),
                     It.IsAny<int>(),
                     It.IsAny<Paginator>(),
-                    It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAppUsers(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppUsers(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UsersFoundMessage,
                     Users = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAppUsers(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppUsers(It.IsAny<int>())
                         .Result
                         .Objects
                         .ConvertAll(u => (IUser)u)
@@ -849,7 +831,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceInvalidRequest.Setup(appService =>
-                appService.ActivateApp(It.IsAny<int>()))
+                appService.Activate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -862,7 +844,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServiceInvalidRequest.Setup(appService =>
-                appService.DeactivateApp(It.IsAny<int>()))
+                appService.Deactivate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -894,7 +876,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppNotFoundMessage,
@@ -908,7 +890,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AdminPrivilegesDeactivatedMessage,
@@ -923,21 +905,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServicePromoteUserFailsRequest.Setup(appService =>
                 appService.Get(
                     It.IsAny<int>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppFoundMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IAppResult));
@@ -945,21 +926,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServicePromoteUserFailsRequest.Setup(appService =>
                 appService.GetAppByLicense(
                     It.IsAny<string>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetByLicense(It.IsAny<string>(), It.IsAny<bool>())
+                        .GetByLicense(It.IsAny<string>())
                         .Result
                         .Success,
                     Message = AppsMessages.AppFoundMessage,
                     App = (App)MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Object
                 } as IAppResult));
@@ -967,21 +947,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServicePromoteUserFailsRequest.Setup(appService =>
                 appService.GetApps(
                     It.IsAny<Paginator>(),
-                    It.IsAny<int>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -990,21 +969,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServicePromoteUserFailsRequest.Setup(appService =>
                 appService.GetMyApps(
                     It.IsAny<int>(), 
-                    It.IsAny<Paginator>(), 
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -1013,21 +991,20 @@ namespace SudokuCollective.Test.MockServices
             AppsServicePromoteUserFailsRequest.Setup(appService =>
                 appService.GetRegisteredApps(
                     It.IsAny<int>(),
-                    It.IsAny<Paginator>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new AppsResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Success,
                     Message = AppsMessages.AppsFoundMessage,
                     Apps = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAll(It.IsAny<bool>())
+                        .GetAll()
                         .Result
                         .Objects
                         .ConvertAll(a => (IApp)a)
@@ -1090,21 +1067,20 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>(),
                     It.IsAny<int>(),
                     It.IsAny<Paginator>(),
-                    It.IsAny<bool>(),
                     It.IsAny<bool>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
                     Success = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAppUsers(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppUsers(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UsersFoundMessage,
                     Users = MockAppsRepository
                         .AppsRepositorySuccessfulRequest
                         .Object
-                        .GetAppUsers(It.IsAny<int>(), It.IsAny<bool>())
+                        .GetAppUsers(It.IsAny<int>())
                         .Result
                         .Objects
                         .ConvertAll(u => (IUser)u)
@@ -1150,7 +1126,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appService =>
-                appService.ActivateApp(It.IsAny<int>()))
+                appService.Activate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -1163,7 +1139,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             AppsServicePromoteUserFailsRequest.Setup(appService =>
-                appService.DeactivateApp(It.IsAny<int>()))
+                appService.Deactivate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockAppsRepository
@@ -1195,7 +1171,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UserHasNotBeenPromotedToAdminMessage,
@@ -1209,7 +1185,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = UsersMessages.UserHasNotBeenPromotedToAdminMessage,
@@ -1228,7 +1204,7 @@ namespace SudokuCollective.Test.MockServices
                     Success = MockAppAdminsRepository
                         .AppAdminsRepositoryFailedRequest
                         .Object
-                        .GetById(It.IsAny<int>(), It.IsAny<bool>())
+                        .Get(It.IsAny<int>())
                         .Result
                         .Success,
                     Message = AppsMessages.DeactivationOfAdminPrivilegesFailedMessage,

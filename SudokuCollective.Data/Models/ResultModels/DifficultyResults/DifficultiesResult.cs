@@ -7,11 +7,15 @@ namespace SudokuCollective.Data.Models.ResultModels
     public class DifficultiesResult : IDifficultiesResult
     {
         public bool Success { get; set; }
+        public bool FromCache { get; set; }
         public string Message { get; set; }
         public List<IDifficulty> Difficulties { get; set; }
 
         public DifficultiesResult() : base()
         {
+            Success = false;
+            FromCache = false;
+            Message = string.Empty;
             Difficulties = new List<IDifficulty>();
         }
     }
