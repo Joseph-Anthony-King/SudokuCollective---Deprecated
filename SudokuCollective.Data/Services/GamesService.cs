@@ -28,7 +28,7 @@ namespace SudokuCollective.Data.Services
         private readonly IDifficultiesRepository<Difficulty> _difficultiesRepository;
         private readonly ISolutionsRepository<SudokuSolution> _solutionsRepository;
         private readonly IDistributedCache _distributedCache;
-        private readonly string cacheKey = CacheKeys.SolutionsCacheKey;
+        private readonly string cacheKey = CacheKeys.GetSolutionsCacheKey;
         #endregion
 
         #region Constructor
@@ -1029,16 +1029,15 @@ namespace SudokuCollective.Data.Services
                 // Add solution to the database
                 var response = new RepositoryResponse();
 
-                var fromCacheOrDB = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
+                var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
-                    response,
                     result,
                     cacheKey,
                     DateTime.Now.AddHours(1));
 
-                response = (RepositoryResponse)fromCacheOrDB.Item1;
-                result = (BaseResult)fromCacheOrDB.Item2;
+                response = (RepositoryResponse)cacheFactoryResponse.Item1;
+                result = (BaseResult)cacheFactoryResponse.Item2;
 
                 if (response.Success)
                 {

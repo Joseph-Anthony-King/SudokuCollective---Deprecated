@@ -7,6 +7,9 @@ Sudoku Collective is a project that serves as a ready made Web API that you can 
 - [.Net 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
 - [PostgreSQL 11](https://www.postgresql.org/download/)
 - [Vue/CLI - version 4.5.7](https://cli.vuejs.org/)
+- [Redis Server - version 5.0.7](https://redis.io/download)
+
+For the Redis Cache Server on Windows 10 it is recommended you use [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) in order to install and run Redis through Ubuntu 20.04.  The instruction for download throught the official Ubuntu PPA are contained in the above Redis link.
 
 ## Installation
 

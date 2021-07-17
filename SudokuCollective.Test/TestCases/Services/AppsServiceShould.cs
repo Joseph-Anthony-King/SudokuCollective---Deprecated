@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
@@ -21,6 +24,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockUsersRepository MockUsersRepository;
         private MockAppAdminsRepository MockAppAdminsRepository;
         private MockRolesRepository MockRolesRepository;
+        private MemoryDistributedCache memoryCache;
         private IAppsService sut;
         private IAppsService sutAppRepoFailure;
         private IAppsService sutUserRepoFailure;
@@ -41,30 +45,36 @@ namespace SudokuCollective.Test.TestCases.Services
             MockUsersRepository = new MockUsersRepository(context);
             MockAppAdminsRepository = new MockAppAdminsRepository(context);
             MockRolesRepository = new MockRolesRepository(context);
+            memoryCache = new MemoryDistributedCache(
+                Options.Create(new MemoryDistributedCacheOptions()));
 
             sut = new AppsService(
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object,
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                memoryCache);
 
             sutAppRepoFailure = new AppsService(
                 MockAppsRepository.AppsRepositoryFailedRequest.Object,
                 MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
                 MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
-                MockRolesRepository.RolesRepositoryFailedRequest.Object);
+                MockRolesRepository.RolesRepositoryFailedRequest.Object,
+                memoryCache);
 
             sutUserRepoFailure = new AppsService(
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockUsersRepository.UsersRepositoryFailedRequest.Object,
                 MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                memoryCache);
 
             sutPromoteUser = new AppsService(
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockUsersRepository.UsersRepositoryInitiatePasswordSuccessful.Object,
                 MockAppAdminsRepository.AppAdminsRepositoryPromoteUser.Object,
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object); ;
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                memoryCache); ;
 
             dateCreated = DateTime.UtcNow;
             license = TestObjects.GetLicense();
