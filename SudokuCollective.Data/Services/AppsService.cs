@@ -72,7 +72,7 @@ namespace SudokuCollective.Data.Services
                        _distributedCache,
                        new BaseResult(),
                        string.Format(getUserCacheKey, request.OwnerId),
-                       DateTime.Now.AddHours(1),
+                       DateTime.Now.AddMinutes(5),
                        request.OwnerId);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -99,7 +99,10 @@ namespace SudokuCollective.Data.Services
                     {
                         license = Guid.NewGuid();
 
-                        if (!checkAppsResponse.Objects.ConvertAll(a => (IApp)a).Any(a => a.License.Equals(license.ToString())))
+                        if (!checkAppsResponse
+                            .Objects
+                            .ConvertAll(a => (IApp)a)
+                            .Any(a => a.License.Equals(license.ToString())))
                         {
                             generatingGuid = false;
                         }
