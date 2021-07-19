@@ -2254,7 +2254,7 @@ namespace SudokuCollective.Data.Services
                 DateTime.Now.AddHours(1),
                 license);
 
-            if (userResponse.Success && validLicense)
+            if (userResponse.Success && appResponse.Success && validLicense)
             {
                 bool userPermittedAccess;
 
