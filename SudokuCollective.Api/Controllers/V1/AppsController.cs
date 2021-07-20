@@ -16,11 +16,6 @@ namespace SudokuCollective.Api.V1.Controllers
     public class AppsController : ControllerBase
     {
         private readonly IAppsService appsService;
-        private readonly List<string> all = new List<string> { "app", "game", "user" };
-        private readonly List<string> app = new List<string> { "app" };
-        private readonly List<string> authToken = new List<string> { "auth token access period" };
-        private readonly List<string> game = new List<string> { "game" };
-        private readonly List<string> user = new List<string> { "user" };
 
         public AppsController(IAppsService appsServ)
         {
@@ -544,6 +539,8 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpGet, Route("GetTimeFrames")]
         public ActionResult<List<EnumListItem>> GetTimeFrames()
         {
+            var authToken = new List<string> { "auth token access period" };
+
             var result = new List<EnumListItem>
             {
                 new EnumListItem { 
@@ -576,6 +573,11 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpGet, Route("GetSortValues")]
         public ActionResult<List<EnumListItem>> GetSortValues()
         {
+            var all = new List<string> { "app", "game", "user" };
+            var app = new List<string> { "app" };
+            var game = new List<string> { "game" };
+            var user = new List<string> { "user" };
+            
             var result = new List<EnumListItem>
             {
                 new EnumListItem { 
