@@ -21,5 +21,7 @@
         internal const string HasUserCacheKey = ":HasUser:{0}";
         internal const string IsUserRegisteredCacheKey = ":IsUserRegistered:{0}";
         internal const string GetSolutionsCacheKey = ":GetSolutions";
+        internal const string GetRole = ":GetRole:{0}";
+        internal const string GetRoles = ":GetRoles";
     }
 }

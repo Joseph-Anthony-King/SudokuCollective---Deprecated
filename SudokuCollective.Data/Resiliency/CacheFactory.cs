@@ -713,5 +713,43 @@ namespace SudokuCollective.Data.Resiliency
             return result;
         }
         #endregion
+
+        #region Roles Repository Cache Methods
+        internal static async Task<bool> HasRoleLevelWithCacheAsync(
+            IRolesRepository<Role> repo,
+            IDistributedCache cache,
+            string cacheKey,
+            DateTime expiration,
+            RoleLevel roleLevel)
+        {
+            bool result;
+
+            var cachedItem = await cache.GetAsync(cacheKey);
+
+            if (cachedItem != null)
+            {
+                var serializedItem = Encoding.UTF8.GetString(cachedItem);
+                result = JsonConvert.DeserializeObject<bool>(serializedItem);
+            }
+            else
+            {
+                var response = await repo.HasRoleLevel(roleLevel);
+
+                var serializedItem = JsonConvert.SerializeObject(response);
+                var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(expiration);
+
+                await cache.SetAsync(
+                    cacheKey,
+                    encodedItem,
+                    options);
+
+                result = response;
+            }
+
+            return result;
+        }
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
@@ -9,6 +10,8 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Resiliency;
+using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Data.Services
 {
@@ -16,12 +19,16 @@ namespace SudokuCollective.Data.Services
     {
         #region Fields
         private readonly IRolesRepository<Role> _rolesRepository;
+        private readonly IDistributedCache _distributedCache;
         #endregion
 
         #region Constructor
-        public RolesService(IRolesRepository<Role> rolesRepository)
+        public RolesService(
+            IRolesRepository<Role> rolesRepository,
+            IDistributedCache distributedCache)
         {
             _rolesRepository = rolesRepository;
+            _distributedCache = distributedCache;
         }
         #endregion
 
@@ -36,7 +43,12 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (!(await _rolesRepository.HasRoleLevel(roleLevel)))
+                if (!await CacheFactory.HasRoleLevelWithCacheAsync(
+                    _rolesRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetRole, roleLevel),
+                    DateTime.Now.AddHours(1),
+                    roleLevel))
                 {
                     var role = new Role()
                     {
@@ -100,7 +112,16 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await _rolesRepository.Get(id);
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<Role>(
+                    _rolesRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetRole, id),
+                    DateTime.Now.AddHours(1),
+                    id,
+                    result);
+
+                var response = (RepositoryResponse)cacheFactoryResponse.Item1;
+                result = (RoleResult)cacheFactoryResponse.Item2;
 
                 if (response.Success)
                 {
@@ -154,7 +175,16 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await _rolesRepository.Get(id);
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<Role>(
+                    _rolesRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetRole, id),
+                    DateTime.Now.AddHours(1),
+                    id,
+                    result);
+
+                var response = (RepositoryResponse)cacheFactoryResponse.Item1;
+                result = (BaseResult)cacheFactoryResponse.Item2;
 
                 if (response.Success)
                 {
@@ -283,22 +313,30 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var rolesResponse = await _rolesRepository.GetAll();
+                var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<Role>(
+                    _rolesRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetRoles),
+                    DateTime.Now.AddHours(1),
+                    result);
 
-                if (rolesResponse.Success)
+                var response = (RepositoryResponse)cacheFactoryResponse.Item1;
+                result = (RolesResult)cacheFactoryResponse.Item2;
+
+                if (response.Success)
                 {
-                    var roles = rolesResponse.Objects.ConvertAll(r => (IRole)r);
+                    var roles = response.Objects.ConvertAll(r => (IRole)r);
 
-                    result.Success = rolesResponse.Success;
+                    result.Success = response.Success;
                     result.Message = RolesMessages.RolesFoundMessage;
                     result.Roles = roles;
 
                     return result;
                 }
-                else if (!rolesResponse.Success && rolesResponse.Exception != null)
+                else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = rolesResponse.Success;
-                    result.Message = rolesResponse.Exception.Message;
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
 
                     return result;
                 }

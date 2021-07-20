@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
@@ -18,6 +21,7 @@ namespace SudokuCollective.Test.TestCases.Services
     {
         private DatabaseContext context;
         private MockRolesRepository MockRolesRepository;
+        private MemoryDistributedCache memoryCache;
         private RolesService sut;
         private RolesService sutFailue;
         private string license;
@@ -27,10 +31,15 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             context = await TestDatabase.GetDatabaseContext();
             MockRolesRepository = new MockRolesRepository(context);
+            memoryCache = new MemoryDistributedCache(
+                Options.Create(new MemoryDistributedCacheOptions()));
+
             sut = new RolesService(
-                MockRolesRepository.RolesRepositorySuccessfulRequest.Object);
+                MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
+                memoryCache);
             sutFailue = new RolesService(
-                MockRolesRepository.RolesRepositoryFailedRequest.Object);
+                MockRolesRepository.RolesRepositoryFailedRequest.Object,
+                memoryCache);
             license = TestObjects.GetLicense();
         }
 
