@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Core.Interfaces.DataModels;
 using SudokuCollective.Core.Interfaces.Models;
@@ -657,6 +658,44 @@ namespace SudokuCollective.Data.Resiliency
             else
             {
                 var response = await repo.IsUserRegistered(id);
+
+                var serializedItem = JsonConvert.SerializeObject(response);
+                var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(expiration);
+
+                await cache.SetAsync(
+                    cacheKey,
+                    encodedItem,
+                    options);
+
+                result = response;
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region Difficulty Repository Cache Methods
+        internal static async Task<bool> HasDifficultyLevelWithCacheAsync(
+            IDifficultiesRepository<Difficulty> repo,
+            IDistributedCache cache,
+            string cacheKey,
+            DateTime expiration,
+            DifficultyLevel difficultyLevel)
+        {
+            bool result;
+
+            var cachedItem = await cache.GetAsync(cacheKey);
+
+            if (cachedItem != null)
+            {
+                var serializedItem = Encoding.UTF8.GetString(cachedItem);
+                result = JsonConvert.DeserializeObject<bool>(serializedItem);
+            }
+            else
+            {
+                var response = await repo.HasDifficultyLevel(difficultyLevel);
 
                 var serializedItem = JsonConvert.SerializeObject(response);
                 var encodedItem = Encoding.UTF8.GetBytes(serializedItem);

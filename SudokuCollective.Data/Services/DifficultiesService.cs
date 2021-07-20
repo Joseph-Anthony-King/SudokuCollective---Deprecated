@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
@@ -9,6 +10,8 @@ using SudokuCollective.Core.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Resiliency;
+using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Data.Services
 {
@@ -16,12 +19,16 @@ namespace SudokuCollective.Data.Services
     {
         #region Fields
         private readonly IDifficultiesRepository<Difficulty> _difficultiesRepository;
+        private readonly IDistributedCache _distributedCache;
         #endregion
 
         #region Constructor
-        public DifficultiesService(IDifficultiesRepository<Difficulty> difficultiesRepository)
+        public DifficultiesService(
+            IDifficultiesRepository<Difficulty> difficultiesRepository,
+            IDistributedCache distributedCache)
         {
             _difficultiesRepository = difficultiesRepository;
+            _distributedCache = distributedCache;
         }
         #endregion
 
@@ -39,7 +46,12 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (!(await _difficultiesRepository.HasDifficultyLevel(difficultyLevel)))
+                if (!await CacheFactory.HasDifficultyLevelWithCacheAsync(
+                    _difficultiesRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetDifficulty, difficultyLevel),
+                    DateTime.Now.AddHours(1),
+                    difficultyLevel))
                 {
 
                     var difficulty = new Difficulty()
@@ -106,7 +118,16 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await _difficultiesRepository.Get(id);
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
+                    _difficultiesRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetDifficulty, id),
+                    DateTime.Now.AddHours(1),
+                    id,
+                    result);
+
+                var response = (RepositoryResponse)cacheFactoryResponse.Item1;
+                result = (DifficultyResult)cacheFactoryResponse.Item2;
 
                 if (response.Success)
                 {
@@ -288,7 +309,15 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var response = await _difficultiesRepository.GetAll();
+                var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync(
+                    _difficultiesRepository,
+                    _distributedCache,
+                    CacheKeys.GetDifficulties,
+                    DateTime.Now.AddHours(1),
+                    result);
+
+                var response = (RepositoryResponse)cacheFactoryResponse.Item1;
+                result = (DifficultiesResult)cacheFactoryResponse.Item2;
 
                 if (response.Success)
                 {

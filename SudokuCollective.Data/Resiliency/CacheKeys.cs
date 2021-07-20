@@ -12,6 +12,8 @@
         internal const string GetAppLicenseCacheKey = ":GetAppLicense:{0}";
         internal const string HasAppCacheKey = ":HasApp:{0}";
         internal const string IsAppLicenseValidCacheKey = ":IsAppLicenseValid:{0}";
+        internal const string GetDifficulty = ":GetDifficulty:{0}";
+        internal const string GetDifficulties = ":GetDifficutlies";
         internal const string GetUserCacheKey = ":GetUser:{0}";
         internal const string GetUserByUsernameCacheKey = ":GetUserByUsername:{0}";
         internal const string GetUserByEmailCacheKey = ":GetUserByEmail:{0}";

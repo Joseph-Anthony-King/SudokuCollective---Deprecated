@@ -24,7 +24,6 @@ namespace SudokuCollective.Data.Services
         #region Fields
         private readonly ISolutionsRepository<SudokuSolution> _solutionsRepository;
         private readonly IDistributedCache _distributedCache;
-        private readonly string cacheKey = CacheKeys.GetSolutionsCacheKey;
         #endregion
 
         #region Constructor
@@ -102,7 +101,7 @@ namespace SudokuCollective.Data.Services
                 var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
-                    cacheKey,
+                    CacheKeys.GetSolutionsCacheKey,
                     DateTime.Now.AddHours(1),
                     result);
 
@@ -268,7 +267,7 @@ namespace SudokuCollective.Data.Services
                 var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
-                    cacheKey,
+                    CacheKeys.GetSolutionsCacheKey,
                     DateTime.Now.AddHours(1),
                     result);
 
@@ -398,7 +397,7 @@ namespace SudokuCollective.Data.Services
                 var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
-                    cacheKey,
+                    CacheKeys.GetSolutionsCacheKey,
                     DateTime.Now.AddHours(1),
                     result);
 

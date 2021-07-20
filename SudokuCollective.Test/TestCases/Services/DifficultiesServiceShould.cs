@@ -1,5 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Services;
@@ -17,6 +20,7 @@ namespace SudokuCollective.Test.TestCases.Services
     {
         private DatabaseContext context;
         private MockDifficultiesRepository MockDifficultiesRepository;
+        private MemoryDistributedCache memoryCache;
         private IDifficultiesService sut;
         private IDifficultiesService sutCreateDifficulty;
         private string license;
@@ -27,10 +31,15 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             context = await TestDatabase.GetDatabaseContext();
             MockDifficultiesRepository = new MockDifficultiesRepository(context);
+            memoryCache = new MemoryDistributedCache(
+                Options.Create(new MemoryDistributedCacheOptions()));
+
             sut = new DifficultiesService(
-                MockDifficultiesRepository.DifficultiesRepositorySuccessfulRequest.Object);
+                MockDifficultiesRepository.DifficultiesRepositorySuccessfulRequest.Object,
+                memoryCache);
             sutCreateDifficulty = new DifficultiesService(
-                MockDifficultiesRepository.DifficultiesRepositoryCreateDifficultyRequest.Object);
+                MockDifficultiesRepository.DifficultiesRepositoryCreateDifficultyRequest.Object,
+                memoryCache);
             license = TestObjects.GetLicense();
             paginator = TestObjects.GetPaginator();
         }
