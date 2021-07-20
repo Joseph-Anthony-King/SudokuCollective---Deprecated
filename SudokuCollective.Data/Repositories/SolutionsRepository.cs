@@ -218,29 +218,270 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public Task<IRepositoryResponse> Update(TEntity entity)
+        public async Task<IRepositoryResponse> Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            var result = new RepositoryResponse();
+
+            if (entity.Id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
+
+            try
+            {
+                if (await _context.SudokuSolutions.AnyAsync(r => r.Id == entity.Id))
+                {
+                    _context.Attach(entity);
+
+                    foreach (var entry in _context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserApp)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else if (dbEntry is UserRole)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            // Otherwise do nothing...
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    result.Success = true;
+                    result.Object = entity;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
         }
 
-        public Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
+        public async Task<IRepositoryResponse> UpdateRange(List<TEntity> entities)
         {
-            throw new NotImplementedException();
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
+            var result = new RepositoryResponse();
+
+            try
+            {
+                foreach (var entity in entities)
+                {
+                    if (entity.Id == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
+                    {
+                        _context.Attach(entity);
+                    }
+                    else
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+                }
+
+                foreach (var entry in _context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry is UserApp)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is UserRole)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        // Otherwise do nothing...
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.Success = true;
+
+                return result;
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
         }
 
-        public Task<IRepositoryResponse> Delete(TEntity entity)
+        public async Task<IRepositoryResponse> Delete(TEntity entity)
         {
-            throw new NotImplementedException();
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            var result = new RepositoryResponse();
+
+            if (entity.Id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
+
+            try
+            {
+                if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
+                {
+                    _context.Remove(entity);
+
+                    foreach (var entry in _context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IEntityBase)entry.Entity;
+
+                        if (dbEntry is UserApp)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else if (dbEntry is UserRole userRole)
+                        {
+                            if (userRole.RoleId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                        }
+                        else
+                        {
+                            // Otherwise do nothing...
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    result.Success = true;
+                    result.Object = entity;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
         }
 
-        public Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
+        public async Task<IRepositoryResponse> DeleteRange(List<TEntity> entities)
         {
-            throw new NotImplementedException();
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var roleIds = new List<int>();
+
+                foreach (var entity in entities)
+                {
+                    if (entity.Id == 0)
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+
+                    if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
+                    {
+                        _context.Remove(entity);
+                        roleIds.Add(entity.Id);
+                    }
+                    else
+                    {
+                        result.Success = false;
+
+                        return result;
+                    }
+                }
+
+                foreach (var entry in _context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry is UserApp)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else if (dbEntry is UserRole userRole)
+                    {
+                        if (roleIds.Contains(userRole.RoleId))
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else
+                    {
+                        // Otherwise do nothing...
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.Success = true;
+
+                return result;
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
         }
 
-        public Task<bool> HasEntity(int id)
+        public async Task<bool> HasEntity(int id)
         {
-            throw new NotImplementedException();
+            return await _context.SudokuSolutions.AnyAsync(d => d.Id == id);
         }
         #endregion
     }
