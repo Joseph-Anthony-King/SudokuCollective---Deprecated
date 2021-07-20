@@ -581,6 +581,10 @@ namespace SudokuCollective.Api.V1.Controllers
             var result = new List<EnumListItem>
             {
                 new EnumListItem { 
+                    Label = "Null", 
+                    Value = (int)SortValue.NULL,
+                    AppliesTo = all },
+                new EnumListItem { 
                     Label = "ID", 
                     Value = (int)SortValue.ID,
                     AppliesTo = all },
