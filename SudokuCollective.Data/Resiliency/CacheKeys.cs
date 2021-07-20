@@ -13,6 +13,9 @@
         internal const string HasAppCacheKey = ":HasAppCacheKey:{0}";
         internal const string IsAppLicenseValidCacheKey = ":IsAppLicenseValidCacheKey:{0}";
         internal const string GetUserCacheKey = ":GetUserCacheKey:{0}";
+        internal const string GetUserByUsernameCacheKey = ":GetUserByUsernameCacheKey:{0}";
+        internal const string GetUserByEmailCacheKey = ":GetUserByEmailCacheKey:{0}";
+        internal const string GetUsersCacheKey = ":GetUsersCacheKey";
         internal const string HasUserCacheKey = ":HasUserCacheKey:{0}";
         internal const string IsUserRegisteredCacheKey = ":IsUserRegistered:{0}";
         internal const string GetSolutionsCacheKey = ":GetSolutionsCacheKey";

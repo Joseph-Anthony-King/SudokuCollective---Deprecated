@@ -5,6 +5,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using SudokuCollective.Core.Interfaces.APIModels.TokenModels;
@@ -16,6 +17,8 @@ using SudokuCollective.Core.Interfaces.APIModels.ResultModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Core.Enums;
+using SudokuCollective.Data.Resiliency;
+using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Data.Services
 {
@@ -27,6 +30,7 @@ namespace SudokuCollective.Data.Services
         private readonly IAppAdminsRepository<AppAdmin> _appAdminsRepository;
         private readonly IUserManagementService _userManagementService;
         private readonly ITokenManagement _tokenManagement;
+        private readonly IDistributedCache _distributedCache;
 
         public AuthenticateService(
             IUsersRepository<User> usersRepository,
@@ -34,7 +38,8 @@ namespace SudokuCollective.Data.Services
             IAppsRepository<App> appsRepository,
             IAppAdminsRepository<AppAdmin> appsAdminRepository,
             IUserManagementService userManagementService,
-            IOptions<TokenManagement> tokenManagement)
+            IOptions<TokenManagement> tokenManagement,
+            IDistributedCache distributedCache)
         {
             _usersRepository = usersRepository;
             _rolesRepository = rolesRepository;
@@ -42,6 +47,7 @@ namespace SudokuCollective.Data.Services
             _appAdminsRepository = appsAdminRepository;
             _userManagementService = userManagementService;
             _tokenManagement = tokenManagement.Value;
+            _distributedCache = distributedCache;
         }
 
         public async Task<IAuthenticatedUserResult> IsAuthenticated(ITokenRequest request)
@@ -62,9 +68,23 @@ namespace SudokuCollective.Data.Services
                 return result;
             }
 
-            var user = (User)(await _usersRepository.GetByUserName(request.UserName)).Object;
+            var userResponse = await CacheFactory.GetByUserNameWithCacheAsync(
+                _usersRepository,
+                _distributedCache,
+                string.Format(CacheKeys.GetUserByUsernameCacheKey, request.UserName),
+                DateTime.Now.AddMinutes(5),
+                request.UserName);
 
-            var app = (App)(await _appsRepository.GetByLicense(request.License)).Object;
+            var user = (User)((RepositoryResponse)userResponse.Item1).Object;
+
+            var appResponse = await CacheFactory.GetAppByLicenseWithCacheAsync(
+                _appsRepository,
+                _distributedCache,
+                string.Format(CacheKeys.GetAppByLicenseCacheKey, request.License),
+                DateTime.Now.AddMinutes(5),
+                request.License);
+
+            var app = (App)((RepositoryResponse)appResponse.Item1).Object;
 
             if (!app.IsActive)
             {

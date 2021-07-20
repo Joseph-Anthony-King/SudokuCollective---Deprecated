@@ -1032,9 +1032,9 @@ namespace SudokuCollective.Data.Services
                 var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
-                    result,
                     cacheKey,
-                    DateTime.Now.AddHours(1));
+                    DateTime.Now.AddHours(1),
+                    result);
 
                 response = (RepositoryResponse)cacheFactoryResponse.Item1;
                 result = (BaseResult)cacheFactoryResponse.Item2;

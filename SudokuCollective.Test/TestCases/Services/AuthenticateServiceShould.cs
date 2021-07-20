@@ -8,6 +8,8 @@ using SudokuCollective.Data.Services;
 using SudokuCollective.Test.MockRepositories;
 using SudokuCollective.Test.MockServices;
 using SudokuCollective.Test.TestData;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace SudokuCollective.Test.TestCases.Services
 {
@@ -20,6 +22,7 @@ namespace SudokuCollective.Test.TestCases.Services
         private MockAppsRepository MockAppsRepository;
         private MockAppAdminsRepository MockAppAdminsRepository;
         private TokenManagement tokenManagement;
+        private MemoryDistributedCache memoryCache;
         private IAuthenticateService sutValid;
         private IAuthenticateService sutInvalid;
         private string userName;
@@ -37,6 +40,8 @@ namespace SudokuCollective.Test.TestCases.Services
             MockRolesRepository = new MockRolesRepository(context);
             MockAppsRepository = new MockAppsRepository(context);
             MockAppAdminsRepository = new MockAppAdminsRepository(context);
+            memoryCache = new MemoryDistributedCache(
+                Options.Create(new MemoryDistributedCacheOptions()));
 
             MockUserManagementService = new MockUserManagementService();
 
@@ -55,14 +60,16 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockAppsRepository.AppsRepositorySuccessfulRequest.Object,
                 MockAppAdminsRepository.AppAdminsRepositorySuccessfulRequest.Object,
                 MockUserManagementService.UserManagementServiceSuccssfulRequest.Object,
-                options);
+                options,
+                memoryCache);
             sutInvalid = new AuthenticateService(
                 MockUsersRepository.UsersRepositoryFailedRequest.Object,
                 MockRolesRepository.RolesRepositoryFailedRequest.Object,
                 MockAppsRepository.AppsRepositoryFailedRequest.Object,
                 MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
                 MockUserManagementService.UserManagementServiceFailedRequest.Object, 
-                options);
+                options,
+                memoryCache);
         }
 
         [Test]

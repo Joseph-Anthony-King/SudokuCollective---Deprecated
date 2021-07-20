@@ -16,7 +16,7 @@ namespace SudokuCollective.Api.V1.Controllers
     public class AppsController : ControllerBase
     {
         private readonly IAppsService appsService;
-        private readonly List<string> all = new List<string> { "app", "difficulty", "game", "user" };
+        private readonly List<string> all = new List<string> { "app", "game", "user" };
         private readonly List<string> app = new List<string> { "app" };
         private readonly List<string> authToken = new List<string> { "auth token access period" };
         private readonly List<string> game = new List<string> { "game" };

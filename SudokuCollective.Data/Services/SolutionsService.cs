@@ -102,9 +102,9 @@ namespace SudokuCollective.Data.Services
                 var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
-                    result,
                     cacheKey,
-                    DateTime.Now.AddHours(1));
+                    DateTime.Now.AddHours(1),
+                    result);
 
                 response = (RepositoryResponse)cacheFactoryResponse.Item1;
                 result = (SolutionsResult)cacheFactoryResponse.Item2;
@@ -268,9 +268,9 @@ namespace SudokuCollective.Data.Services
                 var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
-                    result,
                     cacheKey,
-                    DateTime.Now.AddHours(1));
+                    DateTime.Now.AddHours(1),
+                    result);
 
                 var solvedSolutions = cacheFactoryResponse
                     .Item1
@@ -398,9 +398,9 @@ namespace SudokuCollective.Data.Services
                 var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
-                    result,
                     cacheKey,
-                    DateTime.Now.AddHours(1));
+                    DateTime.Now.AddHours(1),
+                    result);
 
                 var response = cacheFactoryResponse.Item1;
                 result = (SolutionResult)cacheFactoryResponse.Item2;

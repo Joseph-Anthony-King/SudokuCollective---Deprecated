@@ -9,7 +9,6 @@ using SudokuCollective.Core.Interfaces.DataModels;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
-using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.DataModels;
 
 namespace SudokuCollective.Data.Resiliency
@@ -19,10 +18,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetWithCacheAsync<T>(
             IRepository<T> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            int id) where T : IEntityBase
+            int id,
+            IBaseResult result = null) where T : IEntityBase
         {
             IRepositoryResponse response;
 
@@ -39,7 +38,10 @@ namespace SudokuCollective.Data.Resiliency
                     .DeserializeObject<T>(serializedItem)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -66,9 +68,9 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetAllWithCacheAsync<T>(
             IRepository<T> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
-            DateTime expiration) where T : IEntityBase
+            DateTime expiration,
+            IBaseResult result = null) where T : IEntityBase
         {
             IRepositoryResponse response;
 
@@ -86,7 +88,10 @@ namespace SudokuCollective.Data.Resiliency
                     .ConvertAll(x => (IEntityBase)x)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -150,10 +155,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetAppByLicenseWithCacheAsync(
             IAppsRepository<App> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            string license)
+            string license,
+            IBaseResult result = null)
         {
             IRepositoryResponse response;
 
@@ -170,7 +175,10 @@ namespace SudokuCollective.Data.Resiliency
                     .DeserializeObject<App>(serializedItem)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -197,10 +205,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetAppUsersWithCacheAsync(
             IAppsRepository<App> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            int id)
+            int id,
+            IBaseResult result = null)
         {
             IRepositoryResponse response;
 
@@ -218,7 +226,10 @@ namespace SudokuCollective.Data.Resiliency
                     .ConvertAll(u => (IEntityBase)u)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -245,10 +256,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetNonAppUsersWithCacheAsync(
             IAppsRepository<App> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            int id)
+            int id,
+            IBaseResult result = null)
         {
             IRepositoryResponse response;
 
@@ -266,7 +277,10 @@ namespace SudokuCollective.Data.Resiliency
                     .ConvertAll(s => (IEntityBase)s)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -293,10 +307,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetMyAppsWithCacheAsync(
             IAppsRepository<App> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            int ownerId)
+            int ownerId,
+            IBaseResult result = null)
         {
             IRepositoryResponse response;
 
@@ -314,7 +328,10 @@ namespace SudokuCollective.Data.Resiliency
                     .ConvertAll(a => (IEntityBase)a)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -341,10 +358,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetMyRegisteredAppsWithCacheAsync(
             IAppsRepository<App> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            int userId)
+            int userId,
+            IBaseResult result = null)
         {
             IRepositoryResponse response;
 
@@ -362,7 +379,10 @@ namespace SudokuCollective.Data.Resiliency
                     .ConvertAll(a => (IEntityBase)a)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -389,10 +409,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<string, IBaseResult>> GetLicenseWithCacheAsync(
             IAppsRepository<App> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            int id)
+            int id,
+            IBaseResult result)
         {
             string license;
 
@@ -403,6 +423,11 @@ namespace SudokuCollective.Data.Resiliency
                 var serializedItem = Encoding.UTF8.GetString(cachedItem);
 
                 license = JsonConvert.DeserializeObject<string>(serializedItem);
+
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -410,7 +435,7 @@ namespace SudokuCollective.Data.Resiliency
 
                 if (!string.IsNullOrEmpty(license))
                 {
-                    var serializedItem = JsonConvert.SerializeObject(result);
+                    var serializedItem = JsonConvert.SerializeObject(license);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
@@ -466,10 +491,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetByUserNameWithCacheAsync(
             IUsersRepository<User> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            string username)
+            string username,
+            IBaseResult result = null)
         {
             IRepositoryResponse response;
 
@@ -486,7 +511,10 @@ namespace SudokuCollective.Data.Resiliency
                     .DeserializeObject<User>(serializedItem)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -513,10 +541,10 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetByEmailWithCacheAsync(
             IUsersRepository<User> repo,
             IDistributedCache cache,
-            IBaseResult result,
             string cacheKey,
             DateTime expiration,
-            string email)
+            string email,
+            IBaseResult result = null)
         {
             IRepositoryResponse response;
 
@@ -533,7 +561,10 @@ namespace SudokuCollective.Data.Resiliency
                     .DeserializeObject<User>(serializedItem)
                 };
 
-                result.FromCache = true;
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
             }
             else
             {
@@ -557,6 +588,55 @@ namespace SudokuCollective.Data.Resiliency
             return new Tuple<IRepositoryResponse, IBaseResult>(response, result);
         }
 
+        internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> ConfirmEmailWithCacheAsync(
+            IUsersRepository<User> repo,
+            IDistributedCache cache,
+            string cacheKey,
+            DateTime expiration,
+            EmailConfirmation email,
+            IBaseResult result = null)
+        {
+            IRepositoryResponse response;
+
+            var cachedItem = await cache.GetAsync(cacheKey);
+
+            if (cachedItem != null)
+            {
+                var serializedItem = Encoding.UTF8.GetString(cachedItem);
+
+                response = new RepositoryResponse
+                {
+                    Success = true,
+                    Object = JsonConvert
+                    .DeserializeObject<User>(serializedItem)
+                };
+
+                if (result != null)
+                {
+                    result.FromCache = true;
+                }
+            }
+            else
+            {
+                response = await repo.ConfirmEmail(email);
+
+                if (response.Success && response.Object != null)
+                {
+                    var serializedItem = JsonConvert
+                        .SerializeObject(response.Object);
+                    var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(expiration);
+
+                    await cache.SetAsync(
+                        cacheKey,
+                        encodedItem,
+                        options);
+                }
+            }
+
+            return new Tuple<IRepositoryResponse, IBaseResult>(response, result);
+        }
 
         internal static async Task<bool> IsUserRegisteredWithCacheAsync(
             IUsersRepository<User> repo,
