@@ -2,22 +2,22 @@
 {
     internal static class CacheKeys
     {
-        internal const string GetAppCacheKey = ":GetAppCacheKey:{0}";
-        internal const string GetAppByLicenseCacheKey = ":GetAppByLicenseCacheKey:{0}";
-        internal const string GetAppsCacheKey = ":GetAppsCacheKey";
-        internal const string GetMyAppsCacheKey = ":GetMyAppsCacheKey:{0}";
-        internal const string GetMyRegisteredCacheKey = ":GetMyRegisteredCacheKey:{0}";
-        internal const string GetAppUsersCacheKey = ":GetAppUsersCacheKey:{0}";
-        internal const string GetNonAppUsersCacheKey = ":GetNonAppUsersCacheKey:{0}";
+        internal const string GetAppCacheKey = ":GetApp:{0}";
+        internal const string GetAppByLicenseCacheKey = ":GetAppByLicense:{0}";
+        internal const string GetAppsCacheKey = ":GetApps";
+        internal const string GetMyAppsCacheKey = ":GetMyApps:{0}";
+        internal const string GetMyRegisteredCacheKey = ":GetMyRegistered:{0}";
+        internal const string GetAppUsersCacheKey = ":GetAppUsers:{0}";
+        internal const string GetNonAppUsersCacheKey = ":GetNonAppUsers:{0}";
         internal const string GetAppLicenseCacheKey = ":GetAppLicense:{0}";
-        internal const string HasAppCacheKey = ":HasAppCacheKey:{0}";
-        internal const string IsAppLicenseValidCacheKey = ":IsAppLicenseValidCacheKey:{0}";
-        internal const string GetUserCacheKey = ":GetUserCacheKey:{0}";
-        internal const string GetUserByUsernameCacheKey = ":GetUserByUsernameCacheKey:{0}";
-        internal const string GetUserByEmailCacheKey = ":GetUserByEmailCacheKey:{0}";
-        internal const string GetUsersCacheKey = ":GetUsersCacheKey";
-        internal const string HasUserCacheKey = ":HasUserCacheKey:{0}";
+        internal const string HasAppCacheKey = ":HasApp:{0}";
+        internal const string IsAppLicenseValidCacheKey = ":IsAppLicenseValid:{0}";
+        internal const string GetUserCacheKey = ":GetUser:{0}";
+        internal const string GetUserByUsernameCacheKey = ":GetUserByUsername:{0}";
+        internal const string GetUserByEmailCacheKey = ":GetUserByEmail:{0}";
+        internal const string GetUsersCacheKey = ":GetUsers";
+        internal const string HasUserCacheKey = ":HasUser:{0}";
         internal const string IsUserRegisteredCacheKey = ":IsUserRegistered:{0}";
-        internal const string GetSolutionsCacheKey = ":GetSolutionsCacheKey";
+        internal const string GetSolutionsCacheKey = ":GetSolutions";
     }
 }
