@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.APIModels.PageModels;
 using SudokuCollective.Core.Interfaces.APIModels.RequestModels;
@@ -17,7 +18,6 @@ using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Core.Interfaces.APIModels.ResultModels.UserResults;
 using SudokuCollective.Core.Interfaces.DataModels;
-using Microsoft.Extensions.Caching.Distributed;
 using SudokuCollective.Data.Resiliency;
 using SudokuCollective.Data.Models.DataModels;
 

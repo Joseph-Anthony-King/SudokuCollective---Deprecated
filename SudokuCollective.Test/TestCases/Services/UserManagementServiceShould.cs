@@ -1,4 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Services;
@@ -14,6 +17,7 @@ namespace SudokuCollective.Test.TestCases.Services
     {
         private DatabaseContext context;
         private MockUsersRepository MockUsersRepository;
+        private MemoryDistributedCache memoryCache;
         private IUserManagementService sut;
         private IUserManagementService sutFailure;
         private string userName;
@@ -25,11 +29,15 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             context = await TestDatabase.GetDatabaseContext();
             MockUsersRepository = new MockUsersRepository(context);
+            memoryCache = new MemoryDistributedCache(
+                Options.Create(new MemoryDistributedCacheOptions()));
 
             sut = new UserManagementService(
-                MockUsersRepository.UsersRepositorySuccessfulRequest.Object);
+                MockUsersRepository.UsersRepositorySuccessfulRequest.Object,
+                memoryCache);
             sutFailure = new UserManagementService(
-                MockUsersRepository.UsersRepositoryFailedRequest.Object);
+                MockUsersRepository.UsersRepositoryFailedRequest.Object,
+                memoryCache);
 
             userName = "TestSuperUser";
             password = "password1";
