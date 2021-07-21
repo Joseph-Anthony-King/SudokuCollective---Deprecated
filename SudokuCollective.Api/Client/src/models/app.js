@@ -41,7 +41,12 @@ class App {
       this.accessDuration = data.accessDuration;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;
-      this.users = [];
+
+      if (data.users != null) {
+        this.users = data.users;
+      } else{
+        this.users = [];
+      }
 
       if (data.license !== undefined) {
         this.license = data.license;

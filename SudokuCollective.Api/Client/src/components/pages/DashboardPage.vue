@@ -341,7 +341,6 @@ export default {
 
     if (storeRegisteredApps.length === 0) {
       const response = await appService.getRegisteredApps(this.$data.user.id);
-        console.log(response); 
 
       if (response.data.success) {       
         let tempArray = [];
