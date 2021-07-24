@@ -41,11 +41,14 @@ class App {
       this.accessDuration = data.accessDuration;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;
+      this.users = [];
 
       if (data.users != null) {
-        this.users = data.users;
-      } else{
-        this.users = [];
+        data.users.forEach((user) => {
+          if (user.id > 0 && user.userName !== undefined) {
+            this.users.push(user);
+          }
+        });
       }
 
       if (data.license !== undefined) {
