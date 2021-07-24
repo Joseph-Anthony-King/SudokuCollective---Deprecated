@@ -1,6 +1,6 @@
 import * as axios from "axios";
 import { requestHeader } from "../../helpers/requestHeader";
-import { kestralAPI, iisAPI, prodAPI, } from "./service.endpoints";
+import { kestralAPI, iisAPI, prodAPI, } from "./endpoints";
 
 const confirm = async function () {
   const headers = requestHeader();

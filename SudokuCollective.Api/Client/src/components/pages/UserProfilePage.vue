@@ -347,9 +347,9 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { userService } from "@/services/userService/user.service";
-import { registerService } from "@/services/registerService/register.service";
-import { appService } from "@/services/appService/app.service";
+import { userService } from "@/services/userService/userService";
+import { registerService } from "@/services/registerService/registerService";
+import { appService } from "@/services/appService/appService";
 import EditProfileForm from "@/components/forms/EditProfileForm";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -385,7 +385,8 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await registerService.putResendEmailConfirmation();
+              const response =
+                await registerService.putResendEmailConfirmation();
 
               if (response.status === 200) {
                 await this.reset();

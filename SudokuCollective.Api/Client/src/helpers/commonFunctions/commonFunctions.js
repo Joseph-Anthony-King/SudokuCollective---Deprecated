@@ -1,4 +1,4 @@
-import { userService } from "@/services/userService/user.service";
+import { userService } from "@/services/userService/userService";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 

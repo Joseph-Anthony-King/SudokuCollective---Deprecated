@@ -94,11 +94,11 @@
 <script>
 /* eslint-disable no-useless-escape */
 import { mapActions } from "vuex";
-import { appService } from "@/services/appService/app.service";
+import { appService } from "@/services/appService/appService";
 import CreateAppModel from "@/models/viewModels/createAppModel";
 import App from "@/models/app";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { 
+import {
   showToast,
   defaultToastOptions,
   actionToastOptions,
@@ -132,9 +132,8 @@ export default {
                     this.$data.liveUrl
                   )
                 );
-                
-                if (response.status === 201) {
 
+                if (response.status === 201) {
                   const appsResponse = await appService.getMyApps();
 
                   if (appsResponse.data.success) {
@@ -142,13 +141,15 @@ export default {
 
                     for (const app of appsResponse.data.apps) {
                       const myApp = new App(app);
-                      const licenseResponse = await appService.getLicense(myApp.id);
+                      const licenseResponse = await appService.getLicense(
+                        myApp.id
+                      );
                       if (licenseResponse.data.success) {
                         myApp.updateLicense(licenseResponse.data.license);
                       }
                       tempArray.push(myApp);
                     }
-                    
+
                     this.updateApps(tempArray);
                   }
 
@@ -171,7 +172,12 @@ export default {
                   );
                 }
               } catch (error) {
-                showToast(this, ToastMethods["error"], error, defaultToastOptions());
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  error,
+                  defaultToastOptions()
+                );
               }
             },
           },
@@ -223,9 +229,11 @@ export default {
   mounted() {
     let self = this;
     window.addEventListener("keyup", function (event) {
-      if (event.key === "Enter"
-        && self.$data.createAppFormIsValid
-        && self.$data.dirty) {
+      if (
+        event.key === "Enter" &&
+        self.$data.createAppFormIsValid &&
+        self.$data.dirty
+      ) {
         self.submit();
       }
     });

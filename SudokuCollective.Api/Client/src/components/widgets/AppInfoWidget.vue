@@ -252,7 +252,7 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { appService } from "@/services/appService/app.service";
+import { appService } from "@/services/appService/appService";
 import App from "@/models/app";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
@@ -272,7 +272,7 @@ export default {
       "updateSelectedApp",
       "updateApps",
       "removeApp",
-      "replaceApp"
+      "replaceApp",
     ]),
 
     async copyLicenseToClipboard() {
@@ -314,11 +314,11 @@ export default {
                       myApp.updateLicense(licenseResponse.data.license);
                     }
                     if (this.$data.app.id === myApp.id) {
-                      this.$data.app = new App(myApp)
+                      this.$data.app = new App(myApp);
                     }
                     tempArray.push(myApp);
                   }
-                  
+
                   this.updateApps(tempArray);
                   this.updateSelectedApp(this.$data.app);
 
@@ -478,7 +478,7 @@ export default {
 
     getAccessPeriod() {
       let duration;
-      
+
       switch (this.$data.app.accessDuration) {
         case 1:
           duration = "one";
@@ -713,13 +713,12 @@ export default {
           break;
 
         default:
-          duration = "fifty-nine"
+          duration = "fifty-nine";
       }
 
       let period;
 
       switch (this.$data.app.timeFrame) {
-
         case 1:
           period = this.$data.app.accessDuration === 1 ? "second" : "seconds";
           break;
@@ -727,15 +726,15 @@ export default {
         case 2:
           period = this.$data.app.accessDuration === 1 ? "minute" : "minutes";
           break;
-        
+
         case 3:
           period = this.$data.app.accessDuration === 1 ? "hour" : "hours";
           break;
-        
+
         case 4:
           period = this.$data.app.accessDuration === 1 ? "day" : "days";
           break;
-        
+
         default:
           period = this.$data.app.accessDuration === 1 ? "month" : "months";
       }
@@ -760,9 +759,9 @@ export default {
   },
   watch: {
     "$store.state.appModule.selectedApp": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.app = new App(this.getSelectedApp);
-      }
+      },
     },
   },
   created() {

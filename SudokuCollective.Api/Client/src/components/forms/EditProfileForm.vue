@@ -119,7 +119,7 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { userService } from "@/services/userService/user.service";
+import { userService } from "@/services/userService/userService";
 import User from "@/models/user";
 import Paginator from "@/models/viewModels/paginator";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -300,7 +300,8 @@ export default {
     },
 
     emailRules() {
-      const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      const regex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return [
         (v) => !!v || "Email is required",
         (v) => !v || regex.test(v) || "Email must be valid",

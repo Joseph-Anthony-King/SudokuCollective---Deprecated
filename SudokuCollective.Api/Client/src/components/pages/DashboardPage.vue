@@ -1,8 +1,6 @@
 <template>
   <v-container fluid>
-    <v-overlay
-      :value="processing"
-    >
+    <v-overlay :value="processing">
       <v-progress-circular
         indeterminate
         color="primary"
@@ -27,9 +25,7 @@
     <v-card elevation="6" class="mx-auto" v-if="!processing">
       <v-card-text>
         <v-container fluid>
-          <v-card-title class="justify-center"
-            >Your Apps</v-card-title
-          >
+          <v-card-title class="justify-center">Your Apps</v-card-title>
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
             <CreateAppButton v-on:click.native="openCreateAppForm" />
@@ -49,15 +45,14 @@
     </v-card>
     <div class="card-spacer"></div>
     <v-card elevation="6" v-if="openingAppWidgets">
-      <v-container>        
-        <span @click="closeAppWidgets" class="material-icons close-hover"> clear </span>
+      <v-container>
+        <span @click="closeAppWidgets" class="material-icons close-hover">
+          clear
+        </span>
       </v-container>
       <template>
-        <v-tabs
-          fixed-tabs>
-          <v-tab href="#info">
-            App Info
-          </v-tab>
+        <v-tabs fixed-tabs>
+          <v-tab href="#info"> App Info </v-tab>
           <v-tab-item value="info">
             <AppInfoWidget
               v-on:close-app-widget-event="closeAppWidgets"
@@ -65,16 +60,12 @@
             />
           </v-tab-item>
 
-          <v-tab href="#app-users">
-            App Users
-          </v-tab>
+          <v-tab href="#app-users"> App Users </v-tab>
           <v-tab-item value="app-users">
             <AppUsersWidget />
           </v-tab-item>
 
-          <v-tab href="#non-app-users">
-            Non-App Users
-          </v-tab>
+          <v-tab href="#non-app-users"> Non-App Users </v-tab>
           <v-tab-item value="non-app-users">
             <NonAppUsersWidget />
           </v-tab-item>
@@ -110,9 +101,10 @@
     </v-card>
 
     <v-dialog v-model="editingApp" persistent max-width="1200px">
-      <EditAppForm 
+      <EditAppForm
         :editAppFormStatus="editingApp"
-        v-on:close-edit-app-event="closeEditAppForm" />
+        v-on:close-edit-app-event="closeEditAppForm"
+      />
     </v-dialog>
   </v-container>
 </template>
@@ -162,7 +154,7 @@ import AppUsersWidget from "@/components/widgets/AppUsersWidget";
 import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
-import { appService } from "@/services/appService/app.service";
+import { appService } from "@/services/appService/appService";
 import User from "@/models/user";
 import App from "@/models/app";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -223,7 +215,7 @@ export default {
     openEditAppForm() {
       this.$data.editingApp = true;
     },
-    
+
     closeEditAppForm() {
       this.$data.editingApp = false;
     },
@@ -265,28 +257,29 @@ export default {
     },
     openUrl(app) {
       window.open(app.liveUrl, "_blank");
-    }
+    },
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
     ...mapGetters("appModule", [
-      "getAppById", 
+      "getAppById",
       "getApps",
       "getRegisteredApps",
-      "getSelectedApp"]),
+      "getSelectedApp",
+    ]),
   },
   watch: {
     "$store.state.settingsModule.user": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.user = new User(this.getUser);
-      }
+      },
     },
     "$store.state.appModule.apps": {
       handler: function (val, oldVal) {
         this.$data.myApps = this.getApps;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   async created() {
     this.$data.processing = true;
@@ -299,9 +292,8 @@ export default {
     }
 
     const storeApps = this.getApps;
-    
-    if (storeApps.length === 0) {
 
+    if (storeApps.length === 0) {
       const response = await appService.getMyApps();
 
       if (response.data.success) {
@@ -315,7 +307,7 @@ export default {
           }
           tempArray.push(myApp);
         }
-        
+
         // Load the users per app
         for (const app of tempArray) {
           const appUsersResponse = await appService.getAppUsers(app.id);
@@ -328,11 +320,8 @@ export default {
 
         this.updateApps(tempArray);
       }
-
     } else {
-      
       storeApps.forEach((store) => {
-
         this.$data.myApps.push(store);
       });
     }
@@ -342,23 +331,22 @@ export default {
     if (storeRegisteredApps.length === 0) {
       const response = await appService.getRegisteredApps(this.$data.user.id);
 
-      if (response.data.success) {       
+      if (response.data.success) {
         let tempArray = [];
 
         for (const app of response.data.apps) {
           const registeredApp = new App(app);
-          tempArray.push(registeredApp)
+          tempArray.push(registeredApp);
         }
 
         this.updateRegisteredApps(tempArray);
       }
     }
-      
-    storeRegisteredApps.forEach((store) => {
 
+    storeRegisteredApps.forEach((store) => {
       this.$data.registeredApps.push(store);
     });
-    
+
     this.$data.processing = false;
   },
 };

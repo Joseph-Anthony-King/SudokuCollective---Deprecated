@@ -11,7 +11,7 @@ import {
   getCancelPasswordResetEndpoint,
   getCancelEmailConfirmationEndpoint,
   getCancelAllEmailRequestsEndpoint,
-} from "./service.endpoints";
+} from "./endpoints";
 
 const getUser = async function (id) {
   try {

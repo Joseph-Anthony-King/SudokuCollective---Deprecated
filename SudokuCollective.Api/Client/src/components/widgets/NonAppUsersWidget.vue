@@ -44,7 +44,7 @@
           show-select
           class="elevation-1"
           :search="search"
-          >
+        >
         </v-data-table>
       </v-container>
     </v-card-text>
@@ -97,7 +97,7 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { appService } from "@/services/appService/app.service";
+import { appService } from "@/services/appService/appService";
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -113,7 +113,7 @@ export default {
   data: () => ({
     app: new App(),
     nonAppUsers: [],
-    search: '',
+    search: "",
     selectedUsers: [],
     headers: [
       {
@@ -132,19 +132,18 @@ export default {
     ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
 
     async refreshApp() {
-
       this.$data.app = this.getSelectedApp;
 
       const response = await appService.getNonAppUsers(this.$data.app.id);
-      
+
       this.$data.nonAppUsers = [];
 
       if (response.data.success) {
         response.data.users.forEach((user) => {
           this.$data.nonAppUsers.push(new User(user));
-        });        
+        });
       }
-      
+
       if (this.$data.nonAppUsers.length > 0) {
         this.$data.nonAppUsers.forEach((user) => {
           user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
@@ -160,13 +159,11 @@ export default {
             toastObject.goAway(0);
 
             try {
-              
               let successes = 0;
               let errors = 0;
               let errorMessages = "";
 
               for (const user of this.$data.selectedUsers) {
-
                 const response = await appService.putAddUser(
                   this.$data.app.id,
                   user.id
@@ -202,7 +199,6 @@ export default {
                   defaultToastOptions()
                 );
               }
-
             } catch (error) {
               showToast(
                 this,
@@ -211,12 +207,14 @@ export default {
                 defaultToastOptions()
               );
             }
-            
+
             var appResponse = await appService.getApp(this.$data.app.id);
 
             if (appResponse.data.success) {
               this.$data.app = new App(appResponse.data.app);
-              const licenseResponse = await appService.getLicense(this.$data.app.id);
+              const licenseResponse = await appService.getLicense(
+                this.$data.app.id
+              );
               if (licenseResponse.data.success) {
                 this.$data.app.updateLicense(licenseResponse.data.license);
               }
@@ -241,20 +239,20 @@ export default {
         `Are you sure you want to add this users to ${this.$data.app.name}?`,
         actionToastOptions(action, "mode_edit")
       );
-    }
+    },
   },
   computed: {
     ...mapGetters("appModule", ["getSelectedApp"]),
   },
   watch: {
     "$store.state.appModule.selectedApp": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.refreshApp();
-      }
+      },
     },
   },
   created() {
     this.refreshApp();
   },
-}
+};
 </script>

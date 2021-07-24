@@ -205,7 +205,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { authenticationService } from "@/services/authenticationService/authentication.service";
+import { authenticationService } from "@/services/authenticationService/authenticationService";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
@@ -231,9 +231,7 @@ export default {
     invalidEmails: [],
   }),
   methods: {
-    ...mapActions("settingsModule", [
-      "updateUserName",
-    ]),
+    ...mapActions("settingsModule", ["updateUserName"]),
 
     async submit() {
       if (this.getLoginFormStatus) {
@@ -349,10 +347,10 @@ export default {
 
     reset() {
       this.$data.needHelp = false;
-      this.$data.invalidUserNames = [],
-      this.$data.invalidPasswords = [],
-      this.$data.invalidEmails = [],
-      this.$refs.loginForm.reset();
+      (this.$data.invalidUserNames = []),
+        (this.$data.invalidPasswords = []),
+        (this.$data.invalidEmails = []),
+        this.$refs.loginForm.reset();
       this.$refs.userNameForm.reset();
       document.activeElement.blur();
     },

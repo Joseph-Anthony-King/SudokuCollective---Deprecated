@@ -66,8 +66,8 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmation.service";
-import { appService } from "@/services/appService/app.service";
+import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmationService";
+import { appService } from "@/services/appService/appService";
 import AppBar from "@/components/navigation/AppBar";
 import NavigationBar from "@/components/navigation/NavigationBar";
 import LoginForm from "@/components/forms/LoginForm";
@@ -110,9 +110,10 @@ export default {
   }),
   methods: {
     ...mapActions("appModule", [
-      "updateSelectedApp", 
+      "updateSelectedApp",
       "removeApps",
-      "removeRegisteredApps"]),
+      "removeRegisteredApps",
+    ]),
     ...mapActions("settingsModule", [
       "confirmBaseURL",
       "updateAuthToken",
@@ -160,7 +161,10 @@ export default {
             this.removeApps();
             this.removeRegisteredApps();
 
-            if (this.$router.currentRoute.path !== "/" && this.$router.currentRoute.path !== "/solve") {
+            if (
+              this.$router.currentRoute.path !== "/" &&
+              this.$router.currentRoute.path !== "/solve"
+            ) {
               this.$router.push("/");
             }
 
@@ -216,8 +220,7 @@ export default {
 
       if (this.$router.currentRoute.path === "/dashboard") {
         // do nothing...
-      }
-      else if (this.$router.currentRoute.path === "/solve"){
+      } else if (this.$router.currentRoute.path === "/solve") {
         // do nothing...
       } else {
         this.$router.push("/dashboard");
@@ -230,17 +233,17 @@ export default {
 
     solve() {
       console.log("solve invoked...");
-    }
+    },
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
-   cssProps () {
-      var themeColors = {}
+    cssProps() {
+      var themeColors = {};
       Object.keys(this.$vuetify.theme.themes.light).forEach((color) => {
-        themeColors[`--v-${color}`] = this.$vuetify.theme.themes.light[color]
-      })
-      return themeColors
-   }
+        themeColors[`--v-${color}`] = this.$vuetify.theme.themes.light[color];
+      });
+      return themeColors;
+    },
   },
   watch: {
     "$store.state.settingsModule.user": {

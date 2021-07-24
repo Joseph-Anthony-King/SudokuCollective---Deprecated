@@ -1,5 +1,5 @@
 import * as axios from "axios";
-import { postSolveEndpoint, } from "./service.endpoints";
+import { postSolveEndpoint, } from "./endpoints";
 
 const postSolve = async function (solveModel) {
 

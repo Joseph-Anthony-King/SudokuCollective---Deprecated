@@ -3,9 +3,7 @@
     <v-card-title>
       <span class="headline">Sign Up</span>
     </v-card-title>
-    <v-overlay
-      :value="processing"
-    >
+    <v-overlay :value="processing">
       <v-progress-circular
         indeterminate
         color="primary"
@@ -144,7 +142,7 @@
 <script>
 /* eslint-disable no-unused-vars */
 import { mapGetters } from "vuex";
-import { registerService } from "@/services/registerService/register.service";
+import { registerService } from "@/services/registerService/registerService";
 import SignUpModel from "@/models/viewModels/signUpModel";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -247,7 +245,6 @@ export default {
           }
 
           this.$data.processing = false;
-
         } catch (error) {
           showToast(this, ToastMethods["error"], error, defaultToastOptions());
         }
@@ -309,9 +306,9 @@ export default {
   },
   watch: {
     "$store.state.settingsModule.userName": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.username = this.getUserName;
-      }
+      },
     },
   },
   mounted() {

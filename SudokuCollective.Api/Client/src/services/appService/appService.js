@@ -12,7 +12,7 @@ import {
   getMyAppsEndpoint,
   getTimeFramesEndpoint,
   getRegisteredAppsEndpoint,
-} from "./service.endpoints";
+} from "./endpoints";
 
 const getApp = async function (id) {
   try {

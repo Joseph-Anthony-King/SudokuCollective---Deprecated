@@ -4,7 +4,7 @@ import { requestHeader } from "../../helpers/requestHeader";
 import {
   authenticateEndpoint,
   confirmUserNameEndpoint,
-} from "./service.endpoints";
+} from "./endpoints";
 
 const authenticateUser = async function (username, password) {
   const headers = requestHeader();

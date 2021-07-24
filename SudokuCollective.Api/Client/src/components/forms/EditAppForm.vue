@@ -180,7 +180,7 @@
 /* eslint-disable no-useless-escape, no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { appService } from "@/services/appService/app.service";
+import { appService } from "@/services/appService/appService";
 import App from "@/models/app";
 import User from "@/models/user";
 import Paginator from "@/models/viewModels/paginator";

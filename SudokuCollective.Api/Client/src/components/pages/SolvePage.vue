@@ -1048,7 +1048,7 @@
 
 <script>
 /* eslint-disable no-useless-escape, no-unused-vars */
-import { solutionService } from "@/services/solutionService/solution.service";
+import { solutionService } from "@/services/solutionService/solutionService";
 import SolveModel from "@/models/viewModels/solveModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
@@ -1155,7 +1155,7 @@ export default {
         this.$data.sudokuMatrix[index] = "";
         this.$forceUpdate();
       }
-    }
+    },
   },
   created() {
     for (var i = 0; i < 81; i++) {
