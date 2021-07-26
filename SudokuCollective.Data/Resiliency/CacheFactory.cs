@@ -776,8 +776,15 @@ namespace SudokuCollective.Data.Resiliency
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
 
+                    // Add user cache key by username
                     await cache.SetAsync(
                         cacheKey,
+                        encodedItem,
+                        options);
+
+                    // Add user cache key by id
+                    await cache.SetAsync(
+                        string.Format(CacheKeys.GetUserCacheKey, response.Object.Id),
                         encodedItem,
                         options);
                 }
