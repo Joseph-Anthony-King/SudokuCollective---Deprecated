@@ -34,7 +34,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await appsService.Get(id, request.RequestorId);
+                var result = await appsService.Get(id);
 
                 if (result.Success)
                 {

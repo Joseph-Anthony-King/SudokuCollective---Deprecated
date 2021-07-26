@@ -1195,6 +1195,7 @@ namespace SudokuCollective.Data.Repositories
                         await _context.SaveChangesAsync();
                     }
 
+                    result.Object = app;
                     result.Success = true;
                 }
                 else
@@ -1257,6 +1258,7 @@ namespace SudokuCollective.Data.Repositories
                         await _context.SaveChangesAsync();
                     }
 
+                    result.Object = app;
                     result.Success = true;
                 }
                 else

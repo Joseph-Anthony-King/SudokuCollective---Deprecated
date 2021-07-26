@@ -97,6 +97,7 @@ import { mapActions } from "vuex";
 import { appService } from "@/services/appService/appService";
 import CreateAppModel from "@/models/viewModels/createAppModel";
 import App from "@/models/app";
+import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -147,6 +148,11 @@ export default {
                       if (licenseResponse.data.success) {
                         myApp.updateLicense(licenseResponse.data.license);
                       }
+                      const appUsersResponse = await appService.getAppUsers(myApp.id);
+                      appUsersResponse.data.users.forEach((user) => {
+                        const tempUser = new User(user);
+                        myApp.users.push(tempUser);
+                      });
                       tempArray.push(myApp);
                     }
 

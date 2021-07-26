@@ -38,7 +38,6 @@ namespace SudokuCollective.Test.MockServices
 
             AppsServiceSuccessfulRequest.Setup(appService =>
                 appService.Get(
-                    It.IsAny<int>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
@@ -338,7 +337,6 @@ namespace SudokuCollective.Test.MockServices
 
             AppsServiceFailedRequest.Setup(appService =>
                 appService.Get(
-                    It.IsAny<int>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
@@ -609,7 +607,6 @@ namespace SudokuCollective.Test.MockServices
 
             AppsServiceInvalidRequest.Setup(appService =>
                 appService.Get(
-                    It.IsAny<int>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {
@@ -904,7 +901,6 @@ namespace SudokuCollective.Test.MockServices
 
             AppsServicePromoteUserFailsRequest.Setup(appService =>
                 appService.Get(
-                    It.IsAny<int>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new AppResult()
                 {

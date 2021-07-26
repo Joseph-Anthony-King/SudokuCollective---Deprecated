@@ -155,8 +155,8 @@ import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
 import { appService } from "@/services/appService/appService";
-import User from "@/models/user";
 import App from "@/models/app";
+import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
@@ -311,7 +311,6 @@ export default {
         // Load the users per app
         for (const app of tempArray) {
           const appUsersResponse = await appService.getAppUsers(app.id);
-          console.log("appUsersResponse: ", appUsersResponse);
           appUsersResponse.data.users.forEach((user) => {
             const tempUser = new User(user);
             app.users.push(tempUser);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using SudokuCollective.Core.Enums;
@@ -55,7 +56,7 @@ namespace SudokuCollective.Data.Services
             try
             {
                 // Ensure the intended owner exists by pull the records from the repository
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<User>(
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                        _usersRepository,
                        _distributedCache,
                        string.Format(CacheKeys.GetUserCacheKey, request.OwnerId),
@@ -73,7 +74,7 @@ namespace SudokuCollective.Data.Services
 
                     /* Ensure the license is unique by pulling all apps from the repository
                      * and checking that the new license is unique */
-                    cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<App>(
+                    cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync(
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppsCacheKey),
@@ -106,7 +107,12 @@ namespace SudokuCollective.Data.Services
                         request.DevUrl,
                         request.LiveUrl);
 
-                    var addAppResponse = await _appsRepository.Add(app);
+                    var addAppResponse = await CacheFactory.AddWithCacheAsync(
+                        _appsRepository,
+                        _distributedCache,
+                        CacheKeys.GetAppCacheKey,
+                        DateTime.Now.AddMinutes(5),
+                        app);
 
                     if (addAppResponse.Success)
                     {
@@ -156,22 +162,21 @@ namespace SudokuCollective.Data.Services
         }
 
         public async Task<IAppResult> Get(
-            int id, 
-            int requestorId)
+            int id)
         {
             var result = new AppResult();
 
-            if (id == 0 || requestorId == 0)
+            if (id == 0)
             {
                 result.Success = false;
-                result.Message = UsersMessages.UserNotFoundMessage;
+                result.Message = AppsMessages.AppNotFoundMessage;
 
                 return result;
             }
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<App>(
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, id),
@@ -185,27 +190,6 @@ namespace SudokuCollective.Data.Services
                 if (response.Success)
                 {
                     var app = (App)response.Object;
-
-                    cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<User>(
-                        _usersRepository,
-                        _distributedCache,
-                        string.Format(CacheKeys.GetUserCacheKey, id),
-                        DateTime.Now.AddMinutes(5),
-                        requestorId);
-
-                    var requestor = (User)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
-
-                    if (requestor != null && !requestor.IsSuperUser)
-                    {
-                        /* Filter out user emails from the frontend if 
-                         * requestor is not a super user... */
-                        foreach (var userApp in app.Users)
-                        {
-                            var emailConfirmed = userApp.User.EmailConfirmed;
-                            userApp.User.Email = null;
-                            userApp.User.EmailConfirmed = emailConfirmed;
-                        }
-                    }
 
                     result.Success = response.Success;
                     result.Message = AppsMessages.AppFoundMessage;
@@ -273,8 +257,10 @@ namespace SudokuCollective.Data.Services
                         ((IApp)getAppResponse.Object).AccessDuration = request.AccessDuration;
                         ((IApp)getAppResponse.Object).DateUpdated = DateTime.UtcNow;
 
-                        var updateAppResponse = await _appsRepository
-                            .Update((App)getAppResponse.Object);
+                        var updateAppResponse = await CacheFactory.UpdateWithCacheAsync(
+                            _appsRepository,
+                            _distributedCache,
+                            (App)getAppResponse.Object);
 
                         if (updateAppResponse.Success)
                         {
@@ -346,7 +332,10 @@ namespace SudokuCollective.Data.Services
                     {
                         if (getAppResponse.Success)
                         {
-                            var resetAppResponse = await _appsRepository.Reset((App)getAppResponse.Object);
+                            var resetAppResponse = await CacheFactory.ResetWithCacheAsync(
+                                _appsRepository,
+                                _distributedCache,
+                                (App)getAppResponse.Object);
 
                             if (resetAppResponse.Success)
                             {
@@ -397,7 +386,10 @@ namespace SudokuCollective.Data.Services
 
                         if (getAppResponse.Success)
                         {
-                            var deleteAppResponse = await _appsRepository.Delete((App)getAppResponse.Object);
+                            var deleteAppResponse = await CacheFactory.DeleteWithCacheAsync(
+                                _appsRepository,
+                                _distributedCache,
+                                (App)getAppResponse.Object);
 
                             if (deleteAppResponse.Success)
                             {
@@ -533,7 +525,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<App>(
+                var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppsCacheKey),
@@ -1238,7 +1230,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<App>(
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, id),
@@ -1559,7 +1551,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                if (await CacheFactory.HasEntityWithCacheAsync<App>(
+                if (await CacheFactory.HasEntityWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.HasAppCacheKey, id),
@@ -1620,7 +1612,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<App>(
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, appId),
@@ -1631,7 +1623,7 @@ namespace SudokuCollective.Data.Services
 
                 if (appResponse.Success)
                 {
-                    cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<User>(
+                    cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppCacheKey, appId),
@@ -1642,12 +1634,22 @@ namespace SudokuCollective.Data.Services
 
                     if (userResponse.Success)
                     {
+                        var app = (App)appResponse.Object;
+
                         var addUserToAppResponse = await _appsRepository.AddAppUser(
                             userId,
-                            ((App)appResponse.Object).License);
+                            app.License);
 
                         if (addUserToAppResponse.Success)
                         {
+                            // Remove any app cache items which may exist
+                            var cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                                string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License)
+                            };
+
+                            await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
+
                             result.Success = addUserToAppResponse.Success;
                             result.Message = AppsMessages.UserAddedToAppMessage;
 
@@ -1714,7 +1716,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<App>(
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, appId),
@@ -1725,14 +1727,16 @@ namespace SudokuCollective.Data.Services
 
                 if (appResponse.Success)
                 {
-                    if (await CacheFactory.HasEntityWithCacheAsync<User>(
+                    if (await CacheFactory.HasEntityWithCacheAsync(
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.HasUserCacheKey, userId),
                         DateTime.Now.AddHours(1),
                         userId))
                     {
-                        if (((App)appResponse.Object).OwnerId == userId)
+                        var app = (App)appResponse.Object;
+
+                        if (app.OwnerId == userId)
                         {
                             result.Success = false;
                             result.Message = AppsMessages.UserIsTheAppOwnerMessage;
@@ -1742,10 +1746,18 @@ namespace SudokuCollective.Data.Services
 
                         var addUserToAppResponse = await _appsRepository.RemoveAppUser(
                             userId,
-                            ((App)appResponse.Object).License);
+                            app.License);
 
                         if (addUserToAppResponse.Success)
                         {
+                            // Remove any app cache items which may exist
+                            var cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                                string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License)
+                            };
+
+                            await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
+
                             result.Success = addUserToAppResponse.Success;
                             result.Message = AppsMessages.UserRemovedFromAppMessage;
 
@@ -1804,7 +1816,10 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var activateAppResponse = await _appsRepository.Activate(id);
+                var activateAppResponse = await CacheFactory.ActivatetWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    id);
 
                 if (activateAppResponse.Success)
                 {
@@ -1851,7 +1866,10 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var activateAppResponse = await _appsRepository.Deactivate(id);
+                var activateAppResponse = await CacheFactory.DeactivatetWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    id);
 
                 if (activateAppResponse.Success)
                 {
@@ -1906,7 +1924,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<App>(
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, appId),
@@ -1917,7 +1935,7 @@ namespace SudokuCollective.Data.Services
 
                 if (appResponse.Success)
                 {
-                    cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<User>(
+                    cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppCacheKey, userId),
@@ -2082,7 +2100,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<App>(
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, appId),
@@ -2093,7 +2111,7 @@ namespace SudokuCollective.Data.Services
 
                 if (appResponse.Success)
                 {
-                    cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<User>(
+                    cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppCacheKey, userId),
@@ -2204,7 +2222,7 @@ namespace SudokuCollective.Data.Services
                 return false;
             }
 
-            var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<User>(
+            var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserCacheKey, userId),
@@ -2213,7 +2231,7 @@ namespace SudokuCollective.Data.Services
 
             var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
 
-            cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<App>(
+            cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                 _appsRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetAppCacheKey, id),
@@ -2278,7 +2296,7 @@ namespace SudokuCollective.Data.Services
                 return false;
             }
 
-            var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<User>(
+            var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserCacheKey, userId),

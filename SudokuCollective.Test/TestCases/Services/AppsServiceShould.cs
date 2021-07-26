@@ -91,7 +91,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.Get(1, 1);
+            var result = await sut.Get(1);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -106,7 +106,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sutAppRepoFailure.Get(3, 1);
+            var result = await sutAppRepoFailure.Get(3);
 
             // Assert
             Assert.That(result.Success, Is.False);

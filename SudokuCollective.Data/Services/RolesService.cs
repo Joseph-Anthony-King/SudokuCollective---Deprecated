@@ -56,7 +56,12 @@ namespace SudokuCollective.Data.Services
                         RoleLevel = roleLevel
                     };
 
-                    var response = await _rolesRepository.Add(role);
+                    var response = await CacheFactory.AddWithCacheAsync(
+                        _rolesRepository,
+                        _distributedCache,
+                        CacheKeys.GetRole,
+                        DateTime.Now.AddHours(1),
+                        role);
 
                     if (response.Success)
                     {
@@ -190,8 +195,10 @@ namespace SudokuCollective.Data.Services
                 {
                     ((Role)response.Object).Name = request.Name;
 
-                    var updateResponse = await _rolesRepository
-                        .Update((Role)response.Object);
+                    var updateResponse = await CacheFactory.UpdateWithCacheAsync(
+                        _rolesRepository,
+                        _distributedCache,
+                        (Role)response.Object);
 
                     if (updateResponse.Success)
                     {
@@ -258,7 +265,10 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    var deleteResponse = await _rolesRepository.Delete((Role)response.Object);
+                    var deleteResponse = await CacheFactory.DeleteWithCacheAsync(
+                        _rolesRepository,
+                        _distributedCache,
+                        (Role)response.Object);
 
                     if (deleteResponse.Success)
                     {

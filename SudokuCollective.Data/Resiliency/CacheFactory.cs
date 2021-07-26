@@ -16,6 +16,61 @@ namespace SudokuCollective.Data.Resiliency
 {
     internal static class CacheFactory
     {
+        internal static async Task<IRepositoryResponse> AddWithCacheAsync<T>(
+            IRepository<T> repo,
+            IDistributedCache cache,
+            string cacheKey,
+            DateTime expiration,
+            T entity) where T : IEntityBase
+        {
+            var response = await repo.Add(entity);
+
+            if (response.Success && response.Object.Id > 0)
+            {
+                var serializedItem = JsonConvert
+                    .SerializeObject(response.Object);
+                var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(expiration);
+
+                await cache.SetAsync(
+                    string.Format(cacheKey, response.Object.Id),
+                    encodedItem,
+                    options);
+
+                List<string> cacheKeys;
+
+                if (response.Object is App app)
+                {
+                    // Remove any app list cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId)
+                            };
+                }
+                else if (response.Object is Difficulty)
+                {
+                    // Remove any difficutly list cache items which may exist
+                    cacheKeys = new List<string> {
+                                CacheKeys.GetDifficulties
+                            };
+                }
+                else
+                {
+                    // Remove any role list cache items which may exist
+                    cacheKeys = new List<string> {
+                                CacheKeys.GetRoles
+                            };
+                }
+
+                if (cacheKeys != null)
+                {
+                    await RemoveKeysAsync(cache, cacheKeys);
+                }
+            }
+
+            return response;
+        }
+
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetWithCacheAsync<T>(
             IRepository<T> repo,
             IDistributedCache cache,
@@ -116,6 +171,114 @@ namespace SudokuCollective.Data.Resiliency
             return new Tuple<IRepositoryResponse, IBaseResult>(response, result);
         }
 
+        internal static async Task<IRepositoryResponse> UpdateWithCacheAsync<T>(
+            IRepository<T> repo,
+            IDistributedCache cache,
+            T entity) where T : IEntityBase
+        {
+            var response = await repo.Update(entity);
+
+            if (response.Success && response.Object.Id > 0)
+            {
+                List<string> cacheKeys;
+
+                if (response.Object is User user)
+                {
+                    // Remove any user cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetUserCacheKey, user.Id),
+                                string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
+                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
+                            };
+                }
+                else if (response.Object is App app)
+                {
+                    // Remove any app cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                                string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
+                                string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId)
+                            };
+                }
+                else if (response.Object is Difficulty difficulty)
+                {
+                    // Remove any difficutly cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetDifficulty, difficulty.Id),
+                                CacheKeys.GetDifficulties
+                            };
+                }
+                else
+                {
+                    var role = response.Object as Role;
+
+                    // Remove any role cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetRole, role.Id),
+                                CacheKeys.GetRoles
+                            };
+                }
+
+                await RemoveKeysAsync(cache, cacheKeys);
+            }
+
+            return response;
+        }
+
+        internal static async Task<IRepositoryResponse> DeleteWithCacheAsync<T>(
+            IRepository<T> repo,
+            IDistributedCache cache,
+            T entity) where T : IEntityBase
+        {
+            var response = await repo.Delete(entity);
+
+            if (response.Success)
+            {
+                List<string> cacheKeys;
+
+                if (entity is User user)
+                {
+                    // Remove any user cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetUserCacheKey, user.Id),
+                                string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
+                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
+                            };
+                }
+                else if (entity is App app)
+                {
+                    // Remove any user cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                                string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
+                                string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId)
+                            };
+                }
+                else if (entity is Difficulty difficulty)
+                {
+                    // Remove any difficulty cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetDifficulty, difficulty.Id),
+                                CacheKeys.GetDifficulties
+                            };
+                }
+                else
+                {
+                    var role = entity as Role;
+
+                    // Remove any role cache items which may exist
+                    cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetRole, role.Id),
+                                CacheKeys.GetRoles
+                            };
+                }
+
+                await RemoveKeysAsync(cache, cacheKeys);
+            }
+
+            return response;
+        }
+
         internal static async Task<bool> HasEntityWithCacheAsync<T>(
             IRepository<T> repo,
             IDistributedCache cache,
@@ -150,6 +313,19 @@ namespace SudokuCollective.Data.Resiliency
             }
 
             return result;
+        }
+
+        internal static async Task RemoveKeysAsync(
+            IDistributedCache cache,
+            List<string> keys)
+        {
+            foreach (var key in keys)
+            {
+                if (await cache.GetAsync(key) != null)
+                {
+                    await cache.RemoveAsync(string.Format(key));
+                }
+            }
         }
 
         #region App Repository Cache Methods
@@ -449,6 +625,77 @@ namespace SudokuCollective.Data.Resiliency
             }
 
             return new Tuple<string, IBaseResult>(license, result);
+        }
+
+        internal static async Task<IRepositoryResponse> ResetWithCacheAsync(
+            IAppsRepository<App> repo,
+            IDistributedCache cache,
+            App app)
+        {
+            var response = await repo.Reset(app);
+
+            if (response.Success)
+            {
+                List<string> cacheKeys;
+
+                // Remove any user cache items which may exist
+                cacheKeys = new List<string> {
+                            string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                            string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License)
+                        };
+
+                await RemoveKeysAsync(cache, cacheKeys);
+            }
+
+            return response;
+        }
+
+        internal static async Task<IRepositoryResponse> ActivatetWithCacheAsync(
+            IAppsRepository<App> repo,
+            IDistributedCache cache,
+            int id)
+        {
+            var app = (App)(await repo.Get(id)).Object;
+            var response = await repo.Activate(app.Id);
+
+            if (response.Success)
+            {
+                List<string> cacheKeys;
+
+                // Remove any user cache items which may exist
+                cacheKeys = new List<string> {
+                            string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                            string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License)
+                        };
+
+                await RemoveKeysAsync(cache, cacheKeys);
+            }
+
+            return response;
+        }
+
+        internal static async Task<IRepositoryResponse> DeactivatetWithCacheAsync(
+            IAppsRepository<App> repo,
+            IDistributedCache cache,
+            int id)
+        {
+            var app = (App)(await repo.Get(id)).Object;
+            var response = await repo.Deactivate(app.Id);
+
+            if (response.Success)
+            {
+                List<string> cacheKeys;
+
+                // Remove any user cache items which may exist
+                cacheKeys = new List<string> {
+                            string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                            string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License)
+                        };
+
+                await RemoveKeysAsync(cache, cacheKeys);
+            }
+
+            return response;
         }
 
         internal static async Task<bool> IsAppLicenseValidWithCacheAsync(

@@ -8,7 +8,7 @@ namespace SudokuCollective.Core.Interfaces.Services
     public interface IAppsService : IService
     {
         Task<IAppResult> Create(ILicenseRequest request);
-        Task<IAppResult> Get(int id, int requestorId);
+        Task<IAppResult> Get(int id);
         Task<IAppResult> Update(int id, IAppRequest request);
         Task<IBaseResult> DeleteOrReset(int id, bool isReset = false);
         Task<IAppsResult> GetApps(IPaginator paginator, int requestorId);

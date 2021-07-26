@@ -61,7 +61,12 @@ namespace SudokuCollective.Data.Services
                         DifficultyLevel = difficultyLevel
                     };
 
-                    var response = await _difficultiesRepository.Add(difficulty);
+                    var response = await CacheFactory.AddWithCacheAsync<Difficulty>(
+                        _difficultiesRepository,
+                        _distributedCache,
+                        CacheKeys.GetDifficulty,
+                        DateTime.Now.AddHours(1),
+                        difficulty);
 
                     if (response.Success)
                     {
@@ -186,8 +191,10 @@ namespace SudokuCollective.Data.Services
                     ((Difficulty)response.Object).Name = updateDifficultyRequest.Name;
                     ((Difficulty)response.Object).DisplayName = updateDifficultyRequest.DisplayName;
 
-                    var updateDifficultyResponse = await _difficultiesRepository
-                        .Update((Difficulty)response.Object);
+                    var updateDifficultyResponse = await CacheFactory.UpdateWithCacheAsync(
+                        _difficultiesRepository,
+                        _distributedCache,
+                        (Difficulty)response.Object);
 
                     if (updateDifficultyResponse.Success)
                     {
@@ -254,7 +261,10 @@ namespace SudokuCollective.Data.Services
 
                 if (response.Success)
                 {
-                    var updateDeleteResponse = await _difficultiesRepository.Delete((Difficulty)response.Object);
+                    var updateDeleteResponse = await CacheFactory.DeleteWithCacheAsync(
+                        _difficultiesRepository,
+                        _distributedCache,
+                        (Difficulty)response.Object);
 
                     if (updateDeleteResponse.Success)
                     {

@@ -254,6 +254,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/appService";
 import App from "@/models/app";
+import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -460,6 +461,11 @@ export default {
         if (licenseResponse.data.success) {
           this.$data.app.updateLicense(licenseResponse.data.license);
         }
+        const appUsersResponse = await appService.getAppUsers(this.$data.app.id);
+        appUsersResponse.data.users.forEach((user) => {
+          const tempUser = new User(user);
+          this.$data.app.users.push(tempUser);
+        });
         this.updateSelectedApp(this.$data.app);
         this.replaceApp(this.$data.app);
       }
