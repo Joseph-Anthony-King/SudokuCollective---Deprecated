@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
@@ -238,29 +239,58 @@ namespace SudokuCollective.Data.Resiliency
 
                 if (entity is User user)
                 {
+                    var apps = new List<App>();
+
+                    var userRepo = (IUsersRepository<User>)repo;
+                    var appsResponse = await userRepo.GetMyApps(entity.Id);
+
+                    if (appsResponse.Success && appsResponse.Objects.Count > 0)
+                    {
+                        apps = appsResponse
+                            .Objects
+                            .ConvertAll(a => (App)a)
+                            .ToList();
+                    }
+
                     // Remove any user cache items which may exist
                     cacheKeys = new List<string> {
-                                string.Format(CacheKeys.GetUserCacheKey, user.Id),
-                                string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
-                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
-                            };
+                            string.Format(CacheKeys.GetUserCacheKey, user.Id),
+                            string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
+                            string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email),
+                            string.Format(CacheKeys.GetMyAppsCacheKey, user.Id),
+                            string.Format(CacheKeys.GetMyRegisteredCacheKey, user.Id)
+                        };
+
+                    if (user.Apps.Count > 0 && apps.Count > 0)
+                    {
+                        foreach (var userApp in user.Apps)
+                        {
+                            var app = apps.Find(a => a.Id == userApp.AppId);
+
+                            cacheKeys.Add(string.Format(CacheKeys.GetAppCacheKey, userApp.AppId));
+                            cacheKeys.Add(string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License));
+                            cacheKeys.Add(string.Format(CacheKeys.IsAppLicenseValidCacheKey, app.License));
+                            cacheKeys.Add(string.Format(CacheKeys.GetAppUsersCacheKey, userApp.AppId));
+                            cacheKeys.Add(string.Format(CacheKeys.GetNonAppUsersCacheKey, userApp.AppId));
+                        }
+                    }
                 }
                 else if (entity is App app)
                 {
                     // Remove any user cache items which may exist
                     cacheKeys = new List<string> {
-                                string.Format(CacheKeys.GetAppCacheKey, app.Id),
-                                string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
-                                string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId)
-                            };
+                            string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                            string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
+                            string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId)
+                        };
                 }
                 else if (entity is Difficulty difficulty)
                 {
                     // Remove any difficulty cache items which may exist
                     cacheKeys = new List<string> {
-                                string.Format(CacheKeys.GetDifficulty, difficulty.Id),
-                                CacheKeys.GetDifficulties
-                            };
+                            string.Format(CacheKeys.GetDifficulty, difficulty.Id),
+                            CacheKeys.GetDifficulties
+                        };
                 }
                 else
                 {
@@ -268,9 +298,9 @@ namespace SudokuCollective.Data.Resiliency
 
                     // Remove any role cache items which may exist
                     cacheKeys = new List<string> {
-                                string.Format(CacheKeys.GetRole, role.Id),
-                                CacheKeys.GetRoles
-                            };
+                            string.Format(CacheKeys.GetRole, role.Id),
+                            CacheKeys.GetRoles
+                        };
                 }
 
                 await RemoveKeysAsync(cache, cacheKeys);
@@ -843,54 +873,54 @@ namespace SudokuCollective.Data.Resiliency
             return new Tuple<IRepositoryResponse, IBaseResult>(response, result);
         }
 
-        internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> ConfirmEmailWithCacheAsync(
+        internal static async Task<IRepositoryResponse> ConfirmEmailWithCacheAsync(
             IUsersRepository<User> repo,
             IDistributedCache cache,
-            string cacheKey,
-            DateTime expiration,
-            EmailConfirmation email,
-            IBaseResult result = null)
+            EmailConfirmation email)
         {
-            IRepositoryResponse response;
+            var response = await repo.ConfirmEmail(email);
 
-            var cachedItem = await cache.GetAsync(cacheKey);
-
-            if (cachedItem != null)
+            if (response.Success)
             {
-                var serializedItem = Encoding.UTF8.GetString(cachedItem);
+                var user = (User)response.Object;
+                List<string> cacheKeys;
 
-                response = new RepositoryResponse
-                {
-                    Success = true,
-                    Object = JsonConvert
-                    .DeserializeObject<User>(serializedItem)
-                };
+                // Remove any user cache items which may exist
+                cacheKeys = new List<string> {
+                        string.Format(CacheKeys.GetUserCacheKey, user.Id),
+                        string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
+                        string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
+                    };
 
-                if (result != null)
-                {
-                    result.FromCache = true;
-                }
-            }
-            else
-            {
-                response = await repo.ConfirmEmail(email);
-
-                if (response.Success && response.Object != null)
-                {
-                    var serializedItem = JsonConvert
-                        .SerializeObject(response.Object);
-                    var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
-                    var options = new DistributedCacheEntryOptions()
-                        .SetAbsoluteExpiration(expiration);
-
-                    await cache.SetAsync(
-                        cacheKey,
-                        encodedItem,
-                        options);
-                }
+                await RemoveKeysAsync(cache, cacheKeys);
             }
 
-            return new Tuple<IRepositoryResponse, IBaseResult>(response, result);
+            return response;
+        }
+
+        internal static async Task<IRepositoryResponse> UpdateEmailWithCacheAsync(
+            IUsersRepository<User> repo,
+            IDistributedCache cache,
+            EmailConfirmation email)
+        {
+            var response = await repo.UpdateEmail(email);
+
+            if (response.Success)
+            {
+                var user = (User)response.Object;
+                List<string> cacheKeys;
+
+                // Remove any user cache items which may exist
+                cacheKeys = new List<string> {
+                        string.Format(CacheKeys.GetUserCacheKey, user.Id),
+                        string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
+                        string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
+                    };
+
+                await RemoveKeysAsync(cache, cacheKeys);
+            }
+
+            return response;
         }
 
         internal static async Task<bool> IsUserRegisteredWithCacheAsync(

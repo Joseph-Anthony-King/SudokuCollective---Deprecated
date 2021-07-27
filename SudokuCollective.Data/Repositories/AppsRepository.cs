@@ -920,6 +920,13 @@ namespace SudokuCollective.Data.Repositories
 
             var result = new RepositoryResponse();
 
+            if (entity.Id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
+
             try
             {
                 var games = await _context

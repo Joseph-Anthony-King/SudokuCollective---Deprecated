@@ -158,6 +158,27 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
+                usersRepo.UpdateEmail(It.IsAny<EmailConfirmation>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
+                    } as IRepositoryResponse));
+
+            UsersRepositorySuccessfulRequest.Setup(usersRepo =>
+                usersRepo.GetMyApps(It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context
+                            .Apps
+                            .Where(a => a.OwnerId == 2)
+                            .ToList()
+                            .ConvertAll(a => (IEntityBase)a)
+
+                    } as IRepositoryResponse));
+
+            UsersRepositorySuccessfulRequest.Setup(usersRepo =>
                 usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
@@ -275,6 +296,21 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = false
+                    } as IRepositoryResponse));
+
+            UsersRepositoryFailedRequest.Setup(usersRepo =>
+                usersRepo.UpdateEmail(It.IsAny<EmailConfirmation>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+                    } as IRepositoryResponse));
+
+            UsersRepositoryFailedRequest.Setup(usersRepo =>
+                usersRepo.GetMyApps(It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+
                     } as IRepositoryResponse));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
@@ -422,6 +458,21 @@ namespace SudokuCollective.Test.MockRepositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         Success = true
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.UpdateEmail(It.IsAny<EmailConfirmation>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+                    } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.GetMyApps(It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = false
+
                     } as IRepositoryResponse));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
@@ -582,6 +633,27 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
+                usersRepo.UpdateEmail(It.IsAny<EmailConfirmation>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
+                    } as IRepositoryResponse));
+
+            UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
+                usersRepo.GetMyApps(It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context
+                            .Apps
+                            .Where(a => a.OwnerId == 2)
+                            .ToList()
+                            .ConvertAll(a => (IEntityBase)a)
+
+                    } as IRepositoryResponse));
+
+            UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
                 usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
@@ -736,6 +808,27 @@ namespace SudokuCollective.Test.MockRepositories
                     {
                         Success = true,
                         Object = context.Users.FirstOrDefault(u => u.Id == 1)
+                    } as IRepositoryResponse));
+
+            UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
+                usersRepo.UpdateEmail(It.IsAny<EmailConfirmation>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Object = context.Users.FirstOrDefault(u => u.Id == 1)
+                    } as IRepositoryResponse));
+
+            UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
+                usersRepo.GetMyApps(It.IsAny<int>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        Success = true,
+                        Objects = context
+                            .Apps
+                            .Where(a => a.OwnerId == 2)
+                            .ToList()
+                            .ConvertAll(a => (IEntityBase)a)
+
                     } as IRepositoryResponse));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>

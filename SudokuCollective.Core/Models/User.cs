@@ -1,8 +1,8 @@
 using System;
+using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
 
@@ -72,8 +72,7 @@ namespace SudokuCollective.Core.Models
         }
         public bool EmailConfirmed { get; set; }
         public bool ReceivedRequestToUpdateEmail { get; set; }
-        [JsonIgnore]
-        [Required]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public string Password { get; set; }
         public bool ReceivedRequestToUpdatePassword { get; set; }
         public bool IsActive { get; set; }

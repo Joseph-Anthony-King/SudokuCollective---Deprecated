@@ -339,7 +339,13 @@ namespace SudokuCollective.Data.Repositories
                 {
                     entity.DateUpdated = DateTime.UtcNow;
 
-                    _context.Attach(entity);
+                    if (!_context
+                        .ChangeTracker
+                        .Entries<User>()
+                        .Any(e => e.Entity.Id == entity.Id))
+                    {
+                        _context.Update(entity);
+                    }
 
                     foreach (var entry in _context.ChangeTracker.Entries())
                     {
@@ -487,7 +493,13 @@ namespace SudokuCollective.Data.Repositories
                         .Where(g => g.UserId == entity.Id)
                         .ToListAsync();
 
+                    var apps = await _context
+                        .Apps
+                        .Where(a => a.OwnerId == entity.Id)
+                        .ToListAsync();
+
                     _context.RemoveRange(games);
+                    _context.RemoveRange(apps);
 
                     foreach (var entry in _context.ChangeTracker.Entries())
                     {
@@ -1035,7 +1047,7 @@ namespace SudokuCollective.Data.Repositories
             }
         }
 
-        public async Task<IRepositoryResponse> UpdateUserEmail(IEmailConfirmation emailConfirmation)
+        public async Task<IRepositoryResponse> UpdateEmail(IEmailConfirmation emailConfirmation)
         {
             if (emailConfirmation == null) throw new ArgumentNullException(nameof(emailConfirmation));
 
@@ -1107,6 +1119,73 @@ namespace SudokuCollective.Data.Repositories
 
                     return result;
                 }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Exception = exp;
+
+                return result;
+            }
+        }
+
+        public async Task<IRepositoryResponse> GetMyApps(int id)
+        {
+            var result = new RepositoryResponse();
+
+            if (id == 0)
+            {
+                result.Success = false;
+
+                return result;
+            }
+
+            try
+            {
+                var query = new List<App>();
+
+                query = await _context
+                    .Apps
+                    .Where(a => a.OwnerId == id)
+                    .Include(a => a.Users)
+                        .ThenInclude(ua => ua.User)
+                            .ThenInclude(u => u.Roles)
+                                .ThenInclude(ur => ur.Role)
+                    .OrderBy(a => a.Id)
+                    .ToListAsync();
+
+                if (query.Count != 0)
+                {
+                    // Filter games by app
+                    foreach (var app in query)
+                    {
+                        foreach (var userApp in app.Users)
+                        {
+                            userApp.User.Games = new List<Game>();
+
+                            userApp.User.Games = await _context
+                                .Games
+                                .Include(g => g.SudokuMatrix)
+                                    .ThenInclude(g => g.Difficulty)
+                                .Include(g => g.SudokuMatrix)
+                                    .ThenInclude(m => m.SudokuCells)
+                                .Include(g => g.SudokuSolution)
+                                .Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
+                                .ToListAsync();
+                        }
+                    }
+
+                    result.Success = true;
+                    result.Objects = query
+                        .ConvertAll(a => (IEntityBase)a)
+                        .ToList();
+                }
+                else
+                {
+                    result.Success = false;
+                }
+
+                return result;
             }
             catch (Exception exp)
             {

@@ -652,8 +652,8 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
                         {
-                            result.Success = userResponse.Success;
-                            result.Message = userResponse.Exception.Message;
+                            result.Success = updateUserResponse.Success;
+                            result.Message = updateUserResponse.Exception.Message;
 
                             return result;
                         }
@@ -1919,11 +1919,15 @@ namespace SudokuCollective.Data.Services
 
                     if (!emailConfirmation.IsUpdate)
                     {
-                        var response = await _usersRepository.ConfirmEmail(emailConfirmation);
+                        var response = await CacheFactory.ConfirmEmailWithCacheAsync(
+                            _usersRepository,
+                            _distributedCache,
+                            emailConfirmation);
 
                         if (response.Success)
                         {
-                            var removeEmailConfirmationResponse = await _emailConfirmationsRepository.Delete(emailConfirmation);
+                            var removeEmailConfirmationResponse = await _emailConfirmationsRepository
+                                .Delete(emailConfirmation);
 
                             var user = (User)response.Object;
 
@@ -1978,7 +1982,11 @@ namespace SudokuCollective.Data.Services
                     }
                     else if (emailConfirmation.IsUpdate && !(bool)emailConfirmation.OldEmailAddressConfirmed)
                     {
-                        var response = await _usersRepository.UpdateUserEmail(emailConfirmation);
+                        var response = await CacheFactory.UpdateEmailWithCacheAsync(
+                            _usersRepository,
+                            _distributedCache,
+                            emailConfirmation);
+
                         var user = (User)response.Object;
                         var app = (App)(await _appsRepository.Get(emailConfirmation.AppId)).Object;
 
@@ -2040,22 +2048,16 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
-                        var response = await _usersRepository.ConfirmEmail(emailConfirmation);
+                        var response = await CacheFactory.ConfirmEmailWithCacheAsync(
+                            _usersRepository,
+                            _distributedCache,
+                            emailConfirmation);
 
                         if (response.Success)
                         {
                             var removeEmailConfirmationResponse = await _emailConfirmationsRepository.Delete(emailConfirmation);
 
                             var user = (User)response.Object;
-
-                            // Remove any user cache items which may exist
-                            var cacheKeys = new List<string> {
-                                string.Format(CacheKeys.GetUserCacheKey, user.Id),
-                                string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
-                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
-                            };
-
-                            await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
 
                             result.Success = response.Success;
                             result.UserName = user.UserName;
@@ -2828,13 +2830,13 @@ namespace SudokuCollective.Data.Services
 
         private async Task<EmailConfirmation> EnsureEmailConfirmationTokenIsUnique(EmailConfirmation emailConfirmation)
         {
-            var emailConfirmationResposnse = await _emailConfirmationsRepository.GetAll();
+            var emailConfirmationResponse = await _emailConfirmationsRepository.GetAll();
 
-            if (emailConfirmationResposnse.Success)
+            if (emailConfirmationResponse.Success)
             {
                 bool tokenNotUnique;
 
-                var emailConfirmations = emailConfirmationResposnse
+                var emailConfirmations = emailConfirmationResponse
                     .Objects
                     .ConvertAll(ec => (EmailConfirmation)ec);
 
@@ -2842,7 +2844,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (emailConfirmations
                         .Any(ec => ec.Token.ToLower()
-                        .Equals(emailConfirmation.Token.ToLower())))
+                        .Equals(emailConfirmation.Token.ToLower()) && ec.Id != emailConfirmation.Id))
                     {
                         tokenNotUnique = true;
 
