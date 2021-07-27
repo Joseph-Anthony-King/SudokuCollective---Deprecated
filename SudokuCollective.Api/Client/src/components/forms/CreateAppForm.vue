@@ -95,9 +95,8 @@
 /* eslint-disable no-useless-escape */
 import { mapActions } from "vuex";
 import { appService } from "@/services/appService/appService";
+import { appProvider } from "@/providers/appProvider";
 import CreateAppModel from "@/models/viewModels/createAppModel";
-import App from "@/models/app";
-import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -135,29 +134,9 @@ export default {
                 );
 
                 if (response.status === 201) {
-                  const appsResponse = await appService.getMyApps();
-
-                  if (appsResponse.data.success) {
-                    let tempArray = [];
-
-                    for (const app of appsResponse.data.apps) {
-                      const myApp = new App(app);
-                      const licenseResponse = await appService.getLicense(
-                        myApp.id
-                      );
-                      if (licenseResponse.data.success) {
-                        myApp.updateLicense(licenseResponse.data.license);
-                      }
-                      const appUsersResponse = await appService.getAppUsers(myApp.id);
-                      appUsersResponse.data.users.forEach((user) => {
-                        const tempUser = new User(user);
-                        myApp.users.push(tempUser);
-                      });
-                      tempArray.push(myApp);
-                    }
-
-                    this.updateApps(tempArray);
-                  }
+                  const appsResponse = await appProvider.getMyApps();
+                  
+                  this.updateApps(appsResponse.apps);
 
                   this.reset();
 

@@ -341,6 +341,7 @@ namespace SudokuCollective.Data.Services
                             {
                                 result.Success = resetAppResponse.Success;
                                 result.Message = AppsMessages.AppResetMessage;
+                                result.App = (App)resetAppResponse.Object;
 
                                 return result;
                             }

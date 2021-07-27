@@ -252,9 +252,8 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { appService } from "@/services/appService/appService";
+import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
-import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -298,50 +297,32 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await appService.resetApp(this.$data.app);
+              const response = await appProvider.resetApp(this.$data.app);
 
-              if (response.status === 200) {
-                const appsResponse = await appService.getMyApps();
+              if (response.code === 200) {
+                this.$data.app = response.app;
 
-                if (appsResponse.data.success) {
-                  let tempArray = [];
+                this.updateApps(response.apps);
+                this.updateSelectedApp(this.$data.app);
 
-                  for (const app of appsResponse.data.apps) {
-                    const myApp = new App(app);
-                    const licenseResponse = await appService.getLicense(
-                      myApp.id
-                    );
-                    if (licenseResponse.data.success) {
-                      myApp.updateLicense(licenseResponse.data.license);
-                    }
-                    if (this.$data.app.id === myApp.id) {
-                      this.$data.app = new App(myApp);
-                    }
-                    tempArray.push(myApp);
-                  }
-
-                  this.updateApps(tempArray);
-                  this.updateSelectedApp(this.$data.app);
-
-                  showToast(
-                    this,
-                    ToastMethods["success"],
-                    response.data.message.substring(17),
-                    defaultToastOptions()
-                  );
-                }
-              } else if (response.status === 404) {
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.message.substring(17),
+                  defaultToastOptions()
+                );
+              } else if (response.code === 404) {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message.substring(17),
                   defaultToastOptions()
                 );
               } else {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message,
+                  response.message,
                   defaultToastOptions()
                 );
               }
@@ -379,43 +360,26 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await appService.deleteApp(this.$data.app);
+              const response = await appProvider.deleteApp(this.$data.app);
 
-              if (response.status === 200) {
-                const appsResponse = await appService.getMyApps();
+              if (response.code === 200) {
+                this.removeApp(this.$data.app);
+                this.updateApps(response.apps);
+                this.updateSelectedApp(response.app);
 
-                if (appsResponse.data.success) {
-                  let tempArray = [];
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.message.substring(17),
+                  defaultToastOptions()
+                );
 
-                  for (const app of appsResponse.data.apps) {
-                    const myApp = new App(app);
-                    const licenseResponse = await appService.getLicense(
-                      myApp.id
-                    );
-                    if (licenseResponse.data.success) {
-                      myApp.updateLicense(licenseResponse.data.license);
-                    }
-                    tempArray.push(myApp);
-                  }
-
-                  this.removeApp(this.$data.app);
-                  this.updateApps(tempArray);
-                  this.updateSelectedApp(new App());
-
-                  showToast(
-                    this,
-                    ToastMethods["success"],
-                    response.data.message.substring(17),
-                    defaultToastOptions()
-                  );
-
-                  this.$emit("close-app-widget-event", null, null);
-                }
-              } else if (response.status === 404) {
+                this.$emit("close-app-widget-event", null, null);
+              } else if (response.code === 404) {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message.substring(17),
                   defaultToastOptions()
                 );
               } else {
@@ -453,19 +417,10 @@ export default {
     },
 
     async refreshApp() {
-      var response = await appService.getApp(this.$data.app.id);
+      var response = await appProvider.getApp(this.$data.app.id);
 
-      if (response.data.success) {
-        this.$data.app = new App(response.data.app);
-        const licenseResponse = await appService.getLicense(this.$data.app.id);
-        if (licenseResponse.data.success) {
-          this.$data.app.updateLicense(licenseResponse.data.license);
-        }
-        const appUsersResponse = await appService.getAppUsers(this.$data.app.id);
-        appUsersResponse.data.users.forEach((user) => {
-          const tempUser = new User(user);
-          this.$data.app.users.push(tempUser);
-        });
+      if (response.success) {
+        this.$data.app = response.app;
         this.updateSelectedApp(this.$data.app);
         this.replaceApp(this.$data.app);
       }

@@ -2048,6 +2048,15 @@ namespace SudokuCollective.Data.Services
 
                             var user = (User)response.Object;
 
+                            // Remove any user cache items which may exist
+                            var cacheKeys = new List<string> {
+                                string.Format(CacheKeys.GetUserCacheKey, user.Id),
+                                string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
+                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
+                            };
+
+                            await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
+
                             result.Success = response.Success;
                             result.UserName = user.UserName;
                             result.IsUpdate = emailConfirmation.IsUpdate;

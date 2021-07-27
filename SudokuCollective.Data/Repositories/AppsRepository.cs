@@ -958,13 +958,12 @@ namespace SudokuCollective.Data.Repositories
                     }
 
                     await _context.SaveChangesAsync();
+                }
 
-                    result.Success = true;
-                }
-                else
-                {
-                    result.Success = false;
-                }
+                result.Success = true;
+                result.Object = await _context
+                    .Apps
+                    .FirstOrDefaultAsync(a => a.Id == entity.Id);
 
                 return result;
             }

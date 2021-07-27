@@ -154,7 +154,7 @@ import AppUsersWidget from "@/components/widgets/AppUsersWidget";
 import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
-import { appService } from "@/services/appService/appService";
+import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -294,30 +294,10 @@ export default {
     const storeApps = this.getApps;
 
     if (storeApps.length === 0) {
-      const response = await appService.getMyApps();
+      const response = await appProvider.getMyApps();
 
-      if (response.data.success) {
-        let tempArray = [];
-
-        for (const app of response.data.apps) {
-          const myApp = new App(app);
-          const licenseResponse = await appService.getLicense(myApp.id);
-          if (licenseResponse.data.success) {
-            myApp.updateLicense(licenseResponse.data.license);
-          }
-          tempArray.push(myApp);
-        }
-
-        // Load the users per app
-        for (const app of tempArray) {
-          const appUsersResponse = await appService.getAppUsers(app.id);
-          appUsersResponse.data.users.forEach((user) => {
-            const tempUser = new User(user);
-            app.users.push(tempUser);
-          });
-        }
-
-        this.updateApps(tempArray);
+      if (response.success) {
+        this.updateApps(response.apps);
       }
     } else {
       storeApps.forEach((store) => {
@@ -328,17 +308,10 @@ export default {
     const storeRegisteredApps = this.getRegisteredApps;
 
     if (storeRegisteredApps.length === 0) {
-      const response = await appService.getRegisteredApps(this.$data.user.id);
+      const response = await appProvider.getRegisteredApps(this.$data.user.id);
 
-      if (response.data.success) {
-        let tempArray = [];
-
-        for (const app of response.data.apps) {
-          const registeredApp = new App(app);
-          tempArray.push(registeredApp);
-        }
-
-        this.updateRegisteredApps(tempArray);
+      if (response.success) {
+        this.updateRegisteredApps(response.apps);
       }
     }
 

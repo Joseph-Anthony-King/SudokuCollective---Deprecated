@@ -340,7 +340,7 @@ const deleteApp = async function (app) {
 
 const resetApp = async function (app) {
   try {
-    let params = `/${app.id}/resetapp`;
+    let params = `/${app.id}/reset`;
 
     const data = {
       license: app.license,
@@ -350,7 +350,7 @@ const resetApp = async function (app) {
     };
 
     const config = {
-      method: "delete",
+      method: "put",
       url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
       data: requestData(data),
