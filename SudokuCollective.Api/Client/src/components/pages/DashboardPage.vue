@@ -28,7 +28,9 @@
           <v-card-title class="justify-center">Your Apps</v-card-title>
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
-            <CreateAppButton v-on:click.native="openCreateAppForm" />
+            <CreateAppButton
+              :isEnabled="user.emailConfirmed"
+              v-on:click.native="openCreateAppForm" />
             <span class="no-apps-message" v-if="myApps.length === 0"
               >Time to Get Coding!</span
             >

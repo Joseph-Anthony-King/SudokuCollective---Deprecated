@@ -1,5 +1,5 @@
 <template>
-  <v-card color="primary" class="app-button">
+  <v-card :class="isEnabled ? 'primary' : 'disabled'" class="app-button">
     <v-card-title>
       <span class="headline">Create App</span>
     </v-card-title>
@@ -11,6 +11,11 @@
   color: white;
 }
 
+.disabled {
+  background-color: #75ACD0;
+  color: gray
+}
+
 .headline {
   margin: 65px 0 0 20px;
 }
@@ -19,6 +24,9 @@
 <script>
 
 export default {
-  name: "CreateAppButton"
+  name: "CreateAppButton",
+  props: {
+    isEnabled: Boolean
+  }
 }
 </script>
