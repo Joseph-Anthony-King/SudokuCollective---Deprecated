@@ -179,6 +179,10 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositorySuccessfulRequest.Setup(usersRepo =>
+                usersRepo.GetAppLicense(It.IsAny<int>()))
+                    .Returns(Task.FromResult(TestData.TestObjects.GetLicense()));
+
+            UsersRepositorySuccessfulRequest.Setup(usersRepo =>
                 usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
@@ -312,6 +316,10 @@ namespace SudokuCollective.Test.MockRepositories
                         Success = false
 
                     } as IRepositoryResponse));
+
+            UsersRepositoryFailedRequest.Setup(usersRepo =>
+                usersRepo.GetAppLicense(It.IsAny<int>()))
+                    .Returns(Task.FromResult(string.Empty));
 
             UsersRepositoryFailedRequest.Setup(usersRepo =>
                 usersRepo.Activate(It.IsAny<int>()))
@@ -474,6 +482,10 @@ namespace SudokuCollective.Test.MockRepositories
                         Success = false
 
                     } as IRepositoryResponse));
+
+            UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
+                usersRepo.GetAppLicense(It.IsAny<int>()))
+                    .Returns(Task.FromResult(string.Empty));
 
             UsersRepositoryEmailFailedRequest.Setup(usersRepo =>
                 usersRepo.Activate(It.IsAny<int>()))
@@ -654,6 +666,10 @@ namespace SudokuCollective.Test.MockRepositories
                     } as IRepositoryResponse));
 
             UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
+                usersRepo.GetAppLicense(It.IsAny<int>()))
+                    .Returns(Task.FromResult(TestData.TestObjects.GetLicense()));
+
+            UsersRepositoryInitiatePasswordSuccessful.Setup(usersRepo =>
                 usersRepo.Activate(It.IsAny<int>()))
                     .Returns(Task.FromResult(true));
 
@@ -830,6 +846,10 @@ namespace SudokuCollective.Test.MockRepositories
                             .ConvertAll(a => (IEntityBase)a)
 
                     } as IRepositoryResponse));
+
+            UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
+                usersRepo.GetAppLicense(It.IsAny<int>()))
+                    .Returns(Task.FromResult(TestData.TestObjects.GetLicense()));
 
             UsersRepositoryResendEmailConfirmationSuccessful.Setup(usersRepo =>
                 usersRepo.Activate(It.IsAny<int>()))

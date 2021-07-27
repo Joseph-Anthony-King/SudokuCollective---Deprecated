@@ -231,6 +231,34 @@ namespace SudokuCollective.Data.Resiliency
             IDistributedCache cache,
             T entity) where T : IEntityBase
         {
+            /* If deleting a user this list will be need to get the associated
+             * user apps in order to clear the cache */
+            List<App> apps = null;
+
+            if (entity is User)
+            {
+                /* Since we're deleting a user we get the associated apps
+                 * to clear the cache */
+                apps = new List<App>();
+
+                var userRepo = (IUsersRepository<User>)repo;
+                var appsResponse = await userRepo.GetMyApps(entity.Id);
+
+                if (appsResponse.Success && appsResponse.Objects.Count > 0)
+                {
+                    apps = appsResponse
+                        .Objects
+                        .ConvertAll(a => (App)a)
+                        .ToList();
+                }
+
+                // Finally, attach the license to each app...
+                foreach (var app in apps)
+                {
+                    app.License = await userRepo.GetAppLicense(app.Id);
+                }
+            }
+
             var response = await repo.Delete(entity);
 
             if (response.Success)
@@ -239,19 +267,6 @@ namespace SudokuCollective.Data.Resiliency
 
                 if (entity is User user)
                 {
-                    var apps = new List<App>();
-
-                    var userRepo = (IUsersRepository<User>)repo;
-                    var appsResponse = await userRepo.GetMyApps(entity.Id);
-
-                    if (appsResponse.Success && appsResponse.Objects.Count > 0)
-                    {
-                        apps = appsResponse
-                            .Objects
-                            .ConvertAll(a => (App)a)
-                            .ToList();
-                    }
-
                     // Remove any user cache items which may exist
                     cacheKeys = new List<string> {
                             string.Format(CacheKeys.GetUserCacheKey, user.Id),
@@ -261,17 +276,23 @@ namespace SudokuCollective.Data.Resiliency
                             string.Format(CacheKeys.GetMyRegisteredCacheKey, user.Id)
                         };
 
-                    if (user.Apps.Count > 0 && apps.Count > 0)
+                    if (user.Apps.Count > 0 && apps != null)
                     {
                         foreach (var userApp in user.Apps)
                         {
                             var app = apps.Find(a => a.Id == userApp.AppId);
 
-                            cacheKeys.Add(string.Format(CacheKeys.GetAppCacheKey, userApp.AppId));
-                            cacheKeys.Add(string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License));
-                            cacheKeys.Add(string.Format(CacheKeys.IsAppLicenseValidCacheKey, app.License));
-                            cacheKeys.Add(string.Format(CacheKeys.GetAppUsersCacheKey, userApp.AppId));
-                            cacheKeys.Add(string.Format(CacheKeys.GetNonAppUsersCacheKey, userApp.AppId));
+                            if (app != null)
+                            {
+                                cacheKeys.Add(string.Format(CacheKeys.GetAppCacheKey, userApp.AppId));
+                                cacheKeys.Add(string.Format(CacheKeys.HasAppCacheKey, userApp.AppId));
+                                cacheKeys.Add(string.Format(CacheKeys.GetAppLicenseCacheKey, userApp.AppId));
+                                cacheKeys.Add(string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License));
+                                cacheKeys.Add(string.Format(CacheKeys.IsAppLicenseValidCacheKey, app.License));
+                                cacheKeys.Add(string.Format(CacheKeys.GetAppUsersCacheKey, userApp.AppId));
+                                cacheKeys.Add(string.Format(CacheKeys.GetNonAppUsersCacheKey, userApp.AppId));
+                                cacheKeys.Add(CacheKeys.GetAppsCacheKey);
+                            }
                         }
                     }
                 }
@@ -279,10 +300,15 @@ namespace SudokuCollective.Data.Resiliency
                 {
                     // Remove any user cache items which may exist
                     cacheKeys = new List<string> {
-                            string.Format(CacheKeys.GetAppCacheKey, app.Id),
-                            string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
-                            string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId)
-                        };
+                        string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                        string.Format(CacheKeys.HasAppCacheKey, app.Id),
+                        string.Format(CacheKeys.GetAppLicenseCacheKey, app.Id),
+                        string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
+                        string.Format(CacheKeys.IsAppLicenseValidCacheKey, app.License),
+                        string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId),
+                        string.Format(CacheKeys.HasAppCacheKey, app.Id),
+                        CacheKeys.GetAppsCacheKey                            
+                    };
                 }
                 else if (entity is Difficulty difficulty)
                 {

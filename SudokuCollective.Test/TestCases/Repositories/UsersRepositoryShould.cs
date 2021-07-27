@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Extensions;
+using SudokuCollective.Core.Interfaces.DataModels;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.DataModels;
 using SudokuCollective.Data.Repositories;
 using SudokuCollective.Test.TestData;
 
@@ -781,6 +783,62 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetUsersApps()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetMyApps(1);
+
+            // Assert
+            Assert.That(result, Is.TypeOf<RepositoryResponse>());
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Objects.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnFalseIfGetUsersAppsFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetMyApps(5);
+
+            // Assert
+            Assert.That(result, Is.TypeOf<RepositoryResponse>());
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task GetUsersAppLicense()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAppLicense(1);
+
+            // Assert
+            Assert.That(result, Is.TypeOf<string>());
+        }
+
+        [Test]
+        [Category("Repository")]
+        public async Task ReturnNullIfGetUsersAppLicenseFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetMyApps(5);
+
+            // Assert
+            Assert.That(result, Is.TypeOf<RepositoryResponse>());
+            Assert.That(result.Success, Is.False);
         }
     }
 }

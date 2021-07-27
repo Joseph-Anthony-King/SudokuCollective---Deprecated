@@ -486,8 +486,6 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
                 {
-                    _context.Remove(entity);
-
                     var games = await _context
                         .Games
                         .Where(g => g.UserId == entity.Id)
@@ -505,7 +503,18 @@ namespace SudokuCollective.Data.Repositories
                     {
                         var dbEntry = (IEntityBase)entry.Entity;
 
-                        if (dbEntry is UserApp userApp)
+                        if (dbEntry is User user)
+                        {
+                            if (user.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                        }
+                        else if (dbEntry is UserApp userApp)
                         {
                             if (userApp.AppId == entity.Id)
                             {
@@ -1194,6 +1203,15 @@ namespace SudokuCollective.Data.Repositories
 
                 return result;
             }
+        }
+
+        public async Task<string> GetAppLicense(int appId)
+        {
+            return await _context
+                .Apps
+                .Where(a => a.Id == appId)
+                .Select(a => a.License)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> Activate(int id)

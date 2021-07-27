@@ -16,6 +16,7 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<IRepositoryResponse> ConfirmEmail(IEmailConfirmation emailConfirmation);
         Task<IRepositoryResponse> UpdateEmail(IEmailConfirmation emailConfirmation);
         Task<IRepositoryResponse> GetMyApps(int id);
+        Task<string> GetAppLicense(int appId);
         Task<bool> Activate(int id);
         Task<bool> Deactivate(int id);
         Task<bool> PromoteToAdmin(int id);
