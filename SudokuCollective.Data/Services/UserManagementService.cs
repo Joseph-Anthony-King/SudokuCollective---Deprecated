@@ -68,7 +68,7 @@ namespace SudokuCollective.Data.Services
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserByUsernameCacheKey, username),
-                DateTime.Now.AddMinutes(5),
+                DateTime.Now.AddMinutes(30),
                 username);
 
             var userResponse = (RepositoryResponse)cachFactoryResponse.Item1;
@@ -104,7 +104,7 @@ namespace SudokuCollective.Data.Services
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserByUsernameCacheKey, email),
-                DateTime.Now.AddMinutes(5),
+                DateTime.Now.AddMinutes(30),
                 email,
                 result);
 
