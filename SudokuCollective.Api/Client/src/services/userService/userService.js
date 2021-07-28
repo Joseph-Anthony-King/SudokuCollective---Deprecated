@@ -1,6 +1,6 @@
 ﻿import * as axios from "axios";
 import store from "../../store";
-import User from "../../models/user";
+import Paginator from "@/models/viewModels/paginator"
 import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
 import { requestDataUpdateUser } from "../../helpers/userRequestData/userRequestData";
@@ -24,11 +24,7 @@ const getUser = async function (id) {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    const user = new User(response.data.user);
-
-    return user;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -44,34 +40,24 @@ const getUsers = async function (data) {
       data: requestData(data),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
   }
 };
 
-const updateUser = async function (
-  id,
-  userName,
-  firstName,
-  lastName,
-  nickName,
-  email,
-  paginator
-) {
+const updateUser = async function (data) {
   try {
-    const params = `/${id}`;
+    const params = `/${data.id}`;
 
     const payload = {
-      paginator: paginator,
-      userName: userName,
-      firstName: firstName,
-      lastName: lastName,
-      nickName: nickName,
-      email: email
+      userName: data.userName,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      nickName: data.nickName,
+      email: data.email,
+      paginator: new Paginator()
     }
 
     const config = {
@@ -81,9 +67,7 @@ const updateUser = async function (
       data: requestDataUpdateUser(payload),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     return error.response;
   }
@@ -100,9 +84,7 @@ const deleteUser = async function (id) {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -123,9 +105,7 @@ const postRequestPasswordReset = async function (email) {
       },
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -141,9 +121,7 @@ const putResendPasswordReset = async function () {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -159,9 +137,7 @@ const putCancelPasswordReset = async function () {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -177,9 +153,7 @@ const putCancelEmailConfirmation = async function () {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -195,9 +169,7 @@ const putCancelAllEmailRequests = async function () {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;

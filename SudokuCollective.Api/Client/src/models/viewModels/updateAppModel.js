@@ -14,7 +14,7 @@ class UpdateAppModel {
     customEmailConfirmationAction,
     customPasswordResetAction,
     timeFrame,
-    accessDuration,
+    accessDuration
   ) {
     this.id = id;
     this.name = name,

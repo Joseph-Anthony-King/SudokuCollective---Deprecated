@@ -79,7 +79,7 @@ const postLicense = async function (data) {
 
 const updateApp = async function (data) {
 
-  const response = await appService.putUpdateApp(data);
+  const response = await appService.updateApp(data);
 
   if (response.status === 200) {
 
@@ -171,7 +171,7 @@ const getRegisteredApps = async function (userid) {
   }
 }
 
-const getNonAppUsers = async function (id) {  
+const getNonAppUsers = async function (id) {
 
   const response = await appService.getNonAppUsers(id);
 

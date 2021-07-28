@@ -229,11 +229,7 @@ export default {
                 this.$data.app.accessDuration
               );
 
-              console.log(data);
-
               const response = await appProvider.updateApp(data);
-
-              console.log(response);
 
               if (response.status === 200) {
                 this.resetEditProfileFormStatus;

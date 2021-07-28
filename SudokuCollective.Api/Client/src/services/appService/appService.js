@@ -24,9 +24,7 @@ const getApp = async function (id) {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -42,9 +40,7 @@ const getByLicense = async function (data) {
       data: requestData(data),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -61,9 +57,7 @@ const postLicense = async function (createAppModel) {
       data: createAppModel,
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     return error.response;
   }
@@ -80,9 +74,7 @@ const getLicense = async function (id) {
       data: null,
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -98,9 +90,7 @@ const getMyApps = async function () {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -118,9 +108,7 @@ const getRegisteredApps = async function (userid) {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -138,9 +126,7 @@ const getAppUsers = async function (id) {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -158,9 +144,7 @@ const getNonAppUsers = async function (id) {
       data: requestData(),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -189,9 +173,7 @@ const putActivateAdminPrivileges = async function (
       data: data
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -220,16 +202,14 @@ const putDeactivateAdminPrivileges = async function (
       data: data
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
   }
 };
 
-const putUpdateApp = async function (data) {
+const updateApp = async function (data) {
   try {
     const params = `/${data.id}`;
 
@@ -256,9 +236,7 @@ const putUpdateApp = async function (data) {
       data: requestDataUpdateApp(payload),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     return error.response;
   }
@@ -282,9 +260,7 @@ const deleteApp = async function (app) {
       data: requestData(data),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -309,9 +285,7 @@ const resetApp = async function (app) {
       data: requestData(data),
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -340,9 +314,7 @@ const putAddUser = async function (
       data: data
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -371,9 +343,7 @@ const deleteRemoveUser = async function (
       data: data
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     console.error(error.name, error.message);
     return error.response;
@@ -387,6 +357,7 @@ const getTimeFrames = async function () {
       url: `${getTimeFramesEndpoint}`,
       headers: requestHeader()
     };
+
     const response = await axios(config);
     return response.data;
   } catch (error) {
@@ -406,7 +377,7 @@ export const appService = {
   getNonAppUsers,
   putActivateAdminPrivileges,
   putDeactivateAdminPrivileges,
-  putUpdateApp,
+  updateApp,
   deleteApp,
   resetApp,
   putAddUser,

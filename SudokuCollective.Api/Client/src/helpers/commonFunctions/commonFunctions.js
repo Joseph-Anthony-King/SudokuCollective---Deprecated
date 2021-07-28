@@ -1,10 +1,10 @@
-import { userService } from "@/services/userService/userService";
+import { userProvider } from "@/providers/userProvider";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export async function passwordReset(userEmail, component) {
   try {
-    const response = await userService.postRequestPasswordReset(userEmail);
+    const response = await userProvider.requestPasswordReset(userEmail);
 
     if (response.status === 200) {
       showToast(
@@ -19,7 +19,7 @@ export async function passwordReset(userEmail, component) {
       showToast(
         component,
         ToastMethods["error"],
-        response.data.message.substring(17),
+        response.message,
         defaultToastOptions()
       );
 

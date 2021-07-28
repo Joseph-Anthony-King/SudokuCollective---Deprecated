@@ -348,6 +348,7 @@
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { userService } from "@/services/userService/userService";
+import { userProvider } from "@/providers/userProvider";
 import { registerService } from "@/services/registerService/registerService";
 import { appProvider } from "@/providers/appProvider";
 import EditProfileForm from "@/components/forms/EditProfileForm";
@@ -438,21 +439,21 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.putCancelEmailConfirmation();
+              const response = await userProvider.cancelEmailConfirmation();
 
               if (response.status === 200) {
                 await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               }
@@ -529,21 +530,21 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.putResendPasswordReset();
+              const response = await userProvider.resendPasswordReset();
 
               if (response.status === 200) {
                 await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               }
@@ -581,21 +582,21 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.putCancelPasswordReset();
+              const response = await userProvider.cancelPasswordReset();
 
               if (response.status === 200) {
                 await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               }
@@ -633,21 +634,21 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.putCancelAllEmailRequests();
+              const response = await userProvider.cancelAllEmailRequests();
 
               if (response.status === 200) {
                 await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               }
@@ -740,7 +741,7 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userService.deleteUser(this.$data.user.id);
+              const response = await userProvider.deleteUser(this.$data.user.id);
 
               if (response.status === 200) {
                 this.$data.user = new User();
@@ -759,14 +760,14 @@ export default {
                 showToast(
                   this,
                   ToastMethods["info"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               }
@@ -805,11 +806,19 @@ export default {
     },
 
     async reset() {
-      let user = await userService.getUser(this.$data.user.id);
+      const response = await userProvider.getUser(this.$data.user.id);
 
-      this.$data.user = new User(user);
-      this.$data.user.login();
-      this.updateUser(this.$data.user);
+      if (response.success) {
+        this.$data.user = response.user;
+        this.$data.user.login();
+        this.updateUser(this.$data.user);
+      } else {
+        showToast(
+          this, 
+          ToastMethods["error"], 
+          response.message, 
+          defaultToastOptions());
+      }
     },
 
     closeEditing() {

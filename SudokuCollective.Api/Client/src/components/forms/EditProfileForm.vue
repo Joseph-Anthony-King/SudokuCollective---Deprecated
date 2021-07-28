@@ -119,9 +119,9 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { userService } from "@/services/userService/userService";
+import { userProvider } from "@/providers/userProvider";
 import User from "@/models/user";
-import Paginator from "@/models/viewModels/paginator";
+import UpdateUserModel from "@/models/viewModels/updateUserModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -160,23 +160,20 @@ export default {
                 updatingEmail = true;
                 oldEmail = userProfie.email;
               }
-
-              const response = await userService.updateUser(
+              const data = new UpdateUserModel(
                 this.$data.user.id,
                 this.$data.user.userName,
                 this.$data.user.firstName,
                 this.$data.user.lastName,
                 this.$data.user.nickName,
                 this.$data.user.email,
-                new Paginator()
               );
+
+              const response = await userProvider.updateUser(data);
 
               if (response.status === 200) {
                 this.resetEditProfileFormStatus;
-
-                let user = await userService.getUser(this.$data.user.id);
-
-                this.$data.user = new User(user);
+                this.$data.user = response.user;
                 this.$data.user.login();
                 this.updateUser(this.$data.user);
 
