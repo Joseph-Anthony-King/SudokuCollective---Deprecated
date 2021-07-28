@@ -94,7 +94,6 @@
 <script>
 /* eslint-disable no-useless-escape */
 import { mapActions } from "vuex";
-import { appService } from "@/services/appService/appService";
 import { appProvider } from "@/providers/appProvider";
 import CreateAppModel from "@/models/viewModels/createAppModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -125,7 +124,7 @@ export default {
               toastObject.goAway(0);
 
               try {
-                const response = await appService.postLicense(
+                const response = await appProvider.postLicense(
                   new CreateAppModel(
                     this.$data.name,
                     this.$data.devUrl,
@@ -133,26 +132,18 @@ export default {
                   )
                 );
 
-                if (response.status === 201) {
-                  const appsResponse = await appProvider.getMyApps();
+                if (response.code === 201) {
                   
-                  this.updateApps(appsResponse.apps);
+                  this.updateApps(response.apps);
 
                   this.reset();
 
-                  this.$emit("app-created-event", response.data.app.id, null);
-                } else if (response.status === 404) {
-                  showToast(
-                    this,
-                    ToastMethods["error"],
-                    response.data.message.substring(17),
-                    defaultToastOptions()
-                  );
+                  this.$emit("app-created-event", response.app.id, null);
                 } else {
                   showToast(
                     this,
                     ToastMethods["error"],
-                    response.data.message,
+                    response.message,
                     defaultToastOptions()
                   );
                 }

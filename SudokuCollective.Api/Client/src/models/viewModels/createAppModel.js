@@ -1,6 +1,6 @@
 import store from "../../store";
 
-class SignUpModel {
+class CreateAppModel {
   constructor(name, devUrl, liveUrl) {
     this.name = name;
     this.ownerId = store.getters["settingsModule/getRequestorId"];
@@ -9,4 +9,4 @@ class SignUpModel {
   }
 }
 
-export default SignUpModel;
+export default CreateAppModel;

@@ -1,6 +1,5 @@
 import * as axios from "axios";
 import store from "@/store";
-import App from "@/models/app";
 import Paginator from "@/models/viewModels/paginator"
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
@@ -170,29 +169,15 @@ const getNonAppUsers = async function (id) {
 
 const putActivateAdminPrivileges = async function (
   appId,
-  userId,
-  pagination) {
+  userId) {
   try {
     const params = `/${appId}/activateAdminPrivileges/${userId}`;
-    let paginator;
-
-    if (pagination === undefined) {
-      paginator = new Paginator();
-    } else {
-      paginator = new Paginator(
-        pagination.page,
-        pagination.itemsPerPage,
-        pagination.sortBy,
-        pagination.orderByDescending,
-        pagination.includeCompletedGames
-      );
-    }
 
     const payload = {
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      paginator: paginator
+      paginator: new Paginator()
     }
 
     const data = requestData(payload);
@@ -215,29 +200,15 @@ const putActivateAdminPrivileges = async function (
 
 const putDeactivateAdminPrivileges = async function (
   appId,
-  userId,
-  pagination) {
+  userId) {
   try {
     const params = `/${appId}/deactivateAdminPrivileges/${userId}`;
-    let paginator;
-
-    if (pagination === undefined) {
-      paginator = new Paginator();
-    } else {
-      paginator = new Paginator(
-        pagination.page,
-        pagination.itemsPerPage,
-        pagination.sortBy,
-        pagination.orderByDescending,
-        pagination.includeCompletedGames
-      );
-    }
 
     const payload = {
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      paginator: paginator
+      paginator: new Paginator()
     }
 
     const data = requestData(payload);
@@ -258,37 +229,24 @@ const putDeactivateAdminPrivileges = async function (
   }
 };
 
-const putUpdateApp = async function (
-  id,
-  name,
-  devUrl,
-  liveUrl,
-  isActive,
-  inDevelopment,
-  permitSuperUserAccess,
-  permitCollectiveLogins,
-  disableCustomUrls,
-  customEmailConfirmationAction,
-  customPasswordResetAction,
-  timeFrame,
-  accessDuration,
-) {
+const putUpdateApp = async function (data) {
   try {
-    const params = `/${id}`;
+    const params = `/${data.id}`;
 
     const payload = {
-      name: name,
-      devUrl: devUrl,
-      liveUrl: liveUrl,
-      isActive: isActive,
-      inDevelopment: inDevelopment,
-      permitSuperUserAccess: permitSuperUserAccess,
-      permitCollectiveLogins: permitCollectiveLogins,
-      disableCustomUrls: disableCustomUrls,
-      customEmailConfirmationAction: customEmailConfirmationAction,
-      customPasswordResetAction: customPasswordResetAction,
-      timeFrame: timeFrame,
-      accessDuration: accessDuration
+      name: data.name,
+      devUrl: data.devUrl,
+      liveUrl: data.liveUrl,
+      isActive: data.isActive,
+      inDevelopment: data.inDevelopment,
+      permitSuperUserAccess: data.permitSuperUserAccess,
+      permitCollectiveLogins: data.permitCollectiveLogins,
+      disableCustomUrls: data.disableCustomUrls,
+      customEmailConfirmationAction: data.customEmailConfirmationAction,
+      customPasswordResetAction: data.customPasswordResetAction,
+      timeFrame: data.timeFrame,
+      accessDuration: data.accessDuration,
+      paginator: data.paginator
     }
 
     const config = {
@@ -298,12 +256,7 @@ const putUpdateApp = async function (
       data: requestDataUpdateApp(payload),
     };
 
-    let app = new App();
-
     const response = await axios(config);
-
-    app = new App(response.data.app);
-    store.dispatch("appModule/updateSelectedApp", app);
 
     return response;
   } catch (error) {

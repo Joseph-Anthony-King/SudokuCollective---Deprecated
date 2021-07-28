@@ -67,7 +67,7 @@
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmationService";
-import { appService } from "@/services/appService/appService";
+import { appProvider } from "@/providers/appProvider";
 import AppBar from "@/components/navigation/AppBar";
 import NavigationBar from "@/components/navigation/NavigationBar";
 import LoginForm from "@/components/forms/LoginForm";
@@ -257,16 +257,7 @@ export default {
 
     this.confirmBaseURL(urlResponse.url);
 
-    const data = {
-      license: process.env.VUE_APP_LICENSE,
-      requestorId: 1,
-      appId: 1,
-      paginator: null,
-    };
-
-    const response = await appService.getByLicense(data);
-
-    const app = new App(response.data.app);
+    const app = new App(await appProvider.getByLicense());
 
     app.updateLicense(process.env.VUE_APP_LICENSE);
 

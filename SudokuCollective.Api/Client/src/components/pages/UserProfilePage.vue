@@ -349,7 +349,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { userService } from "@/services/userService/userService";
 import { registerService } from "@/services/registerService/registerService";
-import { appService } from "@/services/appService/appService";
+import { appProvider } from "@/providers/appProvider";
 import EditProfileForm from "@/components/forms/EditProfileForm";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -685,24 +685,24 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await appService.putActivateAdminPrivileges(
+              const response = await appProvider.putActivateAdminPrivileges(
                 this.getAppId,
                 this.$data.user.id
               );
 
-              if (response.status === 200) {
+              if (response.code === 200) {
                 await this.reset();
                 showToast(
                   this,
                   ToastMethods["success"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               }

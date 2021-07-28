@@ -180,10 +180,9 @@
 /* eslint-disable no-useless-escape, no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { appService } from "@/services/appService/appService";
+import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
-import User from "@/models/user";
-import Paginator from "@/models/viewModels/paginator";
+import UpdateAppModel from "@/models/viewModels/updateAppModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -214,41 +213,32 @@ export default {
             this.$data.submitInvoked = false;
 
             try {
-              const license = this.$data.app.license;
+              const data =
+                new UpdateAppModel(
+                  this.$data.app.id,
+                  this.$data.app.name,
+                  this.$data.app.devUrl,
+                  this.$data.app.liveUrl,
+                  this.$data.app.isActive,
+                  this.$data.app.inDevelopment,
+                  this.$data.app.permitSuperUserAccess,
+                  this.$data.app.permitCollectiveLogins,
+                  this.$data.app.disableCustomUrls,
+                  this.$data.app.customEmailConfirmationAction,
+                  this.$data.app.customPasswordResetAction,
+                  this.$data.app.timeFrame,
+                  this.$data.app.accessDuration);
 
-              const response = await appService.putUpdateApp(
-                this.$data.app.id,
-                this.$data.app.name,
-                this.$data.app.devUrl,
-                this.$data.app.liveUrl,
-                this.$data.app.isActive,
-                this.$data.app.inDevelopment,
-                this.$data.app.permitSuperUserAccess,
-                this.$data.app.permitCollectiveLogins,
-                this.$data.app.disableCustomUrls,
-                this.$data.app.customEmailConfirmationAction,
-                this.$data.app.customPasswordResetAction,
-                this.$data.app.timeFrame,
-                this.$data.app.accessDuration,
-                new Paginator()
-              );
+              console.log(data);
+              
+              const response = await appProvider.updateApp(data);
 
-              if (response.status === 200) {
+              console.log(response);
+
+              if (response.code === 200) {
                 this.resetEditProfileFormStatus;
 
-                this.$data.app = new App(response.data.app);
-
-                this.$data.app.license = license;
-
-                this.$data.app.users = [];
-
-                const appUsersResponse = await appService.getAppUsers(
-                  this.$data.app.id
-                );
-                appUsersResponse.data.users.forEach((user) => {
-                  const tempUser = new User(user);
-                  this.$data.app.users.push(tempUser);
-                });
+                this.$data.app = response.app;
 
                 this.updateSelectedApp(this.$data.app);
 
@@ -265,7 +255,7 @@ export default {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               }
@@ -378,7 +368,7 @@ export default {
     this.$data.app = new App(this.getSelectedApp);
 
     try {
-      const response = await appService.getTimeFrames();
+      const response = await appProvider.getTimeFrames();
 
       this.$data.timeFrames = response;
     } catch (error) {
