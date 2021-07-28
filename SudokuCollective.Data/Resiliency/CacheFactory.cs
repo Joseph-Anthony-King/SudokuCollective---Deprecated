@@ -653,7 +653,7 @@ namespace SudokuCollective.Data.Resiliency
             string cacheKey,
             DateTime expiration,
             int id,
-            IBaseResult result)
+            IBaseResult result = null)
         {
             string license;
 

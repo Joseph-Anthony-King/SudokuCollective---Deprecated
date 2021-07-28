@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-import User from "@/models/user";
-
 class App {
   constructor(data) {
     if (data === undefined) {

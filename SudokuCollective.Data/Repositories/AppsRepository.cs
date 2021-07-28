@@ -539,6 +539,31 @@ namespace SudokuCollective.Data.Repositories
                             .Games
                             .Where(g => g.AppId == id && g.UserId == user.Id)
                             .ToListAsync();
+
+                        // Filter roles by app
+                        var appAdmins = await _context
+                            .AppAdmins
+                            .Where(aa => aa.AppId == id && aa.UserId == user.Id)
+                            .ToListAsync();
+
+                        var filteredRoles = new List<UserRole>();
+
+                        foreach (var ur in user.Roles)
+                        {
+                            if (ur.Role.RoleLevel != RoleLevel.ADMIN)
+                            {
+                                filteredRoles.Add(ur);
+                            }
+                            else
+                            {
+                                if (appAdmins.Any(aa => aa.AppId == id && aa.UserId == user.Id))
+                                {
+                                    filteredRoles.Add(ur);
+                                }
+                            }
+                        }
+
+                        user.Roles = filteredRoles;
                     }
 
                     result.Success = true;
@@ -1082,6 +1107,7 @@ namespace SudokuCollective.Data.Repositories
 
                 var user = await _context
                     .Users
+                    .Include(u => u.Apps)
                     .FirstOrDefaultAsync(
                         u => u.Id == userId && 
                         u.Apps.Any(ua => ua.AppId == app.Id));
@@ -1123,7 +1149,7 @@ namespace SudokuCollective.Data.Repositories
                 {
                     if (entry.Entity is UserApp userApp)
                     {
-                        if (user.Apps.Any(ua => ua.Id == userApp.Id))
+                        if (userApp.UserId == user.Id && userApp.AppId == app.Id)
                         {
                             entry.State = EntityState.Deleted;
                         }

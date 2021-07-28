@@ -1,4 +1,5 @@
-﻿class User {
+﻿
+class User {
   constructor(data) {
     if (data == undefined) {
       this.id = 0;
@@ -13,6 +14,7 @@
       this.receivedRequestToUpdatePassword = false;
       this.isActive = false;
       this.isAdmin = false;
+      this.admin = "No";
       this.isSuperUser = false;
       this.dateCreated = "";
       this.dateUpdated = "";
@@ -31,6 +33,7 @@
         data.receivedRequestToUpdatePassword;
       this.isActive = data.isActive;
       this.isAdmin = data.isAdmin;
+      this.admin = data.isAdmin ? "Yes" : "No";
       this.isSuperUser = data.isSuperUser;
       this.dateCreated = data.dateCreated;
       this.dateUpdated = data.dateUpdated;

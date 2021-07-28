@@ -134,7 +134,6 @@
 import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { appService } from "@/services/appService/appService";
 import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -162,7 +161,7 @@ export default {
       { text: "Id", value: "id" },
       { text: "First Name", value: "firstName" },
       { text: "Last Name", value: "lastName" },
-      { text: "Admin", value: "isAdmin" },
+      { text: "Admin", value: "admin" },
       { text: "Signed Up Date", value: "signedUpDate" },
     ],
   }),
@@ -386,7 +385,7 @@ export default {
               let errorMessages = "";
 
               for (const user of this.$data.selectedUsers) {
-                const response = await appProvider.removeUsers(
+                const response = await appProvider.removeUser(
                   this.$data.app.id,
                   user.id
                 );
@@ -403,14 +402,14 @@ export default {
                 showToast(
                   this,
                   ToastMethods["success"],
-                  `Users have been demoted from admins for ${this.$data.app.name}`,
+                  `Users have been removed from ${this.$data.app.name}`,
                   defaultToastOptions()
                 );
               } else if (successes > 0 && errors > 0) {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  `Some users were not demoted with the following message(s): ${errorMessages}`,
+                  `Some users were not removed with the following message(s): ${errorMessages}`,
                   defaultToastOptions()
                 );
               } else {
@@ -473,12 +472,6 @@ export default {
         this.$data.app = new App(this.getSelectedApp);
 
         this.$data.app.users.forEach((user) => {
-          if (user.isAdmin === true) {
-            user.isAdmin = "Yes";
-          } else {
-            user.isAdmin = "No";
-          }
-
           user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
         });
       },
@@ -488,12 +481,6 @@ export default {
     this.$data.app = new App(this.getSelectedApp);
 
     this.$data.app.users.forEach((user) => {
-      if (user.isAdmin === true) {
-        user.isAdmin = "Yes";
-      } else {
-        user.isAdmin = "No";
-      }
-
       user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
     });
   },
