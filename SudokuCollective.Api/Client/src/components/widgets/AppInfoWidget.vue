@@ -308,14 +308,14 @@ export default {
                 showToast(
                   this,
                   ToastMethods["success"],
-                  response.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else if (response.status === 404) {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else {
@@ -370,7 +370,7 @@ export default {
                 showToast(
                   this,
                   ToastMethods["success"],
-                  response.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
 
@@ -379,14 +379,14 @@ export default {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.message.substring(17),
+                  response.message,
                   defaultToastOptions()
                 );
               } else {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message,
+                  response.message,
                   defaultToastOptions()
                 );
               }

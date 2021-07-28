@@ -195,39 +195,39 @@ export default {
                 this.close();
               } else if (response.status === 404) {
                 if (
-                  response.data.message ===
-                    "Status Code 404: User Name Accepts Alphanumeric And Special Characters Except Double And Single Quotes" ||
-                  response.data.message ===
-                    "Status Code 404: User Name Not Unique" ||
-                  response.data.message ===
-                    "Status Code 404: User Name Required"
+                  response.message ===
+                    "User Name Accepts Alphanumeric And Special Characters Except Double And Single Quotes" ||
+                  response.message ===
+                    "User Name Not Unique" ||
+                  response.message ===
+                    "User Name Required"
                 ) {
                   this.$data.invalidUserNames.push(this.$data.user.userName);
                   this.$refs.editProfileForm.validate();
                   showToast(
                     this,
                     ToastMethods["error"],
-                    response.data.message.substring(17),
+                    response.message,
                     defaultToastOptions()
                   );
                 } else if (
-                  response.data.message ===
-                    "Status Code 404: Email Not Unique" ||
-                  response.data.message === "Status Code 404: Email Required"
+                  response.message ===
+                    "Email Not Unique" ||
+                  response.message === "Email Required"
                 ) {
                   this.$data.invalidEmails.push(this.$data.user.email);
                   this.$refs.editProfileForm.validate();
                   showToast(
                     this,
                     ToastMethods["error"],
-                    response.data.message.substring(17),
+                    response.message,
                     defaultToastOptions()
                   );
                 } else {
                   showToast(
                     this,
                     ToastMethods["error"],
-                    response.data.message.substring(17),
+                    response.message,
                     defaultToastOptions()
                   );
                 }
@@ -235,7 +235,7 @@ export default {
                 showToast(
                   this,
                   ToastMethods["error"],
-                  response.data.message.substring(17),
+                    response.message,
                   defaultToastOptions()
                 );
               }
