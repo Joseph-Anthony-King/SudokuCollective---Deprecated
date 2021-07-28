@@ -690,7 +690,7 @@ export default {
                 this.$data.user.id
               );
 
-              if (response.code === 200) {
+              if (response.status === 200) {
                 await this.reset();
                 showToast(
                   this,

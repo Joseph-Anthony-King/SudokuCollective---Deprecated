@@ -135,6 +135,7 @@ import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appService } from "@/services/appService/appService";
+import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -169,14 +170,10 @@ export default {
     ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
 
     async refreshApp() {
-      var response = await appService.getApp(this.$data.app.id);
+      var response = await appProvider.getApp(this.$data.app.id);
 
-      if (response.data.success) {
-        this.$data.app = new App(response.data.app);
-        const licenseResponse = await appService.getLicense(this.$data.app.id);
-        if (licenseResponse.data.success) {
-          this.$data.app.updateLicense(licenseResponse.data.license);
-        }
+      if (response.success) {
+        this.$data.app = response.app;
         this.updateSelectedApp(this.$data.app);
         this.replaceApp(this.$data.app);
       }
@@ -217,7 +214,7 @@ export default {
               let errorMessages = "";
 
               for (const user of users) {
-                const response = await appService.putActivateAdminPrivileges(
+                const response = await appProvider.activateAdminPrivileges(
                   this.$data.app.id,
                   user.id
                 );
@@ -226,7 +223,7 @@ export default {
                   successes++;
                 } else {
                   errors++;
-                  errorMessages = response.data.message.substring(17);
+                  errorMessages = errorMessages + response.message + " ";
                 }
               }
 
@@ -313,7 +310,7 @@ export default {
               let errorMessages = "";
 
               for (const user of users) {
-                const response = await appService.putDeactivateAdminPrivileges(
+                const response = await appProvider.deactivateAdminPrivileges(
                   this.$data.app.id,
                   user.id
                 );
@@ -322,7 +319,7 @@ export default {
                   successes++;
                 } else {
                   errors++;
-                  errorMessages = response.data.message.substring(17);
+                  errorMessages = errorMessages +  response.message + " ";
                 }
               }
 
@@ -389,7 +386,7 @@ export default {
               let errorMessages = "";
 
               for (const user of this.$data.selectedUsers) {
-                const response = await appService.deleteRemoveUser(
+                const response = await appProvider.removeUsers(
                   this.$data.app.id,
                   user.id
                 );
@@ -398,7 +395,7 @@ export default {
                   successes++;
                 } else {
                   errors++;
-                  errorMessages = response.data.message.substring(17);
+                  errorMessages = errorMessages + response.message + " ";
                 }
               }
 

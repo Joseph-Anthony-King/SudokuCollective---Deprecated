@@ -97,7 +97,7 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { appService } from "@/services/appService/appService";
+import { appProvider } from "@/providers/appProvider"
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -134,12 +134,12 @@ export default {
     async refreshApp() {
       this.$data.app = this.getSelectedApp;
 
-      const response = await appService.getNonAppUsers(this.$data.app.id);
+      const response = await appProvider.getNonAppUsers(this.$data.app.id);
 
       this.$data.nonAppUsers = [];
 
-      if (response.data.success) {
-        response.data.users.forEach((user) => {
+      if (response.success) {
+        response.users.forEach((user) => {
           this.$data.nonAppUsers.push(new User(user));
         });
       }
@@ -164,7 +164,7 @@ export default {
               let errorMessages = "";
 
               for (const user of this.$data.selectedUsers) {
-                const response = await appService.putAddUser(
+                const response = await appProvider.addUser(
                   this.$data.app.id,
                   user.id
                 );
@@ -173,7 +173,7 @@ export default {
                   successes++;
                 } else {
                   errors++;
-                  errorMessages = response.data.message.substring(17);
+                  errorMessages = errorMessages + response.message + " ";
                 }
               }
 
@@ -208,16 +208,10 @@ export default {
               );
             }
 
-            var appResponse = await appService.getApp(this.$data.app.id);
+            var response = await appProvider.getApp(this.$data.app.id);
 
-            if (appResponse.data.success) {
-              this.$data.app = new App(appResponse.data.app);
-              const licenseResponse = await appService.getLicense(
-                this.$data.app.id
-              );
-              if (licenseResponse.data.success) {
-                this.$data.app.updateLicense(licenseResponse.data.license);
-              }
+            if (response.success) {
+              this.$data.app = response.app;
               this.updateSelectedApp(this.$data.app);
               this.replaceApp(this.$data.app);
             }

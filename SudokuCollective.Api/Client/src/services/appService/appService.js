@@ -320,29 +320,15 @@ const resetApp = async function (app) {
 
 const putAddUser = async function (
   appId,
-  userId,
-  pagination) {
+  userId) {
   try {
     const params = `/${appId}/adduser/${userId}`;
-    let paginator;
-
-    if (pagination === undefined) {
-      paginator = new Paginator();
-    } else {
-      paginator = new Paginator(
-        pagination.page,
-        pagination.itemsPerPage,
-        pagination.sortBy,
-        pagination.orderByDescending,
-        pagination.includeCompletedGames
-      );
-    }
 
     const payload = {
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      paginator: paginator
+      paginator: new Paginator()
     }
 
     const data = requestData(payload);
@@ -365,29 +351,15 @@ const putAddUser = async function (
 
 const deleteRemoveUser = async function (
   appId,
-  userId,
-  pagination) {
+  userId) {
   try {
     const params = `/${appId}/removeuser/${userId}`;
-    let paginator;
-
-    if (pagination === undefined) {
-      paginator = new Paginator();
-    } else {
-      paginator = new Paginator(
-        pagination.page,
-        pagination.itemsPerPage,
-        pagination.sortBy,
-        pagination.orderByDescending,
-        pagination.includeCompletedGames
-      );
-    }
 
     const payload = {
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      paginator: paginator
+      paginator: new Paginator()
     }
 
     const data = requestData(payload);

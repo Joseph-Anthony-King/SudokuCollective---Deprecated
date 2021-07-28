@@ -132,8 +132,7 @@ export default {
                   )
                 );
 
-                if (response.code === 201) {
-                  
+                if (response.status === 201) {
                   this.updateApps(response.apps);
 
                   this.reset();

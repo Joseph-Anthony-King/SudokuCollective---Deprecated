@@ -299,7 +299,7 @@ export default {
             try {
               const response = await appProvider.resetApp(this.$data.app);
 
-              if (response.code === 200) {
+              if (response.status === 200) {
                 this.$data.app = response.app;
 
                 this.updateApps(response.apps);
@@ -311,7 +311,7 @@ export default {
                   response.message.substring(17),
                   defaultToastOptions()
                 );
-              } else if (response.code === 404) {
+              } else if (response.status === 404) {
                 showToast(
                   this,
                   ToastMethods["error"],
@@ -362,7 +362,7 @@ export default {
             try {
               const response = await appProvider.deleteApp(this.$data.app);
 
-              if (response.code === 200) {
+              if (response.status === 200) {
                 this.removeApp(this.$data.app);
                 this.updateApps(response.apps);
                 this.updateSelectedApp(response.app);
@@ -375,7 +375,7 @@ export default {
                 );
 
                 this.$emit("close-app-widget-event", null, null);
-              } else if (response.code === 404) {
+              } else if (response.status === 404) {
                 showToast(
                   this,
                   ToastMethods["error"],

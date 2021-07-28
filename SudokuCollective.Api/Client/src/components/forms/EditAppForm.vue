@@ -213,29 +213,29 @@ export default {
             this.$data.submitInvoked = false;
 
             try {
-              const data =
-                new UpdateAppModel(
-                  this.$data.app.id,
-                  this.$data.app.name,
-                  this.$data.app.devUrl,
-                  this.$data.app.liveUrl,
-                  this.$data.app.isActive,
-                  this.$data.app.inDevelopment,
-                  this.$data.app.permitSuperUserAccess,
-                  this.$data.app.permitCollectiveLogins,
-                  this.$data.app.disableCustomUrls,
-                  this.$data.app.customEmailConfirmationAction,
-                  this.$data.app.customPasswordResetAction,
-                  this.$data.app.timeFrame,
-                  this.$data.app.accessDuration);
+              const data = new UpdateAppModel(
+                this.$data.app.id,
+                this.$data.app.name,
+                this.$data.app.devUrl,
+                this.$data.app.liveUrl,
+                this.$data.app.isActive,
+                this.$data.app.inDevelopment,
+                this.$data.app.permitSuperUserAccess,
+                this.$data.app.permitCollectiveLogins,
+                this.$data.app.disableCustomUrls,
+                this.$data.app.customEmailConfirmationAction,
+                this.$data.app.customPasswordResetAction,
+                this.$data.app.timeFrame,
+                this.$data.app.accessDuration
+              );
 
               console.log(data);
-              
+
               const response = await appProvider.updateApp(data);
 
               console.log(response);
 
-              if (response.code === 200) {
+              if (response.status === 200) {
                 this.resetEditProfileFormStatus;
 
                 this.$data.app = response.app;

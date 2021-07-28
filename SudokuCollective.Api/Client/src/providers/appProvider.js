@@ -2,7 +2,7 @@ import { appService } from "@/services/appService/appService";
 import App from "@/models/app";
 import User from "@/models/user"
 
-const getApp = async function(id) {
+const getApp = async function (id) {
   var response = await appService.getApp(id);
 
   if (response.data.success) {
@@ -17,7 +17,7 @@ const getApp = async function(id) {
       app.users.push(tempUser);
     });
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
       app: app
@@ -30,7 +30,7 @@ const getApp = async function(id) {
   }
 }
 
-const getByLicense = async function() {
+const getByLicense = async function () {
 
   const data = {
     license: process.env.VUE_APP_LICENSE,
@@ -48,15 +48,15 @@ const getByLicense = async function() {
   }
 }
 
-const postLicense = async function(data) {
+const postLicense = async function (data) {
 
   const response = await appService.postLicense(data);
 
   if (response.status === 201) {
     const appsResponse = await getMyApps();
-    
+
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
       app: response.data.app,
@@ -64,20 +64,20 @@ const postLicense = async function(data) {
     }
   } else if (response.status === 404) {
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17)
     }
   } else {
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message
     }
   }
 }
 
-const updateApp = async function(data) {  
+const updateApp = async function (data) {
 
   const response = await appService.putUpdateApp(data);
 
@@ -96,7 +96,7 @@ const updateApp = async function(data) {
       app.users.push(tempUser);
     });
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
       app: app
@@ -109,7 +109,7 @@ const updateApp = async function(data) {
   }
 }
 
-const getMyApps = async function() {
+const getMyApps = async function () {
   const response = await appService.getMyApps();
 
   if (response.data.success) {
@@ -131,7 +131,7 @@ const getMyApps = async function() {
       tempArray.push(newApp);
     }
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
       apps: tempArray
@@ -144,7 +144,7 @@ const getMyApps = async function() {
   }
 }
 
-const getRegisteredApps = async function(userid) {
+const getRegisteredApps = async function (userid) {
   const response = await appService.getRegisteredApps(userid);
 
   if (response.data.success) {
@@ -156,7 +156,7 @@ const getRegisteredApps = async function(userid) {
     }
 
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
       apps: tempArray
@@ -164,14 +164,26 @@ const getRegisteredApps = async function(userid) {
   } else {
 
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17)
     }
   }
 }
 
-const deleteApp = async function(app) {
+const getNonAppUsers = async function (id) {  
+
+  const response = await appService.getNonAppUsers(id);
+
+  return {
+    status: response.status,
+    success: response.data.success,
+    message: response.data.message.substring(17),
+    users: response.data.users
+  }
+}
+
+const deleteApp = async function (app) {
   const response = await appService.deleteApp(app);
 
   if (response.status === 200) {
@@ -201,7 +213,7 @@ const deleteApp = async function(app) {
         }
       })
       return {
-        code: response.status,
+        status: response.status,
         success: response.data.success,
         message: response.data.message.substring(17),
         app: new App(),
@@ -210,14 +222,14 @@ const deleteApp = async function(app) {
     }
   } else {
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17)
     }
   }
 }
 
-const resetApp = async function(app) {
+const resetApp = async function (app) {
   const response = await appService.resetApp(app);
 
   if (response.status === 200) {
@@ -247,7 +259,7 @@ const resetApp = async function(app) {
         }
       })
       return {
-        code: response.status,
+        status: response.status,
         success: response.data.success,
         message: response.data.message.substring(17),
         app: response.data.app,
@@ -256,10 +268,34 @@ const resetApp = async function(app) {
     }
   } else {
     return {
-      code: response.status,
+      status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17)
     }
+  }
+}
+
+const addUser = async function (appid, userid) {
+  const response = await appService.putAddUser(
+    appid,
+    userid
+  );
+  return {
+    status: response.status,
+    success: response.data.success,
+    message: response.data.message.substring(17)
+  }
+}
+
+const removeUser = async function (appid, userid) {
+  const response = await appService.deleteRemoveUser(
+    appid,
+    userid
+  );
+  return {
+    status: response.status,
+    success: response.data.success,
+    message: response.data.message.substring(17)
   }
 }
 
@@ -269,7 +305,7 @@ const activateAdminPrivileges = async function (appid, userid) {
     userid
   );
   return {
-    code: response.status,
+    status: response.status,
     success: response.data.success,
     message: response.data.message.substring(17)
   }
@@ -281,13 +317,13 @@ const deactivateAdminPrivileges = async function (appid, userid) {
     userid
   );
   return {
-    code: response.status,
+    status: response.status,
     success: response.data.success,
     message: response.data.message.substring(17)
   }
 }
 
-const getTimeFrames = async function() {
+const getTimeFrames = async function () {
   return await appService.getTimeFrames();
 }
 
@@ -298,8 +334,11 @@ export const appProvider = {
   updateApp,
   getMyApps,
   getRegisteredApps,
+  getNonAppUsers,
   deleteApp,
   resetApp,
+  addUser,
+  removeUser,
   activateAdminPrivileges,
   deactivateAdminPrivileges,
   getTimeFrames
