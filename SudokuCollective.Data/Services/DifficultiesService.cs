@@ -50,7 +50,7 @@ namespace SudokuCollective.Data.Services
                     _difficultiesRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetDifficulty, difficultyLevel),
-                    DateTime.Now.AddHours(1),
+                    CacheStrategy.Heavy,
                     difficultyLevel))
                 {
 
@@ -65,7 +65,7 @@ namespace SudokuCollective.Data.Services
                         _difficultiesRepository,
                         _distributedCache,
                         CacheKeys.GetDifficulty,
-                        DateTime.Now.AddHours(1),
+                        CacheStrategy.Heavy,
                         difficulty);
 
                     if (response.Success)
@@ -127,7 +127,7 @@ namespace SudokuCollective.Data.Services
                     _difficultiesRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetDifficulty, id),
-                    DateTime.Now.AddHours(1),
+                    CacheStrategy.Heavy,
                     id,
                     result);
 
@@ -323,7 +323,7 @@ namespace SudokuCollective.Data.Services
                     _difficultiesRepository,
                     _distributedCache,
                     CacheKeys.GetDifficulties,
-                    DateTime.Now.AddHours(1),
+                    CacheStrategy.Heavy,
                     result);
 
                 var response = (RepositoryResponse)cacheFactoryResponse.Item1;

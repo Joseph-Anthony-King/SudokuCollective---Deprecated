@@ -47,7 +47,7 @@ namespace SudokuCollective.Data.Services
                     _rolesRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetRole, roleLevel),
-                    DateTime.Now.AddHours(1),
+                    CacheStrategy.Heavy,
                     roleLevel))
                 {
                     var role = new Role()
@@ -60,7 +60,7 @@ namespace SudokuCollective.Data.Services
                         _rolesRepository,
                         _distributedCache,
                         CacheKeys.GetRole,
-                        DateTime.Now.AddHours(1),
+                        CacheStrategy.Heavy,
                         role);
 
                     if (response.Success)
@@ -121,7 +121,7 @@ namespace SudokuCollective.Data.Services
                     _rolesRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetRole, id),
-                    DateTime.Now.AddHours(1),
+                    CacheStrategy.Heavy,
                     id,
                     result);
 
@@ -184,7 +184,7 @@ namespace SudokuCollective.Data.Services
                     _rolesRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetRole, id),
-                    DateTime.Now.AddHours(1),
+                    CacheStrategy.Heavy,
                     id,
                     result);
 
@@ -327,7 +327,7 @@ namespace SudokuCollective.Data.Services
                     _rolesRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetRoles),
-                    DateTime.Now.AddHours(1),
+                    CacheStrategy.Heavy,
                     result);
 
                 var response = (RepositoryResponse)cacheFactoryResponse.Item1;

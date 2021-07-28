@@ -41,7 +41,15 @@ namespace SudokuCollective.Data.Resiliency
 
                 List<string> cacheKeys;
 
-                if (response.Object is App app)
+                if (response.Object is User)
+                {
+                    cacheKeys = new List<string> {
+                        string.Format(CacheKeys.GetAppUsersCacheKey, 1),
+                        string.Format(CacheKeys.GetNonAppUsersCacheKey, 1),
+                        CacheKeys.GetUsersCacheKey
+                    };
+                }
+                else if (response.Object is App app)
                 {
                     // Remove any app list cache items which may exist
                     cacheKeys = new List<string> {

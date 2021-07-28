@@ -60,7 +60,7 @@ namespace SudokuCollective.Data.Services
                        _usersRepository,
                        _distributedCache,
                        string.Format(CacheKeys.GetUserCacheKey, request.OwnerId),
-                       DateTime.Now.AddMinutes(30),
+                       CacheStrategy.Medium,
                        request.OwnerId);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -78,7 +78,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppsCacheKey),
-                        DateTime.Now.AddMinutes(30));
+                        CacheStrategy.Medium);
 
                     var checkAppsResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
 
@@ -111,7 +111,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         CacheKeys.GetAppCacheKey,
-                        DateTime.Now.AddMinutes(30),
+                        CacheStrategy.Medium,
                         app);
 
                     if (addAppResponse.Success)
@@ -180,7 +180,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, id),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     id,
                     result);
 
@@ -467,7 +467,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppByLicenseCacheKey, license),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     license,
                     result);
 
@@ -530,7 +530,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppsCacheKey),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     result);
 
                 var response = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -756,7 +756,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(string.Format(CacheKeys.GetMyAppsCacheKey, ownerId)),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     ownerId,
                     result);
 
@@ -997,7 +997,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(string.Format(CacheKeys.GetMyRegisteredCacheKey, userId)),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     userId,
                     result);
 
@@ -1235,7 +1235,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, id),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     id);
 
                 var app = (App)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -1250,7 +1250,7 @@ namespace SudokuCollective.Data.Services
                             _appsRepository,
                             _distributedCache,
                             string.Format(string.Format(CacheKeys.GetAppUsersCacheKey, id)),
-                            DateTime.Now.AddMinutes(30),
+                            CacheStrategy.Medium,
                             id,
                             result);
 
@@ -1263,7 +1263,7 @@ namespace SudokuCollective.Data.Services
                             _appsRepository,
                             _distributedCache,
                             string.Format(string.Format(CacheKeys.GetNonAppUsersCacheKey, id)),
-                            DateTime.Now.AddMinutes(30),
+                            CacheStrategy.Medium,
                             id,
                             result);
 
@@ -1556,14 +1556,14 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.HasAppCacheKey, id),
-                    DateTime.Now.AddHours(1),
+                    CacheStrategy.Heavy,
                     id))
                 {
                     var response = await CacheFactory.GetLicenseWithCacheAsync(
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppLicenseCacheKey, id),
-                        DateTime.Now.AddHours(1),
+                        CacheStrategy.Heavy,
                         id,
                         result);
 
@@ -1617,7 +1617,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, appId),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     appId);
 
                 var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1628,7 +1628,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppCacheKey, appId),
-                        DateTime.Now.AddMinutes(30),
+                        CacheStrategy.Medium,
                         userId);
 
                     var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1721,7 +1721,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, appId),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     appId);
 
                 var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1732,7 +1732,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.HasUserCacheKey, userId),
-                        DateTime.Now.AddHours(1),
+                        CacheStrategy.Heavy,
                         userId))
                     {
                         var app = (App)appResponse.Object;
@@ -1929,7 +1929,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, appId),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     appId);
 
                 var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1940,7 +1940,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppCacheKey, userId),
-                        DateTime.Now.AddMinutes(30),
+                        CacheStrategy.Medium,
                         userId);
 
                     var userReponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2105,7 +2105,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppCacheKey, appId),
-                    DateTime.Now.AddMinutes(30),
+                    CacheStrategy.Medium,
                     appId);
 
                 var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2116,7 +2116,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppCacheKey, userId),
-                        DateTime.Now.AddMinutes(30),
+                        CacheStrategy.Medium,
                         userId);
 
                     var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2227,7 +2227,7 @@ namespace SudokuCollective.Data.Services
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserCacheKey, userId),
-                DateTime.Now.AddMinutes(30),
+                CacheStrategy.Medium,
                 userId);
 
             var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2236,7 +2236,7 @@ namespace SudokuCollective.Data.Services
                 _appsRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetAppCacheKey, id),
-                DateTime.Now.AddMinutes(30),
+                CacheStrategy.Medium,
                 id);
 
             var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2245,7 +2245,7 @@ namespace SudokuCollective.Data.Services
                 _appsRepository,
                 _distributedCache,
                 string.Format(CacheKeys.IsAppLicenseValidCacheKey, license),
-                DateTime.Now.AddHours(1),
+                CacheStrategy.Heavy,
                 license);
 
             if (userResponse.Success && appResponse.Success && validLicense)
@@ -2301,7 +2301,7 @@ namespace SudokuCollective.Data.Services
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserCacheKey, userId),
-                DateTime.Now.AddMinutes(30),
+                CacheStrategy.Medium,
                 userId);
 
             var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2310,7 +2310,7 @@ namespace SudokuCollective.Data.Services
                 _appsRepository,
                 _distributedCache,
                 string.Format(CacheKeys.IsAppLicenseValidCacheKey, license),
-                DateTime.Now.AddHours(1),
+                CacheStrategy.Heavy,
                 license);
 
             if (userResponse.Success && validLicense)
