@@ -386,8 +386,7 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response =
-                await registerService.putResendEmailConfirmation();
+              const response = await registerService.putResendEmailConfirmation();
 
               if (response.status === 200) {
                 await this.reset();
@@ -741,7 +740,9 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await userProvider.deleteUser(this.$data.user.id);
+              const response = await userProvider.deleteUser(
+                this.$data.user.id
+              );
 
               if (response.status === 200) {
                 this.$data.user = new User();
@@ -814,10 +815,11 @@ export default {
         this.updateUser(this.$data.user);
       } else {
         showToast(
-          this, 
-          ToastMethods["error"], 
-          response.message, 
-          defaultToastOptions());
+          this,
+          ToastMethods["error"],
+          response.message,
+          defaultToastOptions()
+        );
       }
     },
 

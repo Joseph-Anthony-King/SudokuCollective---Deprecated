@@ -1,6 +1,6 @@
 import * as axios from "axios";
 import store from "@/store";
-import Paginator from "@/models/viewModels/paginator"
+import Paginator from "@/models/viewModels/paginator";
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
 import { requestDataUpdateApp } from "@/helpers/appRequestData/appRequestData";
@@ -29,7 +29,7 @@ const getApp = async function (id) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const getByLicense = async function (data) {
   try {
@@ -45,10 +45,9 @@ const getByLicense = async function (data) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const postLicense = async function (createAppModel) {
-
   try {
     const config = {
       method: "post",
@@ -61,7 +60,7 @@ const postLicense = async function (createAppModel) {
   } catch (error) {
     return error.response;
   }
-}
+};
 
 const getLicense = async function (id) {
   try {
@@ -79,7 +78,7 @@ const getLicense = async function (id) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const getMyApps = async function () {
   try {
@@ -95,7 +94,7 @@ const getMyApps = async function () {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const getRegisteredApps = async function (userid) {
   try {
@@ -113,7 +112,7 @@ const getRegisteredApps = async function (userid) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const getAppUsers = async function (id) {
   try {
@@ -131,7 +130,7 @@ const getAppUsers = async function (id) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const getNonAppUsers = async function (id) {
   try {
@@ -149,11 +148,9 @@ const getNonAppUsers = async function (id) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
-const putActivateAdminPrivileges = async function (
-  appId,
-  userId) {
+const putActivateAdminPrivileges = async function (appId, userId) {
   try {
     const params = `/${appId}/activateAdminPrivileges/${userId}`;
 
@@ -161,8 +158,8 @@ const putActivateAdminPrivileges = async function (
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      paginator: new Paginator()
-    }
+      paginator: new Paginator(),
+    };
 
     const data = requestData(payload);
 
@@ -170,7 +167,7 @@ const putActivateAdminPrivileges = async function (
       method: "put",
       url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
-      data: data
+      data: data,
     };
 
     return await axios(config);
@@ -180,9 +177,7 @@ const putActivateAdminPrivileges = async function (
   }
 };
 
-const putDeactivateAdminPrivileges = async function (
-  appId,
-  userId) {
+const putDeactivateAdminPrivileges = async function (appId, userId) {
   try {
     const params = `/${appId}/deactivateAdminPrivileges/${userId}`;
 
@@ -190,8 +185,8 @@ const putDeactivateAdminPrivileges = async function (
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      paginator: new Paginator()
-    }
+      paginator: new Paginator(),
+    };
 
     const data = requestData(payload);
 
@@ -199,7 +194,7 @@ const putDeactivateAdminPrivileges = async function (
       method: "put",
       url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
-      data: data
+      data: data,
     };
 
     return await axios(config);
@@ -226,8 +221,8 @@ const updateApp = async function (data) {
       customPasswordResetAction: data.customPasswordResetAction,
       timeFrame: data.timeFrame,
       accessDuration: data.accessDuration,
-      paginator: data.paginator
-    }
+      paginator: data.paginator,
+    };
 
     const config = {
       method: "put",
@@ -250,7 +245,7 @@ const deleteApp = async function (app) {
       license: app.license,
       requestorId: app.ownerId,
       appId: app.id,
-      paginator: null
+      paginator: null,
     };
 
     const config = {
@@ -265,7 +260,7 @@ const deleteApp = async function (app) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const resetApp = async function (app) {
   try {
@@ -275,7 +270,7 @@ const resetApp = async function (app) {
       license: app.license,
       requestorId: app.ownerId,
       appId: app.id,
-      paginator: null
+      paginator: null,
     };
 
     const config = {
@@ -290,11 +285,9 @@ const resetApp = async function (app) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
-const putAddUser = async function (
-  appId,
-  userId) {
+const putAddUser = async function (appId, userId) {
   try {
     const params = `/${appId}/adduser/${userId}`;
 
@@ -302,8 +295,8 @@ const putAddUser = async function (
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      paginator: new Paginator()
-    }
+      paginator: new Paginator(),
+    };
 
     const data = requestData(payload);
 
@@ -311,7 +304,7 @@ const putAddUser = async function (
       method: "put",
       url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
-      data: data
+      data: data,
     };
 
     return await axios(config);
@@ -319,11 +312,9 @@ const putAddUser = async function (
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
-const deleteRemoveUser = async function (
-  appId,
-  userId) {
+const deleteRemoveUser = async function (appId, userId) {
   try {
     const params = `/${appId}/removeuser/${userId}`;
 
@@ -331,8 +322,8 @@ const deleteRemoveUser = async function (
       license: store.getters["settingsModule/getLicense"],
       requestorId: store.getters["settingsModule/getRequestorId"],
       appId: store.getters["settingsModule/getAppId"],
-      paginator: new Paginator()
-    }
+      paginator: new Paginator(),
+    };
 
     const data = requestData(payload);
 
@@ -340,7 +331,7 @@ const deleteRemoveUser = async function (
       method: "delete",
       url: `${getAppEnpoint}${params}`,
       headers: requestHeader(),
-      data: data
+      data: data,
     };
 
     return await axios(config);
@@ -348,14 +339,14 @@ const deleteRemoveUser = async function (
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const getTimeFrames = async function () {
   try {
     const config = {
       method: "get",
       url: `${getTimeFramesEndpoint}`,
-      headers: requestHeader()
+      headers: requestHeader(),
     };
 
     const response = await axios(config);

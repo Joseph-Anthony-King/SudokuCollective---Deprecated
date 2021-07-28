@@ -1,8 +1,7 @@
 import * as axios from "axios";
-import { postSolveEndpoint, } from "./endpoints";
+import { postSolveEndpoint } from "./endpoints";
 
 const postSolve = async function (solveModel) {
-
   try {
     const config = {
       method: "post",
@@ -19,5 +18,5 @@ const postSolve = async function (solveModel) {
 };
 
 export const solutionService = {
-  postSolve
+  postSolve,
 };

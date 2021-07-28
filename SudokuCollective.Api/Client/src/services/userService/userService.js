@@ -1,6 +1,6 @@
 ﻿import * as axios from "axios";
 import store from "../../store";
-import Paginator from "@/models/viewModels/paginator"
+import Paginator from "@/models/viewModels/paginator";
 import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
 import { requestDataUpdateUser } from "../../helpers/userRequestData/userRequestData";
@@ -57,8 +57,8 @@ const updateUser = async function (data) {
       lastName: data.lastName,
       nickName: data.nickName,
       email: data.email,
-      paginator: new Paginator()
-    }
+      paginator: new Paginator(),
+    };
 
     const config = {
       method: "put",

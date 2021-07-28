@@ -166,7 +166,7 @@ export default {
                 this.$data.user.firstName,
                 this.$data.user.lastName,
                 this.$data.user.nickName,
-                this.$data.user.email,
+                this.$data.user.email
               );
 
               const response = await userProvider.updateUser(data);
@@ -197,10 +197,8 @@ export default {
                 if (
                   response.message ===
                     "User Name Accepts Alphanumeric And Special Characters Except Double And Single Quotes" ||
-                  response.message ===
-                    "User Name Not Unique" ||
-                  response.message ===
-                    "User Name Required"
+                  response.message === "User Name Not Unique" ||
+                  response.message === "User Name Required"
                 ) {
                   this.$data.invalidUserNames.push(this.$data.user.userName);
                   this.$refs.editProfileForm.validate();
@@ -211,8 +209,7 @@ export default {
                     defaultToastOptions()
                   );
                 } else if (
-                  response.message ===
-                    "Email Not Unique" ||
+                  response.message === "Email Not Unique" ||
                   response.message === "Email Required"
                 ) {
                   this.$data.invalidEmails.push(this.$data.user.email);
@@ -235,7 +232,7 @@ export default {
                 showToast(
                   this,
                   ToastMethods["error"],
-                    response.message,
+                  response.message,
                   defaultToastOptions()
                 );
               }
@@ -297,8 +294,7 @@ export default {
     },
 
     emailRules() {
-      const regex =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return [
         (v) => !!v || "Email is required",
         (v) => !v || regex.test(v) || "Email must be valid",

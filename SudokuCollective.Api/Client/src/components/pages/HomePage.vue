@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div class="d-flex ma-12 pa-12 justify-center" v-if="app.name === ''" >
+    <div class="d-flex ma-12 pa-12 justify-center" v-if="app.name === ''">
       <v-progress-circular
         indeterminate
         color="primary"
@@ -13,8 +13,15 @@
       <v-row class="text-center home-banner">
         <v-col cols="12">
           <v-img src="/images/banner.jpg" height="500" />
-          <h1 class="text-center centered-welcome-message text-padding">Welcome to {{ app.name }}</h1>
-          <v-img src="/images/logo.png" class="my-3 centered-logo" contain height="200" />
+          <h1 class="text-center centered-welcome-message text-padding">
+            Welcome to {{ app.name }}
+          </h1>
+          <v-img
+            src="/images/logo.png"
+            class="my-3 centered-logo"
+            contain
+            height="200"
+          />
         </v-col>
       </v-row>
       <v-row>
@@ -38,18 +45,18 @@
   padding: 20px 70px 20px 70px;
 }
 .home-banner {
-    position: relative;
-    margin-bottom: 0;
-    border: 0;
-    border-color: transparent;
+  position: relative;
+  margin-bottom: 0;
+  border: 0;
+  border-color: transparent;
 }
 .centered-welcome-message {
-    position: absolute;
-    top: 10%;
-    left: 0;
-    width: 100%;
-    color: white;
-    text-shadow: 2px 2px var(--v-secondary);
+  position: absolute;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  color: white;
+  text-shadow: 2px 2px var(--v-secondary);
 }
 .centered-logo {
   position: absolute;
@@ -81,13 +88,13 @@ export default {
     app: new App(),
   }),
   computed: {
-    ...mapGetters("settingsModule", ["getApp"])
+    ...mapGetters("settingsModule", ["getApp"]),
   },
   watch: {
     "$store.state.settingsModule.app": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.app = new App(this.getApp);
-      }
+      },
     },
   },
   created() {

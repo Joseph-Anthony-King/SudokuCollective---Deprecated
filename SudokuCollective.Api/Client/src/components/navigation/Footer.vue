@@ -24,7 +24,7 @@ export default {
     getCopyrightYear() {
       const now = new Date();
       return now.getFullYear();
-    }
-  }
+    },
+  },
 };
 </script>

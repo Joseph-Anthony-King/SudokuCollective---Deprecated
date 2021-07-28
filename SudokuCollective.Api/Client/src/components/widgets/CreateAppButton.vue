@@ -12,8 +12,8 @@
 }
 
 .disabled {
-  background-color: #75ACD0;
-  color: gray
+  background-color: #75acd0;
+  color: gray;
 }
 
 .headline {
@@ -22,11 +22,10 @@
 </style>
 
 <script>
-
 export default {
   name: "CreateAppButton",
   props: {
-    isEnabled: Boolean
-  }
-}
+    isEnabled: Boolean,
+  },
+};
 </script>

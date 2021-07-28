@@ -51,7 +51,7 @@ const settingsModule = {
     },
     updateToastDuration({ commit }, duration) {
       commit(UPDATE_TOAST_DURATION, duration);
-    },    
+    },
     updateApp({ commit }, app) {
       commit(UPDATE_APP, app);
     },
@@ -92,7 +92,7 @@ const settingsModule = {
       return state.app.name;
     },
     getUserName: (state) => {
-      return state.userName
+      return state.userName;
     },
   },
 };

@@ -26,7 +26,7 @@ const routes = [
     name: "UserProfile",
     component: () =>
       import(/* webpackChuckName: "UserProile" */ "../views/UserProfile.vue"),
-    beforeEnter: checkAuth
+    beforeEnter: checkAuth,
   },
   {
     path: "/solve",
@@ -42,11 +42,10 @@ const router = new VueRouter({
   routes,
 });
 
-function checkAuth(to, from, next) 
-{
-    var user = store.getters["settingsModule/getUser"];
-    if (user.isLoggedIn) next();
-    else next("/");
+function checkAuth(to, from, next) {
+  var user = store.getters["settingsModule/getUser"];
+  if (user.isLoggedIn) next();
+  else next("/");
 }
 
 export default router;

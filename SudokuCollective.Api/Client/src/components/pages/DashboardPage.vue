@@ -30,7 +30,8 @@
           <div class="app-buttons-scroll">
             <CreateAppButton
               :isEnabled="user.emailConfirmed"
-              v-on:click.native="openCreateAppForm" />
+              v-on:click.native="openCreateAppForm"
+            />
             <span class="no-apps-message" v-if="myApps.length === 0"
               >Time to Get Coding!</span
             >

@@ -6,7 +6,7 @@ export function requestDataUpdateApp(payload) {
     license: store.getters["settingsModule/getLicense"],
     requestorId: store.getters["settingsModule/getRequestorId"],
     appId: store.getters["settingsModule/getAppId"],
-    paginator: payload.paginator
+    paginator: payload.paginator,
   };
 
   let result = requestData(data);
@@ -19,8 +19,10 @@ export function requestDataUpdateApp(payload) {
   result["permitSuperUserAccess"] = payload.permitSuperUserAccess;
   result["permitCollectiveLogins"] = payload.permitCollectiveLogins;
   result["disableCustomUrls"] = payload.disableCustomUrls;
-  result["customEmailConfirmationDevUrl"] = payload.customEmailConfirmationDevUrl;
-  result["customEmailConfirmationLiveUrl"] = payload.customEmailConfirmationLiveUrl;
+  result["customEmailConfirmationDevUrl"] =
+    payload.customEmailConfirmationDevUrl;
+  result["customEmailConfirmationLiveUrl"] =
+    payload.customEmailConfirmationLiveUrl;
   result["customPasswordResetDevUrl"] = payload.customPasswordResetDevUrl;
   result["customPasswordResetLiveUrl"] = payload.customPasswordResetLiveUrl;
   result["timeFrame"] = payload.timeFrame;

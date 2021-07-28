@@ -1,10 +1,7 @@
 ﻿import * as axios from "axios";
 import store from "../../store";
 import { requestHeader } from "../../helpers/requestHeader";
-import {
-  authenticateEndpoint,
-  confirmUserNameEndpoint,
-} from "./endpoints";
+import { authenticateEndpoint, confirmUserNameEndpoint } from "./endpoints";
 
 const authenticateUser = async function (username, password) {
   const headers = requestHeader();
@@ -16,7 +13,7 @@ const authenticateUser = async function (username, password) {
     data: {
       UserName: `${username}`,
       Password: `${password}`,
-      License: `${store.getters["settingsModule/getLicense"]}`
+      License: `${store.getters["settingsModule/getLicense"]}`,
     },
   };
 

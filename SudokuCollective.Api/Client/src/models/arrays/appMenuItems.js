@@ -6,7 +6,7 @@ export const AppMenuItems = [
     store.getters["settingsModule/getApiURL"],
     "API Status",
     "mdi-apps",
-    "Check the api to see if it's running",
+    "Check the api to see if it's running"
   ),
   new MenuItem(
     `${store.getters["settingsModule/getApiURL"]}/swagger/index.html`,

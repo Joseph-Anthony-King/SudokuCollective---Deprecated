@@ -98,18 +98,18 @@ export default {
       } else {
         return "Good Evening";
       }
-    }
+    },
   },
   watch: {
     "$store.state.settingsModule.user": {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.$data.user = new User(this.getUser);
-      }
+      },
     },
   },
   async created() {
     this.populateNavMenuItems();
-    
+
     this.$data.user = new User(this.getUser);
   },
 };

@@ -1,6 +1,6 @@
-﻿import _ from 'lodash';
-import { 
-  UPDATE_SELECTED_USER, 
+﻿import _ from "lodash";
+import {
+  UPDATE_SELECTED_USER,
   UPDATE_USERS,
   REMOVE_USER,
   REMOVE_USERS,
@@ -14,7 +14,7 @@ const userModule = {
 
   state: () => ({
     selectedUser: new User(),
-    users: []
+    users: [],
   }),
 
   mutations: {
@@ -22,7 +22,7 @@ const userModule = {
       state.selectedUser = user;
     },
     [UPDATE_USERS](state, users) {
-      users.forEach((user) => { 
+      users.forEach((user) => {
         const index = _.findIndex(state.users, { id: user.id });
         if (index !== -1) {
           state.users.splice(index, 1, user);
@@ -73,7 +73,7 @@ const userModule = {
       return state.selectedUser;
     },
     getUserById: (state) => (id) => {
-      return state.users.find(user => user.id === id)
+      return state.users.find((user) => user.id === id);
     },
     getUsers: (state) => {
       return state.users;

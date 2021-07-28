@@ -1087,8 +1087,9 @@ export default {
 
         if (response.status === 200) {
           for (var j = 0; j < 81; j++) {
-            this.$data.sudokuMatrix[j] =
-              response.data.solution.solutionList[j].toString();
+            this.$data.sudokuMatrix[j] = response.data.solution.solutionList[
+              j
+            ].toString();
           }
           this.$data.solutionPending = false;
           this.$forceUpdate();

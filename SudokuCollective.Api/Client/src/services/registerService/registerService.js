@@ -1,10 +1,12 @@
 import * as axios from "axios";
 import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
-import { getRegisterEndpoint, getResendEmailConfirmationEndpoint, } from "./endpoints";
+import {
+  getRegisterEndpoint,
+  getResendEmailConfirmationEndpoint,
+} from "./endpoints";
 
 const postSignUp = async function (signUpModel) {
-
   try {
     const config = {
       method: "post",
@@ -22,7 +24,6 @@ const postSignUp = async function (signUpModel) {
 };
 
 const putResendEmailConfirmation = async function () {
-
   try {
     const config = {
       method: "put",

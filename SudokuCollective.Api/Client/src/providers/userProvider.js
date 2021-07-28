@@ -1,5 +1,5 @@
 import { userService } from "@/services/userService/userService";
-import User from "@/models/user"
+import User from "@/models/user";
 
 const getUser = async function (id) {
   var response = await userService.getUser(id);
@@ -9,16 +9,16 @@ const getUser = async function (id) {
       status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
-      user: new User(response.data.user)
-    }
+      user: new User(response.data.user),
+    };
   } else {
     return {
       status: response.status,
       success: response.data.success,
-      message: response.data.message.substring(17)
-    }
+      message: response.data.message.substring(17),
+    };
   }
-}
+};
 
 const updateUser = async function (data) {
   var response = await userService.updateUser(data);
@@ -28,16 +28,16 @@ const updateUser = async function (data) {
       status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
-      user: new User(response.data.user)
-    }
+      user: new User(response.data.user),
+    };
   } else {
     return {
       status: response.status,
       success: response.data.success,
-      message: response.data.message.substring(17)
-    }
+      message: response.data.message.substring(17),
+    };
   }
-}
+};
 
 const deleteUser = async function (id) {
   var response = await userService.deleteUser(id);
@@ -45,9 +45,9 @@ const deleteUser = async function (id) {
   return {
     status: response.status,
     success: response.data.success,
-    message: response.data.message.substring(17)
-  }
-}
+    message: response.data.message.substring(17),
+  };
+};
 
 const requestPasswordReset = async function (email) {
   const response = await userService.postRequestPasswordReset(email);
@@ -55,9 +55,9 @@ const requestPasswordReset = async function (email) {
   return {
     status: response.status,
     success: response.data.success,
-    message: response.data.message.substring(17)
-  }
-}
+    message: response.data.message.substring(17),
+  };
+};
 
 const resendPasswordReset = async function () {
   const response = await userService.putResendPasswordReset();
@@ -65,9 +65,9 @@ const resendPasswordReset = async function () {
   return {
     status: response.status,
     success: response.data.success,
-    message: response.data.message.substring(17)
-  }
-}
+    message: response.data.message.substring(17),
+  };
+};
 
 const cancelPasswordReset = async function () {
   const response = await userService.putCancelPasswordReset();
@@ -75,9 +75,9 @@ const cancelPasswordReset = async function () {
   return {
     status: response.status,
     success: response.data.success,
-    message: response.data.message.substring(17)
-  }
-}
+    message: response.data.message.substring(17),
+  };
+};
 
 const cancelEmailConfirmation = async function () {
   const response = await userService.putCancelEmailConfirmation();
@@ -85,9 +85,9 @@ const cancelEmailConfirmation = async function () {
   return {
     status: response.status,
     success: response.data.success,
-    message: response.data.message.substring(17)
-  }
-}
+    message: response.data.message.substring(17),
+  };
+};
 
 const cancelAllEmailRequests = async function () {
   const response = await userService.putCancelAllEmailRequests();
@@ -95,9 +95,9 @@ const cancelAllEmailRequests = async function () {
   return {
     status: response.status,
     success: response.data.success,
-    message: response.data.message.substring(17)
-  }
-}
+    message: response.data.message.substring(17),
+  };
+};
 
 export const userProvider = {
   getUser,
@@ -107,5 +107,5 @@ export const userProvider = {
   resendPasswordReset,
   cancelPasswordReset,
   cancelEmailConfirmation,
-  cancelAllEmailRequests
-}
+  cancelAllEmailRequests,
+};

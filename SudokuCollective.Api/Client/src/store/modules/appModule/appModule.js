@@ -1,6 +1,6 @@
-import _ from 'lodash';
-import { 
-  UPDATE_SELECTED_APP, 
+import _ from "lodash";
+import {
+  UPDATE_SELECTED_APP,
   UPDATE_APPS,
   UPDATE_REGISTERED_APPS,
   REMOVE_APP,
@@ -25,7 +25,7 @@ const appModule = {
       state.selectedApp = new App(app);
     },
     [UPDATE_APPS](state, apps) {
-      apps.forEach((app) => { 
+      apps.forEach((app) => {
         const index = _.findIndex(state.apps, { id: app.id });
         if (index !== -1) {
           state.apps.splice(index, 1, app);
@@ -35,7 +35,7 @@ const appModule = {
       });
     },
     [UPDATE_REGISTERED_APPS](state, registeredApps) {
-      registeredApps.forEach((app) => { 
+      registeredApps.forEach((app) => {
         const index = _.findIndex(state.registeredApps, { id: app.id });
         if (index !== -1) {
           state.registeredApps.splice(index, 1, app);
@@ -74,7 +74,7 @@ const appModule = {
       commit(UPDATE_APPS, apps);
     },
     updateRegisteredApps({ commit }, registeredApps) {
-      commit(UPDATE_REGISTERED_APPS, registeredApps)
+      commit(UPDATE_REGISTERED_APPS, registeredApps);
     },
     removeApp({ commit }, app) {
       commit(REMOVE_APP, app);
@@ -83,7 +83,7 @@ const appModule = {
       commit(REMOVE_APPS);
     },
     removeRegisteredApps({ commit }) {
-      commit(REMOVE_REGISTERED_APPS)
+      commit(REMOVE_REGISTERED_APPS);
     },
     replaceApp({ commit }, app) {
       commit(REPLACE_APP, app);
@@ -95,13 +95,13 @@ const appModule = {
       return state.selectedApp;
     },
     getAppById: (state) => (id) => {
-      return state.apps.find(app => app.id === id)
+      return state.apps.find((app) => app.id === id);
     },
     getApps: (state) => {
       return state.apps;
     },
     getRegisteredApps: (state) => {
-      return state.registeredApps
+      return state.registeredApps;
     },
   },
 };

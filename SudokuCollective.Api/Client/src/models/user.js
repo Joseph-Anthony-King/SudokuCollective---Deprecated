@@ -27,7 +27,8 @@
       this.email = data.email;
       this.emailConfirmed = data.emailConfirmed;
       this.receivedRequestToUpdateEmail = data.receivedRequestToUpdateEmail;
-      this.receivedRequestToUpdatePassword = data.receivedRequestToUpdatePassword;
+      this.receivedRequestToUpdatePassword =
+        data.receivedRequestToUpdatePassword;
       this.isActive = data.isActive;
       this.isAdmin = data.isAdmin;
       this.isSuperUser = data.isSuperUser;
