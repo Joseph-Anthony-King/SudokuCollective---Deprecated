@@ -2,7 +2,7 @@
 
 namespace SudokuCollective.Data.Resiliency
 {
-    internal static class CacheStrategy
+    internal static class CachingStrategy
     {
         internal static DateTime Light 
         { 

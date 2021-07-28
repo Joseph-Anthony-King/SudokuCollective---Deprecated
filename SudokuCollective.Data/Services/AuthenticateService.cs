@@ -72,7 +72,7 @@ namespace SudokuCollective.Data.Services
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserByUsernameCacheKey, request.UserName),
-                CacheStrategy.Medium,
+                CachingStrategy.Medium,
                 request.UserName);
 
             var user = (User)((RepositoryResponse)userResponse.Item1).Object;
@@ -81,7 +81,7 @@ namespace SudokuCollective.Data.Services
                 _appsRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetAppByLicenseCacheKey, request.License),
-                CacheStrategy.Medium,
+                CachingStrategy.Medium,
                 request.License);
 
             var app = (App)((RepositoryResponse)appResponse.Item1).Object;

@@ -138,7 +138,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppByLicenseCacheKey, request.License),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         request.License,
                         result);
 
@@ -185,7 +185,7 @@ namespace SudokuCollective.Data.Services
                             _usersRepository,
                             _distributedCache,
                             CacheKeys.GetUserCacheKey,
-                            CacheStrategy.Medium,
+                            CachingStrategy.Medium,
                             user);
 
                         if (userResponse.Success)
@@ -335,7 +335,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetUserCacheKey, id),
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     id,
                     result);
 
@@ -354,7 +354,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppByLicenseCacheKey, license),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         license);
 
                     var app = (App)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -514,7 +514,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetUserCacheKey, id),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         id);
 
                     var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -527,7 +527,7 @@ namespace SudokuCollective.Data.Services
                             _appsRepository,
                             _distributedCache,
                             string.Format(CacheKeys.GetAppCacheKey, request.AppId),
-                            CacheStrategy.Medium,
+                            CachingStrategy.Medium,
                             request.AppId);
 
                         var app = (App)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -717,7 +717,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     CacheKeys.GetUsersCacheKey,
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     result);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -983,7 +983,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppByLicenseCacheKey, license),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         license);
 
                     var app = (App)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -1044,7 +1044,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetUserCacheKey, requestorId),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         requestorId);
 
                     var requestor = (User)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -1105,7 +1105,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetUserCacheKey, id),
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     id);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1198,7 +1198,7 @@ namespace SudokuCollective.Data.Services
                     _appsRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetAppByLicenseCacheKey, request.License),
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     request.License);
 
                 var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1209,7 +1209,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetUserByEmailCacheKey, request.Email),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         request.Email);
 
                     var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1366,7 +1366,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetUserCacheKey, passwordReset.UserId),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         passwordReset.UserId);
 
                     var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1379,7 +1379,7 @@ namespace SudokuCollective.Data.Services
                             _appsRepository,
                             _distributedCache,
                             string.Format(CacheKeys.GetAppCacheKey, passwordReset.AppId),
-                            CacheStrategy.Medium,
+                            CachingStrategy.Medium,
                             passwordReset.AppId);
 
                         var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1483,7 +1483,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetUserCacheKey, request.UserId),
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     request.UserId);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -1606,7 +1606,7 @@ namespace SudokuCollective.Data.Services
                                     _appsRepository,
                                     _distributedCache,
                                     string.Format(CacheKeys.GetAppByLicenseCacheKey, license),
-                                    CacheStrategy.Medium,
+                                    CachingStrategy.Medium,
                                     license);
 
                                 var app = (App)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -1621,7 +1621,7 @@ namespace SudokuCollective.Data.Services
                             _usersRepository,
                             _distributedCache,
                             string.Format(CacheKeys.GetUserCacheKey, userid),
-                            CacheStrategy.Medium,
+                            CachingStrategy.Medium,
                             userid);
 
                         var user = (User)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -1716,7 +1716,7 @@ namespace SudokuCollective.Data.Services
                                     _appsRepository,
                                     _distributedCache,
                                     string.Format(CacheKeys.GetAppByLicenseCacheKey, license),
-                                    CacheStrategy.Medium,
+                                    CachingStrategy.Medium,
                                     license);
 
                                 var app = (App)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -1733,7 +1733,7 @@ namespace SudokuCollective.Data.Services
                             _usersRepository,
                             _distributedCache,
                             string.Format(CacheKeys.GetUserCacheKey, userid),
-                            CacheStrategy.Medium,
+                            CachingStrategy.Medium,
                             userid);
 
                         var user = (User)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -1804,7 +1804,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetUserCacheKey, id),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         id);
 
                     var user = (User)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -1860,7 +1860,7 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetUserCacheKey, id),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         id);
 
                     var user = (User)((RepositoryResponse)cacheFactoryResponse.Item1).Object;
@@ -2161,7 +2161,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetUserCacheKey, userId),
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     userId);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2176,7 +2176,7 @@ namespace SudokuCollective.Data.Services
                             _appsRepository,
                             _distributedCache,
                             string.Format(CacheKeys.GetAppCacheKey, appId),
-                            CacheStrategy.Medium,
+                            CachingStrategy.Medium,
                             appId);
 
                         var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2342,7 +2342,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetUserCacheKey, userId),
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     userId);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2357,7 +2357,7 @@ namespace SudokuCollective.Data.Services
                             _appsRepository,
                             _distributedCache,
                             string.Format(CacheKeys.GetAppCacheKey, appId),
-                            CacheStrategy.Medium,
+                            CachingStrategy.Medium,
                             appId);
 
                         var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2494,7 +2494,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetUserCacheKey, id),
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     id);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2505,7 +2505,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppCacheKey, appId),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         appId))
                     {
                         if (await _emailConfirmationsRepository.HasOutstandingEmailConfirmation(id, appId))
@@ -2605,7 +2605,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetUserCacheKey, id),
-                    CacheStrategy.Medium,
+                    CachingStrategy.Medium,
                     id);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
@@ -2616,7 +2616,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppCacheKey, appId),
-                        CacheStrategy.Medium,
+                        CachingStrategy.Medium,
                         appId))
                     {
                         if (await _passwordResetsRepository.HasOutstandingPasswordReset(id, appId))

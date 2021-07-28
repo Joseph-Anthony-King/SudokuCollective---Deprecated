@@ -68,7 +68,7 @@ namespace SudokuCollective.Data.Services
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserByUsernameCacheKey, username),
-                CacheStrategy.Medium,
+                CachingStrategy.Medium,
                 username);
 
             var userResponse = (RepositoryResponse)cachFactoryResponse.Item1;
@@ -104,7 +104,7 @@ namespace SudokuCollective.Data.Services
                 _usersRepository,
                 _distributedCache,
                 string.Format(CacheKeys.GetUserByUsernameCacheKey, email),
-                CacheStrategy.Medium,
+                CachingStrategy.Medium,
                 email,
                 result);
 
