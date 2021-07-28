@@ -223,7 +223,11 @@ export default {
       } else if (this.$router.currentRoute.path === "/solve") {
         // do nothing...
       } else {
-        this.$router.push("/dashboard");
+        if (user.emailConfirmed) {
+          this.$router.push("/dashboard");
+        } else {
+          this.$router.push("/userProfile");
+        }
       }
     },
 
