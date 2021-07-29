@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!processing">
     <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
@@ -91,6 +91,7 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import AppInfoWidget from "@/components/widgets/AppInfoWidget";
@@ -99,6 +100,7 @@ import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
 import CreateAppButton from "@/components/widgets/CreateAppButton";
 import SelectAppButton from "@/components/widgets/SelectAppButton";
 import { appProvider } from "@/providers/appProvider";
+import App from "@/models/app";
 import User from "@/models/user";
 
 export default {
@@ -110,19 +112,17 @@ export default {
     CreateAppButton,
     SelectAppButton,
   },
-  props: {
-    user: User,
-    myApps: [],
-  },
   data: () => ({
+    user: new User(),
     app: new App(),
     openingAppWidgets: false,
+    myApps: [],
+    processing: false,
   }),
   methods: {
     ...mapActions("appModule", [
       "updateSelectedApp",
       "updateApps",
-      "updateRegisteredApps",
     ]),
 
     openCreateAppForm() {
@@ -146,13 +146,24 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("settingsModule", ["getUser"]),
     ...mapGetters("appModule", [
       "getAppById",
       "getApps",
-      "getRegisteredApps",
+      "getSelectedApp",
     ]),
   },
+  watch: {
+    "$store.state.appModule.apps": {
+      handler: function (val, oldVal) {
+        this.$data.myApps = this.getApps;
+      },
+      deep: true,
+    },
+  },
   async created() {
+    this.$data.processing = true;
+    this.$data.user = new User(this.getUser);
     const selectedApp = this.getSelectedApp;
 
     if (selectedApp.id !== 0) {
@@ -165,28 +176,14 @@ export default {
       const response = await appProvider.getMyApps();
 
       if (response.success) {
-        this.updateApps(response.apps);
+        this.$data.myApps = response.apps;
+        this.updateApps(this.$data.myApps);
       }
     } else {
       storeApps.forEach((store) => {
         this.$data.myApps.push(store);
       });
     }
-
-    const storeRegisteredApps = this.getRegisteredApps;
-
-    if (storeRegisteredApps.length === 0) {
-      const response = await appProvider.getRegisteredApps(this.$data.user.id);
-
-      if (response.success) {
-        this.updateRegisteredApps(response.apps);
-      }
-    }
-
-    storeRegisteredApps.forEach((store) => {
-      this.$data.registeredApps.push(store);
-    });
-
     this.$data.processing = false;
   },
 }

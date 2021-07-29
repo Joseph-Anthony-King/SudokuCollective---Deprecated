@@ -22,60 +22,12 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
-    <v-card elevation="6" class="mx-auto" v-if="!processing">
-      <v-card-text>
-        <v-container fluid>
-          <v-card-title class="justify-center">Your Apps</v-card-title>
-          <hr class="title-spacer" />
-          <div class="app-buttons-scroll">
-            <CreateAppButton
-              :isEnabled="user.emailConfirmed"
-              v-on:click.native="openCreateAppForm"
-            />
-            <span class="no-apps-message" v-if="myApps.length === 0"
-              >Time to Get Coding!</span
-            >
-            <SelectAppButton
-              v-for="(myApp, index) in myApps"
-              :app="myApp"
-              :key="index"
-              :index="index"
-              v-on:click.native="openAppWidgets(myApp.id)"
-            />
-          </div>
-        </v-container>
-      </v-card-text>
-    </v-card>
-    <div class="card-spacer"></div>
-    <v-card elevation="6" v-if="openingAppWidgets">
-      <v-container>
-        <span @click="closeAppWidgets" class="material-icons close-hover">
-          clear
-        </span>
-      </v-container>
-      <template>
-        <v-tabs fixed-tabs>
-          <v-tab href="#info"> App Info </v-tab>
-          <v-tab-item value="info">
-            <AppInfoWidget
-              v-on:close-app-widget-event="closeAppWidgets"
-              v-on:open-edit-app-dialog-event="openEditAppForm"
-            />
-          </v-tab-item>
-
-          <v-tab href="#app-users"> App Users </v-tab>
-          <v-tab-item value="app-users">
-            <AppUsersWidget />
-          </v-tab-item>
-
-          <v-tab href="#non-app-users"> Non-App Users </v-tab>
-          <v-tab-item value="non-app-users">
-            <NonAppUsersWidget />
-          </v-tab-item>
-        </v-tabs>
-      </template>
-    </v-card>
+    <MyAppsWidget
+      v-on:open-create-app-form-event="openCreateAppForm()"
+      v-on:open-edit-app-form-event="editingApp = true"
+    />
     <div class="card-spacer" v-if="openingAppWidgets"></div>
+    <MyRegisteredAppsWidget />
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
         :signUpFormStatus="creatingApp"
@@ -83,26 +35,6 @@
         v-on:app-created-event="appCreatedEvent"
       />
     </v-dialog>
-    <v-card elevation="6" class="mx-auto" v-if="!processing">
-      <v-card-text>
-        <v-container fluid>
-          <v-card-title class="justify-center"
-            >Apps For Which You've Registered</v-card-title
-          >
-          <hr class="title-spacer" />
-          <div class="app-buttons-scroll">
-            <SelectAppButton
-              v-for="(app, index) in registeredApps"
-              :app="app"
-              :key="index"
-              :index="index"
-              v-on:click.native="appAvailable(app) ? openUrl(app) : null"
-            />
-          </div>
-        </v-container>
-      </v-card-text>
-    </v-card>
-
     <v-dialog v-model="editingApp" persistent max-width="1200px">
       <EditAppForm
         :editAppFormStatus="editingApp"
@@ -113,51 +45,15 @@
 </template>
 
 <style scoped>
-@media only screen and (min-width: 1297px) {
-  .no-apps-message {
-    margin: 85px 0 0 420px;
-    font-size: xx-large;
-  }
-}
-@media only screen and (max-width: 1296px) {
-  .no-apps-message {
-    margin: 85px 0 0 200px;
-    font-size: xx-large;
-  }
-}
-@media only screen and (max-width: 1259px) {
-  .no-apps-message {
-    margin: 85px 0 0 60px;
-    font-size: xx-large;
-  }
-}
-@media only screen and (max-width: 699px) {
-  .no-apps-message {
-    margin: 85px 0 0 5px;
-    font-size: medium;
-  }
-}
-.app-buttons-scroll {
-  display: flex;
-  overflow-x: auto;
-}
-.close-hover:hover {
-  cursor: pointer;
-}
 </style>
 
 <script>
 /* eslint-disable no-unused-vars */
-import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
 import EditAppForm from "@/components/forms/EditAppForm";
-import AppInfoWidget from "@/components/widgets/AppInfoWidget";
-import AppUsersWidget from "@/components/widgets/AppUsersWidget";
-import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
-import CreateAppButton from "@/components/widgets/CreateAppButton";
-import SelectAppButton from "@/components/widgets/SelectAppButton";
-import { appProvider } from "@/providers/appProvider";
+import MyAppsWidget from "@/components/widgets/MyAppsWidget"
+import MyRegisteredAppsWidget from "@/components/widgets/MyRegisteredAppsWidget"
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -168,29 +64,18 @@ export default {
   components: {
     CreateAppForm,
     EditAppForm,
-    AppInfoWidget,
-    AppUsersWidget,
-    NonAppUsersWidget,
-    CreateAppButton,
-    SelectAppButton,
+    MyAppsWidget,
+    MyRegisteredAppsWidget
   },
   data: () => ({
     user: new User(),
     app: new App(),
-    myApps: [],
-    registeredApps: [],
     processing: false,
     creatingApp: false,
     editingApp: false,
     openingAppWidgets: false,
   }),
   methods: {
-    ...mapActions("appModule", [
-      "updateSelectedApp",
-      "updateApps",
-      "updateRegisteredApps",
-    ]),
-
     openCreateAppForm() {
       if (!this.$data.user.isAdmin) {
         showToast(
@@ -223,21 +108,8 @@ export default {
       this.$data.editingApp = false;
     },
 
-    openAppWidgets(id) {
-      this.$data.openingAppWidgets = true;
-      this.$data.app = this.getAppById(id);
-      this.updateSelectedApp(this.$data.app);
-    },
-
-    closeAppWidgets() {
-      this.$data.openingAppWidgets = false;
-      this.$data.app = new App();
-      this.updateSelectedApp(this.$data.app);
-    },
-
-    appCreatedEvent(id) {
+    appCreatedEvent() {
       this.$data.creatingApp = false;
-      this.openAppWidgets(id);
       showToast(
         this,
         ToastMethods["success"],
@@ -245,31 +117,9 @@ export default {
         defaultToastOptions()
       );
     },
-    appAvailable(app) {
-      if (app.isActive) {
-        if (!app.inDevelopment) {
-          if (app.liveUrl !== "") {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } else {
-        return false;
-      }
-    },
-    openUrl(app) {
-      window.open(app.liveUrl, "_blank");
-    },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser"]),
-    ...mapGetters("appModule", [
-      "getAppById",
-      "getApps",
-      "getRegisteredApps",
-      "getSelectedApp",
-    ]),
+    ...mapGetters("settingsModule", ["getUser"])
   },
   watch: {
     "$store.state.settingsModule.user": {
@@ -277,50 +127,10 @@ export default {
         this.$data.user = new User(this.getUser);
       },
     },
-    "$store.state.appModule.apps": {
-      handler: function (val, oldVal) {
-        this.$data.myApps = this.getApps;
-      },
-      deep: true,
-    },
   },
-  async created() {
+  created() {
     this.$data.processing = true;
     this.$data.user = new User(this.getUser);
-
-    const selectedApp = this.getSelectedApp;
-
-    if (selectedApp.id !== 0) {
-      this.openAppWidgets(selectedApp.id);
-    }
-
-    const storeApps = this.getApps;
-
-    if (storeApps.length === 0) {
-      const response = await appProvider.getMyApps();
-
-      if (response.success) {
-        this.updateApps(response.apps);
-      }
-    } else {
-      storeApps.forEach((store) => {
-        this.$data.myApps.push(store);
-      });
-    }
-
-    const storeRegisteredApps = this.getRegisteredApps;
-
-    if (storeRegisteredApps.length === 0) {
-      const response = await appProvider.getRegisteredApps(this.$data.user.id);
-
-      if (response.success) {
-        this.updateRegisteredApps(response.apps);
-      }
-    }
-
-    storeRegisteredApps.forEach((store) => {
-      this.$data.registeredApps.push(store);
-    });
 
     this.$data.processing = false;
   },

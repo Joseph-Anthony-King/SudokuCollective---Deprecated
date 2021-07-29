@@ -82,13 +82,23 @@ namespace SudokuCollective.Data.Services
 
                     var checkAppsResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
 
+                    foreach (var a in checkAppsResponse.Objects.ConvertAll(a => (App)a))
+                    {
+                        a.License = (await CacheFactory.GetLicenseWithCacheAsync(
+                            _appsRepository,
+                            _distributedCache,
+                            string.Format(CacheKeys.GetAppLicenseCacheKey, a.Id),
+                            CachingStrategy.Heavy,
+                            a.Id)).Item1;
+                    }
+
                     do
                     {
                         license = Guid.NewGuid();
 
                         if (!checkAppsResponse
                             .Objects
-                            .ConvertAll(a => (IApp)a)
+                            .ConvertAll(a => (App)a)
                             .Any(a => a.License.Equals(license.ToString())))
                         {
                             generatingGuid = false;
