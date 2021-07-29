@@ -3,18 +3,21 @@
     <v-card elevation="6" class="mx-auto" v-if="!processing">
       <v-card-text>
         <v-container fluid>
-          <v-card-title class="justify-center"
-            >Apps For Which You've Registered</v-card-title
+          <v-card-title class="justify-center">{{ title }}</v-card-title
           >
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
-            <SelectAppButton
-              v-for="(app, index) in registeredApps"
-              :app="app"
-              :key="index"
-              :index="index"
-              v-on:click.native="appAvailable(app) ? openUrl(app) : null"
-            />
+            <div v-for="(app, index) in apps" v-bind:key="app">
+              <SelectAppButton                
+                :app="app"
+                :key="index"
+                :index="index"
+                v-on:click.native="appAvailable(app) ? openUrl(app) : null"
+              />
+              <DeregisterAppButton 
+                v-if="app.id !== 1"
+                v-on:click.native="deregister(app)" />
+            </div>
           </div>
         </v-container>
       </v-card-text>
@@ -32,25 +35,28 @@
 <script>
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import SelectAppButton from "@/components/widgets/SelectAppButton";
+import SelectAppButton from "@/components/buttons/SelectAppButton";
+import DeregisterAppButton from "@/components/buttons/DeregisterAppButton";
 import { appProvider } from "@/providers/appProvider";
 import User from "@/models/user";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "MyRegisteredAppsWidget",
   components: {
     SelectAppButton,
+    DeregisterAppButton,
   },
   data: () => ({
     user: new User(),
-    registeredApps: [],
-    processing: false
+    apps: [],
+    processing: false,
   }),
   methods: {
     ...mapActions("appModule", [ "updateRegisteredApps" ]),
     
     appAvailable(app) {
-      console.log("appAvailable invoked...");
       if (app.isActive) {
         if (!app.inDevelopment) {
           if (app.liveUrl !== "") {
@@ -58,6 +64,13 @@ export default {
           } else {
             return false;
           }
+        } else {
+          showToast(
+            this,
+            ToastMethods["error"],
+            "App is still in development",
+            defaultToastOptions()
+          );
         }
       } else {
         return false;
@@ -65,13 +78,42 @@ export default {
     },
 
     openUrl(app) {
-      console.log("openUrl invoked...");
       window.open(app.liveUrl, "_blank");
+    },
+
+    async deregister(app) {
+      const response = await appProvider.removeUser(app.id, this.$data.user.id);
+
+      if (response.success) {
+        const appsResponse = await appProvider.getRegisteredApps(this.$data.user.id);
+
+        if (appsResponse.success) {
+          this.updateRegisteredApps(appsResponse.apps);
+          this.$data.apps = appsResponse.apps;
+        }
+        showToast(
+          this,
+          ToastMethods["error"],
+          "You have been deregistered from " + app.name,
+          defaultToastOptions()
+        );
+      } else {
+        showToast(
+          this,
+          ToastMethods["success"],
+          response.message,
+          defaultToastOptions()
+        );
+      }
     },
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
-    ...mapGetters("appModule", [ "getRegisteredApps" ]),
+    ...mapGetters("appModule", [ "getRegisteredApps" ]),    
+    title() {
+      const apps = this.$data.apps.length === 1 ? "app" : "apps";
+      return "You are currently registered with " + this.$data.apps.length + " " + apps;
+    }
   },
   async created() {
     this.$data.processing = true;
@@ -84,12 +126,11 @@ export default {
 
       if (response.success) {
         this.updateRegisteredApps(response.apps);
+        this.$data.apps = response.apps;
       }
+    } else {
+      this.$data.apps = storeRegisteredApps;
     }
-
-    storeRegisteredApps.forEach((store) => {
-      this.$data.registeredApps.push(store);
-    });
 
     this.$data.processing = false;
   },

@@ -3,22 +3,22 @@
     <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
-          <v-card-title class="justify-center">Your Apps</v-card-title>
+          <v-card-title class="justify-center">{{ title }}</v-card-title>
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
             <CreateAppButton
               :isEnabled="user.emailConfirmed"
               v-on:click.native="openCreateAppForm"
             />
-            <span class="no-apps-message" v-if="myApps.length === 0"
+            <span class="no-apps-message" v-if="apps.length === 0"
               >Time to Get Coding!</span
             >
             <SelectAppButton
-              v-for="(myApp, index) in myApps"
-              :app="myApp"
+              v-for="(app, index) in apps"
+              :app="app"
               :key="index"
               :index="index"
-              v-on:click.native="openAppWidgets(myApp.id)"
+              v-on:click.native="openAppWidgets(app.id)"
             />
           </div>
         </v-container>
@@ -53,6 +53,7 @@
         </v-tabs>
       </v-card-text>
     </v-card>
+    <div class="card-spacer" v-if="openingAppWidgets"></div>
   </div>
 </template>
 
@@ -94,11 +95,11 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import CreateAppButton from "@/components/buttons/CreateAppButton";
+import SelectAppButton from "@/components/buttons/SelectAppButton";
 import AppInfoWidget from "@/components/widgets/AppInfoWidget";
 import AppUsersWidget from "@/components/widgets/AppUsersWidget";
 import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
-import CreateAppButton from "@/components/widgets/CreateAppButton";
-import SelectAppButton from "@/components/widgets/SelectAppButton";
 import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -116,7 +117,7 @@ export default {
     user: new User(),
     app: new App(),
     openingAppWidgets: false,
-    myApps: [],
+    apps: [],
     processing: false,
   }),
   methods: {
@@ -152,11 +153,15 @@ export default {
       "getApps",
       "getSelectedApp",
     ]),
+    title() {
+      const licenses = this.$data.apps.length === 1 ? "license" : "licenses";
+      return "You currently have " + this.$data.apps.length + " app " + licenses;
+    }
   },
   watch: {
     "$store.state.appModule.apps": {
       handler: function (val, oldVal) {
-        this.$data.myApps = this.getApps;
+        this.$data.apps = this.getApps;
       },
       deep: true,
     },
@@ -176,12 +181,12 @@ export default {
       const response = await appProvider.getMyApps();
 
       if (response.success) {
-        this.$data.myApps = response.apps;
-        this.updateApps(this.$data.myApps);
+        this.$data.apps = response.apps;
+        this.updateApps(this.$data.apps);
       }
     } else {
       storeApps.forEach((store) => {
-        this.$data.myApps.push(store);
+        this.$data.apps.push(store);
       });
     }
     this.$data.processing = false;

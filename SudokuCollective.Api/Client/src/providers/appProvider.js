@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { appService } from "@/services/appService/appService";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -109,6 +110,12 @@ const getMyApps = async function () {
   const response = await appService.getMyApps();
 
   if (response.data.success) {
+    response.data.apps = _.sortBy
+      (response.data.apps, 
+        function(app) {
+          return app.id
+        });
+
     let tempArray = [];
 
     for (const app of response.data.apps) {
@@ -142,6 +149,12 @@ const getRegisteredApps = async function (userid) {
   const response = await appService.getRegisteredApps(userid);
 
   if (response.data.success) {
+    response.data.apps = _.sortBy
+      (response.data.apps, 
+        function(app) {
+          return app.id
+        });
+
     let tempArray = [];
 
     for (const app of response.data.apps) {

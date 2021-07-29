@@ -290,7 +290,7 @@ export default {
     },
 
     close() {
-      this.$emit("close-edit-app-event", null, null);
+      this.$emit("edit-app-closed-event", null, null);
       this.reset();
     },
   },

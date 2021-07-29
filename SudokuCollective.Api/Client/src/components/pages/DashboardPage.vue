@@ -24,9 +24,8 @@
     <div class="card-spacer"></div>
     <MyAppsWidget
       v-on:open-create-app-form-event="openCreateAppForm()"
-      v-on:open-edit-app-form-event="editingApp = true"
+      v-on:open-edit-app-form-event="openEditAppForm()"
     />
-    <div class="card-spacer" v-if="openingAppWidgets"></div>
     <MyRegisteredAppsWidget />
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
@@ -38,7 +37,7 @@
     <v-dialog v-model="editingApp" persistent max-width="1200px">
       <EditAppForm
         :editAppFormStatus="editingApp"
-        v-on:close-edit-app-event="closeEditAppForm"
+        v-on:edit-app-closed-event="closeEditAppForm"
       />
     </v-dialog>
   </v-container>
@@ -52,8 +51,8 @@
 import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
 import EditAppForm from "@/components/forms/EditAppForm";
-import MyAppsWidget from "@/components/widgets/MyAppsWidget"
-import MyRegisteredAppsWidget from "@/components/widgets/MyRegisteredAppsWidget"
+import MyAppsWidget from "@/components/widgets/MyAppsWidget";
+import MyRegisteredAppsWidget from "@/components/widgets/MyRegisteredAppsWidget";
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -65,7 +64,7 @@ export default {
     CreateAppForm,
     EditAppForm,
     MyAppsWidget,
-    MyRegisteredAppsWidget
+    MyRegisteredAppsWidget,
   },
   data: () => ({
     user: new User(),
@@ -119,7 +118,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser"])
+    ...mapGetters("settingsModule", ["getUser"]),
   },
   watch: {
     "$store.state.settingsModule.user": {
