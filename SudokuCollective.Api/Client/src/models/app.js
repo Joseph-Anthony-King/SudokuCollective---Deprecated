@@ -7,7 +7,9 @@ class App {
       this.devUrl = "";
       this.liveUrl = "";
       this.isActive = false;
+      this.active = "";
       this.inDevelopment = false;
+      this.status = "";
       this.permitSuperUserAccess = false;
       this.permitCollectiveLogins = false;
       this.disableCustomUrls = false;
@@ -27,7 +29,9 @@ class App {
       this.devUrl = data.devUrl;
       this.liveUrl = data.liveUrl;
       this.isActive = data.isActive;
+      this.active = data.isActive ? "Active" : "Deactivated";
       this.inDevelopment = data.inDevelopment;
+      this.status = data.inDevelopment ? "In Development" : "In Production";
       this.permitSuperUserAccess = data.permitSuperUserAccess;
       this.permitCollectiveLogins = data.permitCollectiveLogins;
       this.disableCustomUrls = data.disableCustomUrls;

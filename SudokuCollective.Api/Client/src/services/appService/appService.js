@@ -96,6 +96,22 @@ const getMyApps = async function () {
   }
 };
 
+const getApps = async function () {
+  try {
+    const config = {
+      method: "post",
+      url: `${getAppEnpoint}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    return await axios(config);
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
 const getRegisteredApps = async function (userid) {
   try {
     let params = `/${userid}`;
@@ -363,6 +379,7 @@ export const appService = {
   postLicense,
   getLicense,
   getMyApps,
+  getApps,
   getRegisteredApps,
   getAppUsers,
   getNonAppUsers,

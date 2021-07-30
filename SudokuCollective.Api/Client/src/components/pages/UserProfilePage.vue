@@ -2,12 +2,10 @@
   <v-container fluid>
     <UserProfileForm
       v-on:edit-profile-event="openEditProfileForm" />
-
     <v-dialog v-model="editingProfile" persistent max-width="600px">
       <EditProfileForm
         :editProfileFormStatus="editingProfile"
-        v-on:edit-user-profile-event="closeEditProfileForm"
-      />
+        v-on:edit-user-profile-event="closeEditProfileForm" />
     </v-dialog>
   </v-container>
 </template>

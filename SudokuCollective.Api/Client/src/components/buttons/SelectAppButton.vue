@@ -69,13 +69,9 @@ export default {
 
     releaseStatus() {
       if (!this.$props.app.isActive) {
-        return "Deactivated";
+        return this.$props.app.active;
       } else {
-        if (this.$props.app.inDevelopment) {
-          return "In Development";
-        } else {
-          return "In Production";
-        }
+        return this.$props.app.status;
       }
     },
   },

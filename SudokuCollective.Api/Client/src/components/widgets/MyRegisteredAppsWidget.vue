@@ -7,13 +7,12 @@
           >
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
-            <div v-for="(app, index) in apps" v-bind:key="app">
+            <div v-for="(app, index) in apps" v-bind:key="app.id">
               <SelectAppButton                
                 :app="app"
                 :key="index"
                 :index="index"
-                v-on:click.native="appAvailable(app) ? openUrl(app) : null"
-              />
+                v-on:click.native="appAvailable(app) ? openUrl(app) : null" />
               <DeregisterAppButton 
                 v-if="app.id !== 1"
                 v-on:click.native="deregister(app)" />
@@ -111,8 +110,8 @@ export default {
     ...mapGetters("settingsModule", ["getUser"]),
     ...mapGetters("appModule", [ "getRegisteredApps" ]),    
     title() {
-      const apps = this.$data.apps.length === 1 ? "app" : "apps";
-      return "You are currently registered with " + this.$data.apps.length + " " + apps;
+      const apps = this.$data.apps.length === 1 ? "App" : "Apps";
+      return "You are Currently Registered with " + this.$data.apps.length + " " + apps;
     }
   },
   async created() {

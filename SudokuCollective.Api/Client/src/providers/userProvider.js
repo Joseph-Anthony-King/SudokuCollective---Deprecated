@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { userService } from "@/services/userService/userService";
 import User from "@/models/user";
 
@@ -10,6 +11,39 @@ const getUser = async function (id) {
       success: response.data.success,
       message: response.data.message.substring(17),
       user: new User(response.data.user),
+    };
+  } else {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  }
+};
+
+const getUsers = async function () {
+  var response = await userService.getUsers();
+
+  if (response.data.success) {
+    response.data.users = _.sortBy
+      (response.data.users, 
+        function(user) {
+          return user.id
+        });
+
+    let users = [];
+    
+    if (response.data.users.length > 0) {
+      response.data.users.forEach((user) => {
+        users.push(new User(user));
+      });
+    }
+
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+      users: users
     };
   } else {
     return {
@@ -101,6 +135,7 @@ const cancelAllEmailRequests = async function () {
 
 export const userProvider = {
   getUser,
+  getUsers,
   updateUser,
   deleteUser,
   requestPasswordReset,

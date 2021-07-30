@@ -145,6 +145,45 @@ const getMyApps = async function () {
   }
 };
 
+const getApps = async function () {
+  const response = await appService.getApps();
+
+  if (response.data.success) {
+    response.data.apps = _.sortBy
+      (response.data.apps, 
+        function(app) {
+          return app.id
+        });
+
+    let tempArray = [];
+
+    for (const app of response.data.apps) {
+      const newApp = new App(app);
+      const licenseResponse = await appService.getLicense(newApp.id);
+      if (licenseResponse.data.success) {
+        newApp.updateLicense(licenseResponse.data.license);
+      }
+      const appUsersResponse = await appService.getAppUsers(newApp.id);
+      appUsersResponse.data.users.forEach((user) => {
+        const tempUser = new User(user);
+        newApp.users.push(tempUser);
+      });
+      tempArray.push(newApp);
+    }
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+      apps: tempArray,
+    };
+  } else {
+    return {
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  }
+};
+
 const getRegisteredApps = async function (userid) {
   const response = await appService.getRegisteredApps(userid);
 
@@ -322,6 +361,7 @@ export const appProvider = {
   postLicense,
   updateApp,
   getMyApps,
+  getApps,
   getRegisteredApps,
   getNonAppUsers,
   deleteApp,

@@ -8,18 +8,15 @@
           <div class="app-buttons-scroll">
             <CreateAppButton
               :isEnabled="user.emailConfirmed"
-              v-on:click.native="openCreateAppForm"
-            />
+              v-on:click.native="openCreateAppForm" />
             <span class="no-apps-message" v-if="apps.length === 0"
-              >Time to Get Coding!</span
-            >
+              >Time to Get Coding!</span>
             <SelectAppButton
               v-for="(app, index) in apps"
               :app="app"
               :key="index"
               :index="index"
-              v-on:click.native="openAppWidgets(app.id)"
-            />
+              v-on:click.native="openAppWidgets(app.id)" />
           </div>
         </v-container>
       </v-card-text>
@@ -37,8 +34,7 @@
           <v-tab-item value="info">
             <AppInfoWidget
               v-on:close-app-widget-event="closeAppWidgets"
-              v-on:open-edit-app-dialog-event="openEditAppForm"
-            />
+              v-on:open-edit-app-dialog-event="openEditAppForm" />
           </v-tab-item>
 
           <v-tab href="#app-users"> App Users </v-tab>
@@ -53,7 +49,7 @@
         </v-tabs>
       </v-card-text>
     </v-card>
-    <div class="card-spacer" v-if="openingAppWidgets"></div>
+    <div class="card-spacer"></div>
   </div>
 </template>
 
@@ -154,8 +150,8 @@ export default {
       "getSelectedApp",
     ]),
     title() {
-      const licenses = this.$data.apps.length === 1 ? "license" : "licenses";
-      return "You currently have " + this.$data.apps.length + " app " + licenses;
+      const licenses = this.$data.apps.length === 1 ? "License" : "Licenses";
+      return "You Currently have " + this.$data.apps.length + " App " + licenses;
     }
   },
   watch: {
