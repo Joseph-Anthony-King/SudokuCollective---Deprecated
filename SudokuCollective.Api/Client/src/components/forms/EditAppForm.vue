@@ -202,7 +202,7 @@ export default {
     durations: [],
   }),
   methods: {
-    ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
+    ...mapActions("appModule", ["updateUsersSelectedApp", "replaceUsersApp"]),
 
     submit() {
       const action = [
@@ -236,9 +236,9 @@ export default {
 
                 this.$data.app = response.app;
 
-                this.updateSelectedApp(this.$data.app);
+                this.updateUsersSelectedApp(this.$data.app);
 
-                this.replaceApp(this.$data.app);
+                this.replaceUsersApp(this.$data.app);
 
                 showToast(
                   this,
@@ -283,7 +283,7 @@ export default {
     },
 
     reset() {
-      this.$data.app = new App(this.getSelectedApp);
+      this.$data.app = new App(this.getUsersSelectedApp);
       this.$data.editAppFormIsValid = true;
       this.$data.dirty = false;
       document.activeElement.blur();
@@ -295,7 +295,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("appModule", ["getSelectedApp"]),
+    ...mapGetters("appModule", ["getUsersSelectedApp"]),
 
     stringRequiredRules() {
       return [(v) => !!v || "Value is required"];
@@ -317,7 +317,7 @@ export default {
   watch: {
     "$store.state.appModule.selectedApp": {
       handler: function (val, oldVal) {
-        this.$data.app = new App(this.getSelectedApp);
+        this.$data.app = new App(this.getUsersSelectedApp);
       },
     },
     "app.timeFrame": {
@@ -361,7 +361,7 @@ export default {
     },
   },
   async created() {
-    this.$data.app = new App(this.getSelectedApp);
+    this.$data.app = new App(this.getUsersSelectedApp);
 
     try {
       const response = await appProvider.getTimeFrames();

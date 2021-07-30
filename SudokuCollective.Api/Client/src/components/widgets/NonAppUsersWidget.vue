@@ -129,10 +129,10 @@ export default {
     ],
   }),
   methods: {
-    ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
+    ...mapActions("appModule", ["updateUsersSelectedApp", "replaceUsersApp"]),
 
     async refreshApp() {
-      this.$data.app = this.getSelectedApp;
+      this.$data.app = this.getUsersSelectedApp;
 
       const response = await appProvider.getNonAppUsers(this.$data.app.id);
 
@@ -212,8 +212,8 @@ export default {
 
             if (response.success) {
               this.$data.app = response.app;
-              this.updateSelectedApp(this.$data.app);
-              this.replaceApp(this.$data.app);
+              this.updateUsersSelectedApp(this.$data.app);
+              this.replaceUsersApp(this.$data.app);
             }
 
             this.refreshApp();
@@ -236,7 +236,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("appModule", ["getSelectedApp"]),
+    ...mapGetters("appModule", ["getUsersSelectedApp"]),
   },
   watch: {
     "$store.state.appModule.selectedApp": {

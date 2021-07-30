@@ -362,7 +362,7 @@ export default {
     user: new User(),
   }),
   methods: {
-    ...mapActions("appModule", ["updateSelectedApp", "removeApps"]),
+    ...mapActions("appModule", ["updateUsersSelectedApp", "removeUsersApps"]),
     ...mapActions("settingsModule", ["updateAuthToken", "updateUser"]),
 
     editProfile() {
@@ -742,8 +742,8 @@ export default {
 
                 this.updateUser(this.$data.user);
                 this.updateAuthToken("");
-                this.updateSelectedApp(new App());
-                this.removeApps();
+                this.updateUsersSelectedApp(new App());
+                this.removeUsersApps();
 
                 if (this.$router.currentRoute.path !== "/") {
                   this.$router.push("/");

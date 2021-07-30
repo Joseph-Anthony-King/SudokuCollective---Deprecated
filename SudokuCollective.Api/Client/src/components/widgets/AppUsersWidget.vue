@@ -166,15 +166,15 @@ export default {
     ],
   }),
   methods: {
-    ...mapActions("appModule", ["updateSelectedApp", "replaceApp"]),
+    ...mapActions("appModule", ["updateUsersSelectedApp", "replaceUsersApp"]),
 
     async refreshApp() {
       var response = await appProvider.getApp(this.$data.app.id);
 
       if (response.success) {
         this.$data.app = response.app;
-        this.updateSelectedApp(this.$data.app);
-        this.replaceApp(this.$data.app);
+        this.updateUsersSelectedApp(this.$data.app);
+        this.replaceUsersApp(this.$data.app);
       }
 
       this.$data.selectedUsers = [];
@@ -450,7 +450,7 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getRequestorId"]),
-    ...mapGetters("appModule", ["getSelectedApp"]),
+    ...mapGetters("appModule", ["getUsersSelectedApp"]),
 
     filterNonAdmins() {
       const filteredArray = _.filter(this.$data.selectedUsers, function (user) {
@@ -469,7 +469,7 @@ export default {
   watch: {
     "$store.state.appModule.selectedApp": {
       handler: function (val, oldVal) {
-        this.$data.app = new App(this.getSelectedApp);
+        this.$data.app = new App(this.getUsersSelectedApp);
 
         this.$data.app.users.forEach((user) => {
           user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
@@ -478,7 +478,7 @@ export default {
     },
   },
   created() {
-    this.$data.app = new App(this.getSelectedApp);
+    this.$data.app = new App(this.getUsersSelectedApp);
 
     this.$data.app.users.forEach((user) => {
       user["signedUpDate"] = convertStringToDateTime(user.dateCreated);

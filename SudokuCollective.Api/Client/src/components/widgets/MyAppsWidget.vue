@@ -118,8 +118,8 @@ export default {
   }),
   methods: {
     ...mapActions("appModule", [
-      "updateSelectedApp",
-      "updateApps",
+      "updateUsersSelectedApp",
+      "updateUsersApps",
     ]),
 
     openCreateAppForm() {
@@ -132,22 +132,22 @@ export default {
 
     openAppWidgets(id) {
       this.$data.openingAppWidgets = true;
-      this.$data.app = this.getAppById(id);
-      this.updateSelectedApp(this.$data.app);
+      this.$data.app = this.getUsersAppById(id);
+      this.updateUsersSelectedApp(this.$data.app);
     },
 
     closeAppWidgets() {
       this.$data.openingAppWidgets = false;
       this.$data.app = new App();
-      this.updateSelectedApp(this.$data.app);
+      this.updateUsersSelectedApp(this.$data.app);
     },
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
     ...mapGetters("appModule", [
-      "getAppById",
-      "getApps",
-      "getSelectedApp",
+      "getUsersAppById",
+      "getUsersApps",
+      "getUsersSelectedApp",
     ]),
     title() {
       const licenses = this.$data.apps.length === 1 ? "License" : "Licenses";
@@ -157,7 +157,7 @@ export default {
   watch: {
     "$store.state.appModule.apps": {
       handler: function (val, oldVal) {
-        this.$data.apps = this.getApps;
+        this.$data.apps = this.getUsersApps;
       },
       deep: true,
     },
@@ -165,20 +165,20 @@ export default {
   async created() {
     this.$data.processing = true;
     this.$data.user = new User(this.getUser);
-    const selectedApp = this.getSelectedApp;
+    const selectedApp = this.getUsersSelectedApp;
 
     if (selectedApp.id !== 0) {
       this.openAppWidgets(selectedApp.id);
     }
 
-    const storeApps = this.getApps;
+    const storeApps = this.getUsersApps;
 
     if (storeApps.length === 0) {
       const response = await appProvider.getMyApps();
 
       if (response.success) {
         this.$data.apps = response.apps;
-        this.updateApps(this.$data.apps);
+        this.updateUsersApps(this.$data.apps);
       }
     } else {
       storeApps.forEach((store) => {

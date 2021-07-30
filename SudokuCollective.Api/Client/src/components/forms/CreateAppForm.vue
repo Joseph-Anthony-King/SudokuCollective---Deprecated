@@ -113,7 +113,7 @@ export default {
     dirty: false,
   }),
   methods: {
-    ...mapActions("appModule", ["updateApps"]),
+    ...mapActions("appModule", ["updateUsersApps"]),
 
     submit() {
       if (this.getCreateAppFormIsValid) {
@@ -133,7 +133,7 @@ export default {
                 );
 
                 if (response.status === 201) {
-                  this.updateApps(response.apps);
+                  this.updateUsersApps(response.apps);
 
                   this.reset();
 

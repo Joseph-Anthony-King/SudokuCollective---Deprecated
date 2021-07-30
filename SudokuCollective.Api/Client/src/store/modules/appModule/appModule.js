@@ -1,12 +1,17 @@
 import _ from "lodash";
 import {
+  UPDATE_USERS_SELECTED_APP,
+  UPDATE_USERS_APPS,
+  UPDATE_REGISTERED_APPS,
+  REMOVE_USERS_APP,
+  REMOVE_USERS_APPS,
+  REMOVE_REGISTERED_APPS,
+  REPLACE_USERS_APP,
   UPDATE_SELECTED_APP,
   UPDATE_APPS,
-  UPDATE_REGISTERED_APPS,
   REMOVE_APP,
   REMOVE_APPS,
-  REMOVE_REGISTERED_APPS,
-  REPLACE_APP,
+  REPLACE_APP
 } from "./mutation-types";
 
 import App from "@/models/app";
@@ -15,22 +20,24 @@ const appModule = {
   namespaced: true,
 
   state: () => ({
-    selectedApp: new App(),
-    apps: [],
+    usersSelectedApp: new App(),
+    usersApps: [],
     registeredApps: [],
+    selectedApp: new App(),
+    apps: []
   }),
 
   mutations: {
-    [UPDATE_SELECTED_APP](state, app) {
-      state.selectedApp = new App(app);
+    [UPDATE_USERS_SELECTED_APP](state, app) {
+      state.usersSelectedApp = new App(app);
     },
-    [UPDATE_APPS](state, apps) {
+    [UPDATE_USERS_APPS](state, apps) {
       apps.forEach((app) => {
-        const index = _.findIndex(state.apps, { id: app.id });
+        const index = _.findIndex(state.usersApps, { id: app.id });
         if (index !== -1) {
-          state.apps.splice(index, 1, app);
+          state.usersApps.splice(index, 1, app);
         } else {
-          state.apps.push(app);
+          state.usersApps.push(app);
         }
       });
     },
@@ -44,6 +51,39 @@ const appModule = {
         }
       });
     },
+    [REMOVE_USERS_APP](state, app) {
+      const index = _.findIndex(state.usersApps, { id: app.id });
+      if (index !== -1) {
+        state.usersApps.splice(index, 1);
+      }
+    },
+    [REMOVE_USERS_APPS](state) {
+      state.usersApps = [];
+    },
+    [REMOVE_REGISTERED_APPS](state) {
+      state.registeredApps = [];
+    },
+    [REPLACE_USERS_APP](state, app) {
+      const index = _.findIndex(state.usersApps, { id: app.id });
+      if (index !== -1) {
+        state.usersApps.splice(index, 1, app);
+      } else {
+        state.usersApps.push(app);
+      }
+    },
+    [UPDATE_APP](state, app) {
+      state.selectedApp = new App(app);
+    },
+    [UPDATE_APPS](state, apps) {
+      apps.forEach((app) => {
+        const index = _.findIndex(state.apps, { id: app.id });
+        if (index !== -1) {
+          state.apps.splice(index, 1, app);
+        } else {
+          state.apps.push(app);
+        }
+      });
+    },
     [REMOVE_APP](state, app) {
       const index = _.findIndex(state.apps, { id: app.id });
       if (index !== -1) {
@@ -52,9 +92,6 @@ const appModule = {
     },
     [REMOVE_APPS](state) {
       state.apps = [];
-    },
-    [REMOVE_REGISTERED_APPS](state) {
-      state.registeredApps = [];
     },
     [REPLACE_APP](state, app) {
       const index = _.findIndex(state.apps, { id: app.id });
@@ -67,30 +104,57 @@ const appModule = {
   },
 
   actions: {
+    updateUsersSelectedApp({ commit }, app) {
+      commit(UPDATE_USERS_SELECTED_APP, app);
+    },
+    updateUsersApps({ commit }, apps) {
+      commit(UPDATE_USERS_APPS, apps);
+    },
+    updateRegisteredApps({ commit }, registeredApps) {
+      commit(UPDATE_REGISTERED_APPS, registeredApps);
+    },
+    removeUsersApp({ commit }, app) {
+      commit(REMOVE_USERS_APP, app);
+    },
+    removeUsersApps({ commit }) {
+      commit(REMOVE_USERS_APPS);
+    },
+    removeRegisteredApps({ commit }) {
+      commit(REMOVE_REGISTERED_APPS);
+    },
+    replaceUsersApp({ commit }, app) {
+      commit(REPLACE_USERS_APP, app);
+    },
     updateSelectedApp({ commit }, app) {
       commit(UPDATE_SELECTED_APP, app);
     },
     updateApps({ commit }, apps) {
       commit(UPDATE_APPS, apps);
     },
-    updateRegisteredApps({ commit }, registeredApps) {
-      commit(UPDATE_REGISTERED_APPS, registeredApps);
-    },
     removeApp({ commit }, app) {
       commit(REMOVE_APP, app);
     },
-    removeApps({ commit }) {
+    removeUsersApps({ commit }) {
       commit(REMOVE_APPS);
     },
-    removeRegisteredApps({ commit }) {
-      commit(REMOVE_REGISTERED_APPS);
-    },
-    replaceApp({ commit }, app) {
+    replaceUsersApp({ commit }, app) {
       commit(REPLACE_APP, app);
     },
   },
 
   getters: {
+    getUsersSelectedApp: (state) => {
+      return state.usersSelectedApp;
+    },
+    getUsersAppById: (state) => (id) => {
+      return state.usersApps.find((app) => app.id === id);
+    },
+    getUsersApps: (state) => {
+      return state.usersApps;
+    },
+    getRegisteredApps: (state) => {
+      return state.registeredApps;
+    },
     getSelectedApp: (state) => {
       return state.selectedApp;
     },
@@ -99,9 +163,6 @@ const appModule = {
     },
     getApps: (state) => {
       return state.apps;
-    },
-    getRegisteredApps: (state) => {
-      return state.registeredApps;
     },
   },
 };

@@ -269,10 +269,10 @@ export default {
   }),
   methods: {
     ...mapActions("appModule", [
-      "updateSelectedApp",
-      "updateApps",
-      "removeApp",
-      "replaceApp",
+      "updateUsersSelectedApp",
+      "updateUsersApps",
+      "removeUsersApp",
+      "replaceUsersApp",
     ]),
 
     async copyLicenseToClipboard() {
@@ -302,8 +302,8 @@ export default {
               if (response.status === 200) {
                 this.$data.app = response.app;
 
-                this.updateApps(response.apps);
-                this.updateSelectedApp(this.$data.app);
+                this.updateUsersApps(response.apps);
+                this.updateUsersSelectedApp(this.$data.app);
 
                 showToast(
                   this,
@@ -363,9 +363,9 @@ export default {
               const response = await appProvider.deleteApp(this.$data.app);
 
               if (response.status === 200) {
-                this.removeApp(this.$data.app);
-                this.updateApps(response.apps);
-                this.updateSelectedApp(response.app);
+                this.removeUsersApp(this.$data.app);
+                this.updateUsersApps(response.apps);
+                this.updateUsersSelectedApp(response.app);
 
                 showToast(
                   this,
@@ -421,8 +421,8 @@ export default {
 
       if (response.success) {
         this.$data.app = response.app;
-        this.updateSelectedApp(this.$data.app);
-        this.replaceApp(this.$data.app);
+        this.updateUsersSelectedApp(this.$data.app);
+        this.replaceUsersApp(this.$data.app);
       }
     },
 
@@ -435,7 +435,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("appModule", ["getSelectedApp"]),
+    ...mapGetters("appModule", ["getUsersSelectedApp"]),
 
     getAccessPeriod() {
       let duration;
@@ -721,12 +721,12 @@ export default {
   watch: {
     "$store.state.appModule.selectedApp": {
       handler: function (val, oldVal) {
-        this.$data.app = new App(this.getSelectedApp);
+        this.$data.app = new App(this.getUsersSelectedApp);
       },
     },
   },
   created() {
-    this.$data.app = new App(this.getSelectedApp);
+    this.$data.app = new App(this.getUsersSelectedApp);
   },
 };
 </script>

@@ -110,8 +110,8 @@ export default {
   }),
   methods: {
     ...mapActions("appModule", [
-      "updateSelectedApp",
-      "removeApps",
+      "updateUsersSelectedApp",
+      "removeUsersApps",
       "removeRegisteredApps",
     ]),
     ...mapActions("settingsModule", [
@@ -157,8 +157,8 @@ export default {
 
             this.updateUser(this.$data.user);
             this.updateAuthToken("");
-            this.updateSelectedApp(new App());
-            this.removeApps();
+            this.updateUsersSelectedApp(new App());
+            this.removeUsersApps();
             this.removeRegisteredApps();
 
             if (
