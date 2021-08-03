@@ -10,3 +10,4 @@ export const UPDATE_APPS = "updateApps";
 export const REMOVE_APP = "removeApp";
 export const REMOVE_APPS = "removeApps";
 export const REPLACE_APP = "replaceApp";
+export const UPDATE_APP_OWNER = "updateAppOwner";

@@ -37,8 +37,7 @@
 
 <script>
 import _ from "lodash";
-import { appProvider } from "@/providers/appProvider";
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
+import { mapGetters } from "vuex";
 
 export default {
   name: "AppsWidget",
@@ -54,13 +53,17 @@ export default {
         value: "name",
       },
       { text: "Id", value: "id" },
+      { text: "Owner", value : "owner.userName" },
       { text: "Status", value: "status" },
       { text: "Active", value: "active" },
+      { text: "User Count", value: "users.length" },
       { text: "Date Created", value: "dateCreated" },
     ],
     processing: false
   }),
   computed: {
+    ...mapGetters("appModule", ["getApps"]),
+
     title() {
       const apps = this.$data.apps.length == 1 ? "App" : "Apps";
       
@@ -87,16 +90,7 @@ export default {
   },
   async created() {
     this.$data.processing = true;
-    const response = await appProvider.getApps();
-
-    if (response.success) {
-      this.$data.apps = response.apps;
-    }
-    console.log(this.$data.apps);
-
-    this.$data.apps.forEach((app) => {
-      app["dateCreated"] = convertStringToDateTime(app.dateCreated);
-    });
+    this.$data.apps = this.getApps;
     this.$data.processing = false;
   }
 }

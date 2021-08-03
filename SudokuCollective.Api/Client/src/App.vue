@@ -64,10 +64,12 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmationService";
 import { appProvider } from "@/providers/appProvider";
+import { userProvider } from "@/providers/userProvider";
 import AppBar from "@/components/navigation/AppBar";
 import NavigationBar from "@/components/navigation/NavigationBar";
 import LoginForm from "@/components/forms/LoginForm";
@@ -81,6 +83,7 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
+import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "App",
@@ -113,6 +116,8 @@ export default {
       "updateUsersSelectedApp",
       "removeUsersApps",
       "removeRegisteredApps",
+      "updateApps",
+      "removeApps"
     ]),
     ...mapActions("settingsModule", [
       "confirmBaseURL",
@@ -120,10 +125,43 @@ export default {
       "updateApp",
       "updateUser",
     ]),
+    ...mapActions("userModule", [
+      "updateUsers",
+      "removeUsers"
+    ]),
 
-    login(user, token) {
+    async login(user, token) {
       if (user !== null && token !== null) {
         this.userLoginProcess(user, token);
+
+        if (this.$data.user.isSuperUser) {
+          
+          var userResponse = await userProvider.getUsers();
+
+          var users = [];
+
+          userResponse.users.forEach((u) => {
+            const user = new User(u);
+            users.push(user);
+          });
+
+          this.updateUsers(users);
+
+          var appsResponse = await appProvider.getApps();
+
+          var apps = [];
+
+          appsResponse.apps.forEach((a) => {
+            const app = new App(a);
+            app["dateCreated"] = convertStringToDateTime(app.dateCreated);
+            app["owner"] = _.find(users, function (user) {
+              return user.id === app.ownerId;
+            })
+            apps.push(app);
+          });
+
+          this.updateApps(apps);
+        }
 
         let logInMessage;
 
@@ -160,6 +198,8 @@ export default {
             this.updateUsersSelectedApp(new App());
             this.removeUsersApps();
             this.removeRegisteredApps();
+            this.removeApps();
+            this.removeUsers();
 
             if (
               this.$router.currentRoute.path !== "/" &&

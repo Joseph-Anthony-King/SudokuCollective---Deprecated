@@ -37,8 +37,7 @@
 </style>
 
 <script>
-import { userProvider } from "@/providers/userProvider";
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
+import { mapGetters } from "vuex";
 
 export default {
   name: "UsersWidget",
@@ -63,6 +62,8 @@ export default {
     processing: false
   }),
   computed: {
+    ...mapGetters("userModule", ["getUsers"]),
+
     title() {
       const users = this.$data.users.length == 1 ? "User" : "Users"
       return this.$data.users.length + " " + users + " Currently Registered";
@@ -70,16 +71,7 @@ export default {
   },
   async created() {
     this.$data.processing = true;
-    const response = await userProvider.getUsers();
-
-    if (response.success) {
-      this.$data.users = response.users;
-    }
-    console.log(this.$data.users);
-
-    this.$data.users.forEach((user) => {
-      user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
-    });
+    this.$data.users = this.getUsers;
     this.$data.processing = false;
   }
 }
