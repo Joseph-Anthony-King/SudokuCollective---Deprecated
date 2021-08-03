@@ -142,10 +142,10 @@ export default {
 
           userResponse.users.forEach((u) => {
             const user = new User(u);
+            user["dateCreated"] = convertStringToDateTime(user.dateCreated);
+            user["licenses"] = 0;
             users.push(user);
           });
-
-          this.updateUsers(users);
 
           var appsResponse = await appProvider.getApps();
 
@@ -154,12 +154,22 @@ export default {
           appsResponse.apps.forEach((a) => {
             const app = new App(a);
             app["dateCreated"] = convertStringToDateTime(app.dateCreated);
+            app["dateUpdated"] = convertStringToDateTime(app.dateUpdated);
             app["owner"] = _.find(users, function (user) {
               return user.id === app.ownerId;
             })
             apps.push(app);
           });
 
+          apps.forEach((app) => {
+            users.forEach((user) => {
+              if (app.ownerId === user.id) {
+                user.licenses++;
+              }
+            });
+          });
+
+          this.updateUsers(users);
           this.updateApps(apps);
         }
 
