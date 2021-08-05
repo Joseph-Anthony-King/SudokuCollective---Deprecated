@@ -18,6 +18,7 @@
           </v-card-title>
           <v-data-table
             v-model="selectedApps"
+            :single-select="singleSelect"
             :headers="headers"
             :items="apps"
             show-select
@@ -27,7 +28,10 @@
           </v-data-table>
         </v-container>
       </v-card-text>
-    </v-card> 
+    </v-card>
+    <div class="card-spacer"></div>
+    <ReviewAppWidget 
+      v-if="selectedApps.length > 0"/>
   </div> 
 </template>
 
@@ -36,15 +40,23 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import _ from "lodash";
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import ReviewAppWidget from "@/components/widgets/ReviewAppWidget";
+import App from "@/models/app";
 
 export default {
   name: "AppsWidget",
+  components: {
+    ReviewAppWidget,
+  },
   data: () => ({
     apps: [],
     search: "",
     selectedApps: [],
+    singleSelect: true,
     headers: [
       {
         text: "Apps",
@@ -61,6 +73,9 @@ export default {
     ],
     processing: false
   }),
+  methods: {
+    ...mapActions("appModule", ["updateSelectedApp"]),
+  },
   computed: {
     ...mapGetters("appModule", ["getApps"]),
 
@@ -87,6 +102,17 @@ export default {
         + prodApps.length + prodSummary  + "and " 
         + devApps.length + devSummary;
     }
+  },
+  watch: {
+    "selectedApps": {
+      handler: function (val, oldVal) {
+        if (val.length > 0){
+          this.updateSelectedApp(val[0]);
+        } else {
+          this.updateSelectedApp(new App());
+        }
+      },
+    },
   },
   async created() {
     this.$data.processing = true;

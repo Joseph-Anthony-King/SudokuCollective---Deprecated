@@ -11,81 +11,8 @@
             Administrator</v-card-title
           >
           <hr class="title-spacer" />
-          <v-row>
-            <v-col cols="12" lg="6" xl="6">
-              <v-text-field
-                v-model="user.id"
-                label="Id"
-                prepend-icon="mdi-account-circle"
-                readonly
-              ></v-text-field>
-              <v-text-field
-                v-model="user.userName"
-                label="User Name"
-                prepend-icon="mdi-account-circle"
-                readonly
-              ></v-text-field>
-              <v-text-field
-                v-model="user.firstName"
-                label="First Name"
-                prepend-icon="mdi-account-circle"
-                readonly
-              ></v-text-field>
-              <v-text-field
-                v-model="user.lastName"
-                label="Last Name"
-                prepend-icon="mdi-account-circle"
-                readonly
-              ></v-text-field>
-              <v-text-field
-                v-model="user.nickName"
-                label="Nickname"
-                prepend-icon="mdi-account-circle"
-                readonly
-              ></v-text-field>
-              <v-checkbox
-                v-model="user.isAdmin"
-                label="Admin Privileges"
-                readonly
-              ></v-checkbox>
-              <v-checkbox
-                v-if="user.isSuperUser"
-                v-model="user.isSuperUser"
-                label="Super User Privileges"
-                readonly
-              ></v-checkbox>
-            </v-col>
-            <v-col cols="12" lg="6" xl="6">
-              <v-text-field
-                v-model="displayDateCreated"
-                label="Date Created"
-                hint="MM/DD/YYYY format"
-                persistent-hint
-                prepend-icon="mdi-calendar"
-                readonly
-              ></v-text-field>
-              <v-text-field
-                v-if="user.dateUpdated !== '0001-01-01T00:00:00Z'"
-                v-model="displayDateUpdated"
-                label="Date Updated"
-                hint="MM/DD/YYYY format"
-                persistent-hint
-                prepend-icon="mdi-calendar"
-                readonly
-              ></v-text-field>
-              <v-text-field
-                v-model="user.email"
-                label="Email"
-                readonly
-                prepend-icon="mdi-email"
-              ></v-text-field>
-              <v-checkbox
-                v-model="user.emailConfirmed"
-                label="Email Confirmed"
-                readonly
-              ></v-checkbox>
-            </v-col>
-          </v-row>
+          <UserProfileWidget
+            :user="user" />
         </v-container>
       </v-card-text>
     </v-card>
@@ -343,6 +270,7 @@ import { mapGetters } from "vuex";
 import { userProvider } from "@/providers/userProvider";
 import { registerService } from "@/services/registerService/registerService";
 import { appProvider } from "@/providers/appProvider";
+import UserProfileWidget from "@/components/widgets/UserProfileWidget";
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -358,6 +286,9 @@ import {
 
 export default {
   name: "UserProfileForm",
+  components: {
+    UserProfileWidget
+  },
   data: () => ({
     user: new User(),
   }),

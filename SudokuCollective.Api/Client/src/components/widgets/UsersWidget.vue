@@ -18,6 +18,7 @@
           </v-card-title>
           <v-data-table
             v-model="selectedUsers"
+            :single-select="singleSelect"
             :headers="headers"
             :items="users"
             show-select
@@ -29,6 +30,8 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
+    <ReviewUserWidget 
+      v-if="selectedUsers.length > 0"/>
   </div>
 </template>
 
@@ -37,14 +40,22 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import ReviewUserWidget from "@/components/widgets/ReviewUserWidget";
+import User from "@/models/user";
 
 export default {
   name: "UsersWidget",
+  components: {
+    ReviewUserWidget,
+  },
   data: () => ({
     users: [],
     search: "",
     selectedUsers: [],
+    singleSelect: true,
     headers: [
       {
         text: "Users",
@@ -62,6 +73,11 @@ export default {
     ],
     processing: false
   }),
+  methods: {
+    ...mapActions("userModule", [
+      "updateSelectedUser",
+    ]),
+  },
   computed: {
     ...mapGetters("userModule", ["getUsers"]),
 
@@ -69,6 +85,17 @@ export default {
       const users = this.$data.users.length == 1 ? "User" : "Users"
       return this.$data.users.length + " " + users + " Currently Registered";
     }
+  },
+  watch: {
+    "selectedUsers": {
+      handler: function (val, oldVal) {
+        if (val.length > 0){
+          this.updateSelectedUser(val[0]);
+        } else {
+          this.updateSelectedUser(new User());
+        }
+      },
+    },
   },
   async created() {
     this.$data.processing = true;

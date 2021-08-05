@@ -28,139 +28,8 @@
           </a>
         </v-card-title>
         <hr class="title-spacer" />
-        <v-row>
-          <v-col cols="12" lg="6" xl="6">
-            <v-text-field
-              v-model="app.id"
-              label="Id"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.name"
-              label="Name"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.license"
-              label="App License"
-              prepend-icon="wysiwyg"
-              append-icon="content_copy"
-              @click:append="copyLicenseToClipboard"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="getAccessPeriod"
-              label="Authorization Token Access Period"
-              prepend-icon="av_timer"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.devUrl"
-              label="Development Url"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.liveUrl"
-              label="Production Url"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.customEmailConfirmationAction"
-              label="Custom Email Confirmation Action"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.customPasswordResetAction"
-              label="Custom Password Reset Action"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="app.userCount"
-              label="User Count"
-              prepend-icon="wysiwyg"
-              readonly
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="6" xl="6">
-            <v-text-field
-              v-model="getDateCreated"
-              label="Date Created"
-              hint="MM/DD/YYYY format"
-              persistent-hint
-              prepend-icon="mdi-calendar"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-if="app.dateUpdated !== '0001-01-01T00:00:00Z'"
-              v-model="getDateUpdated"
-              label="Date Updated"
-              hint="MM/DD/YYYY format"
-              persistent-hint
-              prepend-icon="mdi-calendar"
-              readonly
-            ></v-text-field>
-            <v-checkbox
-              v-model="app.isActive"
-              :label="
-                app.isActive
-                  ? 'App is Active'
-                  : 'App is deactivated, API requests will be denied as invalid'
-              "
-              readonly
-            ></v-checkbox>
-            <v-checkbox
-              v-model="app.inDevelopment"
-              :label="
-                app.inDevelopment
-                  ? 'App is in Development'
-                  : 'App is in Production'
-              "
-              readonly
-            ></v-checkbox>
-            <v-checkbox
-              v-model="app.permitSuperUserAccess"
-              :label="
-                app.permitSuperUserAccess
-                  ? 'Super User has Admin Access Rights to this App'
-                  : 'Super User does not have Admin Access Rights to this App'
-              "
-              readonly
-            ></v-checkbox>
-            <v-checkbox
-              v-model="app.permitCollectiveLogins"
-              :label="
-                app.permitCollectiveLogins
-                  ? 'User Registration is not Required to Gain Access to this App'
-                  : 'User Registration is Required to Gain Access to this App'
-              "
-              readonly
-            ></v-checkbox>
-            <v-checkbox
-              v-model="app.disableCustomUrls"
-              :label="
-                app.disableCustomUrls
-                  ? 'Custom Urls for Email Confirmations and Password Resets are disabled'
-                  : 'Custom Urls for Email Confirmations and Password Resets are enabled'
-              "
-              readonly
-            ></v-checkbox>
-            <v-checkbox
-              v-model="isOwnersEmailConfirmed"
-              :label="
-                isOwnersEmailConfirmed
-                  ? 'Owner\'s Email is Confirmed'
-                  : 'Owner\'s Email is not Confirmed'
-              "
-              readonly
-            ></v-checkbox>
-          </v-col>
-        </v-row>
+          <AppProfileWidget
+            :app="app" />
       </v-container>
     </v-card-text>
     <hr />
@@ -254,6 +123,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
+import AppProfileWidget from "@/components/widgets/AppProfileWidget";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -264,6 +134,9 @@ import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctio
 
 export default {
   name: "AppInfoWidget",
+  components: {
+    AppProfileWidget
+  },
   data: () => ({
     app: new App(),
   }),
@@ -721,12 +594,12 @@ export default {
   watch: {
     "$store.state.appModule.selectedApp": {
       handler: function (val, oldVal) {
-        this.$data.app = new App(this.getUsersSelectedApp);
+        this.$data.app = this.getUsersSelectedApp;
       },
     },
   },
   created() {
-    this.$data.app = new App(this.getUsersSelectedApp);
+    this.$data.app = this.getUsersSelectedApp;
   },
 };
 </script>

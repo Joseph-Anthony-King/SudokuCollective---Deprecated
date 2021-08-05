@@ -143,6 +143,7 @@ export default {
           userResponse.users.forEach((u) => {
             const user = new User(u);
             user["dateCreated"] = convertStringToDateTime(user.dateCreated);
+            user["dateUpdated"] = convertStringToDateTime(user.dateUpdated);
             user["licenses"] = 0;
             users.push(user);
           });
