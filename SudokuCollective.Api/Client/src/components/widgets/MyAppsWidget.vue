@@ -99,6 +99,7 @@ import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
 import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
 import User from "@/models/user";
+import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "MyAppsWidget",
@@ -177,6 +178,11 @@ export default {
       const response = await appProvider.getMyApps();
 
       if (response.success) {
+        response.apps.forEach((app) => {
+          app["dateCreated"] = convertStringToDateTime(app.dateCreated);
+          app["dateUpdated"] = convertStringToDateTime(app.dateUpdated);
+        });
+
         this.$data.apps = response.apps;
         this.updateUsersApps(this.$data.apps);
       }

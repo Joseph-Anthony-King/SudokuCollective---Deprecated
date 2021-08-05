@@ -592,7 +592,7 @@ export default {
     },
   },
   watch: {
-    "$store.state.appModule.selectedApp": {
+    "$store.state.appModule.usersSelectedApp": {
       handler: function (val, oldVal) {
         this.$data.app = this.getUsersSelectedApp;
       },
