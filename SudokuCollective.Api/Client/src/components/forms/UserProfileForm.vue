@@ -281,7 +281,6 @@ import {
 } from "@/helpers/toastHelper";
 import {
   passwordReset,
-  convertStringToDateTime,
 } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
@@ -746,14 +745,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser", "getAppId"]),
-
-    displayDateCreated: function () {
-      return convertStringToDateTime(this.$data.user.dateCreated);
-    },
-    displayDateUpdated: function () {
-      return convertStringToDateTime(this.$data.user.dateUpdated);
-    },
+    ...mapGetters("settingsModule", ["getUser", "getAppId"]),    
   },
   watch: {
     "$store.state.settingsModule.user": {

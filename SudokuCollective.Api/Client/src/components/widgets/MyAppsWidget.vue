@@ -22,34 +22,10 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
-    <v-card elevation="6" class="mx-auto" v-if="openingAppWidgets">
-      <v-container>
-        <span @click="closeAppWidgets" class="material-icons close-hover">
-          clear
-        </span>
-      </v-container>
-      <v-card-text>
-        <v-tabs fixed-tabs>
-          <v-tab href="#info"> App Info </v-tab>
-          <v-tab-item value="info">
-            <AppInfoWidget
-              v-on:close-app-widget-event="closeAppWidgets"
-              v-on:open-edit-app-dialog-event="openEditAppForm" />
-          </v-tab-item>
-
-          <v-tab href="#app-users"> App Users </v-tab>
-          <v-tab-item value="app-users">
-            <AppUsersWidget />
-          </v-tab-item>
-
-          <v-tab href="#non-app-users"> Non-App Users </v-tab>
-          <v-tab-item value="non-app-users">
-            <NonAppUsersWidget />
-          </v-tab-item>
-        </v-tabs>
-      </v-card-text>
-    </v-card>
-    <div class="card-spacer"></div>
+    <AppWidget 
+      v-if="openingAppWidgets"
+      v-on:close-app-widget-event="closeAppWidgets"
+      v-on:open-edit-app-form-event="openEditAppForm" />
   </div>
 </template>
 
@@ -82,9 +58,6 @@
   display: flex;
   overflow-x: auto;
 }
-.close-hover:hover {
-  cursor: pointer;
-}
 </style>
 
 <script>
@@ -93,20 +66,15 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import CreateAppButton from "@/components/buttons/CreateAppButton";
 import SelectAppButton from "@/components/buttons/SelectAppButton";
-import AppInfoWidget from "@/components/widgets/AppInfoWidget";
-import AppUsersWidget from "@/components/widgets/AppUsersWidget";
-import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
+import AppWidget from "@/components/widgets/AppWidget";
 import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
 import User from "@/models/user";
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "MyAppsWidget",
   components: {
-    AppInfoWidget,
-    AppUsersWidget,
-    NonAppUsersWidget,
+    AppWidget,
     CreateAppButton,
     SelectAppButton,
   },
@@ -179,11 +147,8 @@ export default {
 
       if (response.success) {
         response.apps.forEach((app) => {
-          app["dateCreated"] = convertStringToDateTime(app.dateCreated);
-          app["dateUpdated"] = convertStringToDateTime(app.dateUpdated);
+          this.$data.apps.push(new App(app));
         });
-
-        this.$data.apps = response.apps;
         this.updateUsersApps(this.$data.apps);
       }
     } else {

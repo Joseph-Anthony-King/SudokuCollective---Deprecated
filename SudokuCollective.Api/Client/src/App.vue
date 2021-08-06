@@ -83,7 +83,6 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "App",
@@ -114,6 +113,7 @@ export default {
   methods: {
     ...mapActions("appModule", [
       "updateUsersSelectedApp",
+      "updateUsersApps",
       "removeUsersApps",
       "removeRegisteredApps",
       "updateApps",
@@ -136,26 +136,22 @@ export default {
 
         if (this.$data.user.isSuperUser) {
           
-          var userResponse = await userProvider.getUsers();
+          const userResponse = await userProvider.getUsers();
 
           var users = [];
 
           userResponse.users.forEach((u) => {
             const user = new User(u);
-            user["dateCreated"] = convertStringToDateTime(user.dateCreated);
-            user["dateUpdated"] = convertStringToDateTime(user.dateUpdated);
             user["licenses"] = 0;
             users.push(user);
           });
 
-          var appsResponse = await appProvider.getApps();
+          const appsResponse = await appProvider.getApps();
 
           var apps = [];
 
           appsResponse.apps.forEach((a) => {
             const app = new App(a);
-            app["dateCreated"] = convertStringToDateTime(app.dateCreated);
-            app["dateUpdated"] = convertStringToDateTime(app.dateUpdated);
             app["owner"] = _.find(users, function (user) {
               return user.id === app.ownerId;
             })
@@ -169,9 +165,22 @@ export default {
               }
             });
           });
+          
+          const superUsersAppsResponse = await appProvider.getMyApps();
+
+          var superUsersApps = [];
+
+          superUsersAppsResponse.apps.forEach((a) => {
+            const app = new App(a);
+            app["owner"] = _.find(users, function (user) {
+              return user.id === app.ownerId;
+            })
+            superUsersApps.push(app);
+          });
 
           this.updateUsers(users);
           this.updateApps(apps);
+          this.updateUsersApps(superUsersApps);
         }
 
         let logInMessage;

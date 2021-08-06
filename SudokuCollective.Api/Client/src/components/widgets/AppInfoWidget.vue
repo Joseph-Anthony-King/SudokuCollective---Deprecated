@@ -61,7 +61,7 @@
                   class="button-full"
                   color="blue darken-1"
                   text
-                  @click="openEditAppDialog"
+                  @click="openEditAppForm"
                   v-bind="attrs"
                   v-on="on"
                 >
@@ -122,6 +122,7 @@
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appProvider } from "@/providers/appProvider";
+import User from "@/models/user";
 import App from "@/models/app";
 import AppProfileWidget from "@/components/widgets/AppProfileWidget";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -130,7 +131,6 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "AppInfoWidget",
@@ -138,6 +138,7 @@ export default {
     AppProfileWidget
   },
   data: () => ({
+    user: new User(),
     app: new App(),
   }),
   methods: {
@@ -146,6 +147,7 @@ export default {
       "updateUsersApps",
       "removeUsersApp",
       "replaceUsersApp",
+      "replaceApp"
     ]),
 
     async copyLicenseToClipboard() {
@@ -177,6 +179,10 @@ export default {
 
                 this.updateUsersApps(response.apps);
                 this.updateUsersSelectedApp(this.$data.app);
+
+                if (this.$data.user.isSuperUser) {
+                  this.replaceApp(this.$data.app)
+                }
 
                 showToast(
                   this,
@@ -293,14 +299,14 @@ export default {
       var response = await appProvider.getApp(this.$data.app.id);
 
       if (response.success) {
-        this.$data.app = response.app;
+        this.$data.app = new App(response.app);
         this.updateUsersSelectedApp(this.$data.app);
         this.replaceUsersApp(this.$data.app);
       }
     },
 
-    openEditAppDialog() {
-      this.$emit("open-edit-app-dialog-event", null, null);
+    openEditAppForm() {
+      this.$emit("open-edit-app-form-event", null, null);
     },
 
     close() {
@@ -308,6 +314,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("settingsModule", ["getUser"]),
     ...mapGetters("appModule", ["getUsersSelectedApp"]),
 
     getAccessPeriod() {
@@ -576,14 +583,6 @@ export default {
       return `Good for ${duration} ${period}`;
     },
 
-    getDateCreated() {
-      return convertStringToDateTime(this.$data.app.dateCreated);
-    },
-
-    getDateUpdated() {
-      return convertStringToDateTime(this.$data.app.dateUpdated);
-    },
-
     isOwnersEmailConfirmed() {
       const owner = this.$data.app.users.find(
         (user) => user.id === this.$data.app.ownerId
@@ -600,6 +599,7 @@ export default {
   },
   created() {
     this.$data.app = this.getUsersSelectedApp;
+    this.$data.user = this.getUser;
   },
 };
 </script>

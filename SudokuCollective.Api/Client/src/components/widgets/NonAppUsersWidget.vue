@@ -106,7 +106,6 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "NonAppUsersWidget",
@@ -141,12 +140,6 @@ export default {
       if (response.success) {
         response.users.forEach((user) => {
           this.$data.nonAppUsers.push(new User(user));
-        });
-      }
-
-      if (this.$data.nonAppUsers.length > 0) {
-        this.$data.nonAppUsers.forEach((user) => {
-          user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
         });
       }
     },
@@ -239,7 +232,7 @@ export default {
     ...mapGetters("appModule", ["getUsersSelectedApp"]),
   },
   watch: {
-    "$store.state.appModule.selectedApp": {
+    "$store.state.appModule.usersSelectedApp": {
       handler: function (val, oldVal) {
         this.refreshApp();
       },

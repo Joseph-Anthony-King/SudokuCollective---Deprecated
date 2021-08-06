@@ -31,7 +31,3 @@ export async function passwordReset(userEmail, component) {
     return false;
   }
 }
-
-export function convertStringToDateTime(datetime) {
-  return new Date(datetime).toLocaleString();
-}

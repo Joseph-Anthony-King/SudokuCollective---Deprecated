@@ -1,6 +1,11 @@
 <template>
   <div>
     <v-card elevation="6" class="mx-auto">
+      <v-container>
+        <span @click="closeReviewAppWidget" class="material-icons close-hover">
+          clear
+        </span>
+      </v-container>
       <v-card-text>
         <v-container fluid>
           <v-card-title class="justify-center">
@@ -35,6 +40,11 @@ export default {
   data: () => ({
     app: new App()
   }),
+  methods: {
+    closeReviewAppWidget() {
+      this.$emit("close-review-app-widget-event", null, null);
+    }
+  },
   computed: {
     ...mapGetters("appModule", ["getSelectedApp"]),
   },

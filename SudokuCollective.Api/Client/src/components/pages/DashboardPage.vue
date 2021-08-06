@@ -25,7 +25,8 @@
     <UsersWidget
       v-if="user.isSuperUser" />
     <AppsWidget 
-      v-if="user.isSuperUser" />
+      v-if="user.isSuperUser"
+      v-on:open-edit-app-form-event="openEditAppForm()" />
     <MyAppsWidget
       v-if="!user.isSuperUser"
       v-on:open-create-app-form-event="openCreateAppForm()"

@@ -31,7 +31,8 @@
     </v-card>
     <div class="card-spacer"></div>
     <ReviewUserWidget 
-      v-if="selectedUsers.length > 0"/>
+      v-if="selectedUsers.length > 0"
+      v-on:close-review-user-widget-event="closeUserWidget"/>
   </div>
 </template>
 
@@ -77,6 +78,9 @@ export default {
     ...mapActions("userModule", [
       "updateSelectedUser",
     ]),
+    closeUserWidget() {
+      this.$data.selectedUsers = [];
+    }
   },
   computed: {
     ...mapGetters("userModule", ["getUsers"]),

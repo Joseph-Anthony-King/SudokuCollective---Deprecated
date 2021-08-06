@@ -30,8 +30,13 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
+    <AppWidget
+      v-if="selectedApps.length > 0 && selectedApps[0].ownerId === user.id"
+      v-on:close-app-widget-event="closeAppWidget"
+      v-on:open-edit-app-form-event="openEditAppDialog"/>
     <ReviewAppWidget 
-      v-if="selectedApps.length > 0"/>
+      v-if="selectedApps.length > 0 && selectedApps[0].ownerId !== user.id"
+      v-on:close-review-app-widget-event="closeAppWidget"/>
   </div> 
 </template>
 
@@ -44,15 +49,18 @@
 import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import AppWidget from "@/components/widgets/AppWidget";
 import ReviewAppWidget from "@/components/widgets/ReviewAppWidget";
 import App from "@/models/app";
 
 export default {
   name: "AppsWidget",
   components: {
+    AppWidget,
     ReviewAppWidget,
   },
   data: () => ({
+    user: {},
     apps: [],
     search: "",
     selectedApps: [],
@@ -74,10 +82,21 @@ export default {
     processing: false
   }),
   methods: {
-    ...mapActions("appModule", ["updateSelectedApp"]),
+    ...mapActions("appModule", [
+      "updateUsersSelectedApp",
+      "updateSelectedApp"]),
+
+    closeAppWidget() {
+      this.$data.selectedApps = [];
+    },
+
+    openEditAppDialog() {
+      this.$emit("open-edit-app-form-event", null, null);
+    },
   },
   computed: {
     ...mapGetters("appModule", ["getApps"]),
+    ...mapGetters("settingsModule", ["getUser"]),
 
     title() {
       const apps = this.$data.apps.length == 1 ? "App" : "Apps";
@@ -107,15 +126,24 @@ export default {
     "selectedApps": {
       handler: function (val, oldVal) {
         if (val.length > 0){
-          this.updateSelectedApp(val[0]);
+          if (val[0].ownerId === this.$data.user.id) {
+            this.updateUsersSelectedApp(val[0]);
+          } else {
+            this.updateSelectedApp(val[0]);
+          }
         } else {
-          this.updateSelectedApp(new App());
+          if (oldVal[0].ownerId === this.$data.user.id) {
+            this.updateUsersSelectedApp(new App());
+          } else {
+            this.updateSelectedApp(new App());
+          }
         }
       },
     },
   },
   async created() {
     this.$data.processing = true;
+    this.$data.user = this.getUser;
     this.$data.apps = this.getApps;
     this.$data.processing = false;
   }

@@ -143,7 +143,6 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
-import { convertStringToDateTime } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "AppUsersWidget",
@@ -467,22 +466,14 @@ export default {
     },
   },
   watch: {
-    "$store.state.appModule.selectedApp": {
+    "$store.state.appModule.usersSelectedApp": {
       handler: function (val, oldVal) {
         this.$data.app = new App(this.getUsersSelectedApp);
-
-        this.$data.app.users.forEach((user) => {
-          user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
-        });
       },
     },
   },
   created() {
     this.$data.app = new App(this.getUsersSelectedApp);
-
-    this.$data.app.users.forEach((user) => {
-      user["signedUpDate"] = convertStringToDateTime(user.dateCreated);
-    });
   },
 };
 </script>

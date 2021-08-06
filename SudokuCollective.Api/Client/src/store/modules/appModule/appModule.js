@@ -149,7 +149,7 @@ const appModule = {
     removeApps({ commit }) {
       commit(REMOVE_APPS);
     },
-    replaceApps({ commit }, app) {
+    replaceApp({ commit }, app) {
       commit(REPLACE_APP, app);
     },
     updateAppOwner({ commit }, owner) {

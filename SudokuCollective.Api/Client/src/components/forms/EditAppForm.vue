@@ -182,6 +182,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
+import User from "@/models/user";
 import UpdateAppModel from "@/models/viewModels/updateAppModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
@@ -194,6 +195,7 @@ export default {
   name: "EditAppForm",
   props: ["editAppFormStatus"],
   data: () => ({
+    user: new User(),
     app: new App(),
     editAppFormIsValid: true,
     dirty: false,
@@ -202,7 +204,10 @@ export default {
     durations: [],
   }),
   methods: {
-    ...mapActions("appModule", ["updateUsersSelectedApp", "replaceUsersApp"]),
+    ...mapActions("appModule", [
+      "updateUsersSelectedApp", 
+      "replaceUsersApp",
+      "replaceApp"]),
 
     submit() {
       const action = [
@@ -239,6 +244,12 @@ export default {
                 this.updateUsersSelectedApp(this.$data.app);
 
                 this.replaceUsersApp(this.$data.app);
+
+                if (this.$data.user.isSuperUser) {
+                  var storeApp = this.$data.app;
+                  storeApp["owner"] = this.$data.user;
+                  this.replaceApp(storeApp);
+                }
 
                 showToast(
                   this,
@@ -283,7 +294,7 @@ export default {
     },
 
     reset() {
-      this.$data.app = new App(this.getUsersSelectedApp);
+      this.$data.app = this.getUsersSelectedApp;
       this.$data.editAppFormIsValid = true;
       this.$data.dirty = false;
       document.activeElement.blur();
@@ -295,6 +306,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("settingsModule", ["getUser"]),
     ...mapGetters("appModule", ["getUsersSelectedApp"]),
 
     stringRequiredRules() {
@@ -317,7 +329,7 @@ export default {
   watch: {
     "$store.state.appModule.selectedApp": {
       handler: function (val, oldVal) {
-        this.$data.app = new App(this.getUsersSelectedApp);
+        this.$data.app = this.getUsersSelectedApp;
       },
     },
     "app.timeFrame": {
@@ -361,7 +373,8 @@ export default {
     },
   },
   async created() {
-    this.$data.app = new App(this.getUsersSelectedApp);
+    this.$data.app = this.getUsersSelectedApp;
+    this.$data.user = this.getUser;
 
     try {
       const response = await appProvider.getTimeFrames();
