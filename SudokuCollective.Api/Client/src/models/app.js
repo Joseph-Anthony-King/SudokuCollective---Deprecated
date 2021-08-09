@@ -40,12 +40,14 @@ class App {
       this.userCount = data.userCount;
       this.timeFrame = data.timeFrame;
       this.accessDuration = data.accessDuration;
-      this.dateCreated = data.dateCreated !== null ? 
-        new Date(data.dateCreated).toLocaleString() : 
-        null;
-      this.dateUpdated = data.dateUpdated !== null ? 
-        new Date(data.dateUpdated).toLocaleString() : 
-        null;
+      this.dateCreated =
+        data.dateCreated !== null
+          ? new Date(data.dateCreated).toLocaleString()
+          : null;
+      this.dateUpdated =
+        data.dateUpdated !== null
+          ? new Date(data.dateUpdated).toLocaleString()
+          : null;
       this.users = [];
 
       if (data.users != null) {

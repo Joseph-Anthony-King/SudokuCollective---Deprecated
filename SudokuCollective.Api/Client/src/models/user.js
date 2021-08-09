@@ -1,5 +1,4 @@
-﻿
-class User {
+﻿class User {
   constructor(data) {
     if (data == undefined) {
       this.id = 0;
@@ -35,12 +34,14 @@ class User {
       this.isAdmin = data.isAdmin;
       this.admin = data.isAdmin ? "Yes" : "No";
       this.isSuperUser = data.isSuperUser;
-      this.dateCreated = data.dateCreated !== null ? 
-        new Date(data.dateCreated).toLocaleString() : 
-        null;
-      this.dateUpdated = data.dateUpdated !== null ? 
-        new Date(data.dateUpdated).toLocaleString() : 
-        null;
+      this.dateCreated =
+        data.dateCreated !== null
+          ? new Date(data.dateCreated).toLocaleString()
+          : null;
+      this.dateUpdated =
+        data.dateUpdated !== null
+          ? new Date(data.dateUpdated).toLocaleString()
+          : null;
       this.isLoggedIn = data.isLoggedIn !== undefined ? data.isLoggedIn : false;
     }
   }

@@ -8,24 +8,28 @@
           <div class="app-buttons-scroll">
             <CreateAppButton
               :isEnabled="user.emailConfirmed"
-              v-on:click.native="openCreateAppForm" />
+              v-on:click.native="openCreateAppForm"
+            />
             <span class="no-apps-message" v-if="apps.length === 0"
-              >Time to Get Coding!</span>
+              >Time to Get Coding!</span
+            >
             <SelectAppButton
               v-for="(app, index) in apps"
               :app="app"
               :key="index"
               :index="index"
-              v-on:click.native="openAppWidgets(app.id)" />
+              v-on:click.native="openAppWidgets(app.id)"
+            />
           </div>
         </v-container>
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
-    <AppWidget 
+    <AppWidget
       v-if="openingAppWidgets"
       v-on:close-app-widget-event="closeAppWidgets"
-      v-on:open-edit-app-form-event="openEditAppForm" />
+      v-on:open-edit-app-form-event="openEditAppForm"
+    />
   </div>
 </template>
 
@@ -86,17 +90,14 @@ export default {
     processing: false,
   }),
   methods: {
-    ...mapActions("appModule", [
-      "updateUsersSelectedApp",
-      "updateUsersApps",
-    ]),
+    ...mapActions("appModule", ["updateUsersSelectedApp", "updateUsersApps"]),
 
     openCreateAppForm() {
-      this.$emit("open-create-app-form-event", null, null);      
+      this.$emit("open-create-app-form-event", null, null);
     },
 
     openEditAppForm() {
-      this.$emit("open-edit-app-form-event", null, null);  
+      this.$emit("open-edit-app-form-event", null, null);
     },
 
     openAppWidgets(id) {
@@ -120,8 +121,10 @@ export default {
     ]),
     title() {
       const licenses = this.$data.apps.length === 1 ? "License" : "Licenses";
-      return "You Currently have " + this.$data.apps.length + " App " + licenses;
-    }
+      return (
+        "You Currently have " + this.$data.apps.length + " App " + licenses
+      );
+    },
   },
   watch: {
     "$store.state.appModule.apps": {
@@ -158,5 +161,5 @@ export default {
     }
     this.$data.processing = false;
   },
-}
+};
 </script>

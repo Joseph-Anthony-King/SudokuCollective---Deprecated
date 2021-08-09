@@ -12,8 +12,7 @@
             Review User: {{ user.userName }}
           </v-card-title>
           <hr class="title-spacer" />
-          <UserProfileWidget
-            :user="user" />
+          <UserProfileWidget :user="user" />
         </v-container>
       </v-card-text>
     </v-card>
@@ -21,8 +20,7 @@
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
 /* eslint-disable no-unused-vars */
@@ -33,15 +31,15 @@ import UserProfileWidget from "@/components/widgets/UserProfileWidget";
 export default {
   name: "ReviewUserWidget",
   components: {
-    UserProfileWidget
+    UserProfileWidget,
   },
   data: () => ({
-    user: new User()
+    user: new User(),
   }),
   methods: {
     closeReviewUserWidget() {
       this.$emit("close-review-user-widget-event", null, null);
-    }
+    },
   },
   computed: {
     ...mapGetters("userModule", ["getSelectedUser"]),
@@ -50,11 +48,11 @@ export default {
     "$store.state.userModule.selectedUser": {
       handler: function (val, oldVal) {
         this.$data.user = this.getSelectedUser;
-      }
+      },
     },
   },
   created() {
     this.$data.user = this.getSelectedUser;
-  }
-}
+  },
+};
 </script>

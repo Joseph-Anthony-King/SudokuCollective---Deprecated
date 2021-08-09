@@ -12,19 +12,15 @@
             Review App: {{ app.name }}
           </v-card-title>
           <hr class="title-spacer" />
-          <AppProfileWidget
-            :app="app" />
+          <AppProfileWidget :app="app" />
         </v-container>
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
   </div>
-  
 </template>
 
-<style>
-
-</style>
+<style></style>
 
 <script>
 /* eslint-disable no-unused-vars */
@@ -35,15 +31,15 @@ import AppProfileWidget from "@/components/widgets/AppProfileWidget";
 export default {
   name: "ReviewAppWidget",
   components: {
-    AppProfileWidget
+    AppProfileWidget,
   },
   data: () => ({
-    app: new App()
+    app: new App(),
   }),
   methods: {
     closeReviewAppWidget() {
       this.$emit("close-review-app-widget-event", null, null);
-    }
+    },
   },
   computed: {
     ...mapGetters("appModule", ["getSelectedApp"]),
@@ -52,12 +48,11 @@ export default {
     "$store.state.appModule.selectedApp": {
       handler: function (val, oldVal) {
         this.$data.app = this.getSelectedApp;
-      }
+      },
     },
   },
   created() {
     this.$data.app = this.getSelectedApp;
-  }
-
-}
+  },
+};
 </script>

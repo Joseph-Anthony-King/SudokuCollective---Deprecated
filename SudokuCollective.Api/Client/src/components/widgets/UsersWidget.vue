@@ -30,15 +30,14 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
-    <ReviewUserWidget 
+    <ReviewUserWidget
       v-if="selectedUsers.length > 0"
-      v-on:close-review-user-widget-event="closeUserWidget"/>
+      v-on:close-review-user-widget-event="closeUserWidget"
+    />
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <script>
 /* eslint-disable no-unused-vars */
@@ -72,28 +71,26 @@ export default {
       { text: "Licenses", value: "licenses" },
       { text: "Signed Up Date", value: "dateCreated" },
     ],
-    processing: false
+    processing: false,
   }),
   methods: {
-    ...mapActions("userModule", [
-      "updateSelectedUser",
-    ]),
+    ...mapActions("userModule", ["updateSelectedUser"]),
     closeUserWidget() {
       this.$data.selectedUsers = [];
-    }
+    },
   },
   computed: {
     ...mapGetters("userModule", ["getUsers"]),
 
     title() {
-      const users = this.$data.users.length == 1 ? "User" : "Users"
+      const users = this.$data.users.length == 1 ? "User" : "Users";
       return this.$data.users.length + " " + users + " Currently Registered";
-    }
+    },
   },
   watch: {
-    "selectedUsers": {
+    selectedUsers: {
       handler: function (val, oldVal) {
-        if (val.length > 0){
+        if (val.length > 0) {
           this.updateSelectedUser(val[0]);
         } else {
           this.updateSelectedUser(new User());
@@ -105,6 +102,6 @@ export default {
     this.$data.processing = true;
     this.$data.users = this.getUsers;
     this.$data.processing = false;
-  }
-}
+  },
+};
 </script>

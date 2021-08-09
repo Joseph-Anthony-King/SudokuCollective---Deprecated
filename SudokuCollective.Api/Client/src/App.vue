@@ -117,7 +117,7 @@ export default {
       "removeUsersApps",
       "removeRegisteredApps",
       "updateApps",
-      "removeApps"
+      "removeApps",
     ]),
     ...mapActions("settingsModule", [
       "confirmBaseURL",
@@ -125,17 +125,13 @@ export default {
       "updateApp",
       "updateUser",
     ]),
-    ...mapActions("userModule", [
-      "updateUsers",
-      "removeUsers"
-    ]),
+    ...mapActions("userModule", ["updateUsers", "removeUsers"]),
 
     async login(user, token) {
       if (user !== null && token !== null) {
         this.userLoginProcess(user, token);
 
         if (this.$data.user.isSuperUser) {
-          
           const userResponse = await userProvider.getUsers();
 
           var users = [];
@@ -154,7 +150,7 @@ export default {
             const app = new App(a);
             app["owner"] = _.find(users, function (user) {
               return user.id === app.ownerId;
-            })
+            });
             apps.push(app);
           });
 
@@ -165,7 +161,7 @@ export default {
               }
             });
           });
-          
+
           const superUsersAppsResponse = await appProvider.getMyApps();
 
           var superUsersApps = [];
@@ -174,7 +170,7 @@ export default {
             const app = new App(a);
             app["owner"] = _.find(users, function (user) {
               return user.id === app.ownerId;
-            })
+            });
             superUsersApps.push(app);
           });
 

@@ -11,8 +11,7 @@
             Administrator</v-card-title
           >
           <hr class="title-spacer" />
-          <UserProfileWidget
-            :user="user" />
+          <UserProfileWidget :user="user" />
         </v-container>
       </v-card-text>
     </v-card>
@@ -249,7 +248,7 @@
           </v-row>
         </v-container>
       </v-card-actions>
-    </v-card>    
+    </v-card>
   </div>
 </template>
 
@@ -279,14 +278,12 @@ import {
   defaultToastOptions,
   actionToastOptions,
 } from "@/helpers/toastHelper";
-import {
-  passwordReset,
-} from "@/helpers/commonFunctions/commonFunctions";
+import { passwordReset } from "@/helpers/commonFunctions/commonFunctions";
 
 export default {
   name: "UserProfileForm",
   components: {
-    UserProfileWidget
+    UserProfileWidget,
   },
   data: () => ({
     user: new User(),
@@ -745,7 +742,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser", "getAppId"]),    
+    ...mapGetters("settingsModule", ["getUser", "getAppId"]),
   },
   watch: {
     "$store.state.settingsModule.user": {

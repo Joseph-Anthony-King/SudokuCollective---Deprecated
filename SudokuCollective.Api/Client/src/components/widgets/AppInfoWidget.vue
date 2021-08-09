@@ -28,8 +28,7 @@
           </a>
         </v-card-title>
         <hr class="title-spacer" />
-          <AppProfileWidget
-            :app="app" />
+        <AppProfileWidget :app="app" />
       </v-container>
     </v-card-text>
     <hr />
@@ -135,7 +134,7 @@ import {
 export default {
   name: "AppInfoWidget",
   components: {
-    AppProfileWidget
+    AppProfileWidget,
   },
   data: () => ({
     user: new User(),
@@ -147,7 +146,7 @@ export default {
       "updateUsersApps",
       "removeUsersApp",
       "replaceUsersApp",
-      "replaceApp"
+      "replaceApp",
     ]),
 
     async copyLicenseToClipboard() {
@@ -181,7 +180,7 @@ export default {
                 this.updateUsersSelectedApp(this.$data.app);
 
                 if (this.$data.user.isSuperUser) {
-                  this.replaceApp(this.$data.app)
+                  this.replaceApp(this.$data.app);
                 }
 
                 showToast(

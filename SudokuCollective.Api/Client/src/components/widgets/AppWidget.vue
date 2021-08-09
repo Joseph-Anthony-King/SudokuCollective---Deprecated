@@ -12,7 +12,8 @@
           <v-tab-item value="info">
             <AppInfoWidget
               v-on:close-app-widget-event="closeAppWidgets"
-              v-on:open-edit-app-form-event="openEditAppForm" />
+              v-on:open-edit-app-form-event="openEditAppForm"
+            />
           </v-tab-item>
 
           <v-tab href="#app-users"> App Users </v-tab>
@@ -28,11 +29,10 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
-  </div>  
+  </div>
 </template>
 
-<style>
-</style>
+<style></style>
 
 <script>
 import AppInfoWidget from "@/components/widgets/AppInfoWidget";
@@ -47,18 +47,17 @@ export default {
     NonAppUsersWidget,
   },
   methods: {
-
     openCreateAppForm() {
-      this.$emit("open-create-app-form-event", null, null);      
+      this.$emit("open-create-app-form-event", null, null);
     },
 
     openEditAppForm() {
-      this.$emit("open-edit-app-form-event", null, null);  
+      this.$emit("open-edit-app-form-event", null, null);
     },
 
     closeAppWidgets() {
-      this.$emit("close-app-widget-event", null, null); 
+      this.$emit("close-app-widget-event", null, null);
     },
-  }
-}
+  },
+};
 </script>

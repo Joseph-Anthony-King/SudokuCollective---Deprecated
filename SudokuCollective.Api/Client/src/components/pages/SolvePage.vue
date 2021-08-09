@@ -2,8 +2,7 @@
   <SolveWidget />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
 import SolveWidget from "@/components/widgets/SolveWidget";
@@ -11,7 +10,7 @@ import SolveWidget from "@/components/widgets/SolveWidget";
 export default {
   name: "SolvePage",
   components: {
-    SolveWidget
-  }
+    SolveWidget,
+  },
 };
 </script>

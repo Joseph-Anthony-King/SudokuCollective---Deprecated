@@ -31,14 +31,21 @@
           <hr class="title-spacer" />
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]" :key="index"
+              v-for="index in [0, 1, 2, 3, 4, 5, 6, 7, 8]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -46,14 +53,21 @@
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 9, 10, 11, 12, 13, 14, 15, 16, 17 ]" :key="index"
+              v-for="index in [9, 10, 11, 12, 13, 14, 15, 16, 17]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -61,14 +75,21 @@
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 18, 19, 20, 21, 22, 23, 24, 25, 26 ]" :key="index"
+              v-for="index in [18, 19, 20, 21, 22, 23, 24, 25, 26]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -76,14 +97,21 @@
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 27, 28, 29, 30, 31, 32, 33, 34, 35 ]" :key="index"
+              v-for="index in [27, 28, 29, 30, 31, 32, 33, 34, 35]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -91,14 +119,21 @@
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 36, 37, 38, 39, 40, 41, 42, 43, 44 ]" :key="index"
+              v-for="index in [36, 37, 38, 39, 40, 41, 42, 43, 44]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -106,14 +141,21 @@
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 45, 46, 47, 48, 49, 50, 51, 52, 53 ]" :key="index"
+              v-for="index in [45, 46, 47, 48, 49, 50, 51, 52, 53]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -121,14 +163,21 @@
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 54, 55, 56, 57, 58, 59, 60, 61, 62 ]" :key="index"
+              v-for="index in [54, 55, 56, 57, 58, 59, 60, 61, 62]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -136,14 +185,21 @@
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 63, 64, 65, 66, 67, 68, 69, 70, 71 ]" :key="index"
+              v-for="index in [63, 64, 65, 66, 67, 68, 69, 70, 71]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -151,14 +207,21 @@
           </v-row>
           <v-row cols="12" class="ma-0 pa-0 justify-center">
             <v-text-field
-              v-for="index in [ 72, 73, 74, 75, 76, 77, 78, 79, 80 ]" :key="index"
+              v-for="index in [72, 73, 74, 75, 76, 77, 78, 79, 80]"
+              :key="index"
               v-model="sudokuMatrix[index]"
-              :class="applyEvenRegionStyling(index) ? 'centered-input text-white ma-0 pa-0' : 'centered-input text-secondary ma-0 pa-0'"
+              :class="
+                applyEvenRegionStyling(index)
+                  ? 'centered-input text-white ma-0 pa-0'
+                  : 'centered-input text-secondary ma-0 pa-0'
+              "
               outlined
               type="number"
               min="1"
               max="9"
-              :background-color="applyEvenRegionStyling(index) ? 'primary' : '#fff'"
+              :background-color="
+                applyEvenRegionStyling(index) ? 'primary' : '#fff'
+              "
               :color="applyEvenRegionStyling(index) ? '#fff' : 'primary'"
               hide-details
               @blur="validateEntry(index)"
@@ -295,10 +358,44 @@ export default {
     sudokuMatrix: [],
     processing: false,
     solutionPending: true,
-    evenRegionIndexes: [ 3, 4, 5, 12, 13, 14, 21, 22, 23, 
-      27, 28, 29, 36, 37, 38, 45, 46, 47, 33, 34, 35, 42,
-      43, 44, 51, 52, 53, 57, 58, 59, 66, 67, 68, 75, 76,
-      77 ]
+    evenRegionIndexes: [
+      3,
+      4,
+      5,
+      12,
+      13,
+      14,
+      21,
+      22,
+      23,
+      27,
+      28,
+      29,
+      36,
+      37,
+      38,
+      45,
+      46,
+      47,
+      33,
+      34,
+      35,
+      42,
+      43,
+      44,
+      51,
+      52,
+      53,
+      57,
+      58,
+      59,
+      66,
+      67,
+      68,
+      75,
+      76,
+      77,
+    ],
   }),
   methods: {
     async submit() {
@@ -401,12 +498,12 @@ export default {
     applyEvenRegionStyling(index) {
       var result = _.indexOf(this.$data.evenRegionIndexes, index);
 
-      if (result !== -1){
+      if (result !== -1) {
         return true;
       } else {
         return false;
       }
-    }
+    },
   },
   created() {
     for (var i = 0; i < 81; i++) {

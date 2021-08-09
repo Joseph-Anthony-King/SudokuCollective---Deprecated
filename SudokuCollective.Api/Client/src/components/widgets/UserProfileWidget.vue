@@ -73,52 +73,51 @@
         readonly
       ></v-checkbox>
     </v-col>
-  </v-row>  
+  </v-row>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
 export default {
   name: "UserProfileWidget",
   props: {
-    user: {}
+    user: {},
   },
   computed: {
     userId() {
-      return this.$props.user.id
+      return this.$props.user.id;
     },
     userName() {
-      return this.$props.user.userName
+      return this.$props.user.userName;
     },
     userFirstName() {
-      return this.$props.user.firstName
+      return this.$props.user.firstName;
     },
     userLastName() {
-      return this.$props.user.lastName
+      return this.$props.user.lastName;
     },
     userNickName() {
-      return this.$props.user.nickName
+      return this.$props.user.nickName;
     },
     userIsAdmin() {
-      return this.$props.user.isAdmin
+      return this.$props.user.isAdmin;
     },
     userIsSuperUser() {
-      return this.$props.user.isSuperUser
+      return this.$props.user.isSuperUser;
     },
     userDateCreated() {
-      return this.$props.user.dateCreated
+      return this.$props.user.dateCreated;
     },
     userDateUpdated() {
-      return this.$props.user.dateUpdated
+      return this.$props.user.dateUpdated;
     },
     userEmail() {
-      return this.$props.user.email
+      return this.$props.user.email;
     },
     userEmailConfirmed() {
-      return this.$props.user.emailConfirmed
-    }
-  }
-}
+      return this.$props.user.emailConfirmed;
+    },
+  },
+};
 </script>
