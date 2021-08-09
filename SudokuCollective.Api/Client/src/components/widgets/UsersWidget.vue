@@ -68,6 +68,7 @@ export default {
       { text: "Last Name", value: "lastName" },
       { text: "Email", value: "email" },
       { text: "Admin", value: "admin" },
+      { text: "Active", value: "active" },
       { text: "Licenses", value: "licenses" },
       { text: "Signed Up Date", value: "dateCreated" },
     ],

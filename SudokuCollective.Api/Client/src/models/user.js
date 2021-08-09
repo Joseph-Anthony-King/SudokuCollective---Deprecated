@@ -12,6 +12,7 @@
       this.receivedRequestToUpdateEmail = false;
       this.receivedRequestToUpdatePassword = false;
       this.isActive = false;
+      this.acive = "No";
       this.isAdmin = false;
       this.admin = "No";
       this.isSuperUser = false;
@@ -31,6 +32,7 @@
       this.receivedRequestToUpdatePassword =
         data.receivedRequestToUpdatePassword;
       this.isActive = data.isActive;
+      this.active = data.isActive ? "Yes" : "No";
       this.isAdmin = data.isAdmin;
       this.admin = data.isAdmin ? "Yes" : "No";
       this.isSuperUser = data.isSuperUser;
@@ -62,7 +64,9 @@
     this.receivedRequestToUpdateEmail = false;
     this.receivedRequestToUpdatePassword = false;
     this.isActive = false;
+    this.acive = "No";
     this.isAdmin = false;
+    this.admin = "No";
     this.isSuperUser = "";
     this.dateCreated = "";
     this.dateUpdated = "";
