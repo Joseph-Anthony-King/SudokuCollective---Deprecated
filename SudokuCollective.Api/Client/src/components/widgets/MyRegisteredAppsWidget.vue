@@ -3,19 +3,20 @@
     <v-card elevation="6" class="mx-auto" v-if="!processing">
       <v-card-text>
         <v-container fluid>
-          <v-card-title class="justify-center">{{ title }}</v-card-title
-          >
+          <v-card-title class="justify-center">{{ title }}</v-card-title>
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
             <div v-for="(app, index) in apps" v-bind:key="app.id">
-              <SelectAppButton                
+              <SelectAppButton
                 :app="app"
                 :key="index"
                 :index="index"
-                v-on:click.native="appAvailable(app) ? openUrl(app) : null" />
-              <DeregisterAppButton 
+                v-on:click.native="appAvailable(app) ? openUrl(app) : null"
+              />
+              <DeregisterAppButton
                 v-if="app.id !== 1"
-                v-on:click.native="deregister(app)" />
+                v-on:click.native="deregister(app)"
+              />
             </div>
           </div>
         </v-container>
@@ -53,8 +54,8 @@ export default {
     processing: false,
   }),
   methods: {
-    ...mapActions("appModule", [ "updateRegisteredApps" ]),
-    
+    ...mapActions("appModule", ["updateRegisteredApps"]),
+
     appAvailable(app) {
       if (app.isActive) {
         if (!app.inDevelopment) {
@@ -84,7 +85,9 @@ export default {
       const response = await appProvider.removeUser(app.id, this.$data.user.id);
 
       if (response.success) {
-        const appsResponse = await appProvider.getRegisteredApps(this.$data.user.id);
+        const appsResponse = await appProvider.getRegisteredApps(
+          this.$data.user.id
+        );
 
         if (appsResponse.success) {
           this.updateRegisteredApps(appsResponse.apps);
@@ -108,11 +111,16 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
-    ...mapGetters("appModule", [ "getRegisteredApps" ]),    
+    ...mapGetters("appModule", ["getRegisteredApps"]),
     title() {
       const apps = this.$data.apps.length === 1 ? "App" : "Apps";
-      return "You are Currently Registered with " + this.$data.apps.length + " " + apps;
-    }
+      return (
+        "You are Currently Registered with " +
+        this.$data.apps.length +
+        " " +
+        apps
+      );
+    },
   },
   async created() {
     this.$data.processing = true;
@@ -133,5 +141,5 @@ export default {
 
     this.$data.processing = false;
   },
-}
+};
 </script>

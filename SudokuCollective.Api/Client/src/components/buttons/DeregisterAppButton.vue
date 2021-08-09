@@ -18,6 +18,6 @@
 
 <script>
 export default {
-  name: "DeregisterAppButton"
+  name: "DeregisterAppButton",
 };
 </script>

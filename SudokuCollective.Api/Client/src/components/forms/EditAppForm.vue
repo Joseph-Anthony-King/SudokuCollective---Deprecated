@@ -205,9 +205,10 @@ export default {
   }),
   methods: {
     ...mapActions("appModule", [
-      "updateUsersSelectedApp", 
+      "updateUsersSelectedApp",
       "replaceUsersApp",
-      "replaceApp"]),
+      "replaceApp",
+    ]),
 
     submit() {
       const action = [

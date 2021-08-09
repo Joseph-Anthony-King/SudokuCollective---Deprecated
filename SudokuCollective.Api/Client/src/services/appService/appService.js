@@ -110,7 +110,7 @@ const getApps = async function () {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const getRegisteredApps = async function (userid) {
   try {

@@ -25,14 +25,12 @@ const getUsers = async function () {
   var response = await userService.getUsers();
 
   if (response.data.success) {
-    response.data.users = _.sortBy
-      (response.data.users, 
-        function(user) {
-          return user.id
-        });
+    response.data.users = _.sortBy(response.data.users, function (user) {
+      return user.id;
+    });
 
     let users = [];
-    
+
     if (response.data.users.length > 0) {
       response.data.users.forEach((user) => {
         users.push(new User(user));
@@ -43,7 +41,7 @@ const getUsers = async function () {
       status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
-      users: users
+      users: users,
     };
   } else {
     return {

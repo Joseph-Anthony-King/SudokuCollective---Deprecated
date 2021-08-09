@@ -22,33 +22,34 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
-    <UsersWidget
-      v-if="user.isSuperUser" />
-    <AppsWidget 
+    <UsersWidget v-if="user.isSuperUser" />
+    <AppsWidget
       v-if="user.isSuperUser"
-      v-on:open-edit-app-form-event="openEditAppForm()" />
+      v-on:open-edit-app-form-event="openEditAppForm()"
+    />
     <MyAppsWidget
       v-if="!user.isSuperUser"
       v-on:open-create-app-form-event="openCreateAppForm()"
-      v-on:open-edit-app-form-event="openEditAppForm()" />
-    <MyRegisteredAppsWidget
-      v-if="!user.isSuperUser" />
+      v-on:open-edit-app-form-event="openEditAppForm()"
+    />
+    <MyRegisteredAppsWidget v-if="!user.isSuperUser" />
     <v-dialog v-model="creatingApp" persistent max-width="600px">
       <CreateAppForm
         :signUpFormStatus="creatingApp"
         v-on:create-form-closed-event="closeCreateAppForm"
-        v-on:app-created-event="appCreatedEvent" />
+        v-on:app-created-event="appCreatedEvent"
+      />
     </v-dialog>
     <v-dialog v-model="editingApp" persistent max-width="1200px">
       <EditAppForm
         :editAppFormStatus="editingApp"
-        v-on:edit-app-closed-event="closeEditAppForm" />
+        v-on:edit-app-closed-event="closeEditAppForm"
+      />
     </v-dialog>
   </v-container>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
 /* eslint-disable no-unused-vars */

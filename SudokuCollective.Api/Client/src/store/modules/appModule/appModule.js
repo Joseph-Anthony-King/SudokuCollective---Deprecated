@@ -12,7 +12,7 @@ import {
   REMOVE_APP,
   REMOVE_APPS,
   REPLACE_APP,
-  UPDATE_APP_OWNER
+  UPDATE_APP_OWNER,
 } from "./mutation-types";
 
 import App from "@/models/app";
@@ -25,7 +25,7 @@ const appModule = {
     usersApps: [],
     registeredApps: [],
     selectedApp: new App(),
-    apps: []
+    apps: [],
   }),
 
   mutations: {
@@ -102,7 +102,7 @@ const appModule = {
         state.apps.push(app);
       }
     },
-    [UPDATE_APP_OWNER](state, owner){
+    [UPDATE_APP_OWNER](state, owner) {
       state.apps.forEach((app) => {
         if (app.ownerId === owner.id) {
           const index = _.findIndex(state.apps, { id: app.id });
@@ -112,7 +112,7 @@ const appModule = {
           }
         }
       });
-    }
+    },
   },
 
   actions: {
@@ -154,7 +154,7 @@ const appModule = {
     },
     updateAppOwner({ commit }, owner) {
       commit(UPDATE_APP_OWNER, owner);
-    }
+    },
   },
 
   getters: {
@@ -182,7 +182,7 @@ const appModule = {
     getAppOwner: (state) => (id) => {
       const app = state.apps.find((app) => app.id === id);
       return app.owner;
-    }
+    },
   },
 };
 

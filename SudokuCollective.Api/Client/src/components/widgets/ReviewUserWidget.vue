@@ -12,8 +12,7 @@
             Review User: {{ user.userName }}
           </v-card-title>
           <hr class="title-spacer" />
-          <UserProfileWidget
-            :user="user" />
+          <UserProfileWidget :user="user" />
         </v-container>
       </v-card-text>
     </v-card>
@@ -50,8 +49,7 @@
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
 /* eslint-disable no-unused-vars */
@@ -70,10 +68,10 @@ import {
 export default {
   name: "ReviewUserWidget",
   components: {
-    UserProfileWidget
+    UserProfileWidget,
   },
   data: () => ({
-    user: new User()
+    user: new User(),
   }),
   methods: {
     ...mapActions("userModule", ["replaceUser"]),
@@ -221,5 +219,5 @@ export default {
   created() {
     this.$data.user = this.getSelectedUser;
   }
-}
+};
 </script>

@@ -33,16 +33,16 @@
     <AppWidget
       v-if="selectedApps.length > 0 && selectedApps[0].ownerId === user.id"
       v-on:close-app-widget-event="closeAppWidget"
-      v-on:open-edit-app-form-event="openEditAppDialog"/>
-    <ReviewAppWidget 
+      v-on:open-edit-app-form-event="openEditAppDialog"
+    />
+    <ReviewAppWidget
       v-if="selectedApps.length > 0 && selectedApps[0].ownerId !== user.id"
-      v-on:close-review-app-widget-event="closeAppWidget"/>
-  </div> 
+      v-on:close-review-app-widget-event="closeAppWidget"
+    />
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <script>
 /* eslint-disable no-unused-vars */
@@ -73,18 +73,16 @@ export default {
         value: "name",
       },
       { text: "Id", value: "id" },
-      { text: "Owner", value : "owner.userName" },
+      { text: "Owner", value: "owner.userName" },
       { text: "Status", value: "status" },
       { text: "Active", value: "active" },
       { text: "User Count", value: "users.length" },
       { text: "Date Created", value: "dateCreated" },
     ],
-    processing: false
+    processing: false,
   }),
   methods: {
-    ...mapActions("appModule", [
-      "updateUsersSelectedApp",
-      "updateSelectedApp"]),
+    ...mapActions("appModule", ["updateUsersSelectedApp", "updateSelectedApp"]),
 
     closeAppWidget() {
       this.$data.selectedApps = [];
@@ -100,32 +98,38 @@ export default {
 
     title() {
       const apps = this.$data.apps.length == 1 ? "App" : "Apps";
-      
-      const prodApps = _.filter(
-        this.$data.apps, function (app) {
-          return !app.inDevelopment;
-        }
+
+      const prodApps = _.filter(this.$data.apps, function (app) {
+        return !app.inDevelopment;
+      });
+
+      const devApps = _.filter(this.$data.apps, function (app) {
+        return app.inDevelopment;
+      });
+
+      const prodSummary =
+        prodApps.length == 1 ? " App in Production " : " Apps in Production ";
+
+      const devSummary =
+        devApps.length == 1 ? " App in Development " : " Apps in Development ";
+
+      return (
+        this.$data.apps.length +
+        " " +
+        apps +
+        " Created : " +
+        prodApps.length +
+        prodSummary +
+        "and " +
+        devApps.length +
+        devSummary
       );
-      
-      const devApps = _.filter(
-        this.$data.apps, function (app) {
-          return app.inDevelopment;
-        }
-      );
-
-      const prodSummary = prodApps.length == 1 ? " App in Production " : " Apps in Production ";
-
-      const devSummary = devApps.length == 1 ? " App in Development " : " Apps in Development ";
-
-      return this.$data.apps.length + " " + apps + " Created : " 
-        + prodApps.length + prodSummary  + "and " 
-        + devApps.length + devSummary;
-    }
+    },
   },
   watch: {
-    "selectedApps": {
+    selectedApps: {
       handler: function (val, oldVal) {
-        if (val.length > 0){
+        if (val.length > 0) {
           if (val[0].ownerId === this.$data.user.id) {
             this.updateUsersSelectedApp(val[0]);
           } else {
@@ -146,6 +150,6 @@ export default {
     this.$data.user = this.getUser;
     this.$data.apps = this.getApps;
     this.$data.processing = false;
-  }
-}
+  },
+};
 </script>

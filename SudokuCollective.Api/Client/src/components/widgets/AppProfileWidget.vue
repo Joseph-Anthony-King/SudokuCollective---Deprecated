@@ -88,9 +88,7 @@
       <v-checkbox
         v-model="appInDevelopment"
         :label="
-          appInDevelopment
-            ? 'App is in Development'
-            : 'App is in Production'
+          appInDevelopment ? 'App is in Development' : 'App is in Production'
         "
         readonly
       ></v-checkbox>
@@ -134,24 +132,18 @@
   </v-row>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <script>
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import {
-  showToast,
-  defaultToastOptions,
-} from "@/helpers/toastHelper";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "AppProfileWidget",
   props: {
-    app: {}
+    app: {},
   },
   methods: {
-
     async copyLicenseToClipboard() {
       try {
         await navigator.clipboard.writeText(this.appLicense);
@@ -483,6 +475,6 @@ export default {
       );
       return owner.emailConfirmed;
     },
-  }
-}
+  },
+};
 </script>
