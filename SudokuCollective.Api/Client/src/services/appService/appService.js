@@ -357,6 +357,42 @@ const deleteRemoveUser = async function (appId, userId) {
   }
 };
 
+const putActivateApp = async function (id) {
+  try {
+    const params = `/${id}/activate`;
+
+    const config = {
+      method: "put",
+      url: `${getAppEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    return await axios(config);
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+};
+
+const putDeactivateApp = async function (id) {
+  try {
+    const params = `/${id}/deactivate`;
+
+    const config = {
+      method: "put",
+      url: `${getAppEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    return await axios(config);
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+};
+
 const getTimeFrames = async function () {
   try {
     const config = {
@@ -390,5 +426,7 @@ export const appService = {
   resetApp,
   putAddUser,
   deleteRemoveUser,
+  putActivateApp,
+  putDeactivateApp,
   getTimeFrames,
 };

@@ -345,6 +345,26 @@ const deactivateAdminPrivileges = async function (appid, userid) {
   };
 };
 
+const activateApp = async function (id) {
+  var response = await appService.putActivateApp(id);
+
+  return {
+    status: response.status,
+    success: response.data.success,
+    message: response.data.message.substring(17),
+  };
+};
+
+const deactivateApp = async function (id) {
+  var response = await appService.putDeactivateApp(id);
+
+  return {
+    status: response.status,
+    success: response.data.success,
+    message: response.data.message.substring(17),
+  };
+};
+
 const getTimeFrames = async function () {
   return await appService.getTimeFrames();
 };
@@ -364,5 +384,7 @@ export const appProvider = {
   removeUser,
   activateAdminPrivileges,
   deactivateAdminPrivileges,
+  activateApp,
+  deactivateApp,
   getTimeFrames,
 };
