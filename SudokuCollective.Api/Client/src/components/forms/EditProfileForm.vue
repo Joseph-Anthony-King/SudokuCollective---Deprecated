@@ -142,6 +142,7 @@ export default {
   }),
   methods: {
     ...mapActions("settingsModule", ["updateUser"]),
+    ...mapActions("userModule", ["replaceUser"]),
 
     async submit() {
       const action = [
@@ -173,9 +174,22 @@ export default {
 
               if (response.status === 200) {
                 this.resetEditProfileFormStatus;
-                this.$data.user = response.user;
+                this.$data.user = new User(response.user);
                 this.$data.user.login();
                 this.updateUser(this.$data.user);
+
+                if (this.$data.user.isSuperUser) {
+                  const user = this.$data.user;
+                  user["licenses"] = 0;
+
+                  const apps = this.getApps;
+                  apps.forEach((app) => {
+                    if (app.ownerId === user.id) {
+                      user.licenses++;
+                    }
+                  }) 
+                  this.replaceUser(user);
+                }
 
                 if (updatingEmail) {
                   showToast(
@@ -280,6 +294,7 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
+    ...mapGetters("appModule", ["getApps"]),
 
     userNameRules() {
       return [

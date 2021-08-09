@@ -91,6 +91,42 @@ const deleteUser = async function (id) {
   }
 };
 
+const putActivateUser = async function (id) {
+  try {
+    const params = `/${id}/activate`;
+
+    const config = {
+      method: "put",
+      url: `${getUserEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    return await axios(config);
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
+const putDeactivateUser = async function (id) {
+  try {
+    const params = `/${id}/deactivate`;
+
+    const config = {
+      method: "put",
+      url: `${getUserEnpoint}${params}`,
+      headers: requestHeader(),
+      data: requestData(),
+    };
+
+    return await axios(config);
+  } catch (error) {
+    console.error(error.name, error.message);
+    return error.response;
+  }
+}
+
 const postRequestPasswordReset = async function (email) {
   try {
     const license = store.getters["settingsModule/getLicense"];
@@ -181,6 +217,8 @@ export const userService = {
   getUsers,
   updateUser,
   deleteUser,
+  putActivateUser,
+  putDeactivateUser,
   postRequestPasswordReset,
   putResendPasswordReset,
   putCancelPasswordReset,

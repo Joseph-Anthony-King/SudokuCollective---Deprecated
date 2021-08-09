@@ -83,6 +83,26 @@ const deleteUser = async function (id) {
   };
 };
 
+const activateUser = async function (id) {
+  var response = await userService.putActivateUser(id);
+
+  return {
+    status: response.status,
+    success: response.data.success,
+    message: response.data.message.substring(17),
+  };
+}
+
+const deactivateUser = async function (id) {
+  var response = await userService.putDeactivateUser(id);
+
+  return {
+    status: response.status,
+    success: response.data.success,
+    message: response.data.message.substring(17),
+  };
+}
+
 const requestPasswordReset = async function (email) {
   const response = await userService.postRequestPasswordReset(email);
 
@@ -138,6 +158,8 @@ export const userProvider = {
   getUsers,
   updateUser,
   deleteUser,
+  activateUser,
+  deactivateUser,
   requestPasswordReset,
   resendPasswordReset,
   cancelPasswordReset,
