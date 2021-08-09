@@ -187,7 +187,7 @@ export default {
                     if (app.ownerId === user.id) {
                       user.licenses++;
                     }
-                  }) 
+                  });
                   this.replaceUser(user);
                 }
 

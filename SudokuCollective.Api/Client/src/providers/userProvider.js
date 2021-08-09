@@ -89,7 +89,7 @@ const activateUser = async function (id) {
     success: response.data.success,
     message: response.data.message.substring(17),
   };
-}
+};
 
 const deactivateUser = async function (id) {
   var response = await userService.putDeactivateUser(id);
@@ -99,7 +99,7 @@ const deactivateUser = async function (id) {
     success: response.data.success,
     message: response.data.message.substring(17),
   };
-}
+};
 
 const requestPasswordReset = async function (email) {
   const response = await userService.postRequestPasswordReset(email);

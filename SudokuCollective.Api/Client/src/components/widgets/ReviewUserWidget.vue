@@ -18,9 +18,7 @@
     </v-card>
     <hr />
     <v-card elevation="6">
-      <v-card-title class="justify-center"
-        >Available Actions</v-card-title
-      >
+      <v-card-title class="justify-center">Available Actions</v-card-title>
       <v-card-actions>
         <v-container>
           <v-row dense>
@@ -44,7 +42,7 @@
           </v-row>
         </v-container>
       </v-card-actions>
-    </v-card> 
+    </v-card>
     <div class="card-spacer"></div>
   </div>
 </template>
@@ -92,7 +90,9 @@ export default {
               toastObject.goAway(0);
 
               try {
-                const response = await userProvider.deactivateUser(this.$data.user.id);
+                const response = await userProvider.deactivateUser(
+                  this.$data.user.id
+                );
 
                 if (response.status === 200) {
                   this.$data.user.isActive = false;
@@ -103,9 +103,8 @@ export default {
                     ToastMethods["success"],
                     response.message,
                     defaultToastOptions()
-                  );                    
+                  );
                 } else if (response.status === 404) {
-
                   showToast(
                     this,
                     ToastMethods["error"],
@@ -131,7 +130,8 @@ export default {
             },
           },
         ];
-        dialogText = "Do you want to deactivate " + this.$data.user.userName + "?";
+        dialogText =
+          "Do you want to deactivate " + this.$data.user.userName + "?";
       } else {
         action = [
           {
@@ -140,7 +140,9 @@ export default {
               toastObject.goAway(0);
 
               try {
-                const response = await userProvider.activateUser(this.$data.user.id);
+                const response = await userProvider.activateUser(
+                  this.$data.user.id
+                );
 
                 if (response.status === 200) {
                   this.$data.user.isActive = true;
@@ -151,9 +153,8 @@ export default {
                     ToastMethods["success"],
                     response.message,
                     defaultToastOptions()
-                  );                    
+                  );
                 } else if (response.status === 404) {
-
                   showToast(
                     this,
                     ToastMethods["error"],
@@ -179,7 +180,8 @@ export default {
             },
           },
         ];
-        dialogText = "Do you want to activate " + this.$data.user.userName + "?";
+        dialogText =
+          "Do you want to activate " + this.$data.user.userName + "?";
       }
 
       showToast(
@@ -188,7 +190,7 @@ export default {
         dialogText,
         actionToastOptions(action, "mode_edit")
       );
-    }
+    },
   },
   computed: {
     ...mapGetters("userModule", ["getSelectedUser"]),
@@ -207,17 +209,17 @@ export default {
       } else {
         return "Activate this user";
       }
-    }
+    },
   },
   watch: {
     "$store.state.userModule.selectedUser": {
       handler: function (val, oldVal) {
         this.$data.user = this.getSelectedUser;
-      }
+      },
     },
   },
   created() {
     this.$data.user = this.getSelectedUser;
-  }
+  },
 };
 </script>

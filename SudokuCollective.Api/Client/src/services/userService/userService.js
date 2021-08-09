@@ -107,7 +107,7 @@ const putActivateUser = async function (id) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const putDeactivateUser = async function (id) {
   try {
@@ -125,7 +125,7 @@ const putDeactivateUser = async function (id) {
     console.error(error.name, error.message);
     return error.response;
   }
-}
+};
 
 const postRequestPasswordReset = async function (email) {
   try {
