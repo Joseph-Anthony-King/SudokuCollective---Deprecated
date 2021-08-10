@@ -120,9 +120,9 @@
         readonly
       ></v-checkbox>
       <v-checkbox
-        v-model="isOwnersEmailConfirmed"
+        v-model="isOwnersisEmailConfirmed"
         :label="
-          isOwnersEmailConfirmed
+          isOwnersisEmailConfirmed
             ? 'Owner\'s Email is Confirmed'
             : 'Owner\'s Email is not Confirmed'
         "
@@ -469,11 +469,11 @@ export default {
 
       return `Good for ${duration} ${period}`;
     },
-    isOwnersEmailConfirmed() {
+    isOwnersisEmailConfirmed() {
       const owner = this.$props.app.users.find(
         (user) => user.id === this.$props.app.ownerId
       );
-      return owner.emailConfirmed;
+      return owner.isEmailConfirmed;
     },
   },
 };

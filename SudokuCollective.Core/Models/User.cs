@@ -67,10 +67,10 @@ namespace SudokuCollective.Core.Models
             set
             {
                 _email = value;
-                EmailConfirmed = false;
+                IsEmailConfirmed = false;
             }
         }
-        public bool EmailConfirmed { get; set; }
+        public bool IsEmailConfirmed { get; set; }
         public bool ReceivedRequestToUpdateEmail { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public string Password { get; set; }
@@ -180,7 +180,7 @@ namespace SudokuCollective.Core.Models
             IsActive = true;
             IsSuperUser = false;
             IsAdmin = false;
-            EmailConfirmed = false;
+            IsEmailConfirmed = false;
         }
 
         public User()
@@ -191,7 +191,7 @@ namespace SudokuCollective.Core.Models
             LastName = string.Empty;
             NickName = string.Empty;
             Email = string.Empty;
-            EmailConfirmed = false;
+            IsEmailConfirmed = false;
             ReceivedRequestToUpdateEmail = false;
             Password = string.Empty;
             ReceivedRequestToUpdatePassword = false;
@@ -225,7 +225,7 @@ namespace SudokuCollective.Core.Models
             LastName = lastName;
             NickName = nickName;
             Email = email;
-            EmailConfirmed = emailConfirmed;
+            IsEmailConfirmed = emailConfirmed;
             ReceivedRequestToUpdateEmail = receivedRequestToUpdateEmail;
             Password = password;
             ReceivedRequestToUpdatePassword = receivedRequestToUpdatePassword;

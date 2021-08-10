@@ -227,7 +227,7 @@ namespace SudokuCollective.Test.TestCases.Models
             sut = new User();
 
             // Assert
-            Assert.That(sut.EmailConfirmed, Is.InstanceOf<bool>());
+            Assert.That(sut.IsEmailConfirmed, Is.InstanceOf<bool>());
         }
 
         [Test]
@@ -240,7 +240,7 @@ namespace SudokuCollective.Test.TestCases.Models
             sut = new User();
 
             // Assert
-            Assert.That(sut.EmailConfirmed, Is.False);
+            Assert.That(sut.IsEmailConfirmed, Is.False);
         }
 
         [Test]
@@ -250,16 +250,16 @@ namespace SudokuCollective.Test.TestCases.Models
             // Arrange
             sut = new User();
             sut.Email = "test@example.com";
-            sut.EmailConfirmed = true;
+            sut.IsEmailConfirmed = true;
 
-            var emailTrackingStatePriorToUpdate = sut.EmailConfirmed;
+            var emailTrackingStatePriorToUpdate = sut.IsEmailConfirmed;
 
             // Act
             sut.Email = "test.UPDATED@example.com";
 
             // Assert
             Assert.That(emailTrackingStatePriorToUpdate, Is.True);
-            Assert.That(sut.EmailConfirmed, Is.False);
+            Assert.That(sut.IsEmailConfirmed, Is.False);
         }
     }
 }

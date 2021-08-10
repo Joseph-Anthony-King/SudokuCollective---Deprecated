@@ -8,7 +8,7 @@
       this.nickName = "";
       this.fullName = "";
       this.email = "";
-      this.emailConfirmed = false;
+      this.isEmailConfirmed = false;
       this.receivedRequestToUpdateEmail = false;
       this.receivedRequestToUpdatePassword = false;
       this.isActive = false;
@@ -27,7 +27,8 @@
       this.nickName = data.nickName;
       this.fullName = data.fullName;
       this.email = data.email;
-      this.emailConfirmed = data.emailConfirmed;
+      this.isEmailConfirmed = data.isEmailConfirmed;
+      this.emailConfirmed = data.emailConfirmed ? "Yes" : "No";
       this.receivedRequestToUpdateEmail = data.receivedRequestToUpdateEmail;
       this.receivedRequestToUpdatePassword =
         data.receivedRequestToUpdatePassword;
@@ -60,7 +61,7 @@
     this.nickName = "";
     this.fullName = "";
     this.email = "";
-    this.emailConfirmed = false;
+    this.isEmailConfirmed = false;
     this.receivedRequestToUpdateEmail = false;
     this.receivedRequestToUpdatePassword = false;
     this.isActive = false;

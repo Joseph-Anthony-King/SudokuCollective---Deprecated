@@ -19,12 +19,9 @@ export function requestDataUpdateApp(payload) {
   result["permitSuperUserAccess"] = payload.permitSuperUserAccess;
   result["permitCollectiveLogins"] = payload.permitCollectiveLogins;
   result["disableCustomUrls"] = payload.disableCustomUrls;
-  result["customEmailConfirmationDevUrl"] =
-    payload.customEmailConfirmationDevUrl;
-  result["customEmailConfirmationLiveUrl"] =
-    payload.customEmailConfirmationLiveUrl;
-  result["customPasswordResetDevUrl"] = payload.customPasswordResetDevUrl;
-  result["customPasswordResetLiveUrl"] = payload.customPasswordResetLiveUrl;
+  result["customEmailConfirmationAction"] =
+    payload.customEmailConfirmationAction;
+  result["customPasswordResetAction"] = payload.customPasswordResetAction;
   result["timeFrame"] = payload.timeFrame;
   result["accessDuration"] = payload.accessDuration;
 

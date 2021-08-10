@@ -49,8 +49,8 @@
 import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import AppWidget from "@/components/widgets/AppWidget";
-import ReviewAppWidget from "@/components/widgets/ReviewAppWidget";
+import AppWidget from "@/components/widgets/apps/AppWidget";
+import ReviewAppWidget from "@/components/widgets/apps/ReviewAppWidget";
 import App from "@/models/app";
 
 export default {
@@ -76,6 +76,7 @@ export default {
       { text: "Owner", value: "owner.userName" },
       { text: "Status", value: "status" },
       { text: "Active", value: "active" },
+      { text: "Custom Actions", value: "customActions" },
       { text: "User Count", value: "users.length" },
       { text: "Date Created", value: "dateCreated" },
     ],

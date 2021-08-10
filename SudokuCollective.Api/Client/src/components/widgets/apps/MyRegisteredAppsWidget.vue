@@ -35,8 +35,8 @@
 <script>
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import SelectAppButton from "@/components/buttons/SelectAppButton";
-import DeregisterAppButton from "@/components/buttons/DeregisterAppButton";
+import SelectAppButton from "@/components/widgets/buttons/SelectAppButton";
+import DeregisterAppButton from "@/components/widgets/buttons/DeregisterAppButton";
 import { appProvider } from "@/providers/appProvider";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";

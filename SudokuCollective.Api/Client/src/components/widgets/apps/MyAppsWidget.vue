@@ -7,7 +7,7 @@
           <hr class="title-spacer" />
           <div class="app-buttons-scroll">
             <CreateAppButton
-              :isEnabled="user.emailConfirmed"
+              :isEnabled="user.isEmailConfirmed"
               v-on:click.native="openCreateAppForm"
             />
             <span class="no-apps-message" v-if="apps.length === 0"
@@ -58,19 +58,15 @@
     font-size: medium;
   }
 }
-.app-buttons-scroll {
-  display: flex;
-  overflow-x: auto;
-}
 </style>
 
 <script>
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import CreateAppButton from "@/components/buttons/CreateAppButton";
-import SelectAppButton from "@/components/buttons/SelectAppButton";
-import AppWidget from "@/components/widgets/AppWidget";
+import CreateAppButton from "@/components/widgets/buttons/CreateAppButton";
+import SelectAppButton from "@/components/widgets/buttons/SelectAppButton";
+import AppWidget from "@/components/widgets/apps/AppWidget";
 import { appProvider } from "@/providers/appProvider";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -136,7 +132,7 @@ export default {
   },
   async created() {
     this.$data.processing = true;
-    this.$data.user = new User(this.getUser);
+    this.$data.user = this.getUser;
     const selectedApp = this.getUsersSelectedApp;
 
     if (selectedApp.id !== 0) {

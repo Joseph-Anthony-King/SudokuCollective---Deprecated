@@ -123,7 +123,7 @@ import { mapGetters } from "vuex";
 import { appProvider } from "@/providers/appProvider";
 import User from "@/models/user";
 import App from "@/models/app";
-import AppProfileWidget from "@/components/widgets/AppProfileWidget";
+import AppProfileWidget from "@/components/widgets/apps/AppProfileWidget";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
   showToast,
@@ -582,11 +582,11 @@ export default {
       return `Good for ${duration} ${period}`;
     },
 
-    isOwnersEmailConfirmed() {
+    isOwnersisEmailConfirmed() {
       const owner = this.$data.app.users.find(
         (user) => user.id === this.$data.app.ownerId
       );
-      return owner.emailConfirmed;
+      return owner.isEmailConfirmed;
     },
   },
   watch: {

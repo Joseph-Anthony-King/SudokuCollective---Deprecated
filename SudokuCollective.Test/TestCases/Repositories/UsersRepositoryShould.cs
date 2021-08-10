@@ -89,7 +89,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.Success, Is.True);
-            Assert.That(((User)result.Object).EmailConfirmed, Is.False);
+            Assert.That(((User)result.Object).IsEmailConfirmed, Is.False);
         }
 
         [Test]

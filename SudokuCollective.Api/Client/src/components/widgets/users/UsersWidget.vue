@@ -43,7 +43,7 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import ReviewUserWidget from "@/components/widgets/ReviewUserWidget";
+import ReviewUserWidget from "@/components/widgets/users/ReviewUserWidget";
 import User from "@/models/user";
 
 export default {
@@ -67,6 +67,7 @@ export default {
       { text: "First Name", value: "firstName" },
       { text: "Last Name", value: "lastName" },
       { text: "Email", value: "email" },
+      { text: "Email Confirmed", value: "emailConfirmed" },
       { text: "Admin", value: "admin" },
       { text: "Active", value: "active" },
       { text: "Licenses", value: "licenses" },

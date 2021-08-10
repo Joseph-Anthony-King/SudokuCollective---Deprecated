@@ -552,7 +552,7 @@ namespace SudokuCollective.Data.Services
                                 emailConfirmation = (EmailConfirmation)(await _emailConfirmationsRepository
                                     .RetrieveEmailConfirmation(user.Id, app.Id)).Object;
 
-                                if (!user.EmailConfirmed)
+                                if (!user.IsEmailConfirmed)
                                 {
                                     user.Email = emailConfirmation.OldEmailAddress;
                                 }
@@ -1054,9 +1054,9 @@ namespace SudokuCollective.Data.Services
                         // Filter out user emails from the frontend...
                         foreach (var user in result.Users)
                         {
-                            var emailConfirmed = user.EmailConfirmed;
+                            var emailConfirmed = user.IsEmailConfirmed;
                             user.Email = null;
-                            user.EmailConfirmed = emailConfirmed;
+                            user.IsEmailConfirmed = emailConfirmed;
                         }
                     }
 
@@ -1222,7 +1222,7 @@ namespace SudokuCollective.Data.Services
 
                         if (user.Apps.Any(ua => ua.AppId == app.Id))
                         {
-                            if (!user.EmailConfirmed)
+                            if (!user.IsEmailConfirmed)
                             {
                                 result.Success = false;
                                 result.Message = UsersMessages.UserEmailNotConfirmedMessage;
@@ -2170,7 +2170,7 @@ namespace SudokuCollective.Data.Services
                 {
                     var user = (User)userResponse.Object;
 
-                    if (!user.EmailConfirmed)
+                    if (!user.IsEmailConfirmed)
                     {
                         cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<App>(
                             _appsRepository,
@@ -2523,7 +2523,7 @@ namespace SudokuCollective.Data.Services
                                 // Role back email request
                                 user.Email = emailConfirmation.OldEmailAddress;
                                 user.ReceivedRequestToUpdateEmail = false;
-                                user.EmailConfirmed = true;
+                                user.IsEmailConfirmed = true;
 
                                 result.User = (User)(await CacheFactory.UpdateWithCacheAsync<User>(
                                     _usersRepository,
@@ -2733,7 +2733,7 @@ namespace SudokuCollective.Data.Services
                                     // Role back email request
                                     user.Email = emailConfirmation.OldEmailAddress;
                                     user.ReceivedRequestToUpdateEmail = false;
-                                    user.EmailConfirmed = true;
+                                    user.IsEmailConfirmed = true;
 
                                     user = (User)(await CacheFactory.UpdateWithCacheAsync<User>(
                                         _usersRepository,

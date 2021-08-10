@@ -13,6 +13,7 @@ class App {
       this.permitSuperUserAccess = false;
       this.permitCollectiveLogins = false;
       this.disableCustomUrls = false;
+      this.customActions = "No";
       this.customEmailConfirmationAction = "";
       this.customPasswordResetAction = "";
       this.userCount = 0;
@@ -35,6 +36,12 @@ class App {
       this.permitSuperUserAccess = data.permitSuperUserAccess;
       this.permitCollectiveLogins = data.permitCollectiveLogins;
       this.disableCustomUrls = data.disableCustomUrls;
+      this.customActions =
+        data.disableCustomUrls &&
+        data.customEmailConfirmationAction !== "" &&
+        data.customPasswordResetAction !== ""
+          ? "Yes"
+          : "No";
       this.customEmailConfirmationAction = data.customEmailConfirmationAction;
       this.customPasswordResetAction = data.customPasswordResetAction;
       this.userCount = data.userCount;

@@ -12,7 +12,7 @@ namespace SudokuCollective.Core.Interfaces.Models
         string NickName { get; set; }
         string FullName { get; }
         string Email { get; set; }
-        bool EmailConfirmed { get; set; }
+        bool IsEmailConfirmed { get; set; }
         bool ReceivedRequestToUpdateEmail { get; set; }
         string Password { get; set; }
         bool ReceivedRequestToUpdatePassword { get; set; }

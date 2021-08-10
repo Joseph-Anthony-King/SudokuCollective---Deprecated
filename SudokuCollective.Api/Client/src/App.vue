@@ -181,7 +181,7 @@ export default {
 
         let logInMessage;
 
-        if (this.$data.user.emailConfirmed) {
+        if (this.$data.user.isEmailConfirmed) {
           logInMessage = "You are logged in";
         } else {
           logInMessage = "You are logged in, but please confirm your email";
@@ -279,7 +279,7 @@ export default {
       } else if (this.$router.currentRoute.path === "/solve") {
         // do nothing...
       } else {
-        if (user.emailConfirmed) {
+        if (user.isEmailConfirmed) {
           this.$router.push("/dashboard");
         } else {
           this.$router.push("/userProfile");

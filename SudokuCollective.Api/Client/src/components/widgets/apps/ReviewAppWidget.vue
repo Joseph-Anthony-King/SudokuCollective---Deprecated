@@ -54,7 +54,7 @@
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import App from "@/models/app";
-import AppProfileWidget from "@/components/widgets/AppProfileWidget";
+import AppProfileWidget from "@/components/widgets/apps/AppProfileWidget";
 import { appProvider } from "@/providers/appProvider";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {
@@ -137,8 +137,7 @@ export default {
             },
           },
         ];
-        dialogText =
-          "Do you want to deactivate " + this.$data.app.name + "?";
+        dialogText = "Do you want to deactivate " + this.$data.app.name + "?";
       } else {
         action = [
           {
@@ -194,8 +193,7 @@ export default {
             },
           },
         ];
-        dialogText =
-          "Do you want to activate " + this.$data.app.name + "?";
+        dialogText = "Do you want to activate " + this.$data.app.name + "?";
       }
 
       showToast(

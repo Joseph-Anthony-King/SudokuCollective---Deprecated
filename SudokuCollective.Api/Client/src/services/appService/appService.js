@@ -247,6 +247,8 @@ const updateApp = async function (data) {
       data: requestDataUpdateApp(payload),
     };
 
+    console.log("appService config:", config);
+
     return await axios(config);
   } catch (error) {
     return error.response;

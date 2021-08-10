@@ -17,7 +17,8 @@ class UpdateAppModel {
     accessDuration
   ) {
     this.id = id;
-    (this.name = name), (this.devUrl = devUrl);
+    this.name = name;
+    this.devUrl = devUrl;
     this.liveUrl = liveUrl;
     this.isActive = isActive;
     this.inDevelopment = inDevelopment;

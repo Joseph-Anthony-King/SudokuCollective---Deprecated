@@ -58,7 +58,7 @@ namespace SudokuCollective.Data.Models.DTOModels
             NickName = user.NickName;
             FullName = user.FullName;
             Email = user.Email;
-            EmailConfirmed = user.EmailConfirmed;
+            EmailConfirmed = user.IsEmailConfirmed;
             ReceivedRequestToUpdateEmail = user.ReceivedRequestToUpdateEmail;
             ReceivedRequestToUpdatePassword = user.ReceivedRequestToUpdatePassword;
             IsActive = user.IsActive;

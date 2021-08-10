@@ -30,6 +30,11 @@
   cursor: pointer;
 }
 
+.app-buttons-scroll {
+  display: flex;
+  overflow-x: auto;
+}
+
 .close-hover:hover {
   cursor: pointer;
 }

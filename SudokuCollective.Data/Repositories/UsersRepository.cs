@@ -1003,7 +1003,7 @@ namespace SudokuCollective.Data.Repositories
                     if (user != null)
                     {
                         user.DateUpdated = DateTime.UtcNow;
-                        user.EmailConfirmed = true;
+                        user.IsEmailConfirmed = true;
 
                         _context.Attach(user);
 

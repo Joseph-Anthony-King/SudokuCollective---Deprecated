@@ -68,7 +68,7 @@
         prepend-icon="mdi-email"
       ></v-text-field>
       <v-checkbox
-        v-model="userEmailConfirmed"
+        v-model="userisEmailConfirmed"
         label="Email Confirmed"
         readonly
       ></v-checkbox>
@@ -115,8 +115,8 @@ export default {
     userEmail() {
       return this.$props.user.email;
     },
-    userEmailConfirmed() {
-      return this.$props.user.emailConfirmed;
+    userisEmailConfirmed() {
+      return this.$props.user.isEmailConfirmed;
     },
   },
 };

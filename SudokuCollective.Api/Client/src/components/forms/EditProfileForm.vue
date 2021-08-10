@@ -59,7 +59,7 @@
                 :rules="emailRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
-                v-if="user.emailConfirmed"
+                v-if="user.isEmailConfirmed"
               ></v-text-field>
             </v-col>
           </v-row>

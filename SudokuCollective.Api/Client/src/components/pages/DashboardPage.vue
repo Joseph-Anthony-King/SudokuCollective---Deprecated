@@ -22,6 +22,7 @@
       </v-card-text>
     </v-card>
     <div class="card-spacer"></div>
+    <AtAGlanceWidget />
     <UsersWidget v-if="user.isSuperUser" />
     <AppsWidget
       v-if="user.isSuperUser"
@@ -56,10 +57,11 @@
 import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
 import EditAppForm from "@/components/forms/EditAppForm";
-import AppsWidget from "@/components/widgets/AppsWidget";
-import UsersWidget from "@/components/widgets/UsersWidget";
-import MyAppsWidget from "@/components/widgets/MyAppsWidget";
-import MyRegisteredAppsWidget from "@/components/widgets/MyRegisteredAppsWidget";
+import AtAGlanceWidget from "@/components/widgets/AtAGlanceWidget";
+import AppsWidget from "@/components/widgets/apps/AppsWidget";
+import UsersWidget from "@/components/widgets/users/UsersWidget";
+import MyAppsWidget from "@/components/widgets/apps/MyAppsWidget";
+import MyRegisteredAppsWidget from "@/components/widgets/apps/MyRegisteredAppsWidget";
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -70,6 +72,7 @@ export default {
   components: {
     CreateAppForm,
     EditAppForm,
+    AtAGlanceWidget,
     AppsWidget,
     UsersWidget,
     MyAppsWidget,
@@ -92,7 +95,7 @@ export default {
           "You don't have admin privileges, please review your user profile",
           defaultToastOptions()
         );
-      } else if (!this.$data.user.emailConfirmed) {
+      } else if (!this.$data.user.isEmailConfirmed) {
         showToast(
           this,
           ToastMethods["error"],

@@ -235,6 +235,8 @@ export default {
                 this.$data.app.accessDuration
               );
 
+              console.log("update app data:", data);
+
               const response = await appProvider.updateApp(data);
 
               if (response.status === 200) {

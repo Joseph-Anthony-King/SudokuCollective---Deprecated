@@ -54,7 +54,7 @@
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import User from "@/models/user";
-import UserProfileWidget from "@/components/widgets/UserProfileWidget";
+import UserProfileWidget from "@/components/widgets/users/UserProfileWidget";
 import { userProvider } from "@/providers/userProvider";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import {

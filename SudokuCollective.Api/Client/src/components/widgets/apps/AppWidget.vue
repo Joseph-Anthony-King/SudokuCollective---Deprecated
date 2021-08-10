@@ -35,9 +35,9 @@
 <style></style>
 
 <script>
-import AppInfoWidget from "@/components/widgets/AppInfoWidget";
-import AppUsersWidget from "@/components/widgets/AppUsersWidget";
-import NonAppUsersWidget from "@/components/widgets/NonAppUsersWidget";
+import AppInfoWidget from "@/components/widgets/apps/AppInfoWidget";
+import AppUsersWidget from "@/components/widgets/apps/AppUsersWidget";
+import NonAppUsersWidget from "@/components/widgets/apps/NonAppUsersWidget";
 
 export default {
   name: "AppWidget",

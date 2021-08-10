@@ -21,12 +21,12 @@
         v-if="
           !user.receivedRequestToUpdateEmail &&
           !user.receivedRequestToUpdatePassword &&
-          user.emailConfirmed
+          user.isEmailConfirmed
         "
         class="justify-center success"
         >No Outstanding Requests for this Account</v-card-title
       >
-      <v-card-title v-if="!user.emailConfirmed" class="justify-center warning"
+      <v-card-title v-if="!user.isEmailConfirmed" class="justify-center warning"
         >Please Confirm Your Email: {{ user.email }}</v-card-title
       >
       <v-card-title
@@ -49,7 +49,7 @@
       <v-card-actions>
         <v-container>
           <v-row dense>
-            <v-col v-if="!user.isAdmin && user.emailConfirmed">
+            <v-col v-if="!user.isAdmin && user.isEmailConfirmed">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -101,7 +101,9 @@
               </v-tooltip>
             </v-col>
             <v-col
-              v-if="!user.receivedRequestToUpdateEmail && !user.emailConfirmed"
+              v-if="
+                !user.receivedRequestToUpdateEmail && !user.isEmailConfirmed
+              "
             >
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -124,7 +126,7 @@
             <v-col
               v-if="
                 user.receivedRequestToUpdateEmail ||
-                (!user.emailConfirmed &&
+                (!user.isEmailConfirmed &&
                   user.dateUpdated !== '0001-01-01T00:00:00Z')
               "
             >
@@ -146,7 +148,7 @@
             </v-col>
             <v-col
               v-if="
-                !user.receivedRequestToUpdatePassword && user.emailConfirmed
+                !user.receivedRequestToUpdatePassword && user.isEmailConfirmed
               "
             >
               <v-tooltip bottom>
@@ -202,7 +204,7 @@
             <v-col
               v-if="
                 (user.receivedRequestToUpdateEmail ||
-                  (!user.emailConfirmed &&
+                  (!user.isEmailConfirmed &&
                     user.dateUpdated !== '0001-01-01T00:00:00Z')) &&
                 user.receivedRequestToUpdatePassword
               "
@@ -269,7 +271,7 @@ import { mapGetters } from "vuex";
 import { userProvider } from "@/providers/userProvider";
 import { registerService } from "@/services/registerService/registerService";
 import { appProvider } from "@/providers/appProvider";
-import UserProfileWidget from "@/components/widgets/UserProfileWidget";
+import UserProfileWidget from "@/components/widgets/users/UserProfileWidget";
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
