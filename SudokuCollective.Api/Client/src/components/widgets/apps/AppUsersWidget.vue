@@ -161,7 +161,7 @@ export default {
       { text: "First Name", value: "firstName" },
       { text: "Last Name", value: "lastName" },
       { text: "Admin", value: "admin" },
-      { text: "Signed Up Date", value: "signedUpDate" },
+      { text: "Signed Up Date", value: "dateCreated" },
     ],
   }),
   methods: {

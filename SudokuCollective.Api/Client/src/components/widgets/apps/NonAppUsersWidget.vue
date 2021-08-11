@@ -124,7 +124,7 @@ export default {
       { text: "Id", value: "id" },
       { text: "First Name", value: "firstName" },
       { text: "Last Name", value: "lastName" },
-      { text: "Signed Up Date", value: "signedUpDate" },
+      { text: "Signed Up Date", value: "dateCreated" },
     ],
   }),
   methods: {
