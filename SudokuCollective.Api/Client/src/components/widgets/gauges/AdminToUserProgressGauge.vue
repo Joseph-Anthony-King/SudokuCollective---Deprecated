@@ -45,16 +45,44 @@ export default {
       let ratio = 0;
 
       if (!this.$data.user.isSuperUser) {
-        const apps = this.getUsersApps;
+        if (this.$data.selectedApp.id == 0) {
+          const apps = this.getUsersApps;
 
-        if (apps.length > 0) {
-          apps.forEach((app) => {
-            totalUsers += app.users.length;
-            const admins = _.filter(app.users, function (user) {
-              return user.isAdmin;
+          if (apps.length > 0) {
+            let admins = [];
+            let users = [];
+
+            apps.forEach((app) => {
+              const appAdmins = _.filter(app.users, function (user) {
+                return user.isAdmin;
+              });
+              appAdmins.forEach((admin) => {
+                if (!_.some(admins, admin)) {
+                  admins.push(admin);
+                }
+              });
+              const appUsers = _.filter(app.users, function (user) {
+                return !user.isAdmin;
+              });
+              appUsers.forEach((admin) => {
+                if (!_.some(admins, admin)) {
+                  users.push(admin);
+                }
+              });
             });
-            totalAdmins += admins.length;
+
+            totalAdmins = admins.length;
+            totalUsers = users.length;
+
+            ratio = (totalAdmins / (totalAdmins + totalUsers)) * 100;
+          }
+        } else {
+          this.$data.selectedApp.users.forEach((user) => {
+            if (user.isAdmin) {
+              totalAdmins++;
+            }
           });
+          totalUsers = this.$data.selectedApp.users.length;
 
           ratio = (totalAdmins / totalUsers) * 100;
         }
@@ -84,13 +112,30 @@ export default {
           apps = this.getUsersApps;
 
           if (apps.length > 0) {
+            let admins = [];
+            let users = [];
+
             apps.forEach((app) => {
-              const admins = _.filter(app.users, function (user) {
+              const appAdmins = _.filter(app.users, function (user) {
                 return user.isAdmin;
               });
-              totalAdmins += admins.length;
-              totalUsers += app.users.length - admins.length;
+              appAdmins.forEach((admin) => {
+                if (!_.some(admins, admin)) {
+                  admins.push(admin);
+                }
+              });
+              const appUsers = _.filter(app.users, function (user) {
+                return !user.isAdmin;
+              });
+              appUsers.forEach((admin) => {
+                if (!_.some(admins, admin)) {
+                  users.push(admin);
+                }
+              });
             });
+
+            totalAdmins = admins.length;
+            totalUsers = users.length;
           }
         } else {
           this.$data.selectedApp.users.forEach((user) => {
