@@ -82,6 +82,7 @@ export default {
               totalAdmins++;
             }
           });
+          
           totalUsers = this.$data.selectedApp.users.length;
 
           ratio = (totalAdmins / totalUsers) * 100;
