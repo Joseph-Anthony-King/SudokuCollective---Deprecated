@@ -53,7 +53,10 @@ export default {
 
       let result;
 
-      if (this.$data.selectedApp.id === 0 || this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id) {
+      if (this.$data.selectedApp.id === 0 || 
+        (this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id)) {
+        /* The general statistics for all apps, if a super user this is for all apps.
+         * if not super user this is just for the users apps */
         let totalApps = apps.length;
         let totalDevelopment = _.filter(apps, function (app) {
           return app.inDevelopment;
@@ -66,6 +69,8 @@ export default {
 
         result = ratio.toFixed(0) + "%";
       } else {
+        /* Selected apps status. If a super user this will only be applied to
+         * the super users apps */
         if (this.$data.selectedApp.inDevelopment) {
           result = "In Development";
         } else {
@@ -91,7 +96,10 @@ export default {
 
       let result;
 
-      if (this.$data.selectedApp.id === 0 || this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id) {
+      if (this.$data.selectedApp.id === 0 || 
+        (this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id)) {
+        /* The general statistics for all apps, if a super user this is for all apps.
+         * if not super user this is just for the users apps */
         if (apps.length > 0 && totalDevelopment.length > 0) {
           return (
             "Apps in Development: " +
@@ -106,6 +114,8 @@ export default {
           result = "No Apps Created";
         }
       } else {
+        /* Selected apps status. If a super user this will only be applied to
+         * the super users apps */
         if (this.$data.selectedApp.inDevelopment) {
           result = "App is in Development";
         } else {
@@ -117,18 +127,12 @@ export default {
     },
 
     isApplicable() {
-      if (this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id) {
-        return false;
-      } else if (
+      if (
         this.$data.selectedApp.id !== 0 &&
         this.$data.selectedApp.inDevelopment
       ) {
+        // Will only display in red if selecte app is in development
         return true;
-      } else if (
-        this.$data.selectedApp.id !== 0 &&
-        !this.$data.selectedApp.inDevelopment
-      ) {
-        return false;
       } else {
         return false;
       }

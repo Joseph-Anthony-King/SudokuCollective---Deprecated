@@ -45,7 +45,7 @@ export default {
     value() {
       let apps = [];
 
-      if (!this.$data.user.isSuperUser && this.$data.selectedApp.id === 0) {
+      if (!this.$data.user.isSuperUser) {
         apps = this.getUsersApps;
       } else {
         apps = this.getApps;
@@ -56,9 +56,13 @@ export default {
       let result;
 
       if (
-        this.$data.user.isSuperUser ||
+        this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id ||
         (!this.$data.user.isSuperUser && this.$data.selectedApp.id === 0)
       ) {
+        /* The following logic is applied if the user if not a super user and an app is not
+         * selected OR if the user is a super user and is not review one of their own apps.
+         * This then gives the general breakdown for all apps */
+
         notSetUpApps = _.filter(apps, function (app) {
           return (
             app.disableCustomUrls ||
@@ -72,6 +76,10 @@ export default {
 
         result = ratio.toFixed(0) + "%";
       } else {
+        /* The following logic is applied if the user if not a super user and an app is
+         * selected OR if the user is a super user and is reviewing one of their own apps.
+         * This then gives the specific status for the app */
+        
         if (
           !this.$data.selectedApp.disableCustomUrls &&
           this.$data.selectedApp.customEmailConfirmationAction !== ""
@@ -109,9 +117,13 @@ export default {
       let result;
 
       if (
-        this.$data.user.isSuperUser ||
+        this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id  ||
         (!this.$data.user.isSuperUser && this.$data.selectedApp.id === 0)
       ) {
+        /* The following logic is applied if the user if not a super user and an app is not
+         * selected OR if the user is a super user and is not review one of their own apps.
+         * This then gives the general breakdown for all apps */
+
         if (apps.length > 0 && notSetUp.length > 0) {
           app = notSetUp.length === 1 ? " App needs " : " Apps need ";
           result = notSetUp.length + app + " a custom email action";
@@ -122,6 +134,10 @@ export default {
           result = "No Apps Created";
         }
       } else {
+        /* The following logic is applied if the user if not a super user and an app is
+         * selected OR if the user is a super user and is reviewing one of their own apps.
+         * This then gives the specific status for the app */
+
         if (
           !this.$data.selectedApp.disableCustomUrls &&
           this.$data.selectedApp.customEmailConfirmationAction !== ""
@@ -139,7 +155,11 @@ export default {
       let apps = [];
 
       if (this.$data.selectedApp.id === 0) {
-        apps = this.getUsersApps;
+        if (this.$data.user.isSuperUser) {
+          apps = this.getApps;
+        } else {
+          apps = this.getUsersApps;
+        }
       } else {
         apps.push(this.$data.selectedApp);
       }

@@ -45,7 +45,11 @@ export default {
       let ratio = 0;
 
       if (!this.$data.user.isSuperUser) {
+        // The following logic is applied if the user is not a super user
         if (this.$data.selectedApp.id === 0) {
+          /* If no app is selected each app is reviewed and the admin to
+           * to user statistics are pulled. Each admin/user is filtered to
+           * prevent duplicates */
           const apps = this.getUsersApps;
 
           if (apps.length > 0) {
@@ -77,6 +81,7 @@ export default {
             ratio = (totalAdmins / (totalAdmins + totalUsers)) * 100;
           }
         } else {
+          // Users selected app user statistics
           this.$data.selectedApp.users.forEach((user) => {
             if (user.isAdmin) {
               totalAdmins++;
@@ -88,8 +93,10 @@ export default {
           ratio = (totalAdmins / totalUsers) * 100;
         }
       } else {
-
+        // The following logic is applied if the user is a super user
         if (this.$data.user.id === this.$data.selectedApp.ownerId) {
+          /* If the super user is the owner of the selected 
+           * app the app's user statistics are displyed */
           this.$data.selectedApp.users.forEach((user) => {
             if (user.isAdmin) {
               totalAdmins++;
@@ -100,6 +107,8 @@ export default {
 
           ratio = (totalAdmins / totalUsers) * 100;
         } else {
+          /* If the super user is not the owner of the selected 
+           * app collective wide user statiscs are displayed */
           const users = this.getUsers;
           totalUsers = users.length;
 
@@ -122,7 +131,11 @@ export default {
       let totalAdmins = 0;
 
       if (!this.$data.user.isSuperUser) {
+        // The following logic is applied if the user is not a super user
         if (this.$data.selectedApp.id == 0) {
+          /* If no app is selected each app is reviewed and the admin to
+           * to user statistics are pulled. Each admin/user is filtered to
+           * prevent duplicates */
           apps = this.getUsersApps;
 
           if (apps.length > 0) {
@@ -152,6 +165,7 @@ export default {
             totalUsers = users.length;
           }
         } else {
+          // Users selected app user statistics
           this.$data.selectedApp.users.forEach((user) => {
             if (user.isAdmin) {
               totalAdmins++;
@@ -160,9 +174,12 @@ export default {
           totalUsers = this.$data.selectedApp.users.length - totalAdmins;
         }
       } else {
+        // The following logic is applied if the user is a super user
         let users = [];
 
         if (this.$data.user.id === this.$data.selectedApp.ownerId) {
+          /* If the super user is the owner of the selected 
+           * app the app's user statistics are displyed */
           this.$data.selectedApp.users.forEach((user) => {
             if (user.isAdmin) {
               totalAdmins++;
@@ -171,6 +188,8 @@ export default {
           
           totalUsers = this.$data.selectedApp.users.length - totalAdmins;
         } else {
+          /* If the super user is not the owner of the selected 
+           * app collective wide user statiscs are displayed */
           users = this.getUsers;
 
           users.forEach((user) => {
@@ -182,11 +201,7 @@ export default {
         }
       }
 
-      if (
-        this.$data.user.isSuperUser ||
-        (!this.$data.user.isSuperUser &&
-          (apps.length > 0 || this.$data.selectedApp.id !== 0))
-      ) {
+      if (this.$data.user.isSuperUser || apps.length > 0 || this.$data.selectedApp.id !== 0) {
         return "Admins: " + totalAdmins + " Users: " + totalUsers;
       } else {
         return "No Apps Created";
