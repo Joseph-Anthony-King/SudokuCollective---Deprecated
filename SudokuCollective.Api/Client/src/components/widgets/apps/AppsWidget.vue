@@ -128,8 +128,6 @@ export default {
     async refresh() {
       const response = await appProvider.getApps();
 
-      console.log(response);
-
       var apps = [];
 
       var users = this.getUsers;
@@ -184,17 +182,19 @@ export default {
     selectedApps: {
       handler: function (val, oldVal) {
         if (val.length > 0) {
+          if (oldVal.length > 0 && oldVal[0].ownerId === this.$data.user.id) {
+            this.updateUsersSelectedApp(new App());
+          } else {
+            this.updateSelectedApp(new App());
+          }
           if (val[0].ownerId === this.$data.user.id) {
             this.updateUsersSelectedApp(val[0]);
           } else {
             this.updateSelectedApp(val[0]);
           }
         } else {
-          if (oldVal[0].ownerId === this.$data.user.id) {
-            this.updateUsersSelectedApp(new App());
-          } else {
-            this.updateSelectedApp(new App());
-          }
+          this.updateUsersSelectedApp(new App());
+          this.updateSelectedApp(new App());
         }
       },
     },

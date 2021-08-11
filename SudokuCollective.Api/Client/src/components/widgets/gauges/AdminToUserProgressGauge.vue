@@ -45,7 +45,7 @@ export default {
       let ratio = 0;
 
       if (!this.$data.user.isSuperUser) {
-        if (this.$data.selectedApp.id == 0) {
+        if (this.$data.selectedApp.id === 0) {
           const apps = this.getUsersApps;
 
           if (apps.length > 0) {
@@ -88,14 +88,27 @@ export default {
           ratio = (totalAdmins / totalUsers) * 100;
         }
       } else {
-        const users = this.getUsers;
-        totalUsers = users.length;
 
-        users.forEach((user) => {
-          if (user.isAdmin) {
-            totalAdmins++;
-          }
-        });
+        if (this.$data.user.id === this.$data.selectedApp.ownerId) {
+          this.$data.selectedApp.users.forEach((user) => {
+            if (user.isAdmin) {
+              totalAdmins++;
+            }
+          });
+          
+          totalUsers = this.$data.selectedApp.users.length;
+
+          ratio = (totalAdmins / totalUsers) * 100;
+        } else {
+          const users = this.getUsers;
+          totalUsers = users.length;
+
+          users.forEach((user) => {
+            if (user.isAdmin) {
+              totalAdmins++;
+            }
+          });
+        }
 
         ratio = (totalAdmins / totalUsers) * 100;
       }
@@ -147,14 +160,26 @@ export default {
           totalUsers = this.$data.selectedApp.users.length - totalAdmins;
         }
       } else {
-        const users = this.getUsers;
+        let users = [];
 
-        users.forEach((user) => {
-          if (user.isAdmin) {
-            totalAdmins++;
-          }
-        });
-        totalUsers = users.length - totalAdmins;
+        if (this.$data.user.id === this.$data.selectedApp.ownerId) {
+          this.$data.selectedApp.users.forEach((user) => {
+            if (user.isAdmin) {
+              totalAdmins++;
+            }
+          });
+          
+          totalUsers = this.$data.selectedApp.users.length - totalAdmins;
+        } else {
+          users = this.getUsers;
+
+          users.forEach((user) => {
+            if (user.isAdmin) {
+              totalAdmins++;
+            }
+          });
+          totalUsers = users.length - totalAdmins;
+        }
       }
 
       if (

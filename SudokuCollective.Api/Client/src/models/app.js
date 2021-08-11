@@ -57,7 +57,7 @@ class App {
           : null;
       this.users = [];
 
-      if (data.users != null) {
+      if (data.users !== null) {
         data.users.forEach((user) => {
           if (user.id > 0 && user.userName !== undefined) {
             this.users.push(user);

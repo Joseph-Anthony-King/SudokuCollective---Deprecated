@@ -53,7 +53,7 @@ export default {
 
       let result;
 
-      if (this.$data.selectedApp.id === 0 || this.$data.user.isSuperUser) {
+      if (this.$data.selectedApp.id === 0 || this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id) {
         let totalApps = apps.length;
         let totalDevelopment = _.filter(apps, function (app) {
           return app.inDevelopment;
@@ -91,7 +91,7 @@ export default {
 
       let result;
 
-      if (this.$data.user.isSuperUser || this.$data.selectedApp.id === 0) {
+      if (this.$data.selectedApp.id === 0 || this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id) {
         if (apps.length > 0 && totalDevelopment.length > 0) {
           return (
             "Apps in Development: " +
@@ -117,7 +117,7 @@ export default {
     },
 
     isApplicable() {
-      if (this.$data.user.isSuperUser) {
+      if (this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id) {
         return false;
       } else if (
         this.$data.selectedApp.id !== 0 &&

@@ -30,7 +30,7 @@ const appModule = {
 
   mutations: {
     [UPDATE_USERS_SELECTED_APP](state, app) {
-      state.usersSelectedApp = new App(app);
+      state.usersSelectedApp = app;
     },
     [UPDATE_USERS_APPS](state, apps) {
       apps.forEach((app) => {
@@ -73,7 +73,7 @@ const appModule = {
       }
     },
     [UPDATE_SELECTED_APP](state, app) {
-      state.selectedApp = new App(app);
+      state.selectedApp = app;
     },
     [UPDATE_APPS](state, apps) {
       apps.forEach((app) => {

@@ -23,11 +23,11 @@
     </v-card>
     <div class="card-spacer"></div>
     <AtAGlanceWidget />
-    <UsersWidget v-if="user.isSuperUser" />
     <AppsWidget
       v-if="user.isSuperUser"
       v-on:open-edit-app-form-event="openEditAppForm()"
     />
+    <UsersWidget v-if="user.isSuperUser" />
     <MyAppsWidget
       v-if="!user.isSuperUser"
       v-on:open-create-app-form-event="openCreateAppForm()"
