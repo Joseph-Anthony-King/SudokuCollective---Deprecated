@@ -87,7 +87,7 @@ namespace SudokuCollective.Data.Repositories
 
                     if (dbEntry is UserApp userApp)
                     {
-                        if (userApp.Id == 0)
+                        if (userApp.UserId == entity.Id)
                         {
                             entry.State = EntityState.Added;
                         }
