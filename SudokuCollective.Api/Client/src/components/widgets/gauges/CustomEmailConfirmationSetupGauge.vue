@@ -136,20 +136,24 @@ export default {
     },
 
     isApplicable() {
-      const apps = this.getUsersApps;
+      let apps = [];
 
-      let setUp = [];
+      if (this.$data.selectedApp.id === 0) {
+        apps = this.getUsersApps;
+      } else {
+        apps.push(this.$data.selectedApp);
+      }
+
+      let notSetUp = [];
 
       if (apps.length > 0) {
-        setUp = _.filter(apps, function (app) {
-          return (
-            app.disableCustomUrls ||
-            (!app.disableCustomUrls && app.customEmailConfirmationAction === "")
-          );
+        notSetUp = _.filter(apps, function (app) {
+          return (app.disableCustomUrls ||
+            (!app.disableCustomUrls && app.customEmailConfirmationAction === ""));
         });
       }
 
-      if (setUp.length > 0) {
+      if (notSetUp.length > 0) {
         return true;
       } else {
         return false;
