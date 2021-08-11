@@ -53,7 +53,7 @@
         readonly
       ></v-text-field>
       <v-text-field
-        v-if="userDateUpdated !== '12/31/1, 4:07:02 PM'"
+        v-if="userDateUpdated !== '12/31/2001, 4:07:02 PM'"
         v-model="userDateUpdated"
         label="Date Updated"
         hint="MM/DD/YYYY format"

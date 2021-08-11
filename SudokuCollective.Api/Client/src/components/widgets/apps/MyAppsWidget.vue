@@ -123,7 +123,7 @@ export default {
     },
   },
   watch: {
-    "$store.state.appModule.apps": {
+    "$store.state.appModule.usersApps": {
       handler: function (val, oldVal) {
         this.$data.apps = this.getUsersApps;
       },

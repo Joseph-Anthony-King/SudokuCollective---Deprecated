@@ -5,12 +5,13 @@
       :size="310"
       :width="30"
       :value="value"
-      color="success"
+      :color="isApplicable ? 'error' : 'success'"
     >
-      {{ value }}%
+      {{ value }}
     </v-progress-circular>
     <h3>Development to Production</h3>
     <h3>{{ legend }}</h3>
+    <br />
   </div>
 </template>
 
@@ -21,18 +22,25 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import _ from "lodash";
 import { mapGetters } from "vuex";
+import App from "@/models/app";
 import User from "@/models/user";
 
 export default {
   name: "ProdToDevProgressGauge",
   data: () => ({
     user: new User(),
+    selectedApp: new App(),
   }),
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
-    ...mapGetters("appModule", ["getUsersApps", "getApps"]),
+    ...mapGetters("appModule", [
+      "getUsersSelectedApp",
+      "getUsersApps",
+      "getApps",
+    ]),
 
     value() {
       let apps;
@@ -43,17 +51,29 @@ export default {
         apps = this.getApps;
       }
 
-      let totalApps = apps.length;
-      let totalDevelopment = _.filter(apps, function (app) {
-        return app.inDevelopment;
-      });
-      let ratio = 0;
+      let result;
 
-      if (apps.length > 0) {
-        ratio = (totalDevelopment.length / totalApps) * 100;
+      if (this.$data.selectedApp.id === 0 || this.$data.user.isSuperUser) {
+        let totalApps = apps.length;
+        let totalDevelopment = _.filter(apps, function (app) {
+          return app.inDevelopment;
+        });
+        let ratio = 0;
+
+        if (apps.length > 0) {
+          ratio = (totalDevelopment.length / totalApps) * 100;
+        }
+
+        result = ratio.toFixed(0) + "%";
+      } else {
+        if (this.$data.selectedApp.inDevelopment) {
+          result = "In Development";
+        } else {
+          result = "In Production";
+        }
       }
 
-      return ratio.toFixed(0);
+      return result;
     },
 
     legend() {
@@ -69,19 +89,56 @@ export default {
         return app.inDevelopment;
       });
 
-      if (apps.length > 0 && totalDevelopment.length > 0) {
-        return (
-          "Apps in Development: " +
-          totalDevelopment.length +
-          " Apps in Production: " +
-          (apps.length - totalDevelopment.length)
-        );
-      } else if (apps.length > 0 && totalDevelopment.length === 0) {
-        const app = apps.length === 1 ? "App is " : "All Apps are ";
-        return app + "in Production";
+      let result;
+
+      if (this.$data.user.isSuperUser || this.$data.selectedApp.id === 0) {
+        if (apps.length > 0 && totalDevelopment.length > 0) {
+          return (
+            "Apps in Development: " +
+            totalDevelopment.length +
+            " Apps in Production: " +
+            (apps.length - totalDevelopment.length)
+          );
+        } else if (apps.length > 0 && totalDevelopment.length === 0) {
+          const app = apps.length === 1 ? "App is " : "All Apps are ";
+          result = app + "in Production";
+        } else {
+          result = "No Apps Created";
+        }
       } else {
-        return "No Apps Created";
+        if (this.$data.selectedApp.inDevelopment) {
+          result = "App is in Development";
+        } else {
+          result = "App is in Production";
+        }
       }
+
+      return result;
+    },
+
+    isApplicable() {
+      if (this.$data.user.isSuperUser) {
+        return false;
+      } else if (
+        this.$data.selectedApp.id !== 0 &&
+        this.$data.selectedApp.inDevelopment
+      ) {
+        return true;
+      } else if (
+        this.$data.selectedApp.id !== 0 &&
+        !this.$data.selectedApp.inDevelopment
+      ) {
+        return false;
+      } else {
+        return false;
+      }
+    },
+  },
+  watch: {
+    "$store.state.appModule.usersSelectedApp": {
+      handler: function (val, oldVal) {
+        this.$data.selectedApp = this.getUsersSelectedApp;
+      },
     },
   },
   created() {

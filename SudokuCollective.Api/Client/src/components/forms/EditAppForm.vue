@@ -66,7 +66,6 @@
                 v-model="app.customPasswordResetAction"
                 label="Custom Password Reset Action"
                 prepend-icon="mode_edit"
-                :rules="urlRules"
                 @click="!dirty ? (dirty = true) : null"
                 @focus="!dirty ? (dirty = true) : null"
               ></v-text-field>
@@ -234,8 +233,6 @@ export default {
                 this.$data.app.timeFrame,
                 this.$data.app.accessDuration
               );
-
-              console.log("update app data:", data);
 
               const response = await appProvider.updateApp(data);
 

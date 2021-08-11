@@ -28,7 +28,7 @@
       this.fullName = data.fullName;
       this.email = data.email;
       this.isEmailConfirmed = data.isEmailConfirmed;
-      this.emailConfirmed = data.emailConfirmed ? "Yes" : "No";
+      this.emailConfirmed = data.isEmailConfirmed ? "Yes" : "No";
       this.receivedRequestToUpdateEmail = data.receivedRequestToUpdateEmail;
       this.receivedRequestToUpdatePassword =
         data.receivedRequestToUpdatePassword;

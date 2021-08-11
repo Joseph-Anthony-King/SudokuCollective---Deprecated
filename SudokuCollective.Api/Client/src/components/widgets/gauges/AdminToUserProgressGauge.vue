@@ -7,10 +7,11 @@
       :value="value"
       color="success"
     >
-      {{ value }}%
+      {{ value }}
     </v-progress-circular>
     <h3>Admins to Users</h3>
     <h3>{{ legend }}</h3>
+    <br />
   </div>
 </template>
 
@@ -21,18 +22,21 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import _ from "lodash";
 import { mapGetters } from "vuex";
+import App from "@/models/app";
 import User from "@/models/user";
 
 export default {
   name: "AdminToUserProgressGauge",
   data: () => ({
     user: new User(),
+    selectedApp: new App(),
   }),
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
-    ...mapGetters("appModule", ["getUsersApps"]),
+    ...mapGetters("appModule", ["getUsersSelectedApp", "getUsersApps"]),
     ...mapGetters("userModule", ["getUsers"]),
 
     value() {
@@ -67,7 +71,7 @@ export default {
         ratio = (totalAdmins / totalUsers) * 100;
       }
 
-      return ratio.toFixed(0);
+      return ratio.toFixed(0) + "%";
     },
 
     legend() {
@@ -76,35 +80,53 @@ export default {
       let totalAdmins = 0;
 
       if (!this.$data.user.isSuperUser) {
-        apps = this.getUsersApps;
+        if (this.$data.selectedApp.id == 0) {
+          apps = this.getUsersApps;
 
-        if (apps.length > 0) {
-          apps.forEach((app) => {
-            totalUsers += app.users.length;
-            const admins = _.filter(app.users, function (user) {
-              return user.isAdmin;
+          if (apps.length > 0) {
+            apps.forEach((app) => {
+              const admins = _.filter(app.users, function (user) {
+                return user.isAdmin;
+              });
+              totalAdmins += admins.length;
+              totalUsers += app.users.length - admins.length;
             });
-            totalAdmins += admins.length;
+          }
+        } else {
+          this.$data.selectedApp.users.forEach((user) => {
+            if (user.isAdmin) {
+              totalAdmins++;
+            }
           });
+          totalUsers = this.$data.selectedApp.users.length - totalAdmins;
         }
       } else {
         const users = this.getUsers;
-        totalUsers = users.length;
+
         users.forEach((user) => {
           if (user.isAdmin) {
             totalAdmins++;
           }
         });
+        totalUsers = users.length - totalAdmins;
       }
 
       if (
-        (!this.$data.user.isSuperUser && apps.length > 0) ||
-        this.$data.user.isSuperUser
+        this.$data.user.isSuperUser ||
+        (!this.$data.user.isSuperUser &&
+          (apps.length > 0 || this.$data.selectedApp.id !== 0))
       ) {
         return "Admins: " + totalAdmins + " Users: " + totalUsers;
       } else {
         return "No Apps Created";
       }
+    },
+  },
+  watch: {
+    "$store.state.appModule.usersSelectedApp": {
+      handler: function (val, oldVal) {
+        this.$data.selectedApp = this.getUsersSelectedApp;
+      },
     },
   },
   created() {

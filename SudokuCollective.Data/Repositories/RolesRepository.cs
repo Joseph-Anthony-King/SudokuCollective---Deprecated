@@ -180,7 +180,14 @@ namespace SudokuCollective.Data.Repositories
             {
                 if (await _context.Roles.AnyAsync(r => r.Id == entity.Id))
                 {
-                    _context.Attach(entity);
+                    try
+                    {
+                        _context.Update(entity);
+                    }
+                    catch
+                    {
+                        _context.Attach(entity);
+                    }
 
                     foreach (var entry in _context.ChangeTracker.Entries())
                     {

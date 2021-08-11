@@ -85,6 +85,7 @@ namespace SudokuCollective.Data.Services
                 request.License);
 
             var app = (App)((RepositoryResponse)appResponse.Item1).Object;
+            //var app = (App)(await _appsRepository.GetByLicense(request.License)).Object;
 
             if (!app.IsActive)
             {

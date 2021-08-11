@@ -141,6 +141,7 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { registerService } from "@/services/registerService/registerService";
 import SignUpModel from "@/models/viewModels/signUpModel";
@@ -169,6 +170,8 @@ export default {
     invalidEmails: [],
   }),
   methods: {
+    ...mapActions("settingsModule", ["updateUserName"]),
+
     async submit() {
       if (this.getSignUpFormStatus) {
         try {
@@ -191,6 +194,8 @@ export default {
             this.resetSignUpFormStatus;
 
             this.reset();
+
+            this.updateUserName("");
 
             this.$emit(
               "user-signing-up-event",

@@ -29,6 +29,33 @@
         </v-container>
       </v-card-text>
     </v-card>
+    <hr />
+    <v-card elevation="6">
+      <v-card-title class="justify-center">Available Actions</v-card-title>
+      <v-card-actions>
+        <v-container>
+          <v-row dense>
+            <v-col>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="refresh"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Refresh
+                  </v-btn>
+                </template>
+                <span>Refresh Apps</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-actions>
+    </v-card>
     <div class="card-spacer"></div>
     <ReviewUserWidget
       v-if="selectedUsers.length > 0"
@@ -43,6 +70,7 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import { userProvider } from "@/providers/userProvider";
 import ReviewUserWidget from "@/components/widgets/users/ReviewUserWidget";
 import User from "@/models/user";
 
@@ -76,12 +104,38 @@ export default {
     processing: false,
   }),
   methods: {
-    ...mapActions("userModule", ["updateSelectedUser"]),
+    ...mapActions("userModule", ["updateSelectedUser", "updateUsers"]),
+
     closeUserWidget() {
       this.$data.selectedUsers = [];
     },
+
+    async refresh() {
+      const response = await userProvider.getUsers();
+
+      var users = [];
+
+      response.users.forEach((u) => {
+        const user = new User(u);
+        user["licenses"] = 0;
+        users.push(user);
+      });
+
+      var apps = this.getApps;
+
+      apps.forEach((app) => {
+        users.forEach((user) => {
+          if (app.ownerId === user.id) {
+            user.licenses++;
+          }
+        });
+      });
+
+      this.updateUsers(users);
+    },
   },
   computed: {
+    ...mapGetters("appModule", ["getApps"]),
     ...mapGetters("userModule", ["getUsers"]),
 
     title() {

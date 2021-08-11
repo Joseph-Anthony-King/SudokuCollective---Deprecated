@@ -37,7 +37,7 @@ class App {
       this.permitCollectiveLogins = data.permitCollectiveLogins;
       this.disableCustomUrls = data.disableCustomUrls;
       this.customActions =
-        data.disableCustomUrls &&
+        !data.disableCustomUrls &&
         data.customEmailConfirmationAction !== "" &&
         data.customPasswordResetAction !== ""
           ? "Yes"

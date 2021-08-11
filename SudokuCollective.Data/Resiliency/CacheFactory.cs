@@ -41,9 +41,16 @@ namespace SudokuCollective.Data.Resiliency
 
                 List<string> cacheKeys;
 
-                if (response.Object is User)
+                if (response.Object is User user)
                 {
+                    var appLicense = await ((IUsersRepository<User>)repo)
+                        .GetAppLicense(user.Apps[0].AppId);
+
                     cacheKeys = new List<string> {
+                        string.Format(CacheKeys.GetAppCacheKey, user.Apps[0].AppId),
+                        string.Format(CacheKeys.GetAppUsersCacheKey, user.Apps[0].AppId),
+                        string.Format(CacheKeys.GetNonAppUsersCacheKey, user.Apps[0].AppId),
+                        string.Format(CacheKeys.GetAppByLicenseCacheKey, appLicense),
                         string.Format(CacheKeys.GetAppUsersCacheKey, 1),
                         string.Format(CacheKeys.GetNonAppUsersCacheKey, 1),
                         CacheKeys.GetUsersCacheKey
@@ -53,7 +60,8 @@ namespace SudokuCollective.Data.Resiliency
                 {
                     // Remove any app list cache items which may exist
                     cacheKeys = new List<string> {
-                                string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId)
+                                string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId),
+                                CacheKeys.GetAppsCacheKey
                             };
                 }
                 else if (response.Object is Difficulty)
@@ -197,7 +205,8 @@ namespace SudokuCollective.Data.Resiliency
                     cacheKeys = new List<string> {
                                 string.Format(CacheKeys.GetUserCacheKey, user.Id),
                                 string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
-                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
+                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email),
+                                string.Format(CacheKeys.GetUsersCacheKey),
                             };
                 }
                 else if (response.Object is App app)
@@ -206,7 +215,8 @@ namespace SudokuCollective.Data.Resiliency
                     cacheKeys = new List<string> {
                                 string.Format(CacheKeys.GetAppCacheKey, app.Id),
                                 string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
-                                string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId)
+                                string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId),
+                                string.Format(CacheKeys.GetAppsCacheKey),
                             };
                 }
                 else if (response.Object is Difficulty difficulty)

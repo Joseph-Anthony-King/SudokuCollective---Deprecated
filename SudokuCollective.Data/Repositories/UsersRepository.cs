@@ -87,7 +87,7 @@ namespace SudokuCollective.Data.Repositories
 
                     if (dbEntry is UserApp userApp)
                     {
-                        if (entity.Apps.Any(ua => ua.Id == userApp.Id))
+                        if (userApp.Id == 0)
                         {
                             entry.State = EntityState.Added;
                         }
@@ -335,63 +335,77 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
+                entity.DateUpdated = DateTime.UtcNow;
+
+                try
                 {
-                    entity.DateUpdated = DateTime.UtcNow;
+                    _context.Update(entity);
+                }
+                catch
+                {
+                    _context.Attach(entity);
+                }
 
-                    if (!_context
-                        .ChangeTracker
-                        .Entries<User>()
-                        .Any(e => e.Entity.Id == entity.Id))
+                foreach (var entry in _context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IEntityBase)entry.Entity;
+
+                    if (dbEntry is User)
                     {
-                        _context.Update(entity);
-                    }
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IEntityBase)entry.Entity;
-
-                        if (dbEntry is UserApp)
+                        if (dbEntry.Id == 0)
                         {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                        }
-                        else if (dbEntry is UserRole)
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Modified;
-                            }
+                            entry.State = EntityState.Added;
                         }
                         else
                         {
-                            // Otherwise do nothing...
+                            entry.State = EntityState.Modified;
                         }
                     }
-
-                    await _context.SaveChangesAsync();
-
-                    result.Success = true;
-                    result.Object = entity;
-
-                    return result;
+                    else if (dbEntry is UserApp)
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else if (dbEntry is UserRole)
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else if (dbEntry is Role)
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                    }
+                    else
+                    {
+                        // Otherwise do nothing...
+                    }
                 }
-                else
-                {
-                    result.Success = false;
 
-                    return result;
-                }
+                await _context.SaveChangesAsync();
+
+                result.Success = true;
+                result.Object = entity;
+
+                return result;
             }
             catch (Exception exp)
             {

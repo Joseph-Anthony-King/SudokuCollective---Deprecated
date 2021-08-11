@@ -205,14 +205,26 @@ namespace SudokuCollective.Data.Repositories
 
                 query = await _context
                     .Apps
-                    .Include(a => a.Users)
-                        .ThenInclude(ua => ua.User)
-                            .ThenInclude(u => u.Roles)
-                                .ThenInclude(ur => ur.Role)
                     .FirstOrDefaultAsync(a => a.Id == id);
 
                 if (query != null)
                 {
+                    query.Users = await _context.UsersApps
+                        .Include(ua => ua.User)
+                            .ThenInclude(u => u.Roles)
+                        .Where(ua => ua.AppId == query.Id)
+                        .ToListAsync();
+
+                    foreach (var userApp in query.Users)
+                    {
+                        foreach (var userRole in userApp.User.Roles)
+                        {
+                            userRole.Role = await _context
+                                .Roles
+                                .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
+                        }
+                    }
+
                     // Filter games by app
                     foreach (var userApp in query.Users)
                     {
@@ -265,15 +277,27 @@ namespace SudokuCollective.Data.Repositories
 
                 query = await _context
                     .Apps
-                    .Include(a => a.Users)
-                        .ThenInclude(ua => ua.User)
-                            .ThenInclude(u => u.Roles)
-                                .ThenInclude(ur => ur.Role)
                     .FirstOrDefaultAsync(
                         a => a.License.ToLower().Equals(license.ToLower()));
 
                 if (query != null)
                 {
+                    query.Users = await _context.UsersApps
+                        .Include(ua => ua.User)
+                            .ThenInclude(u => u.Roles)
+                        .Where(ua => ua.AppId == query.Id)
+                        .ToListAsync();
+
+                    foreach (var userApp in query.Users)
+                    {
+                        foreach (var userRole in userApp.User.Roles)
+                        {
+                            userRole.Role = await _context
+                                .Roles
+                                .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
+                        }
+                    }
+
                     // Filter games by app
                     foreach (var userApp in query.Users)
                     {
@@ -670,7 +694,14 @@ namespace SudokuCollective.Data.Repositories
                 {
                     entity.DateUpdated = DateTime.UtcNow;
 
-                    _context.Attach(entity);
+                    try
+                    {
+                        _context.Update(entity);
+                    }
+                    catch
+                    {
+                        _context.Attach(entity);
+                    }
 
                     foreach (var entry in _context.ChangeTracker.Entries())
                     {

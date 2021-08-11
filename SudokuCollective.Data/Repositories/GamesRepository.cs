@@ -196,7 +196,14 @@ namespace SudokuCollective.Data.Repositories
                 {
                     entity.DateUpdated = DateTime.UtcNow;
 
-                    _context.Attach(entity);
+                    try
+                    {
+                        _context.Update(entity);
+                    }
+                    catch
+                    {
+                        _context.Attach(entity);
+                    }
 
                     foreach (var entry in _context.ChangeTracker.Entries())
                     {

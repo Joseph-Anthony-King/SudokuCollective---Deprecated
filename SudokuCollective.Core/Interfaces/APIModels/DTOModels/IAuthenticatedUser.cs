@@ -11,7 +11,7 @@ namespace SudokuCollective.Core.Interfaces.APIModels.DTOModels
         string NickName { get; set; }
         string FullName { get; set; }
         string Email { get; set; }
-        bool EmailConfirmed { get; set; }
+        bool IsEmailConfirmed { get; set; }
         bool ReceivedRequestToUpdateEmail { get; set; }
         bool ReceivedRequestToUpdatePassword { get; set; }
         bool IsActive { get; set; }

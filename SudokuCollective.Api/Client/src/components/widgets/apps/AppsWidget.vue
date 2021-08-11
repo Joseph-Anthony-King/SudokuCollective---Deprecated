@@ -29,6 +29,33 @@
         </v-container>
       </v-card-text>
     </v-card>
+    <hr />
+    <v-card elevation="6">
+      <v-card-title class="justify-center">Available Actions</v-card-title>
+      <v-card-actions>
+        <v-container>
+          <v-row dense>
+            <v-col>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="refresh"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Refresh
+                  </v-btn>
+                </template>
+                <span>Refresh Apps</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-actions>
+    </v-card>
     <div class="card-spacer"></div>
     <AppWidget
       v-if="selectedApps.length > 0 && selectedApps[0].ownerId === user.id"
@@ -49,6 +76,7 @@
 import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import { appProvider } from "@/providers/appProvider";
 import AppWidget from "@/components/widgets/apps/AppWidget";
 import ReviewAppWidget from "@/components/widgets/apps/ReviewAppWidget";
 import App from "@/models/app";
@@ -83,7 +111,11 @@ export default {
     processing: false,
   }),
   methods: {
-    ...mapActions("appModule", ["updateUsersSelectedApp", "updateSelectedApp"]),
+    ...mapActions("appModule", [
+      "updateApps",
+      "updateUsersSelectedApp",
+      "updateSelectedApp",
+    ]),
 
     closeAppWidget() {
       this.$data.selectedApps = [];
@@ -92,10 +124,31 @@ export default {
     openEditAppDialog() {
       this.$emit("open-edit-app-form-event", null, null);
     },
+
+    async refresh() {
+      const response = await appProvider.getApps();
+
+      console.log(response);
+
+      var apps = [];
+
+      var users = this.getUsers;
+
+      response.apps.forEach((a) => {
+        const app = new App(a);
+        app["owner"] = _.find(users, function (user) {
+          return user.id === app.ownerId;
+        });
+        apps.push(app);
+      });
+
+      this.updateApps(apps);
+    },
   },
   computed: {
-    ...mapGetters("appModule", ["getApps"]),
     ...mapGetters("settingsModule", ["getUser"]),
+    ...mapGetters("appModule", ["getApps"]),
+    ...mapGetters("userModule", ["getUsers"]),
 
     title() {
       const apps = this.$data.apps.length == 1 ? "App" : "Apps";
