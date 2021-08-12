@@ -80,8 +80,12 @@ export default {
 
             totalAdmins = admins.length;
             totalUsers = users.length;
+          }
 
-            ratio = (totalAdmins / (totalAdmins + totalUsers)) * 100;
+          if (totalUsers !== 0 && totalAdmins !== 0) {
+            ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
+          } else {
+            ratio = 0;
           }
         } else {
           // Users selected app user statistics
@@ -93,7 +97,11 @@ export default {
           
           totalUsers = this.$data.selectedApp.users.length;
 
-          ratio = (totalAdmins / totalUsers) * 100;
+          if (totalUsers !== 0 && totalAdmins !== 0) {
+            ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
+          } else {
+            ratio = 0;
+          }
         }
       } else {
         // The following logic is applied if the user is a super user
@@ -132,7 +140,11 @@ export default {
           
           totalUsers = this.$data.selectedApp.users.length;
 
-          ratio = (totalAdmins / totalUsers) * 100;
+          if (totalUsers !== 0 && totalAdmins !== 0) {
+            ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
+          } else {
+            ratio = 0;
+          }
         }
       }
 
