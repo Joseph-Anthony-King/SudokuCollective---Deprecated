@@ -27,6 +27,7 @@ import _ from "lodash";
 import { mapGetters } from "vuex";
 import App from "@/models/app";
 import User from "@/models/user";
+import AppUsersWidgetVue from '../apps/AppUsersWidget.vue';
 
 export default {
   name: "AdminToUserProgressGauge",
@@ -62,17 +63,29 @@ export default {
               const appAdmins = _.filter(app.users, function (user) {
                 return user.isAdmin;
               });
-              appAdmins.forEach((admin) => {
-                if (!_.some(admins, admin)) {
-                  admins.push(admin);
+              appAdmins.forEach((appAdmin) => {
+                let addToAdmins = true
+                admins.forEach((admin) => {
+                  if (appAdmin.id === admin.id) {
+                    addToAdmins = false;
+                  }
+                });
+                if (addToAdmins) {
+                  admins.push(appAdmin);
                 }
               });
               const appUsers = _.filter(app.users, function (user) {
                 return !user.isAdmin;
               });
-              appUsers.forEach((admin) => {
-                if (!_.some(admins, admin)) {
-                  users.push(admin);
+              appUsers.forEach((appUser) => {
+                let addToUsers = true
+                users.forEach((user) => {
+                  if (appUser.id === user.id) {
+                    addToUsers = false;
+                  }
+                });
+                if (addToUsers) {
+                  users.push(appUser);
                 }
               });
             });
@@ -152,17 +165,29 @@ export default {
               const appAdmins = _.filter(app.users, function (user) {
                 return user.isAdmin;
               });
-              appAdmins.forEach((admin) => {
-                if (!_.some(admins, admin)) {
-                  admins.push(admin);
+              appAdmins.forEach((appAdmin) => {
+                let addToAdmins = true
+                admins.forEach((admin) => {
+                  if (appAdmin.id === admin.id) {
+                    addToAdmins = false;
+                  }
+                });
+                if (addToAdmins) {
+                  admins.push(appAdmin);
                 }
               });
               const appUsers = _.filter(app.users, function (user) {
                 return !user.isAdmin;
               });
-              appUsers.forEach((admin) => {
-                if (!_.some(admins, admin)) {
-                  users.push(admin);
+              appUsers.forEach((appUser) => {
+                let addToUsers = true
+                users.forEach((user) => {
+                  if (appUser.id === user.id) {
+                    addToUsers = false;
+                  }
+                });
+                if (addToUsers) {
+                  users.push(appUser);
                 }
               });
             });
