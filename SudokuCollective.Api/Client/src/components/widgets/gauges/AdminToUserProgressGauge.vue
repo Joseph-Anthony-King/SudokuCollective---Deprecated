@@ -42,7 +42,6 @@ export default {
     ...mapGetters("userModule", ["getUsers"]),
 
     value() {
-      console.log("value invoked...");
       let totalUsers = 0;
       let totalAdmins = 0;
       let ratio = 0;
@@ -81,12 +80,6 @@ export default {
             totalAdmins = admins.length;
             totalUsers = users.length;
           }
-
-          if (totalUsers !== 0 && totalAdmins !== 0) {
-            ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
-          } else {
-            ratio = 0;
-          }
         } else {
           // Users selected app user statistics
           this.$data.selectedApp.users.forEach((user) => {
@@ -96,12 +89,6 @@ export default {
           });
           
           totalUsers = this.$data.selectedApp.users.length;
-
-          if (totalUsers !== 0 && totalAdmins !== 0) {
-            ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
-          } else {
-            ratio = 0;
-          }
         }
       } else {
         // The following logic is applied if the user is a super user
@@ -123,12 +110,6 @@ export default {
 
           totalAdmins = admins.length;
           totalUsers = users.length;
-
-          if (totalUsers !== 0 && totalAdmins !== 0) {
-            ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
-          } else {
-            ratio = 0;
-          }
         } else {
           /* If the super user is the owner of the selected 
            * app the app's user statistics are displyed */
@@ -137,15 +118,14 @@ export default {
               totalAdmins++;
             }
           });
-          
-          totalUsers = this.$data.selectedApp.users.length;
-
-          if (totalUsers !== 0 && totalAdmins !== 0) {
-            ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
-          } else {
-            ratio = 0;
-          }
+          totalUsers = this.$data.selectedApp.users.length - totalAdmins;
         }
+      }
+
+      if (totalUsers + totalAdmins !== 0) {
+        ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
+      } else {
+        ratio = 0;
       }
 
       return ratio.toFixed(0) + "%";
@@ -240,12 +220,6 @@ export default {
         this.$data.selectedApp = this.getUsersSelectedApp;
       },
     },
-    "value": {
-      handler: function (val, oldVal) {
-        console.log("value oldVal:", oldVal);
-        console.log("value val:", val);
-      }
-    }
   },
   created() {
     this.$data.processing = true;
