@@ -88,7 +88,7 @@ export default {
             }
           });
           
-          totalUsers = this.$data.selectedApp.users.length;
+          totalUsers = this.$data.selectedApp.users.length - totalAdmins;
         }
       } else {
         // The following logic is applied if the user is a super user
