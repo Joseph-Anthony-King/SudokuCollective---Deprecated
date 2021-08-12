@@ -17,7 +17,7 @@ In the API project you will find a *dummysettings.json* file that you can use to
 
 For the *License* field in *DefaultAdminApp* and *DefaultClientApp* you can enter a hexadecimal value, random values can be generated [here](https://www.guidgenerator.com/online-guid-generator.aspx), braces aren't necessary but you should include hyphens.
 
-In the API project you will also find the Vue.js client app.  You will need to add a *.env* file to the client app.  In the app you will see a *dummyenv.js* file that documents the required values just as the *dummysettings.json* file does in the API project.  Just replace the values where it states 'your value here' and rename the file to *.env*.
+In the API project you will also find the Vue.js client app.  You will need to add a *.env* file to the client app.  In the app you will see a *.env.dummy* file that documents the required values just as the *dummysettings.json* file does in the API project.  Just replace the values where it states 'your value here' and rename the file to *.env*.
 
 Once the above is done run the following command to instantiate the database:
 
