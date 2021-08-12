@@ -61,6 +61,7 @@
   margin: 0;
 }
 </style>
+
 <script>
 /* eslint-disable no-unused-vars */
 import { mapGetters } from "vuex";

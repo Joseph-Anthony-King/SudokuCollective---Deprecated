@@ -32,7 +32,9 @@ export default {
   name: "AdminToUserProgressGauge",
   data: () => ({
     user: new User(),
+    users: [],
     selectedApp: new App(),
+    processing: false
   }),
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
@@ -40,6 +42,7 @@ export default {
     ...mapGetters("userModule", ["getUsers"]),
 
     value() {
+      console.log("value invoked...");
       let totalUsers = 0;
       let totalAdmins = 0;
       let ratio = 0;
@@ -94,7 +97,31 @@ export default {
         }
       } else {
         // The following logic is applied if the user is a super user
-        if (this.$data.user.id === this.$data.selectedApp.ownerId) {
+        if (this.$data.user.id !== this.$data.selectedApp.ownerId) {
+          /* If the super user is not the owner of the selected 
+           * app collective wide user statiscs are displayed */
+          const collectiveUsers = this.getUsers;
+          
+          let admins = [];
+          let users = [];
+
+          collectiveUsers.forEach((user) => {
+            if (user.isAdmin) {
+              admins.push(user);
+            } else {
+              users.push(user);
+            }
+          });
+
+          totalAdmins = admins.length;
+          totalUsers = users.length;
+
+          if (totalUsers !== 0 && totalAdmins !== 0) {
+            ratio = (totalAdmins / (totalUsers + totalAdmins)) * 100;
+          } else {
+            ratio = 0;
+          }
+        } else {
           /* If the super user is the owner of the selected 
            * app the app's user statistics are displyed */
           this.$data.selectedApp.users.forEach((user) => {
@@ -106,20 +133,7 @@ export default {
           totalUsers = this.$data.selectedApp.users.length;
 
           ratio = (totalAdmins / totalUsers) * 100;
-        } else {
-          /* If the super user is not the owner of the selected 
-           * app collective wide user statiscs are displayed */
-          const users = this.getUsers;
-          totalUsers = users.length;
-
-          users.forEach((user) => {
-            if (user.isAdmin) {
-              totalAdmins++;
-            }
-          });
         }
-
-        ratio = (totalAdmins / totalUsers) * 100;
       }
 
       return ratio.toFixed(0) + "%";
@@ -214,9 +228,17 @@ export default {
         this.$data.selectedApp = this.getUsersSelectedApp;
       },
     },
+    "value": {
+      handler: function (val, oldVal) {
+        console.log("value oldVal:", oldVal);
+        console.log("value val:", val);
+      }
+    }
   },
   created() {
+    this.$data.processing = true;
     this.$data.user = this.getUser;
+    this.$data.processing = false;
   },
 };
 </script>
