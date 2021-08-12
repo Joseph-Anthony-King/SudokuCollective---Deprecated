@@ -152,7 +152,7 @@
 </template>
 
 <style scoped>
-@media only screen and (min-width: 1265px) {
+@media only screen and (min-width: 1367px) {
   .nav-bar-icon-status {
     display: none;
   }

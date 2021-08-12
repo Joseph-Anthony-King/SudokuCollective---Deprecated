@@ -4,6 +4,7 @@
     color="secondary"
     :value="navDrawerStatus"
     v-if="userLoggedIn"
+    mobile-breakpoint="1367"
   >
     <v-list>
       <v-list-item>
@@ -40,7 +41,6 @@
 .nav-drawer-item {
   font-weight: bold;
   text-decoration: none !important;
-  text-transform: uppercase;
   color: #ffffff;
 }
 .user-profile-item {
