@@ -220,10 +220,12 @@ export default {
         },
       ];
 
+      var pronoun = this.$data.selectedUsers.length === 1 ? "this user" : "these users";
+
       showToast(
         this,
         ToastMethods["show"],
-        `Are you sure you want to add this users to ${this.$data.app.name}?`,
+        `Are you sure you want to add ${pronoun} to ${this.$data.app.name}?`,
         actionToastOptions(action, "mode_edit")
       );
     },

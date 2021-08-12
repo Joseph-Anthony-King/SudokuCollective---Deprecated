@@ -439,10 +439,12 @@ export default {
         },
       ];
 
+      var pronoun = this.$data.selectedUsers.length === 1 ? "this user" : "these users";
+
       showToast(
         this,
         ToastMethods["show"],
-        `Are you sure you want to remove this user from ${this.$data.app.name}?`,
+        `Are you sure you want to remove ${pronoun} from ${this.$data.app.name}?`,
         actionToastOptions(action, "delete")
       );
     },
