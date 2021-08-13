@@ -56,7 +56,8 @@ export default {
       let result;
 
       if (
-        this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id ||
+        (this.$data.user.isSuperUser &&
+          this.$data.selectedApp.ownerId !== this.$data.user.id) ||
         (!this.$data.user.isSuperUser && this.$data.selectedApp.id === 0)
       ) {
         /* The following logic is applied if the user if not a super user and an app is not
@@ -79,7 +80,7 @@ export default {
         /* The following logic is applied if the user if not a super user and an app is
          * selected OR if the user is a super user and is reviewing one of their own apps.
          * This then gives the specific status for the app */
-        
+
         if (
           !this.$data.selectedApp.disableCustomUrls &&
           this.$data.selectedApp.customEmailConfirmationAction !== ""
@@ -117,7 +118,8 @@ export default {
       let result;
 
       if (
-        this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id  ||
+        (this.$data.user.isSuperUser &&
+          this.$data.selectedApp.ownerId !== this.$data.user.id) ||
         (!this.$data.user.isSuperUser && this.$data.selectedApp.id === 0)
       ) {
         /* The following logic is applied if the user if not a super user and an app is not
@@ -168,8 +170,10 @@ export default {
 
       if (apps.length > 0) {
         notSetUp = _.filter(apps, function (app) {
-          return (app.disableCustomUrls ||
-            (!app.disableCustomUrls && app.customEmailConfirmationAction === ""));
+          return (
+            app.disableCustomUrls ||
+            (!app.disableCustomUrls && app.customEmailConfirmationAction === "")
+          );
         });
       }
 

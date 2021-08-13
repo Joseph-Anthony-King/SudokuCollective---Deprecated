@@ -35,9 +35,9 @@ const confirmUserName = async function (email, license) {
     url: url,
     headers: headers,
     data: {
-      "email": email,
-      "license": license
-    }
+      email: email,
+      license: license,
+    },
   };
 
   try {

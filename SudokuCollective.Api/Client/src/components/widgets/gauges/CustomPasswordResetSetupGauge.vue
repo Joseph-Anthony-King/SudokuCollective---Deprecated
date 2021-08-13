@@ -56,7 +56,8 @@ export default {
       let result;
 
       if (
-        (this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id) ||
+        (this.$data.user.isSuperUser &&
+          this.$data.selectedApp.ownerId !== this.$data.user.id) ||
         (!this.$data.user.isSuperUser && this.$data.selectedApp.id === 0)
       ) {
         /* The following logic is applied if the user if not a super user and an app is not
@@ -117,7 +118,8 @@ export default {
       let result;
 
       if (
-        this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id  ||
+        (this.$data.user.isSuperUser &&
+          this.$data.selectedApp.ownerId !== this.$data.user.id) ||
         (!this.$data.user.isSuperUser && this.$data.selectedApp.id === 0)
       ) {
         /* The following logic is applied if the user if not a super user and an app is not
@@ -168,8 +170,10 @@ export default {
 
       if (apps.length > 0) {
         notSetUp = _.filter(apps, function (app) {
-          return (app.disableCustomUrls ||
-            (!app.disableCustomUrls && app.customPasswordResetAction === ""));
+          return (
+            app.disableCustomUrls ||
+            (!app.disableCustomUrls && app.customPasswordResetAction === "")
+          );
         });
       }
 

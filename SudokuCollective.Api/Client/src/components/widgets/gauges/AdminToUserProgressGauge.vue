@@ -27,7 +27,7 @@ import _ from "lodash";
 import { mapGetters } from "vuex";
 import App from "@/models/app";
 import User from "@/models/user";
-import AppUsersWidgetVue from '../apps/AppUsersWidget.vue';
+import AppUsersWidgetVue from "../apps/AppUsersWidget.vue";
 
 export default {
   name: "AdminToUserProgressGauge",
@@ -35,7 +35,7 @@ export default {
     user: new User(),
     users: [],
     selectedApp: new App(),
-    processing: false
+    processing: false,
   }),
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
@@ -64,7 +64,7 @@ export default {
                 return user.isAdmin;
               });
               appAdmins.forEach((appAdmin) => {
-                let addToAdmins = true
+                let addToAdmins = true;
                 admins.forEach((admin) => {
                   if (appAdmin.id === admin.id) {
                     addToAdmins = false;
@@ -78,7 +78,7 @@ export default {
                 return !user.isAdmin;
               });
               appUsers.forEach((appUser) => {
-                let addToUsers = true
+                let addToUsers = true;
                 users.forEach((user) => {
                   if (appUser.id === user.id) {
                     addToUsers = false;
@@ -100,16 +100,16 @@ export default {
               totalAdmins++;
             }
           });
-          
+
           totalUsers = this.$data.selectedApp.users.length - totalAdmins;
         }
       } else {
         // The following logic is applied if the user is a super user
         if (this.$data.user.id !== this.$data.selectedApp.ownerId) {
-          /* If the super user is not the owner of the selected 
+          /* If the super user is not the owner of the selected
            * app collective wide user statiscs are displayed */
           const collectiveUsers = this.getUsers;
-          
+
           let admins = [];
           let users = [];
 
@@ -124,7 +124,7 @@ export default {
           totalAdmins = admins.length;
           totalUsers = users.length;
         } else {
-          /* If the super user is the owner of the selected 
+          /* If the super user is the owner of the selected
            * app the app's user statistics are displyed */
           this.$data.selectedApp.users.forEach((user) => {
             if (user.isAdmin) {
@@ -166,7 +166,7 @@ export default {
                 return user.isAdmin;
               });
               appAdmins.forEach((appAdmin) => {
-                let addToAdmins = true
+                let addToAdmins = true;
                 admins.forEach((admin) => {
                   if (appAdmin.id === admin.id) {
                     addToAdmins = false;
@@ -180,7 +180,7 @@ export default {
                 return !user.isAdmin;
               });
               appUsers.forEach((appUser) => {
-                let addToUsers = true
+                let addToUsers = true;
                 users.forEach((user) => {
                   if (appUser.id === user.id) {
                     addToUsers = false;
@@ -209,17 +209,17 @@ export default {
         let users = [];
 
         if (this.$data.user.id === this.$data.selectedApp.ownerId) {
-          /* If the super user is the owner of the selected 
+          /* If the super user is the owner of the selected
            * app the app's user statistics are displyed */
           this.$data.selectedApp.users.forEach((user) => {
             if (user.isAdmin) {
               totalAdmins++;
             }
           });
-          
+
           totalUsers = this.$data.selectedApp.users.length - totalAdmins;
         } else {
-          /* If the super user is not the owner of the selected 
+          /* If the super user is not the owner of the selected
            * app collective wide user statiscs are displayed */
           users = this.getUsers;
 
@@ -232,7 +232,11 @@ export default {
         }
       }
 
-      if (this.$data.user.isSuperUser || apps.length > 0 || this.$data.selectedApp.id !== 0) {
+      if (
+        this.$data.user.isSuperUser ||
+        apps.length > 0 ||
+        this.$data.selectedApp.id !== 0
+      ) {
         return "Admins: " + totalAdmins + " Users: " + totalUsers;
       } else {
         return "No Apps Created";

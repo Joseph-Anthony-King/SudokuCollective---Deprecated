@@ -49,7 +49,10 @@ export default {
 
     title() {
       if (this.$data.user.isSuperUser) {
-        if (this.$data.selectedApp.id === 0 || (this.$data.selectedApp.ownerId !== this.$data.user.id)) {
+        if (
+          this.$data.selectedApp.id === 0 ||
+          this.$data.selectedApp.ownerId !== this.$data.user.id
+        ) {
           return "At a Glance: All Apps";
         } else {
           return "At a Glance: " + this.$data.selectedApp.name;
@@ -61,7 +64,7 @@ export default {
           return "At a Glance: " + this.$data.selectedApp.name;
         }
       }
-    }
+    },
   },
   watch: {
     "$store.state.appModule.usersSelectedApp": {

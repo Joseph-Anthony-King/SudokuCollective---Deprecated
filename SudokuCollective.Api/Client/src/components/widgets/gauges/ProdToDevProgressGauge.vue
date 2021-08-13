@@ -53,8 +53,11 @@ export default {
 
       let result;
 
-      if (this.$data.selectedApp.id === 0 || 
-        (this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id)) {
+      if (
+        this.$data.selectedApp.id === 0 ||
+        (this.$data.user.isSuperUser &&
+          this.$data.selectedApp.ownerId !== this.$data.user.id)
+      ) {
         /* The general statistics for all apps, if a super user this is for all apps.
          * if not super user this is just for the users apps */
         let totalApps = apps.length;
@@ -96,8 +99,11 @@ export default {
 
       let result;
 
-      if (this.$data.selectedApp.id === 0 || 
-        (this.$data.user.isSuperUser && this.$data.selectedApp.ownerId !== this.$data.user.id)) {
+      if (
+        this.$data.selectedApp.id === 0 ||
+        (this.$data.user.isSuperUser &&
+          this.$data.selectedApp.ownerId !== this.$data.user.id)
+      ) {
         /* The general statistics for all apps, if a super user this is for all apps.
          * if not super user this is just for the users apps */
         if (apps.length > 0 && totalDevelopment.length > 0) {

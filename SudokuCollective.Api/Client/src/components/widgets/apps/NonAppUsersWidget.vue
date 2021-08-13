@@ -220,7 +220,8 @@ export default {
         },
       ];
 
-      var pronoun = this.$data.selectedUsers.length === 1 ? "this user" : "these users";
+      var pronoun =
+        this.$data.selectedUsers.length === 1 ? "this user" : "these users";
 
       showToast(
         this,
