@@ -56,14 +56,7 @@ namespace SudokuCollective.Data.Services
             try
             {
                 // Ensure the intended owner exists by pull the records from the repository
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
-                       _usersRepository,
-                       _distributedCache,
-                       string.Format(CacheKeys.GetUserCacheKey, request.OwnerId),
-                       CachingStrategy.Medium,
-                       request.OwnerId);
-
-                var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
+                var userResponse = await _usersRepository.Get(request.OwnerId);
 
                 if (userResponse.Success)
                 {
@@ -74,7 +67,7 @@ namespace SudokuCollective.Data.Services
 
                     /* Ensure the license is unique by pulling all apps from the repository
                      * and checking that the new license is unique */
-                    cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync(
+                    var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync(
                         _appsRepository,
                         _distributedCache,
                         string.Format(CacheKeys.GetAppsCacheKey),
@@ -1634,10 +1627,19 @@ namespace SudokuCollective.Data.Services
 
                 if (appResponse.Success)
                 {
+                    var app = (App)appResponse.Object;
+
+                    app.License = (await CacheFactory.GetLicenseWithCacheAsync(
+                        _appsRepository,
+                        _distributedCache,
+                        string.Format(CacheKeys.GetAppLicenseCacheKey, app.Id),
+                        CachingStrategy.Heavy,
+                        app.Id)).Item1;
+
                     cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                         _usersRepository,
                         _distributedCache,
-                        string.Format(CacheKeys.GetUserCacheKey, userId),
+                        string.Format(CacheKeys.GetUserCacheKey, userId, app.License),
                         CachingStrategy.Medium,
                         userId);
 
@@ -1645,15 +1647,6 @@ namespace SudokuCollective.Data.Services
 
                     if (userResponse.Success)
                     {
-                        var app = (App)appResponse.Object;
-
-                        app.License = (await CacheFactory.GetLicenseWithCacheAsync(
-                            _appsRepository,
-                            _distributedCache,
-                            string.Format(CacheKeys.GetAppLicenseCacheKey, app.Id),
-                            CachingStrategy.Heavy,
-                            app.Id)).Item1;
-
                         var addUserToAppResponse = await _appsRepository.AddAppUser(
                             userId,
                             app.License);
@@ -2254,7 +2247,7 @@ namespace SudokuCollective.Data.Services
             var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                 _usersRepository,
                 _distributedCache,
-                string.Format(CacheKeys.GetUserCacheKey, userId),
+                string.Format(CacheKeys.GetUserCacheKey, userId, license),
                 CachingStrategy.Medium,
                 userId);
 
@@ -2328,7 +2321,7 @@ namespace SudokuCollective.Data.Services
             var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                 _usersRepository,
                 _distributedCache,
-                string.Format(CacheKeys.GetUserCacheKey, userId),
+                string.Format(CacheKeys.GetUserCacheKey, userId, license),
                 CachingStrategy.Medium,
                 userId);
 

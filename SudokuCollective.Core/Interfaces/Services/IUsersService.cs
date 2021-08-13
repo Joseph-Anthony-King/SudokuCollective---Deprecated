@@ -25,13 +25,18 @@ namespace SudokuCollective.Core.Interfaces.Services
             IUpdateUserRequest request,
             string baseUrl,
             string emailTemplatePath);
-        Task<IBaseResult> Delete(int id);
+        Task<IBaseResult> Delete(int id, string license);
         Task<IBaseResult> RequestPasswordReset(
             IRequestPasswordResetRequest request,
             string baseUrl,
             string emailTemplatePath);
-        Task<IInitiatePasswordResetResult> InitiatePasswordReset(string token);
-        Task<IBaseResult> UpdatePassword(IPasswordResetRequest request);
+        Task<IInitiatePasswordResetResult> InitiatePasswordReset(
+            string token,
+            string license);
+        Task<ILicenseResult> GetAppLicenseByPasswordToken(string token);
+        Task<IBaseResult> UpdatePassword(
+            IPasswordResetRequest request, 
+            string license);
         Task<IRolesResult> AddUserRoles(
             int userid,
             List<int> roleIds,
@@ -55,7 +60,8 @@ namespace SudokuCollective.Core.Interfaces.Services
             int userId, 
             int appId,
             string baseUrl,
-            string emailTemplatePath);
+            string emailTemplatePath,
+            string license);
         Task<IUserResult> CancelEmailConfirmationRequest(int id, int appId);
         Task<IUserResult> CancelPasswordResetRequest(int id, int appId);
         Task<IUserResult> CancelAllEmailRequests(int id, int appId);

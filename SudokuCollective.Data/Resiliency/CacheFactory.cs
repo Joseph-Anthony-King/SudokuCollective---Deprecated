@@ -34,17 +34,17 @@ namespace SudokuCollective.Data.Resiliency
                 var options = new DistributedCacheEntryOptions()
                     .SetAbsoluteExpiration(expiration);
 
-                await cache.SetAsync(
-                    string.Format(cacheKey, response.Object.Id),
-                    encodedItem,
-                    options);
-
                 List<string> cacheKeys;
 
                 if (response.Object is User user)
                 {
                     var appLicense = await ((IUsersRepository<User>)repo)
                         .GetAppLicense(user.Apps[0].AppId);
+
+                    await cache.SetAsync(
+                        string.Format(cacheKey, response.Object.Id, appLicense),
+                        encodedItem,
+                        options);
 
                     cacheKeys = new List<string> {
                         string.Format(CacheKeys.GetAppCacheKey, user.Apps[0].AppId),
@@ -58,6 +58,12 @@ namespace SudokuCollective.Data.Resiliency
                 }
                 else if (response.Object is App app)
                 {
+
+                    await cache.SetAsync(
+                        string.Format(cacheKey, response.Object.Id),
+                        encodedItem,
+                        options);
+
                     // Remove any app list cache items which may exist
                     cacheKeys = new List<string> {
                                 string.Format(CacheKeys.GetMyAppsCacheKey, app.OwnerId),
@@ -66,6 +72,12 @@ namespace SudokuCollective.Data.Resiliency
                 }
                 else if (response.Object is Difficulty)
                 {
+
+                    await cache.SetAsync(
+                        string.Format(cacheKey, response.Object.Id),
+                        encodedItem,
+                        options);
+
                     // Remove any difficutly list cache items which may exist
                     cacheKeys = new List<string> {
                                 CacheKeys.GetDifficulties
@@ -73,6 +85,12 @@ namespace SudokuCollective.Data.Resiliency
                 }
                 else
                 {
+
+                    await cache.SetAsync(
+                        string.Format(cacheKey, response.Object.Id),
+                        encodedItem,
+                        options);
+
                     // Remove any role list cache items which may exist
                     cacheKeys = new List<string> {
                                 CacheKeys.GetRoles
@@ -191,7 +209,8 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<IRepositoryResponse> UpdateWithCacheAsync<T>(
             IRepository<T> repo,
             IDistributedCache cache,
-            T entity) where T : IEntityBase
+            T entity,
+            string license = null) where T : IEntityBase
         {
             var response = await repo.Update(entity);
 
@@ -203,9 +222,9 @@ namespace SudokuCollective.Data.Resiliency
                 {
                     // Remove any user cache items which may exist
                     cacheKeys = new List<string> {
-                                string.Format(CacheKeys.GetUserCacheKey, user.Id),
-                                string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
-                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email),
+                                string.Format(CacheKeys.GetUserCacheKey, user.Id, license),
+                                string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName, license),
+                                string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email, license),
                                 string.Format(CacheKeys.GetUsersCacheKey),
                             };
                 }
@@ -247,7 +266,8 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<IRepositoryResponse> DeleteWithCacheAsync<T>(
             IRepository<T> repo,
             IDistributedCache cache,
-            T entity) where T : IEntityBase
+            T entity,
+            string license = null) where T : IEntityBase
         {
             /* If deleting a user this list will be need to get the associated
              * user apps in order to clear the cache */
@@ -287,9 +307,9 @@ namespace SudokuCollective.Data.Resiliency
                 {
                     // Remove any user cache items which may exist
                     cacheKeys = new List<string> {
-                            string.Format(CacheKeys.GetUserCacheKey, user.Id),
-                            string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
-                            string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email),
+                            string.Format(CacheKeys.GetUserCacheKey, user.Id, license),
+                            string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName, license),
+                            string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email, license),
                             string.Format(CacheKeys.GetMyAppsCacheKey, user.Id),
                             string.Format(CacheKeys.GetMyRegisteredCacheKey, user.Id)
                         };
@@ -816,6 +836,7 @@ namespace SudokuCollective.Data.Resiliency
             string cacheKey,
             DateTime expiration,
             string username,
+            string license = null,
             IBaseResult result = null)
         {
             IRepositoryResponse response;
@@ -858,7 +879,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     // Add user cache key by id
                     await cache.SetAsync(
-                        string.Format(CacheKeys.GetUserCacheKey, response.Object.Id),
+                        string.Format(CacheKeys.GetUserCacheKey, response.Object.Id, license),
                         encodedItem,
                         options);
                 }
@@ -920,7 +941,8 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<IRepositoryResponse> ConfirmEmailWithCacheAsync(
             IUsersRepository<User> repo,
             IDistributedCache cache,
-            EmailConfirmation email)
+            EmailConfirmation email,
+            string license = null)
         {
             var response = await repo.ConfirmEmail(email);
 
@@ -931,9 +953,9 @@ namespace SudokuCollective.Data.Resiliency
 
                 // Remove any user cache items which may exist
                 cacheKeys = new List<string> {
-                        string.Format(CacheKeys.GetUserCacheKey, user.Id),
-                        string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
-                        string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
+                        string.Format(CacheKeys.GetUserCacheKey, user.Id, license),
+                        string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName, license),
+                        string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email, license)
                     };
 
                 await RemoveKeysAsync(cache, cacheKeys);
@@ -945,7 +967,8 @@ namespace SudokuCollective.Data.Resiliency
         internal static async Task<IRepositoryResponse> UpdateEmailWithCacheAsync(
             IUsersRepository<User> repo,
             IDistributedCache cache,
-            EmailConfirmation email)
+            EmailConfirmation email,
+            string license = null)
         {
             var response = await repo.UpdateEmail(email);
 
@@ -956,9 +979,9 @@ namespace SudokuCollective.Data.Resiliency
 
                 // Remove any user cache items which may exist
                 cacheKeys = new List<string> {
-                        string.Format(CacheKeys.GetUserCacheKey, user.Id),
-                        string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName),
-                        string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email)
+                        string.Format(CacheKeys.GetUserCacheKey, user.Id, license),
+                        string.Format(CacheKeys.GetUserByUsernameCacheKey, user.UserName, license),
+                        string.Format(CacheKeys.GetUserByEmailCacheKey, user.Email, license)
                     };
 
                 await RemoveKeysAsync(cache, cacheKeys);

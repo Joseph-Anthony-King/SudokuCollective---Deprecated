@@ -58,7 +58,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<UserAuthenticationErrorType> ConfirmAuthenticationIssue(string username, string password)
+        public async Task<UserAuthenticationErrorType> ConfirmAuthenticationIssue(string username, string password, string license)
         {
             if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
 
@@ -67,9 +67,10 @@ namespace SudokuCollective.Data.Services
             var cachFactoryResponse = await CacheFactory.GetByUserNameWithCacheAsync(
                 _usersRepository,
                 _distributedCache,
-                string.Format(CacheKeys.GetUserByUsernameCacheKey, username),
+                string.Format(CacheKeys.GetUserByUsernameCacheKey, username, license),
                 CachingStrategy.Medium,
-                username);
+                username,
+                license);
 
             var userResponse = (RepositoryResponse)cachFactoryResponse.Item1;
 
@@ -94,7 +95,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public async Task<IAuthenticationResult> ConfirmUserName(string email)
+        public async Task<IAuthenticationResult> ConfirmUserName(string email, string license)
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
 
@@ -103,7 +104,7 @@ namespace SudokuCollective.Data.Services
             var cachFactoryResponse = await CacheFactory.GetByEmailWithCacheAsync(
                 _usersRepository,
                 _distributedCache,
-                string.Format(CacheKeys.GetUserByUsernameCacheKey, email),
+                string.Format(CacheKeys.GetUserByUsernameCacheKey, email, license),
                 CachingStrategy.Medium,
                 email,
                 result);

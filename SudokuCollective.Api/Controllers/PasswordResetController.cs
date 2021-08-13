@@ -26,7 +26,13 @@ namespace SudokuCollective.Api.Controllers
         [HttpGet("{token}")]
         public async Task<IActionResult> Index(string token)
         {
-            var result = await usersService.InitiatePasswordReset(token);
+            var licenseResult = await usersService
+                .GetAppLicenseByPasswordToken(token);
+
+            var result = await usersService
+                .InitiatePasswordReset(
+                    token,
+                    licenseResult.License);
 
             if (result.Success)
             {
@@ -64,6 +70,7 @@ namespace SudokuCollective.Api.Controllers
             }
 
             var app = (await appsService.Get(passwordReset.AppId)).App;
+            app.License = (await appsService.GetLicense(app.Id)).License;
 
             var userResut = await usersService.Get(
                 passwordReset.UserId, 
@@ -77,7 +84,7 @@ namespace SudokuCollective.Api.Controllers
                     NewPassword = passwordReset.NewPassword
                 };
 
-                var updatePasswordResult = await usersService.UpdatePassword(updatePasswordRequest);
+                var updatePasswordResult = await usersService.UpdatePassword(updatePasswordRequest, app.License);
 
                 passwordReset.NewPassword = string.Empty;
 

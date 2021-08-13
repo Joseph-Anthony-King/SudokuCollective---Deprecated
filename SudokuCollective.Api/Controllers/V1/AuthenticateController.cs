@@ -6,6 +6,7 @@ using SudokuCollective.Core.Enums;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.TokenModels;
 using SudokuCollective.Data.Models.ResultModels;
+using SudokuCollective.Data.Models.RequestModels;
 
 namespace SudokuCollective.Api.V1.Controllers
 {
@@ -59,7 +60,10 @@ namespace SudokuCollective.Api.V1.Controllers
             else
             {
                 var result = await userManagementService
-                    .ConfirmAuthenticationIssue(request.UserName, request.Password);
+                    .ConfirmAuthenticationIssue(
+                        request.UserName, 
+                        request.Password,
+                        request.License);
 
                 if (result == UserAuthenticationErrorType.USERNAMEINVALID)
                 {
@@ -77,10 +81,12 @@ namespace SudokuCollective.Api.V1.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("ConfirmUserName/{email}")]
-        public async Task<ActionResult> ConfirmUserName(string email)
+        [HttpPost("ConfirmUserName")]
+        public async Task<ActionResult> ConfirmUserName([FromBody] ConfirmUserNameRequest request)
         {
-            var result = await userManagementService.ConfirmUserName(email);
+            var result = await userManagementService.ConfirmUserName(
+                request.Email,
+                request.License);
 
             if (result.Success)
             {

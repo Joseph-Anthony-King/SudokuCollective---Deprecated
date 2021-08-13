@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Services;
 using SudokuCollective.Test.MockRepositories;
@@ -91,9 +92,13 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             // Arrange
             var invalidUserName = "invalidUser";
+            var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sutFailure.ConfirmAuthenticationIssue(invalidUserName, password);
+            var result = await sutFailure.ConfirmAuthenticationIssue(
+                invalidUserName, 
+                password,
+                license);
 
             // Assert
             Assert.That(result, Is.EqualTo(UserAuthenticationErrorType.USERNAMEINVALID));
@@ -105,9 +110,13 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             // Arrange
             var invalidPassword = "invalidPassword";
+            var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sut.ConfirmAuthenticationIssue(userName, invalidPassword);
+            var result = await sut.ConfirmAuthenticationIssue(
+                userName, 
+                invalidPassword,
+                license);
 
             // Assert
             Assert.That(result, Is.EqualTo(UserAuthenticationErrorType.PASSWORDINVALID));
@@ -120,7 +129,9 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.ConfirmUserName(email);
+            var result = await sut.ConfirmUserName(
+                email, 
+                TestObjects.GetLicense());
             var success = result.Success;
             var username = result.UserName;
 
@@ -135,10 +146,11 @@ namespace SudokuCollective.Test.TestCases.Services
         public async Task ReturnMessageIfUserNameInvalid()
         {
             // Arrange
-            var invalidEmail = "invalidEmail@example.com";
 
             // Act
-            var result = await sutFailure.ConfirmUserName(invalidEmail);
+            var result = await sutFailure.ConfirmUserName(
+                "invalidEmail@example.com",
+                TestObjects.GetLicense());
             var success = result.Success;
             var message = result.Message;
 

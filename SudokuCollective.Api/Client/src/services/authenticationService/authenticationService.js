@@ -26,14 +26,18 @@ const authenticateUser = async function (username, password) {
   }
 };
 
-const confirmUserName = async function (email) {
+const confirmUserName = async function (email, license) {
   const headers = requestHeader();
-  const url = `${confirmUserNameEndpoint}/${email}`;
+  const url = `${confirmUserNameEndpoint}`;
 
   const config = {
-    method: "get",
+    method: "post",
     url: url,
     headers: headers,
+    data: {
+      "email": email,
+      "license": license
+    }
   };
 
   try {

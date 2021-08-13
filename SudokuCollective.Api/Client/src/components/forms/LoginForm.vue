@@ -205,6 +205,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import { authenticationService } from "@/services/authenticationService/authenticationService";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -302,7 +303,8 @@ export default {
     async confirmUserName() {
       try {
         const response = await authenticationService.confirmUserName(
-          this.$data.email
+          this.$data.email,
+          this.getLicense
         );
 
         if (response.status === 200) {
@@ -361,6 +363,8 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("settingsModule", ["getLicense"]),
+
     userNameRules() {
       return [
         (v) => !!v || "User Name is required",

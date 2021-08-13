@@ -130,7 +130,8 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.RequestorId,
                 request.AppId,
                 baseUrl,
-                emailtTemplatePath);
+                emailtTemplatePath,
+                request.License);
 
             if (result.Success)
             {

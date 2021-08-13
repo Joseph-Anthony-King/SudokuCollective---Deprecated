@@ -71,9 +71,10 @@ namespace SudokuCollective.Data.Services
             var userResponse = await CacheFactory.GetByUserNameWithCacheAsync(
                 _usersRepository,
                 _distributedCache,
-                string.Format(CacheKeys.GetUserByUsernameCacheKey, request.UserName),
+                string.Format(CacheKeys.GetUserByUsernameCacheKey, request.UserName, request.License),
                 CachingStrategy.Medium,
-                request.UserName);
+                request.UserName,
+                request.License);
 
             var user = (User)((RepositoryResponse)userResponse.Item1).Object;
 

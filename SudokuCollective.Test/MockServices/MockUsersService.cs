@@ -13,6 +13,7 @@ using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Test.MockRepositories;
 using System;
+using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.MockServices
 {
@@ -146,7 +147,18 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.UpdatePassword(It.IsAny<UpdatePasswordRequest>()))
+                userService.GetAppLicenseByPasswordToken(It.IsAny<string>()))
+                .Returns(Task.FromResult(new LicenseResult()
+                {
+                    Success = true,
+                    Message = AppsMessages.AppsFoundMessage,
+                    License = TestObjects.GetLicense()
+                } as ILicenseResult));
+
+            UsersServiceSuccessfulRequest.Setup(userService =>
+                userService.UpdatePassword(
+                    It.IsAny<UpdatePasswordRequest>(),
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
@@ -159,7 +171,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
-                userService.Delete(It.IsAny<int>()))
+                userService.Delete(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
@@ -245,7 +257,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IConfirmEmailResult));
 
             UsersServiceSuccessfulRequest.Setup(usersService =>
-                usersService.InitiatePasswordReset(It.IsAny<string>()))
+                usersService.InitiatePasswordReset(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new InitiatePasswordResetResult() 
                 {
                     Success = MockPasswordResetsRepository
@@ -276,6 +288,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>(), 
                     It.IsAny<int>(), 
                     It.IsAny<string>(), 
+                    It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult() 
                 { 
@@ -452,7 +465,18 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.UpdatePassword(It.IsAny<UpdatePasswordRequest>()))
+                userService.GetAppLicenseByPasswordToken(It.IsAny<string>()))
+                .Returns(Task.FromResult(new LicenseResult()
+                {
+                    Success = false,
+                    Message = AppsMessages.AppNotFoundMessage,
+                    License = string.Empty
+                } as ILicenseResult));
+
+            UsersServiceFailedRequest.Setup(userService =>
+                userService.UpdatePassword(
+                    It.IsAny<UpdatePasswordRequest>(),
+                    It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
@@ -465,7 +489,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceFailedRequest.Setup(userService =>
-                userService.Delete(It.IsAny<int>()))
+                userService.Delete(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
                     Success = MockUsersRepository
@@ -551,7 +575,7 @@ namespace SudokuCollective.Test.MockServices
                 } as IConfirmEmailResult));
 
             UsersServiceFailedRequest.Setup(usersService =>
-                usersService.InitiatePasswordReset(It.IsAny<string>()))
+                usersService.InitiatePasswordReset(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new InitiatePasswordResetResult()
                 {
                     Success = MockPasswordResetsRepository
@@ -571,6 +595,7 @@ namespace SudokuCollective.Test.MockServices
                 usersService.ResendEmailConfirmation(
                     It.IsAny<int>(),
                     It.IsAny<int>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()

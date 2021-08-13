@@ -5,6 +5,8 @@ using SudokuCollective.Data.Models.ResultModels;
 using SudokuCollective.Data.Models.TokenModels;
 using SudokuCollective.Api.V1.Controllers;
 using SudokuCollective.Test.MockServices;
+using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -134,9 +136,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public void ReturnUserName()
         {
             // Arrange
+            var request = new ConfirmUserNameRequest
+            {
+                Email = email,
+                License = TestObjects.GetLicense()
+            };
 
             // Act
-            var result = sut.ConfirmUserName(email);
+            var result = sut.ConfirmUserName(request);
             var message = ((AuthenticationResult)((OkObjectResult)result.Result).Value).Message;
             var username = ((AuthenticationResult)((OkObjectResult)result.Result).Value).UserName;
 
@@ -151,9 +158,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public void ReturnErrorMessageIfUserNameNotFound()
         {
             // Arrange
+            var request = new ConfirmUserNameRequest
+            {
+                Email = email,
+                License = TestObjects.GetLicense()
+            };
 
             // Act
-            var result = sutUserNameNotFound.ConfirmUserName(email);
+            var result = sutUserNameNotFound.ConfirmUserName(request);
             var message =((AuthenticationResult)((NotFoundObjectResult)result.Result).Value).Message;
 
             // Assert

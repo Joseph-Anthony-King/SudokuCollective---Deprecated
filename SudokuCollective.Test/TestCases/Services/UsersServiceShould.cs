@@ -573,8 +573,12 @@ namespace SudokuCollective.Test.TestCases.Services
                 NewPassword = "password2",
             };
 
+            var license = TestObjects.GetLicense();
+
             // Act
-            var result = await sut.UpdatePassword(updatePasswordRequest);
+            var result = await sut.UpdatePassword(
+                updatePasswordRequest,
+                license);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -592,8 +596,12 @@ namespace SudokuCollective.Test.TestCases.Services
                 NewPassword = "password2"
             };
 
+            var license = TestObjects.GetLicense();
+
             // Act
-            var result = await sutFailure.UpdatePassword(updatePasswordRequest);
+            var result = await sutFailure.UpdatePassword(
+                updatePasswordRequest,
+                license);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -606,9 +614,10 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             // Arrange
             var userId = 2;
+            var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sut.Delete(userId);
+            var result = await sut.Delete(userId, license);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -620,9 +629,10 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             // Arrange
             var userId = 4;
+            var license = TestObjects.GetLicense();
 
             // Act
-            var result = await sutFailure.Delete(userId);
+            var result = await sutFailure.Delete(userId, license);
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -719,7 +729,9 @@ namespace SudokuCollective.Test.TestCases.Services
             var passwordReset = context.PasswordResets.FirstOrDefault();
 
             // Act
-            var result = await sutResetPassword.InitiatePasswordReset(passwordReset.Token);
+            var result = await sutResetPassword.InitiatePasswordReset(
+                passwordReset.Token,
+                TestObjects.GetLicense());
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -734,7 +746,9 @@ namespace SudokuCollective.Test.TestCases.Services
             var passwordReset = context.PasswordResets.FirstOrDefault();
 
             // Act
-            var result = await sutFailure.InitiatePasswordReset(passwordReset.Token);
+            var result = await sutFailure.InitiatePasswordReset(
+                passwordReset.Token,
+                TestObjects.GetLicense());
 
             // Assert
             Assert.That(result.Success, Is.False);
@@ -750,8 +764,15 @@ namespace SudokuCollective.Test.TestCases.Services
 
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
+            var license = TestObjects.GetLicense();
+
             // Act
-            var result = await sutResendEmailConfirmation.ResendEmailConfirmation(3, 1, baseUrl, html);
+            var result = await sutResendEmailConfirmation.ResendEmailConfirmation(
+                3, 
+                1, 
+                baseUrl, 
+                html,
+                license);
 
             // Assert
             Assert.That(result.Success, Is.True);
@@ -767,8 +788,15 @@ namespace SudokuCollective.Test.TestCases.Services
 
             var html = "../../../../SudokuCollective.Api/Content/EmailTemplates/confirm-old-email-inlined.html";
 
+            var license = TestObjects.GetLicense();
+
             // Act
-            var result = await sut.ResendEmailConfirmation(3, 1, baseUrl, html);
+            var result = await sut.ResendEmailConfirmation(
+                3,
+                1, 
+                baseUrl, 
+                html,
+                license);
 
             // Assert
             Assert.That(result.Success, Is.False);

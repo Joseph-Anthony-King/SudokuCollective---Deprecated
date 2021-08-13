@@ -27,7 +27,7 @@ namespace SudokuCollective.Test.MockServices
                     .Returns(Task.FromResult(true));
 
             UserManagementServiceSuccssfulRequest.Setup(userManagementService =>
-                userManagementService.ConfirmUserName(It.IsAny<string>()))
+                userManagementService.ConfirmUserName(It.IsAny<string>(), It.IsAny<string>()))
                     .Returns(Task.FromResult(new AuthenticationResult() 
                     {
                         Success = true,
@@ -40,7 +40,7 @@ namespace SudokuCollective.Test.MockServices
                     .Returns(Task.FromResult(false));
 
             UserManagementServiceFailedRequest.Setup(userManagementService =>
-                userManagementService.ConfirmUserName(It.IsAny<string>()))
+                userManagementService.ConfirmUserName(It.IsAny<string>(), It.IsAny<string>()))
                     .Returns(Task.FromResult(new AuthenticationResult()
                     {
                         Success = false,
@@ -48,11 +48,17 @@ namespace SudokuCollective.Test.MockServices
                     } as IAuthenticationResult));
 
             UserManagementServiceUserNameFailedRequest.Setup(userManagementService =>
-                userManagementService.ConfirmAuthenticationIssue(It.IsAny<string>(), It.IsAny<string>()))
+                userManagementService.ConfirmAuthenticationIssue(
+                    It.IsAny<string>(), 
+                    It.IsAny<string>(), 
+                    It.IsAny<string>()))
                     .Returns(Task.FromResult(UserAuthenticationErrorType.USERNAMEINVALID));
 
             UserManagementServicePasswordFailedRequest.Setup(userManagementService =>
-                userManagementService.ConfirmAuthenticationIssue(It.IsAny<string>(), It.IsAny<string>()))
+                userManagementService.ConfirmAuthenticationIssue(
+                    It.IsAny<string>(), 
+                    It.IsAny<string>(), 
+                    It.IsAny<string>()))
                     .Returns(Task.FromResult(UserAuthenticationErrorType.PASSWORDINVALID));
         }
     }

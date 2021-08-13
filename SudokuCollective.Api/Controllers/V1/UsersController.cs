@@ -138,7 +138,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.License,
                 request.RequestorId))
             {
-                var result = await usersService.Delete(id);
+                var result = await usersService.Delete(id, request.License);
 
                 if (result.Success)
                 {
