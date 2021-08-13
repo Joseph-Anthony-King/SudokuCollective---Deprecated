@@ -3,6 +3,7 @@ import {
   UPDATE_USERS_SELECTED_APP,
   UPDATE_USERS_APPS,
   UPDATE_REGISTERED_APPS,
+  REPLACE_REGISTERED_APPS,
   REMOVE_USERS_APP,
   REMOVE_USERS_APPS,
   REMOVE_REGISTERED_APPS,
@@ -51,6 +52,9 @@ const appModule = {
           state.registeredApps.push(app);
         }
       });
+    },
+    [REPLACE_REGISTERED_APPS](state, registeredApps) {
+      state.registeredApps = registeredApps;
     },
     [REMOVE_USERS_APP](state, app) {
       const index = _.findIndex(state.usersApps, { id: app.id });
@@ -124,6 +128,9 @@ const appModule = {
     },
     updateRegisteredApps({ commit }, registeredApps) {
       commit(UPDATE_REGISTERED_APPS, registeredApps);
+    },
+    replaceRegisteredApps({ commit }, registeredApps) {
+      commit(REPLACE_REGISTERED_APPS, registeredApps);
     },
     removeUsersApp({ commit }, app) {
       commit(REMOVE_USERS_APP, app);

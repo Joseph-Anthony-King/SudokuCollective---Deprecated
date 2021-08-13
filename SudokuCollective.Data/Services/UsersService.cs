@@ -1977,6 +1977,7 @@ namespace SudokuCollective.Data.Services
                 {
                     var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.Object;
 
+
                     var license = (await CacheFactory.GetLicenseWithCacheAsync(
                         _appsRepository,
                         _distributedCache,

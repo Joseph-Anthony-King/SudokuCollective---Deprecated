@@ -23,6 +23,7 @@ const getUser = async function (id) {
       headers: requestHeader(),
       data: requestData(),
     };
+    console.log(config);
 
     return await axios(config);
   } catch (error) {

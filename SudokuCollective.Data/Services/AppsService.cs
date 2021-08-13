@@ -1653,12 +1653,14 @@ namespace SudokuCollective.Data.Services
 
                         if (addUserToAppResponse.Success)
                         {
-                            // Remove any app cache items which may exist
+                            // Remove any cache items which may exist
                             var cacheKeys = new List<string> {
                                 string.Format(CacheKeys.GetAppCacheKey, app.Id),
                                 string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
                                 string.Format(CacheKeys.GetAppUsersCacheKey, app.Id),
-                                string.Format(CacheKeys.GetNonAppUsersCacheKey, app.Id)
+                                string.Format(CacheKeys.GetNonAppUsersCacheKey, app.Id),
+                                string.Format(CacheKeys.GetMyAppsCacheKey, userId),
+                                string.Format(CacheKeys.GetMyRegisteredCacheKey, userId)
                             };
 
                             await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
@@ -1775,7 +1777,9 @@ namespace SudokuCollective.Data.Services
                                 string.Format(CacheKeys.GetAppCacheKey, app.Id),
                                 string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
                                 string.Format(CacheKeys.GetAppUsersCacheKey, app.Id),
-                                string.Format(CacheKeys.GetNonAppUsersCacheKey, app.Id)
+                                string.Format(CacheKeys.GetNonAppUsersCacheKey, app.Id),
+                                string.Format(CacheKeys.GetMyAppsCacheKey, userId),
+                                string.Format(CacheKeys.GetMyRegisteredCacheKey, userId)
                             };
 
                             await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);

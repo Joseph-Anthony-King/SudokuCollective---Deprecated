@@ -38,9 +38,13 @@ import { mapGetters } from "vuex";
 import SelectAppButton from "@/components/widgets/buttons/SelectAppButton";
 import DeregisterAppButton from "@/components/widgets/buttons/DeregisterAppButton";
 import { appProvider } from "@/providers/appProvider";
+import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
+import { 
+  showToast, 
+  defaultToastOptions,
+  actionToastOptions, } from "@/helpers/toastHelper";
 
 export default {
   name: "MyRegisteredAppsWidget",
@@ -54,7 +58,9 @@ export default {
     processing: false,
   }),
   methods: {
-    ...mapActions("appModule", ["updateRegisteredApps"]),
+    ...mapActions("appModule", [
+      "updateRegisteredApps",
+      "replaceRegisteredApps"]),
 
     appAvailable(app) {
       if (app.isActive) {
@@ -82,31 +88,76 @@ export default {
     },
 
     async deregister(app) {
-      const response = await appProvider.removeUser(app.id, this.$data.user.id);
+      
+        const action = [
+          {
+            text: "Yes",
+            onClick: async (e, toastObject) => {
+              toastObject.goAway(0);
 
-      if (response.success) {
-        const appsResponse = await appProvider.getRegisteredApps(
-          this.$data.user.id
-        );
+              try {
+                const response = await appProvider
+                  .removeUser(app.id, this.$data.user.id);
 
-        if (appsResponse.success) {
-          this.updateRegisteredApps(appsResponse.apps);
-          this.$data.apps = appsResponse.apps;
-        }
-        showToast(
-          this,
-          ToastMethods["error"],
-          "You have been deregistered from " + app.name,
-          defaultToastOptions()
-        );
-      } else {
-        showToast(
-          this,
-          ToastMethods["success"],
-          response.message,
-          defaultToastOptions()
-        );
-      }
+                if (response.success) {
+                  const appsResponse = await appProvider
+                    .getRegisteredApps(
+                      this.$data.user.id
+                    );
+
+                  if (appsResponse.success) {
+
+                    let apps = [];
+                    
+                    appsResponse.apps.forEach((app) => {
+                      apps.push(new App(app));
+                    })
+
+                    this.replaceRegisteredApps(apps);
+                    this.$data.apps = apps;
+                  }
+                  showToast(
+                    this,
+                    ToastMethods["success"],
+                    "You have been deregistered from " + app.name,
+                    defaultToastOptions()
+                  );
+                } else {
+                  showToast(
+                    this,
+                    ToastMethods["error"],
+                    response.message,
+                    defaultToastOptions()
+                  );
+                }
+              } catch (error) {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  error,
+                  defaultToastOptions()
+                );
+              }
+            },
+          },
+          {
+            text: "No",
+            onClick: (e, toastObject) => {
+              toastObject.goAway(0);
+              this.$data.submitInvoked = false;
+            },
+          },
+        ];
+
+        const dialogText =
+          "Do you want to deregister from " + app.name + "?";
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        dialogText,
+        actionToastOptions(action, "mode_edit")
+      );
     },
   },
   computed: {

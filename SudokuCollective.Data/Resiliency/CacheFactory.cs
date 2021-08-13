@@ -114,46 +114,53 @@ namespace SudokuCollective.Data.Resiliency
             int id,
             IBaseResult result = null) where T : IEntityBase
         {
-            IRepositoryResponse response;
-
-            var cachedItem = await cache.GetAsync(cacheKey);
-
-            if (cachedItem != null)
+            try
             {
-                var serializedItem = Encoding.UTF8.GetString(cachedItem);
+                IRepositoryResponse response;
 
-                response = new RepositoryResponse
-                {
-                    Success = true,
-                    Object = JsonConvert
-                    .DeserializeObject<T>(serializedItem)
-                };
+                var cachedItem = await cache.GetAsync(cacheKey);
 
-                if (result != null)
+                if (cachedItem != null)
                 {
-                    result.FromCache = true;
+                    var serializedItem = Encoding.UTF8.GetString(cachedItem);
+
+                    response = new RepositoryResponse
+                    {
+                        Success = true,
+                        Object = JsonConvert
+                        .DeserializeObject<T>(serializedItem)
+                    };
+
+                    if (result != null)
+                    {
+                        result.FromCache = true;
+                    }
                 }
+                else
+                {
+                    response = await repo.Get(id);
+
+                    if (response.Success && response.Object != null)
+                    {
+                        var serializedItem = JsonConvert
+                            .SerializeObject(response.Object);
+                        var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
+                        var options = new DistributedCacheEntryOptions()
+                            .SetAbsoluteExpiration(expiration);
+
+                        await cache.SetAsync(
+                            cacheKey,
+                            encodedItem,
+                            options);
+                    }
+                }
+
+                return new Tuple<IRepositoryResponse, IBaseResult>(response, result);
             }
-            else
+            catch (Exception e)
             {
-                response = await repo.Get(id);
-
-                if (response.Success && response.Object != null)
-                {
-                    var serializedItem = JsonConvert
-                        .SerializeObject(response.Object);
-                    var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
-                    var options = new DistributedCacheEntryOptions()
-                        .SetAbsoluteExpiration(expiration);
-
-                    await cache.SetAsync(
-                        cacheKey,
-                        encodedItem,
-                        options);
-                }
+                throw;
             }
-
-            return new Tuple<IRepositoryResponse, IBaseResult>(response, result);
         }
 
         internal static async Task<Tuple<IRepositoryResponse, IBaseResult>> GetAllWithCacheAsync<T>(
@@ -712,7 +719,7 @@ namespace SudokuCollective.Data.Resiliency
                         .SetAbsoluteExpiration(expiration);
 
                     await cache.SetAsync(
-                        cacheKey,
+                        string.Format(CacheKeys.GetAppLicenseCacheKey, id),
                         encodedItem,
                         options);
                 }

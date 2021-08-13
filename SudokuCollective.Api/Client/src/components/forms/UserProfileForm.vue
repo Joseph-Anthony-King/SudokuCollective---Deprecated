@@ -730,7 +730,7 @@ export default {
       const response = await userProvider.getUser(this.$data.user.id);
 
       if (response.success) {
-        this.$data.user = response.user;
+        this.$data.user = new User(response.user);
         this.$data.user.login();
         this.updateUser(this.$data.user);
       } else {
