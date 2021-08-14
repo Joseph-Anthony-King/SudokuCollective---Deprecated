@@ -22,6 +22,33 @@
         </v-container>
       </v-card-text>
     </v-card>
+    <hr />
+    <v-card elevation="6">
+      <v-card-title class="justify-center">Available Actions</v-card-title>
+      <v-card-actions>
+        <v-container>
+          <v-row dense>
+            <v-col>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="refresh"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Refresh
+                  </v-btn>
+                </template>
+                <span>Refresh your registered apps</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 
@@ -159,6 +186,38 @@ export default {
         actionToastOptions(action, "mode_edit")
       );
     },
+
+    async refresh() {
+      const response = await appProvider.getRegisteredApps(this.$data.user.id);
+
+      try {
+        if (response.success) {
+          this.replaceRegisteredApps(response.apps);
+          this.$data.apps = response.apps;
+
+          showToast(
+            this,
+            ToastMethods["success"],
+            "Your registered apps have been refreshed",
+            defaultToastOptions()
+          );
+        } else {
+          showToast(
+            this,
+            ToastMethods["error"],
+            "Your registered apps have not been refreshed",
+            defaultToastOptions()
+          );
+        }        
+      } catch (error) {
+        showToast(
+          this,
+          ToastMethods["error"],
+          error,
+          defaultToastOptions()
+        );
+      }
+    }
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
