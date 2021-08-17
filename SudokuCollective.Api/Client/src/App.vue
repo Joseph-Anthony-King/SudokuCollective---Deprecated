@@ -224,9 +224,11 @@ export default {
             this.removeApps();
             this.removeUsers();
 
+            console.log(this.$router.currentRoute);
+
             if (
-              this.$router.currentRoute.path !== "/" &&
-              this.$router.currentRoute.path !== "/solve"
+              this.$router.currentRoute.name !== "Home" &&
+              this.$router.currentRoute.name !== "Sudoku"
             ) {
               this.$router.push("/");
             }
@@ -281,9 +283,11 @@ export default {
       this.updateUser(this.$data.user);
       this.updateAuthToken(token);
 
-      if (this.$router.currentRoute.path === "/dashboard") {
+      console.log(this.$router.currentRoute);
+
+      if (this.$router.currentRoute.name === "Dashboard") {
         // do nothing...
-      } else if (this.$router.currentRoute.path === "/solve") {
+      } else if (this.$router.currentRoute.name === "Sudoku") {
         // do nothing...
       } else {
         if (user.isEmailConfirmed) {
