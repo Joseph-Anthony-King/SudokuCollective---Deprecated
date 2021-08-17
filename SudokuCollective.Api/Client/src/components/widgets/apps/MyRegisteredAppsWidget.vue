@@ -208,16 +208,11 @@ export default {
             "Your registered apps have not been refreshed",
             defaultToastOptions()
           );
-        }        
+        }
       } catch (error) {
-        showToast(
-          this,
-          ToastMethods["error"],
-          error,
-          defaultToastOptions()
-        );
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
-    }
+    },
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),

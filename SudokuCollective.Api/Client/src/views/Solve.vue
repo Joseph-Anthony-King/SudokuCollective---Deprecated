@@ -2,18 +2,18 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <SolvePage />
+        <SudokuPage />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import SolvePage from "@/components/pages/SolvePage.vue";
+import SudokuPage from "@/components/pages/SudokuPage.vue";
 export default {
   name: "Solve",
   components: {
-    SolvePage,
+    SudokuPage,
   },
 };
 </script>

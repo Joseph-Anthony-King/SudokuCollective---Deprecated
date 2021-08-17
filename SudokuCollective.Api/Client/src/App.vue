@@ -106,7 +106,7 @@ export default {
     solveNavigation: {
       url: "/Solve",
       title: "Solve Sudoku Puzzles",
-      icon: "mdi-apps",
+      icon: "mdi-puzzle",
     },
     navDrawerStatus: null,
   }),
@@ -126,6 +126,7 @@ export default {
       "updateUser",
     ]),
     ...mapActions("userModule", ["updateUsers", "removeUsers"]),
+    ...mapActions("sudokuModule", ["initializePuzzle"]),
 
     async login(user, token) {
       if (user !== null && token !== null) {
@@ -297,6 +298,7 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
+
     cssProps() {
       var themeColors = {};
       Object.keys(this.$vuetify.theme.themes.light).forEach((color) => {
@@ -324,6 +326,8 @@ export default {
     this.updateApp(app);
 
     this.$data.user = this.getUser;
+
+    this.initializePuzzle();
   },
 };
 </script>

@@ -27,7 +27,7 @@
       <v-list-item v-for="(navItem, index) in navMenuItems" :key="index">
         <v-list-item-content>
           <v-list-item-title>
-            <v-icon class="white--text">{{navItem.mdiIcon}}</v-icon>
+            <v-icon class="white--text">{{ navItem.mdiIcon }}</v-icon>
             <router-link :to="navItem.url" class="nav-drawer-item">{{
               navItem.title
             }}</router-link>
@@ -88,11 +88,11 @@ export default {
           let icon;
 
           if (route.name === "Home") {
-            icon = "mdi-home"
+            icon = "mdi-home";
           } else if (route.name === "Dashboard") {
-            icon = "mdi-view-dashboard"
+            icon = "mdi-view-dashboard";
           } else {
-            icon = "mdi-apps"
+            icon = "mdi-puzzle";
           }
 
           this.$data.navMenuItems.push(
@@ -100,7 +100,6 @@ export default {
           );
         }
       });
-      console.log(this.$data.navMenuItems);
     },
   },
   computed: {
