@@ -1,6 +1,6 @@
 ﻿class User {
   constructor(data) {
-    if (data == undefined) {
+    if (data === undefined) {
       this.id = 0;
       this.userName = "";
       this.firstName = "";

@@ -26,7 +26,7 @@ namespace SudokuCollective.Api.V1.Controllers
             appsService = appsServ;
         }
 
-        // POST: api/difficulties
+        // POST: api/v1/difficulties
         [Authorize(Roles = "SUPERUSER")]
         [HttpPost]
         public async Task<ActionResult<Difficulty>> Post(
@@ -59,7 +59,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/difficulties/5
+        // PUT: api/v1/difficulties/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id,
@@ -96,7 +96,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // DELETE: api/difficulties/5
+        // DELETE: api/v1/difficulties/5
         [Authorize(Roles = "SUPERUSER")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id,
@@ -128,7 +128,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // GET: api/difficulties/5
+        // GET: api/v1/difficulties/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Difficulty>> Get(int id)
@@ -149,7 +149,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // GET: api/difficulties
+        // GET: api/v1/difficulties
         [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Difficulty>>> GetDifficulties()

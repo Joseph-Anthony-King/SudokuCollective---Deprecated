@@ -1,3 +1,9 @@
 export const INITIALIZE_PUZZLE = "initializePuzzle";
 export const UPDATE_PUZZLE = "updatePuzzle";
 export const REMOVE_PUZZLE = "removePuzzle";
+export const INITIALIZE_GAME = "initializeGame";
+export const UPDATE_GAME = "updateGame";
+export const REMOVE_GAME = "removeGame";
+export const UPDATE_DIFFICULTIES = "updateDifficulties";
+export const REMOVE_DIFFICULTIES = "removeDifficulties";
+export const UPDATE_PLAYGAME = "updatePlayGame";

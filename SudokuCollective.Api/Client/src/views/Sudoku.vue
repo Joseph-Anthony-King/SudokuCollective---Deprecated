@@ -11,7 +11,7 @@
 <script>
 import SudokuPage from "@/components/pages/SudokuPage.vue";
 export default {
-  name: "Solve",
+  name: "Sudoku",
   components: {
     SudokuPage,
   },

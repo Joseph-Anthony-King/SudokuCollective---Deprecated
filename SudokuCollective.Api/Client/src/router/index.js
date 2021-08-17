@@ -29,10 +29,10 @@ const routes = [
     beforeEnter: checkAuth,
   },
   {
-    path: "/solve",
-    name: "Solve",
+    path: "/sudoku",
+    name: "Sudoku",
     component: () =>
-      import(/* webpackChuckName: "Solve" */ "../views/Solve.vue"),
+      import(/* webpackChuckName: "Solve" */ "../views/Sudoku.vue"),
   },
 ];
 

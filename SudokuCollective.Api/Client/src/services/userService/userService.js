@@ -27,7 +27,7 @@ const getUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -43,7 +43,7 @@ const getUsers = async function (data) {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -87,7 +87,7 @@ const deleteUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -105,7 +105,7 @@ const putActivateUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -123,7 +123,7 @@ const putDeactivateUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -144,7 +144,7 @@ const postRequestPasswordReset = async function (email) {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -160,7 +160,7 @@ const putResendPasswordReset = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -176,7 +176,7 @@ const putCancelPasswordReset = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -192,7 +192,7 @@ const putCancelEmailConfirmation = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -208,7 +208,7 @@ const putCancelAllEmailRequests = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };

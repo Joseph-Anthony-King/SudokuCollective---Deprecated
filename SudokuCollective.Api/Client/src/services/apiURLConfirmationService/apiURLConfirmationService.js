@@ -20,7 +20,7 @@ const confirm = async function () {
 
       return { url: kestralAPI, message: response.data };
     } catch (error) {
-      console.error(error);
+      console.log(error);
 
       const response = await axios.get(
         `${iisAPI}/api/helloworld`,

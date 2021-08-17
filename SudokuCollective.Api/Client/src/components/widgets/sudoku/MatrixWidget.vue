@@ -300,7 +300,9 @@ export default {
     ],
   }),
   methods: {
-    ...mapActions("sudokuModule", ["updatePuzzle"]),
+    ...mapActions("sudokuModule", [
+      "updatePuzzle",
+      "updateGame"]),
 
     validateEntry(index) {
       var number = parseInt(this.$data.sudokuMatrix[index]);
@@ -310,7 +312,11 @@ export default {
         this.$forceUpdate();
       }
 
-      this.updatePuzzle(this.$data.sudokuMatrix);
+      if (this.getPlayGame) {
+        this.updateGame(this.$data.sudokuMatrix);
+      } else {
+        this.updatePuzzle(this.$data.sudokuMatrix);
+      }
     },
 
     applyEvenRegionStyling(index) {
@@ -324,20 +330,40 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("sudokuModule", ["getPuzzle"]),
+    ...mapGetters("sudokuModule", [
+      "getPuzzle",
+      "getGame",
+      "getPlayGame"]),
   },
   watch: {
     "$store.state.sudokuModule.puzzle": {
       handler: function (val, oldVal) {
-        console.log("oldVal:", oldVal);
-        console.log("val:", val);
         this.$data.sudokuMatrix = this.getPuzzle;
         this.$forceUpdate();
       },
     },
+    "$store.state.sudokuModule.game": {
+      handler: function (val, oldVal) {
+        this.$data.sudokuMatrix = this.getGame;
+        this.$forceUpdate();
+      },
+    },
+    "$store.state.sudokuModule.playGame": {
+      handler: function (val, oldVal) {
+        if (this.getPlayGame) {
+          this.$data.sudokuMatrix = this.getGame;
+        } else {
+          this.$data.sudokuMatrix = this.getPuzzle;
+        }
+      },
+    },
   },
   created() {
-    this.$data.sudokuMatrix = this.getPuzzle;
+    if (this.getPlayGame) {
+      this.$data.sudokuMatrix = this.getGame;
+    } else {
+      this.$data.sudokuMatrix = this.getPuzzle;
+    }
   },
 };
 </script>

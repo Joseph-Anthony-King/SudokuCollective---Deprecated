@@ -70,6 +70,7 @@ import { mapGetters } from "vuex";
 import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmationService";
 import { appProvider } from "@/providers/appProvider";
 import { userProvider } from "@/providers/userProvider";
+import { difficultiesProvider } from "@/providers/difficultiesProvider";
 import AppBar from "@/components/navigation/AppBar";
 import NavigationBar from "@/components/navigation/NavigationBar";
 import LoginForm from "@/components/forms/LoginForm";
@@ -104,8 +105,8 @@ export default {
       icon: "mdi-account-circle",
     },
     solveNavigation: {
-      url: "/Solve",
-      title: "Solve Sudoku Puzzles",
+      url: "/Sudoku",
+      title: "Sudoku",
       icon: "mdi-puzzle",
     },
     navDrawerStatus: null,
@@ -125,8 +126,13 @@ export default {
       "updateApp",
       "updateUser",
     ]),
-    ...mapActions("userModule", ["updateUsers", "removeUsers"]),
-    ...mapActions("sudokuModule", ["initializePuzzle"]),
+    ...mapActions("userModule", [
+      "updateUsers", 
+      "removeUsers"]),
+    ...mapActions("sudokuModule", [
+      "initializePuzzle",
+      "initializeGame",
+      "updateDifficulties"]),
 
     async login(user, token) {
       if (user !== null && token !== null) {
@@ -298,6 +304,7 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
+    ...mapGetters("sudokuModule", ["getDifficulties"]),
 
     cssProps() {
       var themeColors = {};
@@ -327,7 +334,24 @@ export default {
 
     this.$data.user = this.getUser;
 
+    if (this.getDifficulties.length === 0) {
+
+      const difficultiesResponse = await difficultiesProvider.getDifficulties();
+      
+      if (difficultiesResponse.success) {
+        this.updateDifficulties(difficultiesResponse.difficulties);
+      } else {
+        showToast(
+          this,
+          ToastMethods["error"],
+          difficultiesResponse.message,
+          defaultToastOptions()
+        );        
+      }
+    }
+
     this.initializePuzzle();
+    this.initializeGame();
   },
 };
 </script>

@@ -536,7 +536,7 @@ namespace SudokuCollective.Api.V1.Controllers
 
         // GET: api/apps/getTimeFrames
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpGet, Route("GetTimeFrames")]
+        [HttpGet, Route("timeFrames")]
         public ActionResult<List<EnumListItem>> GetTimeFrames()
         {
             var authToken = new List<string> { "auth token access period" };
@@ -570,8 +570,8 @@ namespace SudokuCollective.Api.V1.Controllers
 
         // GET: api/apps/sortValues
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet, Route("GetSortValues")]
-        public ActionResult<List<EnumListItem>> GetSortValues()
+        [HttpGet, Route("sortValues")]
+        public ActionResult<List<EnumListItem>> sortValues()
         {
             var all = new List<string> { "app", "game", "user" };
             var app = new List<string> { "app" };

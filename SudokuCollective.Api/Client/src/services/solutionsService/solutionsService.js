@@ -17,6 +17,6 @@ const postSolve = async function (solveModel) {
   }
 };
 
-export const solutionService = {
+export const solutionsService = {
   postSolve,
 };

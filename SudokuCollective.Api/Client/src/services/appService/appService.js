@@ -5,8 +5,8 @@ import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
 import { requestDataUpdateApp } from "@/helpers/appRequestData/appRequestData";
 import {
-  getAppEnpoint,
-  getByLicenseEnpoint,
+  getAppEndpoint,
+  getByLicenseEndpoint,
   getLicenseEndpoint,
   getMyAppsEndpoint,
   getTimeFramesEndpoint,
@@ -19,14 +19,14 @@ const getApp = async function (id) {
 
     const config = {
       method: "post",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -35,14 +35,14 @@ const getByLicense = async function (data) {
   try {
     const config = {
       method: "post",
-      url: `${getByLicenseEnpoint}`,
+      url: `${getByLicenseEndpoint}`,
       headers: requestHeader(),
       data: requestData(data),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -75,7 +75,7 @@ const getLicense = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -91,7 +91,7 @@ const getMyApps = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -100,14 +100,14 @@ const getApps = async function () {
   try {
     const config = {
       method: "post",
-      url: `${getAppEnpoint}`,
+      url: `${getAppEndpoint}`,
       headers: requestHeader(),
       data: requestData(),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -125,7 +125,7 @@ const getRegisteredApps = async function (userid) {
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -136,14 +136,14 @@ const getAppUsers = async function (id) {
 
     const config = {
       method: "post",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -154,14 +154,14 @@ const getNonAppUsers = async function (id) {
 
     const config = {
       method: "post",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -181,14 +181,14 @@ const putActivateAdminPrivileges = async function (appId, userId) {
 
     const config = {
       method: "put",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: data,
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -208,14 +208,14 @@ const putDeactivateAdminPrivileges = async function (appId, userId) {
 
     const config = {
       method: "put",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: data,
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -242,7 +242,7 @@ const updateApp = async function (data) {
 
     const config = {
       method: "put",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: requestDataUpdateApp(payload),
     };
@@ -266,14 +266,14 @@ const deleteApp = async function (app) {
 
     const config = {
       method: "delete",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(data),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -291,14 +291,14 @@ const resetApp = async function (app) {
 
     const config = {
       method: "put",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(data),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -318,14 +318,14 @@ const putAddUser = async function (appId, userId) {
 
     const config = {
       method: "put",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: data,
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -345,14 +345,14 @@ const deleteRemoveUser = async function (appId, userId) {
 
     const config = {
       method: "delete",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: data,
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -363,14 +363,14 @@ const putActivateApp = async function (id) {
 
     const config = {
       method: "put",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -381,14 +381,14 @@ const putDeactivateApp = async function (id) {
 
     const config = {
       method: "put",
-      url: `${getAppEnpoint}${params}`,
+      url: `${getAppEndpoint}${params}`,
       headers: requestHeader(),
       data: requestData(),
     };
 
     return await axios(config);
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };
@@ -404,7 +404,7 @@ const getTimeFrames = async function () {
     const response = await axios(config);
     return response.data;
   } catch (error) {
-    console.error(error.name, error.message);
+    console.log(error.name, error.message);
     return error.response;
   }
 };

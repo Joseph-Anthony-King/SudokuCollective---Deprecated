@@ -22,14 +22,37 @@
     <v-card elevation="6" class="mx-auto" v-if="!processing">
       <v-card-text>
         <v-container fluid>
-          <v-card-title class="justify-center" v-if="solutionPending"
-            >Sudoku Puzzle in need of Solution</v-card-title
-          >
-          <v-card-title class="justify-center" v-if="!solutionPending"
-            >Following Solution has been Found</v-card-title
-          >
+          <div class="center">
+            <v-combobox
+              class="combo"
+              v-model="select"
+              :items="items"
+              item-text="key"
+              label="Please make a selection"
+              single-line
+              outlined
+              dense
+              return-object
+            ></v-combobox>
+          </div>
           <hr class="title-spacer" />
           <MatrixWidget />
+          <div class="title-spacer" />
+          <v-card-title class="justify-center" v-if="playGame"
+            >Difficulty Level</v-card-title
+          >
+          <v-combobox
+            v-if="playGame"
+            class="combo"
+            v-model="difficulty"
+            :items="difficulties"
+            item-text="displayName"
+            label="Select Difficulty"
+            single-line
+            outlined
+            dense
+            return-object
+          ></v-combobox>
         </v-container>
       </v-card-text>
     </v-card>
@@ -39,6 +62,40 @@
       <v-card-actions>
         <v-container>
           <v-row dense>
+            <v-col v-if="playGame">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="createGame"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Create Game
+                  </v-btn>
+                </template>
+                <span>Create Game</span>
+              </v-tooltip>
+            </v-col>
+            <v-col v-if="playGame">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="checkGame"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Check Game
+                  </v-btn>
+                </template>
+                <span>Check Game</span>
+              </v-tooltip>
+            </v-col>
             <v-col>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -46,11 +103,11 @@
                     class="button-full"
                     color="blue darken-1"
                     text
-                    @click="submit"
+                    @click="solve"
                     v-bind="attrs"
                     v-on="on"
                   >
-                    Submit
+                    Solve
                   </v-btn>
                 </template>
                 <span>Obtain the solution</span>
@@ -81,69 +138,17 @@
 </template>
 
 <style scoped>
-.v-row {
-  flex-shrink: auto;
+.center {
+  margin: auto;
+  width: 50%;
 }
-/* Galaxy Fold... folded */
-@media only screen and (max-width: 319px) {
-  .v-text-field {
-    max-width: 27px;
-    max-height: 54px;
-    font-size: xx-small;
-  }
-}
-/* Moto G4, Galaxy S5, iPhone 5/SE */
-@media only screen and (min-width: 320px) and (max-width: 373px) {
-  .v-text-field {
-    max-width: 32px;
-    max-height: 54px;
-    font-size: medium;
-  }
-}
-/* iPhone 6/7/8, iPhone X, iPhone 12 */
-@media only screen and (min-width: 374px) and (max-width: 409px) {
-  .v-text-field {
-    max-width: 38px;
-    max-height: 54px;
-    font-size: x-large;
-    font-weight: bold;
-  }
-}
-/* Pixel 2, Pixel 2 XL, Galaxy Note 10+ */
-@media only screen and (min-width: 410px) and (max-width: 481px) {
-  .v-text-field {
-    max-width: 42px;
-    max-height: 54px;
-    font-size: x-large;
-    font-weight: bold;
-  }
-}
-/* iPhone 6/7/8 Plus, Surface Duo - Folded */
-@media only screen and (min-width: 482px) and (max-width: 642px) {
-  .v-text-field {
-    max-width: 50px;
-    max-height: 54px;
-    font-size: x-large;
-    font-weight: bold;
-  }
-}
-/* desktop */
-@media only screen and (min-width: 643px) {
-  .v-text-field {
-    max-width: 66px;
-    max-height: 86px;
-    font-size: xx-large;
-    font-weight: bold;
-  }
-}
-.centered-input >>> input {
+.combo {
+  min-width: 15em;
+  max-width: 25em;
+  margin: auto;
+  width: 50%;
+  font-size: small;
   text-align: center;
-}
-.text-secondary >>> input {
-  color: var(--v-secondary);
-}
-.text-white >>> input {
-  color: white;
 }
 </style>
 
@@ -152,7 +157,8 @@
 import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import { solutionService } from "@/services/solutionService/solutionService";
+import { gamesProvider } from "@/providers/gamesProvider";
+import { solutionsProvider } from "@/providers/solutionsProvider";
 import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget";
 import SolveModel from "@/models/viewModels/solveModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -166,17 +172,89 @@ export default {
   data: () => ({
     processing: false,
     solutionPending: true,
+    playGame: null,
+    items: [
+      {"key": "Play Game", "value": true },
+      {"key": "Solve Sudoku Puzzle", "value": false }
+    ],
+    difficulties: [],
+    select: null,
+    difficulty: null,
   }),
   methods: {
-    ...mapActions("sudokuModule", ["initializePuzzle", "updatePuzzle"]),
+    ...mapActions("sudokuModule", [
+      "initializePuzzle",
+      "initializeGame",
+      "updatePuzzle",
+      "updateGame",
+      "updatePlayGame"]),
 
-    async submit() {
+    async createGame() {
+      try {
+        const response = await gamesProvider.createGame(this.$data.difficulty.difficultyLevel);
+
+        if (response.success) {
+          this.updateGame(response.game);
+          showToast(
+            this,
+            ToastMethods["success"],
+            response.message,
+            defaultToastOptions()
+          );
+        } else {
+          showToast(
+            this,
+            ToastMethods["error"],
+            response.message,
+            defaultToastOptions()
+          );
+        }
+        
+      } catch (error) {
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      }
+    },
+
+    async checkGame() {
+      try {
+        const response = await gamesProvider.checkGame(this.getGame);
+        
+        if (response.success) {
+          showToast(
+            this,
+            ToastMethods["success"],
+            response.message,
+            defaultToastOptions()
+          );
+        } else {
+          showToast(
+            this,
+            ToastMethods["error"],
+            response.message,
+            defaultToastOptions()
+          );
+        }
+        
+      } catch (error) {
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      }
+    },
+
+    async solve() {
       this.$data.processing = true;
       var matrix = [];
 
       for (var i = 0; i < 9; i++) {
-        var line = this.getPuzzle.slice(i * 9, i * 9 + 9);
-        var row = [];
+
+        let line = [];
+
+        if (this.$data.playGame) {
+          line = this.getGame.slice(i * 9, i * 9 + 9);
+        } else {
+          line = this.getPuzzle.slice(i * 9, i * 9 + 9);
+        }
+
+        let row = [];
 
         line.forEach((number) => {
           if (number === "") {
@@ -190,23 +268,32 @@ export default {
       }
 
       try {
-        const response = await solutionService.postSolve(
+        const response = await solutionsProvider.solve(
           new SolveModel(matrix)
         );
 
+        console.log(response)
+
         if (response.status === 200) {
-          matrix = [];
-          for (var j = 0; j < 81; j++) {
-            matrix[j] = response.data.solution.solutionList[j].toString();
+          if (this.$data.playGame) {
+            this.updateGame(response.matrix);
+          } else {
+            this.updatePuzzle(response.matrix);
           }
-          this.updatePuzzle(matrix);
+
           this.$data.solutionPending = false;
           this.$forceUpdate();
+          showToast(
+            this,
+            ToastMethods["success"],
+            response.message,
+            defaultToastOptions()
+          );
         } else if (response.status === 404) {
           showToast(
             this,
             ToastMethods["error"],
-            response.data.message.substring(17),
+            response.message.substring(17),
             defaultToastOptions()
           );
         } else if (response.status === 400) {
@@ -250,12 +337,41 @@ export default {
     },
 
     clear() {
-      this.initializePuzzle();
+      if (this.$data.playGame) {
+        this.initializeGame();
+      } else {
+        this.initializePuzzle();
+      }
       this.$data.solutionPending = true;
     },
+
+    assignData(value) {
+      this.$data.select = value;
+      this.$data.playGame = this.$data.select.value;
+    }
   },
   computed: {
-    ...mapGetters("sudokuModule", ["getPuzzle"]),
+    ...mapGetters("sudokuModule", [
+      "getPuzzle",
+      "getGame",
+      "getDifficulties"]),
   },
+  watch: {
+    "select": {
+      handler: function (val, oldVal) {
+        this.assignData(val);
+      },
+    },
+    "playGame": {
+      handler: function (val, oldVal) {
+        this.updatePlayGame(this.$data.playGame);
+      },
+    },
+  },
+  created() {
+    this.assignData(this.$data.items[0]);
+    this.$data.difficulties = this.getDifficulties;
+    this.$data.difficulty = this.$data.difficulties[0];
+  }
 };
 </script>

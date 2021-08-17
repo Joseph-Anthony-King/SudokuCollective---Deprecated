@@ -60,7 +60,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/games/5
+        // PUT:  api/v1/games/5
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
@@ -99,7 +99,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // DELETE: api/games/5
+        // DELETE:  api/v1/games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Game>> Delete(
@@ -132,7 +132,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/games/5
+        // POST:  api/v1/games/5
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id,
@@ -165,7 +165,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/games
+        // POST:  api/v1/games
         [Authorize(Roles = "SUPERUSER, ADMIN")]
         [HttpPost, Route("GetGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
@@ -197,7 +197,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/games/5/getmygame
+        // POST:  api/v1/games/5/getmygame
         [Authorize(Roles = "USER")]
         [HttpPost, Route("{id}/GetMyGame")]
         public async Task<ActionResult<Game>> GetMyGame(
@@ -232,7 +232,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/games/getmygames
+        // POST:  api/v1/games/getmygames
         [Authorize(Roles = "USER")]
         [HttpPost, Route("GetMyGames")]
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
@@ -265,7 +265,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // DELETE: api/games/5/deletemygame
+        // DELETE:  api/v1/games/5/deletemygame
         [Authorize(Roles = "USER")]
         [HttpDelete("{id}/DeleteMyGame")]
         public async Task<ActionResult<Game>> DeleteMyGame(
@@ -300,7 +300,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // PUT: api/games/5/check
+        // PUT:  api/v1/games/5/check
         [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
         [HttpPut, Route("{id}/Check")]
         public async Task<ActionResult<Game>> Check(
@@ -333,7 +333,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // GET: api/games/createAnnonymous
+        // GET:  api/v1/games/createAnnonymous
         [AllowAnonymous]
         [HttpGet("CreateAnnonymous")]
         public async Task<ActionResult> CreateAnnonymous([FromQuery] AnnonymousGameRequest request)
@@ -361,7 +361,7 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
-        // POST: api/games/checkAnnonymous
+        // POST:  api/v1/games/checkAnnonymous
         [AllowAnonymous]
         [HttpPost("CheckAnnonymous")]
         public async Task<ActionResult> CheckAnnonymous([FromBody] AnnonymousCheckRequest request)
