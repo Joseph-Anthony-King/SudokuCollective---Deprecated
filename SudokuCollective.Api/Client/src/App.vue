@@ -224,8 +224,6 @@ export default {
             this.removeApps();
             this.removeUsers();
 
-            console.log(this.$router.currentRoute);
-
             if (
               this.$router.currentRoute.name !== "Home" &&
               this.$router.currentRoute.name !== "Sudoku"
@@ -282,8 +280,6 @@ export default {
       this.$data.user.login();
       this.updateUser(this.$data.user);
       this.updateAuthToken(token);
-
-      console.log(this.$router.currentRoute);
 
       if (this.$router.currentRoute.name === "Dashboard") {
         // do nothing...
