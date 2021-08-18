@@ -1,9 +1,7 @@
 import * as axios from "axios";
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestCheckGame } from "@/helpers/gameRequestData/gameRequestData";
-import {
-  getGamesEndpoint,
-} from "./endpoints";
+import { getGamesEndpoint } from "./endpoints";
 
 const getCreateGame = async function (difficultyLevel) {
   try {
@@ -26,7 +24,7 @@ const getCheckGame = async function (game) {
       method: "post",
       url: `${getGamesEndpoint}/checkAnnonymous`,
       headers: requestHeader(),
-      data: requestCheckGame({"game": game}),
+      data: requestCheckGame({ game: game }),
     };
 
     return await axios(config);

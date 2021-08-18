@@ -4,19 +4,18 @@ const createGame = async function (difficultyLevel) {
   const response = await gamesService.getCreateGame(difficultyLevel);
 
   if (response.data.success) {
-    let game = []
+    let game = [];
     response.data.sudokuMatrix.forEach((row) => {
       let result = [];
       row.forEach((cell) => {
         if (cell === 0) {
           result.push("");
-        }
-        else{
+        } else {
           result.push(String(cell));
         }
       });
       game = game.concat(result);
-    })
+    });
     return {
       status: response.status,
       success: response.data.success,

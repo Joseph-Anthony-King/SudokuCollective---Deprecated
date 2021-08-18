@@ -8,6 +8,8 @@ import {
   UPDATE_DIFFICULTIES,
   REMOVE_DIFFICULTIES,
   UPDATE_PLAYGAME,
+  UPDATE_SELECTED_DIFFICULTY,
+  REMOVE_SELECTED_DIFFICULTY,
 } from "./mutation-types";
 
 const sudokuModule = {
@@ -17,6 +19,7 @@ const sudokuModule = {
     puzzle: [],
     game: [],
     difficulties: [],
+    selectedDifficulty: null,
     playGame: true,
   }),
 
@@ -52,9 +55,15 @@ const sudokuModule = {
     [REMOVE_DIFFICULTIES](state) {
       state.difficulties = [];
     },
+    [UPDATE_SELECTED_DIFFICULTY](state, difficulty) {
+      state.selectedDifficulty = difficulty;
+    },
+    [REMOVE_SELECTED_DIFFICULTY](state) {
+      state.selectedDifficulty = null;
+    },
     [UPDATE_PLAYGAME](state, playGame) {
       state.playGame = playGame;
-    }
+    },
   },
 
   actions: {
@@ -90,9 +99,17 @@ const sudokuModule = {
       commit(REMOVE_DIFFICULTIES);
     },
 
+    updateSelectedDifficulty({ commit }, difficulty) {
+      commit(UPDATE_SELECTED_DIFFICULTY, difficulty);
+    },
+
+    removeSelectedDifficulty({ commit }) {
+      commit(REMOVE_SELECTED_DIFFICULTY);
+    },
+
     updatePlayGame({ commit }, playGame) {
       commit(UPDATE_PLAYGAME, playGame);
-    }
+    },
   },
 
   getters: {
@@ -103,14 +120,18 @@ const sudokuModule = {
     getGame: (state) => {
       return state.game;
     },
-    
+
     getDifficulties: (state) => {
       return state.difficulties;
     },
 
+    getSelectedDifficulty: (state) => {
+      return state.selectedDifficulty;
+    },
+
     getPlayGame: (state) => {
       return state.playGame;
-    }
+    },
   },
 };
 

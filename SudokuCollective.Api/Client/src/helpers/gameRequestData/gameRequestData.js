@@ -1,15 +1,14 @@
 export function requestCheckGame(payload) {
-  let matrix = []
+  let matrix = [];
 
   payload.game.forEach((cell) => {
-
     if (cell !== "") {
       matrix.push(parseInt(cell));
     } else {
       matrix.push(0);
     }
   });
-  
+
   const result = {
     firstRow: matrix.slice(0, 9),
     secondRow: matrix.slice(9, 18),

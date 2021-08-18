@@ -162,7 +162,11 @@ import { solutionsProvider } from "@/providers/solutionsProvider";
 import MatrixWidget from "@/components/widgets/sudoku/MatrixWidget";
 import SolveModel from "@/models/viewModels/solveModel";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
+import {
+  showToast,
+  defaultToastOptions,
+  actionToastOptions,
+} from "@/helpers/toastHelper";
 
 export default {
   name: "SudokuWidget",
@@ -174,8 +178,8 @@ export default {
     solutionPending: true,
     playGame: null,
     items: [
-      {"key": "Play Game", "value": true },
-      {"key": "Solve Sudoku Puzzle", "value": false }
+      { key: "Play Game", value: true },
+      { key: "Solve Sudoku Puzzle", value: false },
     ],
     difficulties: [],
     select: null,
@@ -187,38 +191,69 @@ export default {
       "initializeGame",
       "updatePuzzle",
       "updateGame",
-      "updatePlayGame"]),
+      "updateSelectedDifficulty",
+      "updatePlayGame",
+    ]),
 
     async createGame() {
-      try {
-        const response = await gamesProvider.createGame(this.$data.difficulty.difficultyLevel);
+      const action = [
+        {
+          text: "Yes",
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
 
-        if (response.success) {
-          this.updateGame(response.game);
-          showToast(
-            this,
-            ToastMethods["success"],
-            response.message,
-            defaultToastOptions()
-          );
-        } else {
-          showToast(
-            this,
-            ToastMethods["error"],
-            response.message,
-            defaultToastOptions()
-          );
-        }
-        
-      } catch (error) {
-        showToast(this, ToastMethods["error"], error, defaultToastOptions());
-      }
+            try {
+              const response = await gamesProvider.createGame(
+                this.$data.difficulty.difficultyLevel
+              );
+
+              if (response.success) {
+                this.updateGame(response.game);
+                showToast(
+                  this,
+                  ToastMethods["success"],
+                  response.message,
+                  defaultToastOptions()
+                );
+              } else {
+                showToast(
+                  this,
+                  ToastMethods["error"],
+                  response.message,
+                  defaultToastOptions()
+                );
+              }
+            } catch (error) {
+              showToast(
+                this,
+                ToastMethods["error"],
+                error,
+                defaultToastOptions()
+              );
+            }
+          },
+        },
+
+        {
+          text: "No",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods["show"],
+        `Are you sure you want to create a new ${this.$data.difficulty.displayName.toLowerCase} game?`,
+        actionToastOptions(action, "mode_edit")
+      );
     },
 
     async checkGame() {
       try {
         const response = await gamesProvider.checkGame(this.getGame);
-        
+
         if (response.success) {
           showToast(
             this,
@@ -234,7 +269,6 @@ export default {
             defaultToastOptions()
           );
         }
-        
       } catch (error) {
         showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
@@ -245,7 +279,6 @@ export default {
       var matrix = [];
 
       for (var i = 0; i < 9; i++) {
-
         let line = [];
 
         if (this.$data.playGame) {
@@ -268,11 +301,9 @@ export default {
       }
 
       try {
-        const response = await solutionsProvider.solve(
-          new SolveModel(matrix)
-        );
+        const response = await solutionsProvider.solve(new SolveModel(matrix));
 
-        console.log(response)
+        console.log(response);
 
         if (response.status === 200) {
           if (this.$data.playGame) {
@@ -348,30 +379,44 @@ export default {
     assignData(value) {
       this.$data.select = value;
       this.$data.playGame = this.$data.select.value;
-    }
+    },
   },
   computed: {
     ...mapGetters("sudokuModule", [
       "getPuzzle",
       "getGame",
-      "getDifficulties"]),
+      "getDifficulties",
+      "getSelectedDifficulty",
+    ]),
   },
   watch: {
-    "select": {
+    select: {
       handler: function (val, oldVal) {
         this.assignData(val);
       },
     },
-    "playGame": {
+    playGame: {
       handler: function (val, oldVal) {
         this.updatePlayGame(this.$data.playGame);
+      },
+    },
+    difficulty: {
+      handler: function (val, oldVal) {
+        this.updateSelectedDifficulty(this.$data.difficulty);
       },
     },
   },
   created() {
     this.assignData(this.$data.items[0]);
+
     this.$data.difficulties = this.getDifficulties;
-    this.$data.difficulty = this.$data.difficulties[0];
-  }
+
+    if (this.getSelectedDifficulty !== null) {
+      this.$data.difficulty = this.getSelectedDifficulty;
+    } else {
+      this.$data.difficulty = this.$data.difficulties[0];
+      this.updateSelectedDifficulty(this.$data.difficulty);
+    }
+  },
 };
 </script>

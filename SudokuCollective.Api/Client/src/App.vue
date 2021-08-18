@@ -126,13 +126,13 @@ export default {
       "updateApp",
       "updateUser",
     ]),
-    ...mapActions("userModule", [
-      "updateUsers", 
-      "removeUsers"]),
+    ...mapActions("userModule", ["updateUsers", "removeUsers"]),
     ...mapActions("sudokuModule", [
       "initializePuzzle",
       "initializeGame",
-      "updateDifficulties"]),
+      "updateDifficulties",
+      "removeSelectedDifficulty",
+    ]),
 
     async login(user, token) {
       if (user !== null && token !== null) {
@@ -223,6 +223,7 @@ export default {
             this.removeRegisteredApps();
             this.removeApps();
             this.removeUsers();
+            this.removeSelectedDifficulty();
 
             if (
               this.$router.currentRoute.name !== "Home" &&
@@ -335,9 +336,8 @@ export default {
     this.$data.user = this.getUser;
 
     if (this.getDifficulties.length === 0) {
-
       const difficultiesResponse = await difficultiesProvider.getDifficulties();
-      
+
       if (difficultiesResponse.success) {
         this.updateDifficulties(difficultiesResponse.difficulties);
       } else {
@@ -346,7 +346,7 @@ export default {
           ToastMethods["error"],
           difficultiesResponse.message,
           defaultToastOptions()
-        );        
+        );
       }
     }
 

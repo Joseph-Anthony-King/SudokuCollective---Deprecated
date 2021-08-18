@@ -300,9 +300,7 @@ export default {
     ],
   }),
   methods: {
-    ...mapActions("sudokuModule", [
-      "updatePuzzle",
-      "updateGame"]),
+    ...mapActions("sudokuModule", ["updatePuzzle", "updateGame"]),
 
     validateEntry(index) {
       var number = parseInt(this.$data.sudokuMatrix[index]);
@@ -330,10 +328,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("sudokuModule", [
-      "getPuzzle",
-      "getGame",
-      "getPlayGame"]),
+    ...mapGetters("sudokuModule", ["getPuzzle", "getGame", "getPlayGame"]),
   },
   watch: {
     "$store.state.sudokuModule.puzzle": {

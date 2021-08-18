@@ -1,8 +1,6 @@
 import * as axios from "axios";
 import { requestHeader } from "@/helpers/requestHeader";
-import {
-  getDifficultiesEndpoint,
-} from "./endpoints";
+import { getDifficultiesEndpoint } from "./endpoints";
 
 const getDifficulties = async function () {
   try {

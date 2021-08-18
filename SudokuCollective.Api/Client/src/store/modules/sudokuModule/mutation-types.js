@@ -7,3 +7,5 @@ export const REMOVE_GAME = "removeGame";
 export const UPDATE_DIFFICULTIES = "updateDifficulties";
 export const REMOVE_DIFFICULTIES = "removeDifficulties";
 export const UPDATE_PLAYGAME = "updatePlayGame";
+export const UPDATE_SELECTED_DIFFICULTY = "updateSelectedDifficulty";
+export const REMOVE_SELECTED_DIFFICULTY = "removeSelectedDifficulty";
