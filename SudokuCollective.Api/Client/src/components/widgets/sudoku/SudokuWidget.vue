@@ -335,8 +335,6 @@ export default {
         try {
           const response = await solutionsProvider.solve(new SolveModel(matrix));
 
-          console.log(response);
-
           if (response.status === 200) {
             if (this.$data.playGame) {
               this.updateGame(response.matrix);
