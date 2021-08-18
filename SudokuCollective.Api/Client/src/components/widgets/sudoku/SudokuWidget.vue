@@ -245,7 +245,7 @@ export default {
       showToast(
         this,
         ToastMethods["show"],
-        `Are you sure you want to create a new ${this.$data.difficulty.displayName.toLowerCase} game?`,
+        `Are you sure you want to create a new ${this.$data.difficulty.displayName.toLowerCase()} game?`,
         actionToastOptions(action, "mode_edit")
       );
     },
