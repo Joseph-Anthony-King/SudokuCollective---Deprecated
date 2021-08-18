@@ -1027,17 +1027,7 @@ namespace SudokuCollective.Data.Services
             if (result.Success)
             {
                 // Add solution to the database
-                var response = new RepositoryResponse();
-
-                var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
-                    _solutionsRepository,
-                    _distributedCache,
-                    cacheKey,
-                    DateTime.Now.AddHours(1),
-                    result);
-
-                response = (RepositoryResponse)cacheFactoryResponse.Item1;
-                result = (BaseResult)cacheFactoryResponse.Item2;
+                var response = await _solutionsRepository.GetAll();
 
                 if (response.Success)
                 {

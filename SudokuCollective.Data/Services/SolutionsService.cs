@@ -264,20 +264,12 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
-                    _solutionsRepository,
-                    _distributedCache,
-                    CacheKeys.GetSolutionsCacheKey,
-                    DateTime.Now.AddHours(1),
-                    result);
+                var response = await _solutionsRepository.GetAll();
 
-                var solvedSolutions = cacheFactoryResponse
-                    .Item1
+                var solvedSolutions = response
                     .Objects
                     .ConvertAll(s => (SudokuSolution)s)
                     .ToList();
-
-                result = (SolutionResult)cacheFactoryResponse.Item2;
 
                 var intList = new List<int>();
 
