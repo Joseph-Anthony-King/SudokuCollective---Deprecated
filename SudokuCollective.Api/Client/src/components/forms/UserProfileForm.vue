@@ -77,7 +77,7 @@
                     v-bind="attrs"
                     v-on="on"
                   >
-                    Refresh
+                    Refresh Profile
                   </v-btn>
                 </template>
                 <span>Get your latest profile data from the api</span>
@@ -729,10 +729,18 @@ export default {
     async reset() {
       const response = await userProvider.getUser(this.$data.user.id);
 
+      console.log("user profile reset response:", response);
+
       if (response.success) {
         this.$data.user = new User(response.user);
         this.$data.user.login();
         this.updateUser(this.$data.user);
+        showToast(
+          this,
+          ToastMethods["success"],
+          "Profile refreshed",
+          defaultToastOptions()
+        );
       } else {
         showToast(
           this,

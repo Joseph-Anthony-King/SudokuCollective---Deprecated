@@ -81,11 +81,39 @@ export default {
   data: () => ({
     navMenuItems: [],
     user: {},
+    greeting: ""
   }),
   methods: {
+    updateGreeting: function() {
+      const now = new Date();
+
+      if (now.getHours() < 12) {
+        this.$data.greeting = "Good Morning";
+      } else if (now.getHours() < 18) {
+        this.$data.greeting = "Good Afternoon";
+      } else {
+        this.$data.greeting = "Good Evening";
+      }
+
+      setInterval(() => {
+        const now = new Date();
+
+        if (now.getHours() < 12) {
+          this.$data.greeting = "Good Morning";
+        } else if (now.getHours() < 18) {
+          this.$data.greeting = "Good Afternoon";
+        } else {
+          this.$data.greeting = "Good Evening";
+        }
+      }, 60000);
+    },
+
     populateNavMenuItems() {
       this.$router.options.routes.forEach((route) => {
-        const routeNames = ["UserProfile", "ConfirmEmail", "ResetPassword"];
+        const routeNames = [
+          "UserProfile",
+          "ConfirmEmail",
+          "ResetPassword"];
 
         if (!_.includes(routeNames, route.name)) {
           let icon;
@@ -107,18 +135,6 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
-
-    greeting() {
-      const now = new Date();
-
-      if (now.getHours() < 12) {
-        return "Good Morning";
-      } else if (now.getHours() < 18) {
-        return "Good Afternoon";
-      } else {
-        return "Good Evening";
-      }
-    },
   },
   watch: {
     "$store.state.settingsModule.user": {
@@ -128,6 +144,8 @@ export default {
     },
   },
   async created() {
+    this.updateGreeting();
+
     this.populateNavMenuItems();
 
     this.$data.user = new User(this.getUser);

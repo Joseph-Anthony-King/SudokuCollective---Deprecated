@@ -30,6 +30,7 @@
             :loginFormStatus="userLoggingIn"
             :authExpired="authTokenExpired"
             v-on:user-logging-in-event="login"
+            v-on:user-logging-out="logout"
             v-on:redirect-to-sign-up="redirectToSignUp"
           />
         </v-dialog>
@@ -205,6 +206,10 @@ export default {
         );
       }
 
+      if (this.$data.authTokenExpired) {
+        this.$data.authTokenExpired = false;
+      }
+
       this.$data.userLoggingIn = false;
     },
 
@@ -218,6 +223,12 @@ export default {
             this.$data.user = new User();
 
             this.$data.user.logout();
+
+            if (this.$data.authTokenExpired) {
+              this.$data.authTokenExpired = false;
+            }
+            
+            this.$data.userLoggingIn = false;
 
             this.updateUser(this.$data.user);
             this.updateAuthToken("");

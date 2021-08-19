@@ -46,7 +46,7 @@
                     v-bind="attrs"
                     v-on="on"
                   >
-                    Refresh
+                    Refresh Users
                   </v-btn>
                 </template>
                 <span>Refresh Apps</span>
