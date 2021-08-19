@@ -53,6 +53,7 @@ namespace SudokuCollective.Data.Resiliency
                         string.Format(CacheKeys.GetAppByLicenseCacheKey, appLicense),
                         string.Format(CacheKeys.GetAppUsersCacheKey, 1),
                         string.Format(CacheKeys.GetNonAppUsersCacheKey, 1),
+                        string.Format(CacheKeys.GetAppCacheKey, user.Apps[0].AppId),
                         CacheKeys.GetUsersCacheKey
                     };
                 }

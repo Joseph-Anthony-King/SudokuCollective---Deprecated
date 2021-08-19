@@ -1,3 +1,4 @@
+import { processFailure } from "@/helpers/commonFunctions/commonFunctions";
 import { gamesService } from "@/services/gamesService/gamesService";
 
 const createGame = async function (difficultyLevel) {
@@ -23,10 +24,7 @@ const createGame = async function (difficultyLevel) {
       game: game,
     };
   } else {
-    return {
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
@@ -40,11 +38,7 @@ const checkGame = async function (game) {
       message: response.data.message.substring(17),
     };
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 

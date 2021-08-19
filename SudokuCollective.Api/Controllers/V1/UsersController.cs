@@ -309,6 +309,36 @@ namespace SudokuCollective.Api.V1.Controllers
             }
         }
 
+        // PUT: api/users/resetPassword
+        [AllowAnonymous]
+        [HttpPut, Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var user = (await usersService.GetUserByPasswordToken(request.Token)).User;
+            var license = (await usersService.GetAppLicenseByPasswordToken(request.Token)).License;
+
+            var updatePasswordRequest = new UpdatePasswordRequest 
+            { 
+                UserId = user.Id, 
+                NewPassword = request.NewPassword 
+            };
+
+            var result = await usersService.UpdatePassword(updatePasswordRequest, license);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
+            }
+        }
+
         // POST: api/users/requestPasswordReset
         [AllowAnonymous]
         [HttpPost("RequestPasswordReset")]

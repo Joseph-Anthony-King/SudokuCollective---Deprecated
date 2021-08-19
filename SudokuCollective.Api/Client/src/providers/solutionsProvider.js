@@ -1,3 +1,4 @@
+import { processFailure } from "@/helpers/commonFunctions/commonFunctions";
 import { solutionsService } from "@/services/solutionsService/solutionsService";
 
 const solve = async function (solveModel) {
@@ -15,11 +16,7 @@ const solve = async function (solveModel) {
       matrix: matrix,
     };
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 

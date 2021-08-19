@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -69,7 +70,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 MockRolesRepository.RolesRepositorySuccessfulRequest.Object,
                 MockAppAdminsRepository.AppAdminsRepositoryFailedRequest.Object,
                 MockEmailConfirmationsRepository.EmailConfirmationsRepositoryFailedRequest.Object,
-                MockPasswordResetRepository.PasswordResetsRepositorySuccessfulRequest.Object,
+                MockPasswordResetRepository.PasswordResetsRepositoryFailedRequest.Object,
                 MockEmailService.EmailServiceSuccessfulRequest.Object,
                 memoryCache);
 
@@ -752,7 +753,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User not Found"));
+            Assert.That(result.Message, Is.EqualTo("Password Reset Request not Found"));
         }
 
         [Test]
@@ -935,6 +936,64 @@ namespace SudokuCollective.Test.TestCases.Services
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("User not Found"));
             Assert.That(result.User, Is.TypeOf<User>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task SuccessfullyGetUserByPasswordToken()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetUserByPasswordToken(Guid.NewGuid().ToString());
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("User Found"));
+            Assert.That(result.User, Is.TypeOf<User>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnFalseIfGetUserByPasswordTokenFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailure.GetUserByPasswordToken(Guid.NewGuid().ToString());
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("User not Found"));
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task SuccessfullyGetLicenseByPasswordToken()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAppLicenseByPasswordToken(Guid.NewGuid().ToString());
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("App Found"));
+            Assert.That(result.License, Is.TypeOf<string>());
+        }
+
+        [Test]
+        [Category("Services")]
+        public async Task ReturnFalseIfGetLicenseByPasswordTokenFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sutFailure.GetAppLicenseByPasswordToken(Guid.NewGuid().ToString());
+
+            // Assert
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("No Outstanding Request to Reset Password"));
         }
     }
 }

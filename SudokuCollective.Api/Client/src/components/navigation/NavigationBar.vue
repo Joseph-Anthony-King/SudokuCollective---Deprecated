@@ -85,7 +85,7 @@ export default {
   methods: {
     populateNavMenuItems() {
       this.$router.options.routes.forEach((route) => {
-        const routeNames = [ "UserProfile", "ConfirmEmail" ];
+        const routeNames = ["UserProfile", "ConfirmEmail", "ResetPassword"];
 
         if (!_.includes(routeNames, route.name)) {
           let icon;

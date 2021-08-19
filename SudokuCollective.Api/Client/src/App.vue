@@ -25,9 +25,10 @@
           <router-view v-on:user-logging-out="logout"></router-view>
         </transition>
 
-        <v-dialog v-model="userLoggingIn" persistent max-width="600px">
+        <v-dialog v-model="displayLoginForm" persistent max-width="600px">
           <LoginForm
             :loginFormStatus="userLoggingIn"
+            :authExpired="authTokenExpired"
             v-on:user-logging-in-event="login"
             v-on:redirect-to-sign-up="redirectToSignUp"
           />
@@ -97,6 +98,8 @@ export default {
   data: () => ({
     userSolvingSudoku: false,
     userLoggingIn: false,
+    authTokenExpired: false,
+    authTokenExtended: false,
     userSigningUp: false,
     user: new User(),
     profileNavigation: {
@@ -123,6 +126,7 @@ export default {
     ...mapActions("settingsModule", [
       "confirmBaseURL",
       "updateAuthToken",
+      "expireAuthToken",
       "updateApp",
       "updateUser",
     ]),
@@ -218,6 +222,7 @@ export default {
 
             this.updateUser(this.$data.user);
             this.updateAuthToken("");
+            this.expireAuthToken();
             this.updateUsersSelectedApp(new App());
             this.removeUsersApps();
             this.removeRegisteredApps();
@@ -287,10 +292,14 @@ export default {
       } else if (this.$router.currentRoute.name === "Sudoku") {
         // do nothing...
       } else {
-        if (user.isEmailConfirmed) {
-          this.$router.push("/dashboard");
+        if (!this.$data.authTokenExtended) {
+          if (user.isEmailConfirmed) {
+            this.$router.push("/dashboard");
+          } else {
+            this.$router.push("/userProfile");
+          }
         } else {
-          this.$router.push("/userProfile");
+          this.$data.authTokenExtended = false;
         }
       }
     },
@@ -314,11 +323,26 @@ export default {
       });
       return themeColors;
     },
+
+    displayLoginForm() {
+      if (this.$data.userLoggingIn || this.$data.authTokenExpired) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   watch: {
     "$store.state.settingsModule.user": {
       handler: function (val, oldVal) {
         this.$data.user = this.getUser;
+      },
+    },
+    "$store.state.settingsModule.authTokenExpired": {
+      handler: function (val, oldVal) {
+        this.$data.userLoggingIn = val;
+        this.$data.authTokenExpired = val;
+        this.$data.authTokenExtended = val;
       },
     },
   },

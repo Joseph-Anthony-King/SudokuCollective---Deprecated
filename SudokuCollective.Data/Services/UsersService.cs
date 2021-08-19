@@ -1351,9 +1351,64 @@ namespace SudokuCollective.Data.Services
             }
         }
 
+        public async Task<IUserResult> GetUserByPasswordToken(string token)
+        {
+            var result = new UserResult();
+
+            try
+            {
+                var response = await _passwordResetsRepository.Get(token);
+
+                if (response.Success)
+                {
+                    var license = (await CacheFactory.GetLicenseWithCacheAsync(
+                        _appsRepository,
+                        _distributedCache,
+                        string.Format(CacheKeys.GetAppLicenseCacheKey, ((PasswordReset)response.Object).AppId),
+                        CachingStrategy.Heavy,
+                        ((PasswordReset)response.Object).AppId)).Item1;
+
+                    result.User = (User)((await CacheFactory.GetWithCacheAsync<User>(
+                        _usersRepository,
+                        _distributedCache,
+                        string.Format(CacheKeys.GetUserCacheKey, ((PasswordReset)response.Object).UserId, license),
+                        CachingStrategy.Medium,
+                        ((PasswordReset)response.Object).UserId,
+                        result)).Item1).Object;
+
+                    result.Success = response.Success;
+                    result.Message = UsersMessages.UserFoundMessage;
+
+                    return result;
+                }
+                else if (!response.Success && response.Exception != null)
+                {
+                    result.Success = response.Success;
+                    result.Message = response.Exception.Message;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = response.Success;
+                    result.Message = UsersMessages.UserNotFoundMessage;
+
+                    return result;
+                }
+            }
+            catch (Exception exp)
+            {
+                result.Success = false;
+                result.Message = exp.Message;
+
+                return result;
+            }
+        }
+
         public async Task<ILicenseResult> GetAppLicenseByPasswordToken(string token)
         {
             var result = new LicenseResult();
+
             try
             {
                 var response = await _passwordResetsRepository.Get(token);

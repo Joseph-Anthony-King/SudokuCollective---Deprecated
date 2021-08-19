@@ -300,101 +300,100 @@ export default {
           `Are you sure you want to submit this game for a solution?`,
           actionToastOptions(action, "mode_edit")
         );
-
       } else {
         await this.submitPuzzle();
       }
     },
 
     async submitPuzzle() {
-        this.$data.processing = true;
-        var matrix = [];
+      this.$data.processing = true;
+      var matrix = [];
 
-        for (var i = 0; i < 9; i++) {
-          let line;
-          
+      for (var i = 0; i < 9; i++) {
+        let line;
+
+        if (this.$data.playGame) {
+          line = this.getGame.slice(i * 9, i * 9 + 9);
+        } else {
+          line = this.getPuzzle.slice(i * 9, i * 9 + 9);
+        }
+
+        let row = [];
+
+        line.forEach((number) => {
+          if (number === "") {
+            row.push(0);
+          } else {
+            row.push(parseInt(number));
+          }
+        });
+
+        matrix.push(row);
+      }
+
+      try {
+        const response = await solutionsProvider.solve(new SolveModel(matrix));
+
+        if (response.status === 200) {
           if (this.$data.playGame) {
-            line = this.getGame.slice(i * 9, i * 9 + 9);
+            this.updateGame(response.matrix);
           } else {
-            line = this.getPuzzle.slice(i * 9, i * 9 + 9);
+            this.updatePuzzle(response.matrix);
           }
 
-          let row = [];
+          this.$data.solutionPending = false;
+          this.$forceUpdate();
+          showToast(
+            this,
+            ToastMethods["success"],
+            response.message,
+            defaultToastOptions()
+          );
+        } else if (response.status === 404) {
+          showToast(
+            this,
+            ToastMethods["error"],
+            response.message.substring(17),
+            defaultToastOptions()
+          );
+        } else if (response.status === 400) {
+          const errorKeys = Object.keys(response.data.errors);
+          var errorMessage = "Submission failed with the following errors: ";
 
-          line.forEach((number) => {
-            if (number === "") {
-              row.push(0);
-            } else {
-              row.push(parseInt(number));
-            }
-          });
-
-          matrix.push(row);
-        }
-
-        try {
-          const response = await solutionsProvider.solve(new SolveModel(matrix));
-
-          if (response.status === 200) {
-            if (this.$data.playGame) {
-              this.updateGame(response.matrix);
-            } else {
-              this.updatePuzzle(response.matrix);
-            }
-
-            this.$data.solutionPending = false;
-            this.$forceUpdate();
-            showToast(
-              this,
-              ToastMethods["success"],
-              response.message,
-              defaultToastOptions()
-            );
-          } else if (response.status === 404) {
-            showToast(
-              this,
-              ToastMethods["error"],
-              response.message.substring(17),
-              defaultToastOptions()
-            );
-          } else if (response.status === 400) {
-            const errorKeys = Object.keys(response.data.errors);
-            var errorMessage = "Submission failed with the following errors: ";
-
-            if (errorKeys.length === 1) {
-              errorKeys.forEach((key, index) => {
+          if (errorKeys.length === 1) {
+            errorKeys.forEach((key, index) => {
+              errorMessage = errorMessage + `${response.data.errors[key]}`;
+            });
+          } else {
+            errorKeys.forEach((key, index) => {
+              if (index !== errorKeys.length - 1) {
+                errorMessage =
+                  errorMessage + `${response.data.errors[key]}` + " & ";
+              } else {
                 errorMessage = errorMessage + `${response.data.errors[key]}`;
-              });
-            } else {
-              errorKeys.forEach((key, index) => {
-                if (index !== errorKeys.length - 1) {
-                  errorMessage =
-                    errorMessage + `${response.data.errors[key]}` + " & ";
-                } else {
-                  errorMessage = errorMessage + `${response.data.errors[key]}`;
-                }
-              });
-            }
-
-            showToast(
-              this,
-              ToastMethods["error"],
-              errorMessage,
-              defaultToastOptions()
-            );
-          } else {
-            showToast(
-              this,
-              ToastMethods["error"],
-              response.data.message,
-              defaultToastOptions()
-            );
+              }
+            });
           }
-        } catch (error) {
-          showToast(this, ToastMethods["error"], error, defaultToastOptions());
-        }
 
-        this.$data.processing = false;
+          showToast(
+            this,
+            ToastMethods["error"],
+            errorMessage,
+            defaultToastOptions()
+          );
+        } else {
+          showToast(
+            this,
+            ToastMethods["error"],
+            response.data.message,
+            defaultToastOptions()
+          );
+        }
+      } catch (error) {
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      }
+
+      this.$data.processing = false;
     },
 
     clear() {

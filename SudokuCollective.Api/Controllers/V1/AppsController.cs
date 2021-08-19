@@ -535,7 +535,7 @@ namespace SudokuCollective.Api.V1.Controllers
         }
 
         // GET: api/apps/getTimeFrames
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [AllowAnonymous]
         [HttpGet, Route("timeFrames")]
         public ActionResult<List<EnumListItem>> GetTimeFrames()
         {

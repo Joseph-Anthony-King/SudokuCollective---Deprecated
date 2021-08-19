@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { processFailure } from "@/helpers/commonFunctions/commonFunctions";
 import { userService } from "@/services/userService/userService";
 import User from "@/models/user";
 
@@ -13,11 +14,7 @@ const getUser = async function (id) {
       user: new User(response.data.user),
     };
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
@@ -44,11 +41,7 @@ const getUsers = async function () {
       users: users,
     };
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
@@ -63,107 +56,154 @@ const updateUser = async function (data) {
       user: new User(response.data.user),
     };
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
 const deleteUser = async function (id) {
   var response = await userService.deleteUser(id);
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const activateUser = async function (id) {
   var response = await userService.putActivateUser(id);
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const deactivateUser = async function (id) {
   var response = await userService.putDeactivateUser(id);
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const confirmEmail = async function (token) {
   var response = await userService.getConfirmEmail(token);
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-    email: response.data.email,
-    dateUpdated: response.data.dateUpdated,
-    isUpdate: response.data.isUpdate,
-    newEmailAddressConfirmed: response.data.newEmailAddressConfirmed,
-    confirmationEmailSuccessfullySent: response.data.confirmationEmailSuccessfullySent
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+      email: response.data.email,
+      dateUpdated: response.data.dateUpdated,
+      isUpdate: response.data.isUpdate,
+      newEmailAddressConfirmed: response.data.newEmailAddressConfirmed,
+      confirmationEmailSuccessfullySent:
+        response.data.confirmationEmailSuccessfullySent,
+    };
+  } else {
+    return processFailure(response);
+  }
+};
+
+const resetPassword = async function (data) {
+  var response = await userService.putResetPassword(data);
+
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const requestPasswordReset = async function (email) {
   const response = await userService.postRequestPasswordReset(email);
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const resendPasswordReset = async function () {
   const response = await userService.putResendPasswordReset();
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const cancelPasswordReset = async function () {
   const response = await userService.putCancelPasswordReset();
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const cancelEmailConfirmation = async function () {
   const response = await userService.putCancelEmailConfirmation();
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const cancelAllEmailRequests = async function () {
   const response = await userService.putCancelAllEmailRequests();
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 export const userProvider = {
@@ -174,6 +214,7 @@ export const userProvider = {
   activateUser,
   deactivateUser,
   confirmEmail,
+  resetPassword,
   requestPasswordReset,
   resendPasswordReset,
   cancelPasswordReset,

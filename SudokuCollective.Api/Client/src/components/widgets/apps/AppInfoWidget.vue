@@ -301,6 +301,20 @@ export default {
         this.$data.app = new App(response.app);
         this.updateUsersSelectedApp(this.$data.app);
         this.replaceUsersApp(this.$data.app);
+
+        showToast(
+          this,
+          ToastMethods["success"],
+          this.$data.app.name + " Refreshed",
+          defaultToastOptions()
+        );
+      } else {
+        showToast(
+          this,
+          ToastMethods["error"],
+          response.message,
+          defaultToastOptions()
+        );
       }
     },
 

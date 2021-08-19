@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { processFailure } from "@/helpers/commonFunctions/commonFunctions";
 import { appService } from "@/services/appService/appService";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -24,10 +25,7 @@ const getApp = async function (id) {
       app: app,
     };
   } else {
-    return {
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
@@ -41,17 +39,17 @@ const getByLicense = async function () {
 
   const response = await appService.getByLicense(data);
 
-  if (response.status === 200) {
+  if (response.data.success) {
     return new App(response.data.app);
   } else {
-    return new App();
+    return processFailure(response);
   }
 };
 
 const postLicense = async function (data) {
   const response = await appService.postLicense(data);
 
-  if (response.status === 201) {
+  if (response.data.success) {
     const appsResponse = await getMyApps();
 
     return {
@@ -61,25 +59,15 @@ const postLicense = async function (data) {
       app: response.data.app,
       apps: appsResponse.apps,
     };
-  } else if (response.status === 404) {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message,
-    };
+    return processFailure(response);
   }
 };
 
 const updateApp = async function (data) {
   const response = await appService.updateApp(data);
 
-  if (response.status === 200) {
+  if (response.data.success) {
     const app = new App(response.data.app);
 
     const licenseResponse = await appService.getLicense(app.id);
@@ -99,10 +87,7 @@ const updateApp = async function (data) {
       app: app,
     };
   } else {
-    return {
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
@@ -136,10 +121,7 @@ const getMyApps = async function () {
       apps: tempArray,
     };
   } else {
-    return {
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
@@ -173,10 +155,7 @@ const getApps = async function () {
       apps: tempArray,
     };
   } else {
-    return {
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
@@ -188,43 +167,43 @@ const getRegisteredApps = async function (userid) {
       return app.id;
     });
 
-    let tempArray = [];
+    let apps = [];
 
     for (const app of response.data.apps) {
       const registeredApp = new App(app);
-      tempArray.push(registeredApp);
+      apps.push(registeredApp);
     }
 
     return {
       status: response.status,
       success: response.data.success,
       message: response.data.message.substring(17),
-      apps: tempArray,
+      apps: apps,
     };
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
 const getNonAppUsers = async function (id) {
   const response = await appService.getNonAppUsers(id);
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-    users: response.data.users,
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+      users: response.data.users,
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const deleteApp = async function (app) {
   const response = await appService.deleteApp(app);
 
-  if (response.status === 200) {
+  if (response.data.success) {
     const appsResponse = await appService.getMyApps();
 
     if (appsResponse.data.success) {
@@ -257,18 +236,14 @@ const deleteApp = async function (app) {
       };
     }
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
 const resetApp = async function (app) {
   const response = await appService.resetApp(app);
 
-  if (response.status === 200) {
+  if (response.data.success) {
     const appsResponse = await appService.getMyApps();
 
     if (appsResponse.data.success) {
@@ -301,68 +276,92 @@ const resetApp = async function (app) {
       };
     }
   } else {
-    return {
-      status: response.status,
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 
 const addUser = async function (appid, userid) {
   const response = await appService.putAddUser(appid, userid);
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const removeUser = async function (appid, userid) {
   const response = await appService.deleteRemoveUser(appid, userid);
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const activateAdminPrivileges = async function (appid, userid) {
   const response = await appService.putActivateAdminPrivileges(appid, userid);
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const deactivateAdminPrivileges = async function (appid, userid) {
   const response = await appService.putDeactivateAdminPrivileges(appid, userid);
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const activateApp = async function (id) {
   var response = await appService.putActivateApp(id);
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const deactivateApp = async function (id) {
   var response = await appService.putDeactivateApp(id);
 
-  return {
-    status: response.status,
-    success: response.data.success,
-    message: response.data.message.substring(17),
-  };
+  if (response.data.success) {
+    return {
+      status: response.status,
+      success: response.data.success,
+      message: response.data.message.substring(17),
+    };
+  } else {
+    return processFailure(response);
+  }
 };
 
 const getTimeFrames = async function () {

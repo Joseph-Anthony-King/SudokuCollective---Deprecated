@@ -1,10 +1,10 @@
 <template>
   <v-card>
     <v-card-title v-show="!gettingHelp">
-      <span class="headline">Login</span>
+      <span class="headline">{{ title }}</span>
     </v-card-title>
     <v-card-title v-show="gettingHelp">
-      <span class="headline">Login Help</span>
+      <span class="headline">{{ title }} Help</span>
     </v-card-title>
     <v-form v-model="loginFormIsValid" ref="loginForm" v-show="!gettingHelp">
       <v-card-text>
@@ -215,7 +215,7 @@ import isChrome from "@/mixins/isChrome";
 
 export default {
   name: "LoginForm",
-  props: ["loginFormStatus"],
+  props: ["loginFormStatus", "authExpired"],
   mixins: [isChrome],
   data: () => ({
     username: "",
@@ -349,10 +349,11 @@ export default {
 
     reset() {
       this.$data.needHelp = false;
-      (this.$data.invalidUserNames = []),
-        (this.$data.invalidPasswords = []),
-        (this.$data.invalidEmails = []),
-        this.$refs.loginForm.reset();
+      this.$data.gettingHelp = false;
+      this.$data.invalidUserNames = [];
+      this.$data.invalidPasswords = [];
+      this.$data.invalidEmails = [];
+      this.$refs.loginForm.reset();
       this.$refs.userNameForm.reset();
       document.activeElement.blur();
     },
@@ -364,6 +365,14 @@ export default {
   },
   computed: {
     ...mapGetters("settingsModule", ["getLicense"]),
+
+    title() {
+      if (!this.$props.authExpired) {
+        return "Login";
+      } else {
+        return "Authorization Expired";
+      }
+    },
 
     userNameRules() {
       return [
@@ -395,11 +404,11 @@ export default {
     },
 
     getLoginFormStatus() {
-      return this.loginFormStatus && !this.$data.gettingHelp;
+      return this.$props.loginFormStatus && !this.$data.gettingHelp;
     },
 
     resetLoginFormStatus() {
-      return !this.loginFormStatus;
+      return !this.$props.loginFormStatus;
     },
   },
   mounted() {

@@ -1,5 +1,6 @@
 ﻿import * as axios from "axios";
 import store from "../../store";
+import { processError } from "@/helpers/commonFunctions/commonFunctions";
 import { requestHeader } from "../../helpers/requestHeader";
 import { authenticateEndpoint, confirmUserNameEndpoint } from "./endpoints";
 
@@ -22,7 +23,7 @@ const authenticateUser = async function (username, password) {
 
     return response;
   } catch (error) {
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -45,7 +46,7 @@ const confirmUserName = async function (email, license) {
 
     return response;
   } catch (error) {
-    return error.response;
+    return processError(error);
   }
 };
 

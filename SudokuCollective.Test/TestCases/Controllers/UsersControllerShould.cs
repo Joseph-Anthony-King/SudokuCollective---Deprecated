@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
@@ -12,7 +13,6 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.ResultModels;
-using System;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -569,6 +569,51 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(result.Result, Is.InstanceOf<ActionResult>());
             Assert.That(message, Is.EqualTo("Status Code 404: Email not Confirmed"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyResetPassword()
+        {
+            // Arrange
+            var request = new ResetPasswordRequest
+            {
+                Token = Guid.NewGuid().ToString(),
+                NewPassword = "password2"
+            };
+                
+
+            // Act
+            var result = sutSuccess.ResetPassword(request);
+            var message = ((BaseResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Password Reset"));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorMessageShouldResetPasswordFails()
+        {
+            // Arrange
+            var request = new ResetPasswordRequest
+            {
+                Token = Guid.NewGuid().ToString(),
+                NewPassword = "password2"
+            };
+
+            // Act
+            var result = sutFailure.ResetPassword(request);
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Password not Reset"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

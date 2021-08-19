@@ -9,8 +9,7 @@
       this.fullName = "";
       this.email = "";
       this.isEmailConfirmed = false;
-      this.emailConfirmed = "No",
-      this.receivedRequestToUpdateEmail = false;
+      (this.emailConfirmed = "No"), (this.receivedRequestToUpdateEmail = false);
       this.receivedRequestToUpdatePassword = false;
       this.isActive = false;
       this.acive = "No";

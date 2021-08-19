@@ -1,5 +1,6 @@
 ﻿import * as axios from "axios";
 import store from "../../store";
+import { processError } from "@/helpers/commonFunctions/commonFunctions";
 import Paginator from "@/models/viewModels/paginator";
 import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
@@ -26,8 +27,7 @@ const getUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -42,8 +42,7 @@ const getUsers = async function (data) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -69,7 +68,7 @@ const updateUser = async function (data) {
 
     return await axios(config);
   } catch (error) {
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -86,8 +85,7 @@ const deleteUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -104,8 +102,7 @@ const putActivateUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -122,8 +119,7 @@ const putDeactivateUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -136,15 +132,33 @@ const getConfirmEmail = async function (token) {
       url: `${getUserEnpoint}/confirmEmail${params}`,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",}
+        "Access-Control-Allow-Origin": "*",
+      },
     };
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
-}
+};
+
+const putResetPassword = async function (data) {
+  try {
+    const config = {
+      method: "put",
+      url: `${getUserEnpoint}/resetPassword`,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      data: data,
+    };
+
+    return await axios(config);
+  } catch (error) {
+    return processError(error);
+  }
+};
 
 const postRequestPasswordReset = async function (email) {
   try {
@@ -162,8 +176,7 @@ const postRequestPasswordReset = async function (email) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -178,8 +191,7 @@ const putResendPasswordReset = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -194,8 +206,7 @@ const putCancelPasswordReset = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -210,8 +221,7 @@ const putCancelEmailConfirmation = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -226,8 +236,7 @@ const putCancelAllEmailRequests = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -239,6 +248,7 @@ export const userService = {
   putActivateUser,
   putDeactivateUser,
   getConfirmEmail,
+  putResetPassword,
   postRequestPasswordReset,
   putResendPasswordReset,
   putCancelPasswordReset,

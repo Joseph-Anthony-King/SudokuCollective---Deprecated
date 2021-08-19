@@ -38,8 +38,14 @@ const routes = [
     path: "/confirmEmail/:emailToken",
     name: "ConfirmEmail",
     component: () =>
-      import(/* webpackChuckName: "UserProfile" */ "../views/Home.vue"),
-  }
+      import(/* webpackChuckName: "ConfirmEmail" */ "../views/Home.vue"),
+  },
+  {
+    path: "/resetPassword/:passwordToken",
+    name: "ResetPassword",
+    component: () =>
+      import(/* webpackChuckName: "ResetPassword" */ "../views/Home.vue"),
+  },
 ];
 
 const router = new VueRouter({

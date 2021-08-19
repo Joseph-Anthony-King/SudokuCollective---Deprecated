@@ -33,6 +33,7 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IInitiatePasswordResetResult> InitiatePasswordReset(
             string token,
             string license);
+        Task<IUserResult> GetUserByPasswordToken(string token);
         Task<ILicenseResult> GetAppLicenseByPasswordToken(string token);
         Task<IBaseResult> UpdatePassword(
             IPasswordResetRequest request, 

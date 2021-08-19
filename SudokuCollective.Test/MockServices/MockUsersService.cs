@@ -147,6 +147,20 @@ namespace SudokuCollective.Test.MockServices
                 } as IBaseResult));
 
             UsersServiceSuccessfulRequest.Setup(userService =>
+                userService.GetUserByPasswordToken(It.IsAny<string>()))
+                .Returns(Task.FromResult(new UserResult()
+                {
+                    Success = true,
+                    Message = UsersMessages.UserFoundMessage,
+                    User = (User)MockUsersRepository
+                        .UsersRepositorySuccessfulRequest
+                        .Object
+                        .Get(It.IsAny<int>())
+                        .Result
+                        .Object
+                } as IUserResult));
+
+            UsersServiceSuccessfulRequest.Setup(userService =>
                 userService.GetAppLicenseByPasswordToken(It.IsAny<string>()))
                 .Returns(Task.FromResult(new LicenseResult()
                 {
@@ -372,12 +386,7 @@ namespace SudokuCollective.Test.MockServices
                         .Result
                         .Success,
                     Message = UsersMessages.UserNotCreatedMessage,
-                    User = (User)MockUsersRepository
-                        .UsersRepositoryFailedRequest
-                        .Object
-                        .Add(It.IsAny<User>())
-                        .Result
-                        .Object
+                    User = new User()
                 } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
@@ -393,12 +402,7 @@ namespace SudokuCollective.Test.MockServices
                         .Result
                         .Success,
                     Message = UsersMessages.UserNotFoundMessage,
-                    User = (User)MockUsersRepository
-                        .UsersRepositoryFailedRequest
-                        .Object
-                        .Get(It.IsAny<int>())
-                        .Result
-                        .Object,
+                    User = new User()
                 } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
@@ -433,12 +437,7 @@ namespace SudokuCollective.Test.MockServices
                         .Result
                         .Success,
                     Message = UsersMessages.UserNotUpdatedMessage,
-                    User = (User)MockUsersRepository
-                        .UsersRepositoryFailedRequest
-                        .Object
-                        .Update(It.IsAny<User>())
-                        .Result
-                        .Object
+                    User = new User()
                 } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
@@ -463,6 +462,15 @@ namespace SudokuCollective.Test.MockServices
                     Success = false,
                     Message = UsersMessages.UserNotFoundMessage
                 } as IBaseResult));
+
+            UsersServiceFailedRequest.Setup(userService =>
+                userService.GetUserByPasswordToken(It.IsAny<string>()))
+                .Returns(Task.FromResult(new UserResult()
+                {
+                    Success = true,
+                    Message = UsersMessages.UserFoundMessage,
+                    User = new User()
+                } as IUserResult));
 
             UsersServiceFailedRequest.Setup(userService =>
                 userService.GetAppLicenseByPasswordToken(It.IsAny<string>()))

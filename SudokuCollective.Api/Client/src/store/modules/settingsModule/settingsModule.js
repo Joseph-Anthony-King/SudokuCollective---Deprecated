@@ -3,6 +3,7 @@ import App from "@/models/app";
 import {
   CONFIRM_API_URL,
   UPDATE_AUTH_TOKEN,
+  EXPIRE_AUTH_TOKEN,
   UPDATE_TOAST_DURATION,
   UPDATE_APP,
   UPDATE_USER,
@@ -15,6 +16,7 @@ const settingsModule = {
   state: () => ({
     apiURL: "",
     authToken: "",
+    authTokenExpired: false,
     toastDuration: 500,
     app: new App(),
     user: new User(),
@@ -27,6 +29,10 @@ const settingsModule = {
     },
     [UPDATE_AUTH_TOKEN](state, token) {
       state.authToken = token;
+      state.authTokenExpired = false;
+    },
+    [EXPIRE_AUTH_TOKEN](state) {
+      state.authTokenExpired = true;
     },
     [UPDATE_TOAST_DURATION](state, duration) {
       state.toastDuration = duration;
@@ -49,6 +55,9 @@ const settingsModule = {
     updateAuthToken({ commit }, token) {
       commit(UPDATE_AUTH_TOKEN, token);
     },
+    expireAuthToken({ commit }) {
+      commit(EXPIRE_AUTH_TOKEN);
+    },
     updateToastDuration({ commit }, duration) {
       commit(UPDATE_TOAST_DURATION, duration);
     },
@@ -69,6 +78,9 @@ const settingsModule = {
     },
     getAuthToken: (state) => {
       return state.authToken;
+    },
+    getAuthTokenExpired: (state) => {
+      return state.authTokenExpired;
     },
     getRequestorId: (state) => {
       return state.user.id;

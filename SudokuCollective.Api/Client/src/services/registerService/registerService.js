@@ -1,4 +1,5 @@
 import * as axios from "axios";
+import { processError } from "@/helpers/commonFunctions/commonFunctions";
 import { requestHeader } from "../../helpers/requestHeader";
 import { requestData } from "../../helpers/requestData";
 import {
@@ -19,7 +20,7 @@ const postSignUp = async function (signUpModel) {
 
     return response;
   } catch (error) {
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -36,7 +37,7 @@ const putResendEmailConfirmation = async function () {
 
     return response;
   } catch (error) {
-    return error.response;
+    return processError(error);
   }
 };
 

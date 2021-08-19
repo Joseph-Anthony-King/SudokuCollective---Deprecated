@@ -42,8 +42,18 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                //_context.Attach(entity);
                 _context.Entry(entity).State = EntityState.Added;
+
+                foreach (var userApp  in entity.Apps)
+                {
+                    _context.Entry(userApp).State = EntityState.Added;
+                }
+
+                foreach (var userRole in entity.Roles)
+                {
+                    _context.Entry(userRole).State = EntityState.Added;
+                }
+
 
                 var role = await _context                    
                     .Roles

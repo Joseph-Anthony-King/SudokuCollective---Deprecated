@@ -1,5 +1,6 @@
 import * as axios from "axios";
 import store from "@/store";
+import { processError } from "@/helpers/commonFunctions/commonFunctions";
 import Paginator from "@/models/viewModels/paginator";
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestData } from "@/helpers/requestData";
@@ -26,8 +27,7 @@ const getApp = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -42,23 +42,22 @@ const getByLicense = async function (data) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
-const postLicense = async function (createAppModel) {
+const postLicense = async function (data) {
   try {
     const config = {
       method: "post",
       url: getLicenseEndpoint,
       headers: requestHeader(),
-      data: createAppModel,
+      data: data,
     };
 
     return await axios(config);
   } catch (error) {
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -75,8 +74,7 @@ const getLicense = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -91,8 +89,7 @@ const getMyApps = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -107,8 +104,7 @@ const getApps = async function () {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -125,8 +121,7 @@ const getRegisteredApps = async function (userid) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -143,8 +138,7 @@ const getAppUsers = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -161,8 +155,7 @@ const getNonAppUsers = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -188,8 +181,7 @@ const putActivateAdminPrivileges = async function (appId, userId) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -215,8 +207,7 @@ const putDeactivateAdminPrivileges = async function (appId, userId) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -249,7 +240,7 @@ const updateApp = async function (data) {
 
     return await axios(config);
   } catch (error) {
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -273,8 +264,7 @@ const deleteApp = async function (app) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -298,8 +288,7 @@ const resetApp = async function (app) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -325,8 +314,7 @@ const putAddUser = async function (appId, userId) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -352,8 +340,7 @@ const deleteRemoveUser = async function (appId, userId) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -370,8 +357,7 @@ const putActivateApp = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -388,8 +374,7 @@ const putDeactivateApp = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -402,10 +387,10 @@ const getTimeFrames = async function () {
     };
 
     const response = await axios(config);
+    console.log("get time frames response:", response);
     return response.data;
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 

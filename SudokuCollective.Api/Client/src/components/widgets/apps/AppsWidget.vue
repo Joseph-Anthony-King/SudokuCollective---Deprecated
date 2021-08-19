@@ -80,6 +80,8 @@ import { appProvider } from "@/providers/appProvider";
 import AppWidget from "@/components/widgets/apps/AppWidget";
 import ReviewAppWidget from "@/components/widgets/apps/ReviewAppWidget";
 import App from "@/models/app";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "AppsWidget",
@@ -128,19 +130,35 @@ export default {
     async refresh() {
       const response = await appProvider.getApps();
 
-      var apps = [];
+      if (response.success) {
+        var apps = [];
 
-      var users = this.getUsers;
+        var users = this.getUsers;
 
-      response.apps.forEach((a) => {
-        const app = new App(a);
-        app["owner"] = _.find(users, function (user) {
-          return user.id === app.ownerId;
+        response.apps.forEach((a) => {
+          const app = new App(a);
+          app["owner"] = _.find(users, function (user) {
+            return user.id === app.ownerId;
+          });
+          apps.push(app);
         });
-        apps.push(app);
-      });
 
-      this.updateApps(apps);
+        this.updateApps(apps);
+
+        showToast(
+          this,
+          ToastMethods["success"],
+          response.message,
+          defaultToastOptions()
+        );
+      } else {
+        showToast(
+          this,
+          ToastMethods["error"],
+          response.message,
+          defaultToastOptions()
+        );
+      }
     },
   },
   computed: {

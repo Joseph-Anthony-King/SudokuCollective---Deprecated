@@ -1,4 +1,5 @@
 import * as axios from "axios";
+import { processError } from "@/helpers/commonFunctions/commonFunctions";
 import { requestHeader } from "@/helpers/requestHeader";
 import { requestCheckGame } from "@/helpers/gameRequestData/gameRequestData";
 import { getGamesEndpoint } from "./endpoints";
@@ -13,8 +14,7 @@ const getCreateGame = async function (difficultyLevel) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error.name, error.message);
-    return error.response;
+    return processError(error);
   }
 };
 
@@ -29,8 +29,7 @@ const getCheckGame = async function (game) {
 
     return await axios(config);
   } catch (error) {
-    console.log(error);
-    return error.response;
+    return processError(error);
   }
 };
 

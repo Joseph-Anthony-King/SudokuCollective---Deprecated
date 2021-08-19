@@ -37,6 +37,14 @@
         </p>
       </v-row>
     </v-card>
+
+    <v-dialog v-model="resetPassword" persistent max-width="600px">
+      <ResetPasswordForm
+        v-on:password-reset-event="passwordReset"
+        v-on:password-reset-form-closed-event="closePasswordResetForm"
+        :token="passwordToken"
+      />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -81,20 +89,23 @@
 /* eslint-disable no-unused-vars */
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import ResetPasswordForm from "@/components/forms/ResetPasswordForm";
 import { userProvider } from "@/providers/userProvider";
 import App from "@/models/app";
 import User from "@/models/user";
 import { ToastMethods } from "@/models/arrays/toastMethods";
-import {
-  showToast,
-  defaultToastOptions,
-} from "@/helpers/toastHelper";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "HomePage",
+  components: {
+    ResetPasswordForm,
+  },
   data: () => ({
     user: new User(),
     app: new App(),
+    resetPassword: false,
+    passwordToken: null,
   }),
   methods: {
     ...mapActions("settingsModule", ["updateUser"]),
@@ -104,12 +115,13 @@ export default {
         const response = await userProvider.confirmEmail(token);
 
         if (response.success) {
-
           let message = "";
 
           if (this.$data.user.isLoggedIn) {
             this.$data.user.email = response.email;
-            this.$data.user.dateUpdated = new Date(response.dateUpdated).toLocaleString();
+            this.$data.user.dateUpdated = new Date(
+              response.dateUpdated
+            ).toLocaleString();
             this.$data.user.receivedRequestToUpdateEmail = false;
           }
 
@@ -119,13 +131,13 @@ export default {
               this.$data.user.emailConfirmed = "Yes";
             }
             message = response.message;
-
           } else if (response.message === "Old Email Confirmed") {
             if (this.$data.user.isLoggedIn) {
               this.$data.user.isEmailConfirmed = false;
               this.$data.user.emailConfirmed = "No";
             }
-            message = "Please review and confirm your email address:" + response.email;
+            message =
+              "Please review and confirm your email address:" + response.email;
           } else {
             message = response.message;
           }
@@ -150,19 +162,32 @@ export default {
           );
         }
       } catch (error) {
-        showToast(
-          this,
-          ToastMethods["error"],
-          error,
-          defaultToastOptions()
-        );
+        showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
-    }
+    },
+
+    async passwordReset() {
+      if (this.$data.user.isLoggedIn) {
+        const response = await userProvider.getUser(this.$data.user.id);
+        this.$data.user = response.user;
+        this.$data.user.login();
+        this.updateUser(this.$data.user);
+      }
+    },
+
+    closePasswordResetForm() {
+      this.$data.resetPassword = false;
+
+      if (
+        this.$data.user.isLoggedIn &&
+        !this.$data.user.receivedRequestToUpdatePassword
+      ) {
+        this.$router.push("/dashboard");
+      }
+    },
   },
   computed: {
-    ...mapGetters("settingsModule", [
-      "getApp",
-      "getUser"]),
+    ...mapGetters("settingsModule", ["getApp", "getUser"]),
   },
   watch: {
     "$store.state.settingsModule.app": {
@@ -182,6 +207,11 @@ export default {
 
     if (this.$route.params.emailToken !== undefined) {
       await this.confirmEmail(this.$route.params.emailToken);
+    }
+
+    if (this.$route.params.passwordToken !== undefined) {
+      this.$data.resetPassword = true;
+      this.$data.passwordToken = this.$route.params.passwordToken;
     }
   },
 };

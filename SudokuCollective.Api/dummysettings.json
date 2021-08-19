@@ -30,7 +30,9 @@
     "Name": "[Your value here]",
     "License": "[Your value here]",
     "DevUrl": "[Your value here]",
-    "LiveUrl": "[Your value here]"
+    "LiveUrl": "[Your value here]",
+    "CustomEmailAction": "[Your value here]",
+    "CustomPasswordAction": "[Your value here]"
   },
   "DefaultClientApp": {
     "Name": "[Your value here]",

@@ -256,14 +256,14 @@ export default {
       }
     },
 
-    reset() {
-      this.$refs.signUpForm.reset();
-      document.activeElement.blur();
-    },
-
     close() {
       this.reset();
       this.$emit("user-signing-up-event", null, null);
+    },
+
+    reset() {
+      this.$refs.signUpForm.reset();
+      document.activeElement.blur();
     },
   },
   computed: {

@@ -1,4 +1,5 @@
 import * as axios from "axios";
+import { processError } from "@/helpers/commonFunctions/commonFunctions";
 import { postSolveEndpoint } from "./endpoints";
 
 const postSolve = async function (solveModel) {
@@ -13,7 +14,7 @@ const postSolve = async function (solveModel) {
 
     return response;
   } catch (error) {
-    return error.response;
+    return processError(error);
   }
 };
 

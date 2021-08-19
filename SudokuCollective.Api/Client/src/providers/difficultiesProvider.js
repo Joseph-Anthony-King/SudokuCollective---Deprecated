@@ -1,3 +1,4 @@
+import { processFailure } from "@/helpers/commonFunctions/commonFunctions";
 import { difficultiesService } from "@/services/difficultiesService/difficultiesService";
 import Difficulty from "@/models/difficulty";
 
@@ -17,10 +18,7 @@ const getDifficulties = async function () {
       difficulties: difficulties,
     };
   } else {
-    return {
-      success: response.data.success,
-      message: response.data.message.substring(17),
-    };
+    return processFailure(response);
   }
 };
 

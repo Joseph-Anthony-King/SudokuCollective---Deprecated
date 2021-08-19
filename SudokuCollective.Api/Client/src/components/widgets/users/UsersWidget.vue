@@ -73,6 +73,8 @@ import { mapGetters } from "vuex";
 import { userProvider } from "@/providers/userProvider";
 import ReviewUserWidget from "@/components/widgets/users/ReviewUserWidget";
 import User from "@/models/user";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
 export default {
   name: "UsersWidget",
@@ -113,25 +115,41 @@ export default {
     async refresh() {
       const response = await userProvider.getUsers();
 
-      var users = [];
+      if (response.success) {
+        var users = [];
 
-      response.users.forEach((u) => {
-        const user = new User(u);
-        user["licenses"] = 0;
-        users.push(user);
-      });
-
-      var apps = this.getApps;
-
-      apps.forEach((app) => {
-        users.forEach((user) => {
-          if (app.ownerId === user.id) {
-            user.licenses++;
-          }
+        response.users.forEach((u) => {
+          const user = new User(u);
+          user["licenses"] = 0;
+          users.push(user);
         });
-      });
 
-      this.updateUsers(users);
+        var apps = this.getApps;
+
+        apps.forEach((app) => {
+          users.forEach((user) => {
+            if (app.ownerId === user.id) {
+              user.licenses++;
+            }
+          });
+        });
+
+        this.updateUsers(users);
+
+        showToast(
+          this,
+          ToastMethods["success"],
+          response.message,
+          defaultToastOptions()
+        );
+      } else {
+        showToast(
+          this,
+          ToastMethods["error"],
+          response.message,
+          defaultToastOptions()
+        );
+      }
     },
   },
   computed: {
