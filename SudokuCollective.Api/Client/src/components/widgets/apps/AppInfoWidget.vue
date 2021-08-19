@@ -305,7 +305,7 @@ export default {
         showToast(
           this,
           ToastMethods["success"],
-          this.$data.app.name + " Refreshed",
+          "App Refreshed",
           defaultToastOptions()
         );
       } else {
