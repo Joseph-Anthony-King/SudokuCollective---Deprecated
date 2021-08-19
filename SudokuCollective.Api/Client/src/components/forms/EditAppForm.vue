@@ -127,49 +127,55 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="reset"
-              v-bind="attrs"
-              v-on="on"
-            >
-              Reset
-            </v-btn>
-          </template>
-          <span>Reset the edit app form</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="close"
-              v-bind="attrs"
-              v-on="on"
-            >
-              close
-            </v-btn>
-          </template>
-          <span>Close the edit app form</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="submit"
-              :disabled="!dirty || !editAppFormIsValid"
-              v-bind="attrs"
-              v-on="on"
-            >
-              Submit
-            </v-btn>
-          </template>
-          <span>Submit the edit app form</span>
-        </v-tooltip>
+        <v-col>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="reset"
+                v-bind="attrs"
+                v-on="on"
+              >
+                Reset
+              </v-btn>
+            </template>
+            <span>Reset the edit app form</span>
+          </v-tooltip>
+        </v-col>
+        <v-col>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="close"
+                v-bind="attrs"
+                v-on="on"
+              >
+                close
+              </v-btn>
+            </template>
+            <span>Close the edit app form</span>
+          </v-tooltip>          
+        </v-col>
+        <v-col>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="submit"
+                :disabled="!dirty || !editAppFormIsValid"
+                v-bind="attrs"
+                v-on="on"
+              >
+                Submit
+              </v-btn>
+            </template>
+            <span>Submit the edit app form</span>
+          </v-tooltip>
+        </v-col>
       </v-card-actions>
     </v-form>
   </v-card>

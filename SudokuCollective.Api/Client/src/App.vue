@@ -302,7 +302,7 @@ export default {
         // do nothing...
       } else {
         if (!this.$data.authTokenExtended) {
-          if (user.isEmailConfirmed) {
+          if (this.$data.user.isEmailConfirmed) {
             this.$router.push("/dashboard");
           } else {
             this.$router.push("/userProfile");
