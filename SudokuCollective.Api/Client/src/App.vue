@@ -126,7 +126,6 @@ export default {
     ...mapActions("settingsModule", [
       "confirmBaseURL",
       "updateAuthToken",
-      "expireAuthToken",
       "updateApp",
       "updateUser",
     ]),
@@ -222,7 +221,6 @@ export default {
 
             this.updateUser(this.$data.user);
             this.updateAuthToken("");
-            this.expireAuthToken();
             this.updateUsersSelectedApp(new App());
             this.removeUsersApps();
             this.removeRegisteredApps();
@@ -340,9 +338,11 @@ export default {
     },
     "$store.state.settingsModule.authTokenExpired": {
       handler: function (val, oldVal) {
-        this.$data.userLoggingIn = val;
-        this.$data.authTokenExpired = val;
-        this.$data.authTokenExtended = val;
+        if (val === true) {
+          this.$data.userLoggingIn = val;
+          this.$data.authTokenExpired = val;
+          this.$data.authTokenExtended = val;
+        }
       },
     },
   },
