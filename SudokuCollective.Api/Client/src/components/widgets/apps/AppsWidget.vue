@@ -49,7 +49,7 @@
                     Refresh Apps
                   </v-btn>
                 </template>
-                <span>Refresh Apps</span>
+                <span>Refresh all Apps</span>
               </v-tooltip>
             </v-col>
           </v-row>

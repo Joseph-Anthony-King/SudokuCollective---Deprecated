@@ -49,7 +49,7 @@
                     Refresh Users
                   </v-btn>
                 </template>
-                <span>Refresh Apps</span>
+                <span>Refresh all Users</span>
               </v-tooltip>
             </v-col>
           </v-row>
