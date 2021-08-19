@@ -649,7 +649,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Arrange
 
             // Act
-            var result = sutSuccess.GetSortValues();
+            var result = sutSuccess.sortValues();
             var statusCode = ((OkObjectResult)result.Result).StatusCode;
 
             // Assert

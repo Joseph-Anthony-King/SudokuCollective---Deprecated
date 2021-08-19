@@ -42,7 +42,8 @@ namespace SudokuCollective.Data.Repositories
 
             try
             {
-                _context.Attach(entity);
+                //_context.Attach(entity);
+                _context.Entry(entity).State = EntityState.Added;
 
                 var role = await _context                    
                     .Roles

@@ -12,6 +12,7 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.PageModels;
 using SudokuCollective.Data.Models.ResultModels;
+using System;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -532,6 +533,42 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
             Assert.That(message, Is.EqualTo("Status Code 404: Email Requests not Found"));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void SuccessfullyConfirmUserEmail()
+        {
+            // Arrange
+            var emailConfirmationToken = Guid.NewGuid().ToString();
+
+            // Act
+            var result = sutSuccess.ConfirmEmail(emailConfirmationToken);
+            var message = ((ConfirmEmailResult)((OkObjectResult)result.Result).Value).Message;
+            var statusCode = ((OkObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Email Confirmed"));
+            Assert.That(statusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public void IssueErrorMessageShouldConfirmUserEmailFails()
+        {
+            // Arrange
+            var emailConfirmationToken = Guid.NewGuid().ToString();
+
+            // Act
+            var result = sutFailure.ConfirmEmail(emailConfirmationToken);
+            var message = ((ConfirmEmailResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
+
+            // Assert
+            Assert.That(result.Result, Is.InstanceOf<ActionResult>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Email not Confirmed"));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

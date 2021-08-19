@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -387,6 +388,51 @@ namespace SudokuCollective.Api.V1.Controllers
                 request.AppId,
                 baseUrl,
                 emailtTemplatePath);
+
+            if (result.Success)
+            {
+                result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                return NotFound(result);
+            }
+        }
+
+        // GET: api/users/confirmEmail
+        [AllowAnonymous]
+        [HttpGet("ConfirmEmail/{token}")]
+        public async Task<IActionResult> ConfirmEmail(string token)
+        {
+            string baseUrl;
+
+            if (Request != null)
+            {
+                baseUrl = Request.Host.ToString();
+            }
+            else
+            {
+                baseUrl = "https://SudokuCollective.com";
+            }
+
+            string emailtTemplatePath;
+
+            if (!string.IsNullOrEmpty(hostEnvironment.WebRootPath))
+            {
+                emailtTemplatePath = Path.Combine(hostEnvironment.WebRootPath, "/Content/EmailTemplates/confirm-new-email-inlined.html");
+
+                emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
+            }
+            else
+            {
+                emailtTemplatePath = "../../Content/EmailTemplates/confirm-new-email-inlined.html";
+            }
+
+            var result = await usersService.ConfirmEmail(token, baseUrl, emailtTemplatePath);
 
             if (result.Success)
             {

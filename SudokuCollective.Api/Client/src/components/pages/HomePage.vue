@@ -79,26 +79,110 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import { userProvider } from "@/providers/userProvider";
 import App from "@/models/app";
+import User from "@/models/user";
+import { ToastMethods } from "@/models/arrays/toastMethods";
+import {
+  showToast,
+  defaultToastOptions,
+} from "@/helpers/toastHelper";
 
 export default {
   name: "HomePage",
   data: () => ({
+    user: new User(),
     app: new App(),
   }),
+  methods: {
+    ...mapActions("settingsModule", ["updateUser"]),
+
+    async confirmEmail(token) {
+      try {
+        const response = await userProvider.confirmEmail(token);
+
+        if (response.success) {
+
+          let message = "";
+
+          if (this.$data.user.isLoggedIn) {
+            this.$data.user.email = response.email;
+            this.$data.user.dateUpdated = new Date(response.dateUpdated).toLocaleString();
+            this.$data.user.receivedRequestToUpdateEmail = false;
+          }
+
+          if (response.message === "Email Confirmed") {
+            if (this.$data.user.isLoggedIn) {
+              this.$data.user.isEmailConfirmed = true;
+              this.$data.user.emailConfirmed = "Yes";
+            }
+            message = response.message;
+
+          } else if (response.message === "Old Email Confirmed") {
+            if (this.$data.user.isLoggedIn) {
+              this.$data.user.isEmailConfirmed = false;
+              this.$data.user.emailConfirmed = "No";
+            }
+            message = "Please review and confirm your email address:" + response.email;
+          } else {
+            message = response.message;
+          }
+
+          showToast(
+            this,
+            ToastMethods["success"],
+            message,
+            defaultToastOptions()
+          );
+
+          if (this.$data.user.isLoggedIn) {
+            this.updateUser(this.$data.user);
+            this.$router.push("/UserProfile");
+          }
+        } else {
+          showToast(
+            this,
+            ToastMethods["error"],
+            response.message,
+            defaultToastOptions()
+          );
+        }
+      } catch (error) {
+        showToast(
+          this,
+          ToastMethods["error"],
+          error,
+          defaultToastOptions()
+        );
+      }
+    }
+  },
   computed: {
-    ...mapGetters("settingsModule", ["getApp"]),
+    ...mapGetters("settingsModule", [
+      "getApp",
+      "getUser"]),
   },
   watch: {
     "$store.state.settingsModule.app": {
       handler: function (val, oldVal) {
-        this.$data.app = new App(this.getApp);
+        this.$data.app = this.getApp;
+      },
+    },
+    "$store.state.settingsModule.user": {
+      handler: function (val, oldVal) {
+        this.$data.user = this.getUser;
       },
     },
   },
-  created() {
-    this.$data.app = new App(this.getApp);
+  async created() {
+    this.$data.app = this.getApp;
+    this.$data.user = this.getUser;
+
+    if (this.$route.params.emailToken !== undefined) {
+      await this.confirmEmail(this.$route.params.emailToken);
+    }
   },
 };
 </script>

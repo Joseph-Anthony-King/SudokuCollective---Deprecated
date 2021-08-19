@@ -101,6 +101,21 @@ const deactivateUser = async function (id) {
   };
 };
 
+const confirmEmail = async function (token) {
+  var response = await userService.getConfirmEmail(token);
+
+  return {
+    status: response.status,
+    success: response.data.success,
+    message: response.data.message.substring(17),
+    email: response.data.email,
+    dateUpdated: response.data.dateUpdated,
+    isUpdate: response.data.isUpdate,
+    newEmailAddressConfirmed: response.data.newEmailAddressConfirmed,
+    confirmationEmailSuccessfullySent: response.data.confirmationEmailSuccessfullySent
+  };
+};
+
 const requestPasswordReset = async function (email) {
   const response = await userService.postRequestPasswordReset(email);
 
@@ -158,6 +173,7 @@ export const userProvider = {
   deleteUser,
   activateUser,
   deactivateUser,
+  confirmEmail,
   requestPasswordReset,
   resendPasswordReset,
   cancelPasswordReset,

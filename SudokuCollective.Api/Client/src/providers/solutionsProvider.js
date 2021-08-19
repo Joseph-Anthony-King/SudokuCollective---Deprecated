@@ -3,8 +3,6 @@ import { solutionsService } from "@/services/solutionsService/solutionsService";
 const solve = async function (solveModel) {
   const response = await solutionsService.postSolve(solveModel);
 
-  console.log(response);
-
   if (response.data.success) {
     let matrix = [];
     for (var j = 0; j < 81; j++) {

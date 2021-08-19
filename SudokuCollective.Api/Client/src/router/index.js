@@ -25,7 +25,7 @@ const routes = [
     path: "/userProfile",
     name: "UserProfile",
     component: () =>
-      import(/* webpackChuckName: "UserProile" */ "../views/UserProfile.vue"),
+      import(/* webpackChuckName: "UserProfile" */ "../views/UserProfile.vue"),
     beforeEnter: checkAuth,
   },
   {
@@ -34,6 +34,12 @@ const routes = [
     component: () =>
       import(/* webpackChuckName: "Solve" */ "../views/Sudoku.vue"),
   },
+  {
+    path: "/confirmEmail/:emailToken",
+    name: "ConfirmEmail",
+    component: () =>
+      import(/* webpackChuckName: "UserProfile" */ "../views/Home.vue"),
+  }
 ];
 
 const router = new VueRouter({

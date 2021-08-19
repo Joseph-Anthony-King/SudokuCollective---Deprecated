@@ -70,6 +70,7 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+import _ from "lodash";
 import { mapGetters } from "vuex";
 import User from "@/models/user";
 import MenuItem from "@/models/viewModels/menuItem";
@@ -84,7 +85,9 @@ export default {
   methods: {
     populateNavMenuItems() {
       this.$router.options.routes.forEach((route) => {
-        if (route.name !== "UserProfile") {
+        const routeNames = [ "UserProfile", "ConfirmEmail" ];
+
+        if (!_.includes(routeNames, route.name)) {
           let icon;
 
           if (route.name === "Home") {

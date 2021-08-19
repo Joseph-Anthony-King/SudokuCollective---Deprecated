@@ -23,7 +23,6 @@ const getUser = async function (id) {
       headers: requestHeader(),
       data: requestData(),
     };
-    console.log(config);
 
     return await axios(config);
   } catch (error) {
@@ -128,6 +127,25 @@ const putDeactivateUser = async function (id) {
   }
 };
 
+const getConfirmEmail = async function (token) {
+  try {
+    const params = `/${token}`;
+
+    const config = {
+      method: "get",
+      url: `${getUserEnpoint}/confirmEmail${params}`,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",}
+    };
+
+    return await axios(config);
+  } catch (error) {
+    console.log(error.name, error.message);
+    return error.response;
+  }
+}
+
 const postRequestPasswordReset = async function (email) {
   try {
     const license = store.getters["settingsModule/getLicense"];
@@ -220,6 +238,7 @@ export const userService = {
   deleteUser,
   putActivateUser,
   putDeactivateUser,
+  getConfirmEmail,
   postRequestPasswordReset,
   putResendPasswordReset,
   putCancelPasswordReset,

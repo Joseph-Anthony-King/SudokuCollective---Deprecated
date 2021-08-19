@@ -1977,11 +1977,10 @@ namespace SudokuCollective.Data.Services
                 {
                     var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.Object;
 
-
                     var license = (await CacheFactory.GetLicenseWithCacheAsync(
                         _appsRepository,
                         _distributedCache,
-                        string.Format(CacheKeys.GetAppCacheKey, emailConfirmation.AppId),
+                        string.Format(CacheKeys.GetAppLicenseCacheKey, emailConfirmation.AppId),
                         CachingStrategy.Medium,
                         emailConfirmation.AppId)).Item1;
 
@@ -2002,6 +2001,10 @@ namespace SudokuCollective.Data.Services
 
                             result.Success = response.Success;
                             result.UserName = user.UserName;
+                            result.Email = user.Email;
+                            result.DateUpdated = user.DateUpdated;
+                            result.NewEmailAddressConfirmed = true;
+                            result.IsUpdate = emailConfirmation.IsUpdate;
 
                             result.AppTitle = user
                                 .Apps
@@ -2063,10 +2066,7 @@ namespace SudokuCollective.Data.Services
                         if (response.Success)
                         {
                             var html = File.ReadAllText(emailTemplatePath);
-                            var EmailConfirmationAction = string.Format("https://{0}/confirmEmail/{1}",
-                                baseUrl,
-                                emailConfirmation.Token);
-                            var appTitle = app.Name;
+
                             var url = string.Empty;
 
                             if (app.InDevelopment)
@@ -2077,6 +2077,24 @@ namespace SudokuCollective.Data.Services
                             {
                                 url = app.LiveUrl;
                             }
+
+                            string EmailConfirmationAction;
+
+                            if (!app.DisableCustomUrls && !string.IsNullOrEmpty(app.CustomEmailConfirmationAction))
+                            {
+                                EmailConfirmationAction = string.Format("{0}/{1}/{2}",
+                                    url,
+                                    app.CustomEmailConfirmationAction,
+                                    emailConfirmation.Token);
+                            }
+                            else
+                            {
+                                EmailConfirmationAction = string.Format("https://{0}/confirmEmail/{1}",
+                                    baseUrl,
+                                    emailConfirmation.Token);
+                            }
+
+                            var appTitle = app.Name;
 
                             html = html.Replace("{{USER_NAME}}", user.UserName);
                             html = html.Replace("{{CONFIRM_EMAIL_URL}}", EmailConfirmationAction);
@@ -2094,6 +2112,8 @@ namespace SudokuCollective.Data.Services
 
                             result.Success = response.Success;
                             result.UserName = user.UserName;
+                            result.Email = user.Email;
+                            result.DateUpdated = user.DateUpdated;
                             result.IsUpdate = emailConfirmation.IsUpdate;
                             result.AppTitle = appTitle;
                             result.Url = url;
@@ -2131,7 +2151,9 @@ namespace SudokuCollective.Data.Services
                             var user = (User)response.Object;
 
                             result.Success = response.Success;
+                            result.Email = user.Email;
                             result.UserName = user.UserName;
+                            result.DateUpdated = user.DateUpdated;
                             result.IsUpdate = emailConfirmation.IsUpdate;
                             result.NewEmailAddressConfirmed = true;
                             result.AppTitle = user
