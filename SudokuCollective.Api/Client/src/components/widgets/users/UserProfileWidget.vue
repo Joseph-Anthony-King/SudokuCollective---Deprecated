@@ -53,7 +53,7 @@
         readonly
       ></v-text-field>
       <v-text-field
-        v-if="userDateUpdated !== '12/31/1, 4:07:02 PM'"
+        v-if="reviewDateUpdated(userDateUpdated)"
         v-model="userDateUpdated"
         label="Date Updated"
         hint="MM/DD/YYYY format"
@@ -79,10 +79,17 @@
 <style scoped></style>
 
 <script>
+import { displayDateUpdated } from "@/helpers/commonFunctions/commonFunctions";
+
 export default {
   name: "UserProfileWidget",
   props: {
     user: {},
+  },
+  methods: {    
+    reviewDateUpdated(dateUpdated) {
+      return displayDateUpdated(dateUpdated)
+    }
   },
   computed: {
     userId() {

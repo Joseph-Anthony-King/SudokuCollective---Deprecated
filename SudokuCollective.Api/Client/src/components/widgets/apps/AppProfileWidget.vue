@@ -68,7 +68,7 @@
         readonly
       ></v-text-field>
       <v-text-field
-        v-if="appDateUpdated !== '12/31/1, 4:07:02 PM'"
+        v-if="reviewDateUpdated(appDateUpdated)"
         v-model="appDateUpdated"
         label="Date Updated"
         hint="MM/DD/YYYY format"
@@ -135,6 +135,7 @@
 <style scoped></style>
 
 <script>
+import { displayDateUpdated } from "@/helpers/commonFunctions/commonFunctions";
 import { ToastMethods } from "@/models/arrays/toastMethods";
 import { showToast, defaultToastOptions } from "@/helpers/toastHelper";
 
@@ -157,6 +158,10 @@ export default {
         showToast(this, ToastMethods["error"], error, defaultToastOptions());
       }
     },
+
+    reviewDateUpdated(dateUpdated) {
+      return displayDateUpdated(dateUpdated)
+    }
   },
   computed: {
     appId() {
