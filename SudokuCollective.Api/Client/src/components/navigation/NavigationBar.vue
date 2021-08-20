@@ -124,7 +124,7 @@ export default {
       } else {
         this.$data.greeting = "Good Evening";
       }
-    }
+    },
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
