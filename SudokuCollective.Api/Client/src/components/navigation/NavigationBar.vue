@@ -85,26 +85,10 @@ export default {
   }),
   methods: {
     updateGreeting: function () {
-      const now = new Date();
-
-      if (now.getHours() < 12) {
-        this.$data.greeting = "Good Morning";
-      } else if (now.getHours() < 18) {
-        this.$data.greeting = "Good Afternoon";
-      } else {
-        this.$data.greeting = "Good Evening";
-      }
+      this.updateNow();
 
       setInterval(() => {
-        const now = new Date();
-
-        if (now.getHours() < 12) {
-          this.$data.greeting = "Good Morning";
-        } else if (now.getHours() < 18) {
-          this.$data.greeting = "Good Afternoon";
-        } else {
-          this.$data.greeting = "Good Evening";
-        }
+        this.updateNow();
       }, 60000);
     },
 
@@ -129,6 +113,18 @@ export default {
         }
       });
     },
+
+    updateNow() {
+      const now = new Date();
+
+      if (now.getHours() < 12) {
+        this.$data.greeting = "Good Morning";
+      } else if (now.getHours() < 18) {
+        this.$data.greeting = "Good Afternoon";
+      } else {
+        this.$data.greeting = "Good Evening";
+      }
+    }
   },
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
