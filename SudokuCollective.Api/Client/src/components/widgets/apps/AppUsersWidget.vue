@@ -190,20 +190,8 @@ export default {
               let users = [];
 
               this.$data.selectedUsers.forEach((user) => {
-                if (user.isAdmin === "No") {
-                  user.isAdmin = false;
-                } else {
-                  user.isAdmin = true;
-                }
-
                 if (!user.isAdmin && user.id !== 1) {
-                  users.push(new User(user));
-                }
-
-                if (user.isAdmin === false) {
-                  user.isAdmin = "No";
-                } else {
-                  user.isAdmin = "Yes";
+                  users.push(user);
                 }
               });
 
@@ -216,6 +204,8 @@ export default {
                   this.$data.app.id,
                   user.id
                 );
+
+                console.log(response);
 
                 if (response.status === 200) {
                   successes++;
@@ -286,20 +276,8 @@ export default {
               let users = [];
 
               this.$data.selectedUsers.forEach((user) => {
-                if (user.isAdmin === "No") {
-                  user.isAdmin = false;
-                } else {
-                  user.isAdmin = true;
-                }
-
                 if (user.isAdmin && user.id !== 1) {
                   users.push(new User(user));
-                }
-
-                if (user.isAdmin === false) {
-                  user.isAdmin = "No";
-                } else {
-                  user.isAdmin = "Yes";
                 }
               });
 
@@ -456,14 +434,14 @@ export default {
 
     filterNonAdmins() {
       const filteredArray = _.filter(this.$data.selectedUsers, function (user) {
-        return user.isAdmin === "No" && user.id !== 1;
+        return user.admin === "No" && user.id !== 1;
       });
       return filteredArray.length > 0;
     },
 
     filterAdmins() {
       const filteredArray = _.filter(this.$data.selectedUsers, function (user) {
-        return user.isAdmin === "Yes" && user.id !== 1;
+        return user.admin === "Yes" && user.id !== 1;
       });
       return filteredArray.length > 0;
     },

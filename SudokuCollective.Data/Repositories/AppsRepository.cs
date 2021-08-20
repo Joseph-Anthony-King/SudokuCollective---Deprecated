@@ -580,7 +580,7 @@ namespace SudokuCollective.Data.Repositories
                             }
                             else
                             {
-                                if (appAdmins.Any(aa => aa.AppId == id && aa.UserId == user.Id))
+                                if (appAdmins.Any(aa => aa.AppId == id && aa.UserId == user.Id && aa.IsActive))
                                 {
                                     filteredRoles.Add(ur);
                                 }

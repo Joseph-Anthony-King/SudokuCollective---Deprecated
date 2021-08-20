@@ -1973,6 +1973,13 @@ namespace SudokuCollective.Data.Services
                     if (userReponse.Success)
                     {
                         var app = (App)appResponse.Object;
+                        app.License = (await CacheFactory.GetLicenseWithCacheAsync(
+                            _appsRepository,
+                            _distributedCache,
+                            string.Format(CacheKeys.GetAppLicenseCacheKey, appId),
+                            CachingStrategy.Medium,
+                            appId)).Item1;
+
                         var user = (User)userReponse.Object;
 
                         if (user.IsSuperUser)
@@ -2010,6 +2017,23 @@ namespace SudokuCollective.Data.Services
 
                                     var adminRecordUpdateResult = await _appAdminsRepository
                                         .Update(adminRecord);
+
+                                    var cacheKeys = new List<string> {
+                                        string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                                        string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
+                                        string.Format(CacheKeys.GetAppUsersCacheKey, app.Id),
+                                        string.Format(CacheKeys.GetNonAppUsersCacheKey, app.Id),
+                                        string.Format(CacheKeys.GetAppCacheKey, user.Apps[0].AppId),
+                                        CacheKeys.GetUsersCacheKey
+                                    };
+
+                                    foreach (var key in cacheKeys)
+                                    {
+                                        if (await _distributedCache.GetAsync(key) != null)
+                                        {
+                                            await _distributedCache.RemoveAsync(string.Format(key));
+                                        }
+                                    }
 
                                     result.Success = adminRecordUpdateResult.Success;
                                     result.Message = UsersMessages.UserHasBeenPromotedToAdminMessage;
@@ -2149,6 +2173,13 @@ namespace SudokuCollective.Data.Services
                     if (userResponse.Success)
                     {
                         var app = (App)appResponse.Object;
+                        app.License = (await CacheFactory.GetLicenseWithCacheAsync(
+                            _appsRepository,
+                            _distributedCache,
+                            string.Format(CacheKeys.GetAppLicenseCacheKey, appId),
+                            CachingStrategy.Medium,
+                            appId)).Item1;
+
                         var user = (User)userResponse.Object;
 
                         if (!user.IsAdmin)
@@ -2177,6 +2208,23 @@ namespace SudokuCollective.Data.Services
 
                         if (appAdminResult.Success)
                         {
+                            var cacheKeys = new List<string> {
+                                    string.Format(CacheKeys.GetAppCacheKey, app.Id),
+                                    string.Format(CacheKeys.GetAppByLicenseCacheKey, app.License),
+                                    string.Format(CacheKeys.GetAppUsersCacheKey, app.Id),
+                                    string.Format(CacheKeys.GetNonAppUsersCacheKey, app.Id),
+                                    string.Format(CacheKeys.GetAppCacheKey, user.Apps[0].AppId),
+                                    CacheKeys.GetUsersCacheKey
+                                };
+
+                            foreach (var key in cacheKeys)
+                            {
+                                if (await _distributedCache.GetAsync(key) != null)
+                                {
+                                    await _distributedCache.RemoveAsync(string.Format(key));
+                                }
+                            }
+
                             result.User = (User)
                                 (await _usersRepository.Get(user.Id))
                                 .Object;

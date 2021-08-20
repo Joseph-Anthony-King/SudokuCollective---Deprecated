@@ -605,7 +605,7 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await appProvider.putActivateAdminPrivileges(
+              const response = await appProvider.activateAdminPrivileges(
                 this.getAppId,
                 this.$data.user.id
               );
@@ -681,7 +681,7 @@ export default {
                 showToast(
                   this,
                   ToastMethods["info"],
-                  response.message,
+                  "Your Account is Deleted",
                   defaultToastOptions()
                 );
               } else {

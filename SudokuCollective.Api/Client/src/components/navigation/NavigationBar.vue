@@ -81,10 +81,10 @@ export default {
   data: () => ({
     navMenuItems: [],
     user: {},
-    greeting: ""
+    greeting: "",
   }),
   methods: {
-    updateGreeting: function() {
+    updateGreeting: function () {
       const now = new Date();
 
       if (now.getHours() < 12) {
@@ -110,10 +110,7 @@ export default {
 
     populateNavMenuItems() {
       this.$router.options.routes.forEach((route) => {
-        const routeNames = [
-          "UserProfile",
-          "ConfirmEmail",
-          "ResetPassword"];
+        const routeNames = ["UserProfile", "ConfirmEmail", "ResetPassword"];
 
         if (!_.includes(routeNames, route.name)) {
           let icon;

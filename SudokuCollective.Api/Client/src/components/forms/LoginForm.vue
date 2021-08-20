@@ -52,8 +52,8 @@
               </v-btn>
             </template>
             <span
-              >Having trouble logging in? If your email has been confirmed you can
-              reset your password or confirm your user name</span
+              >Having trouble logging in? If your email has been confirmed you
+              can reset your password or confirm your user name</span
             >
           </v-tooltip>
         </v-col>
@@ -88,7 +88,7 @@
               </v-btn>
             </template>
             <span>Reset the login form</span>
-          </v-tooltip>          
+          </v-tooltip>
         </v-col>
         <v-col v-if="!authExpired">
           <v-tooltip bottom>
@@ -104,7 +104,7 @@
               </v-btn>
             </template>
             <span>Close the login form</span>
-          </v-tooltip>          
+          </v-tooltip>
         </v-col>
         <v-col v-if="authExpired">
           <v-tooltip bottom>
@@ -178,27 +178,27 @@
               </v-btn>
             </template>
             <span
-              >Send a link to your email to reset your password if your email has
-              been confirmed</span
+              >Send a link to your email to reset your password if your email
+              has been confirmed</span
             >
           </v-tooltip>
         </v-col>
         <v-col>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="confirmUserName"
-              :disabled="!userNameFormIsValid"
-              v-bind="attrs"
-              v-on="on"
-            >
-              Confirm User Name
-            </v-btn>
-          </template>
-          <span>Obtain your user name if your email has been confirmed</span>
-        </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="confirmUserName"
+                :disabled="!userNameFormIsValid"
+                v-bind="attrs"
+                v-on="on"
+              >
+                Confirm User Name
+              </v-btn>
+            </template>
+            <span>Obtain your user name if your email has been confirmed</span>
+          </v-tooltip>
         </v-col>
         <v-col>
           <v-tooltip bottom>
@@ -214,7 +214,7 @@
               </v-btn>
             </template>
             <span>Go back to the login form</span>
-          </v-tooltip>          
+          </v-tooltip>
         </v-col>
         <v-col v-if="!authExpired">
           <v-tooltip bottom>
@@ -230,7 +230,7 @@
               </v-btn>
             </template>
             <span>Close the login form</span>
-          </v-tooltip>          
+          </v-tooltip>
         </v-col>
       </v-card-actions>
     </v-form>

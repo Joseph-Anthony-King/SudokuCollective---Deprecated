@@ -97,7 +97,7 @@
               </v-btn>
             </template>
             <span>Close the edit profile form</span>
-          </v-tooltip>          
+          </v-tooltip>
         </v-col>
         <v-col>
           <v-tooltip bottom>

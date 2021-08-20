@@ -86,10 +86,10 @@ export default {
   props: {
     user: {},
   },
-  methods: {    
+  methods: {
     reviewDateUpdated(dateUpdated) {
-      return displayDateUpdated(dateUpdated)
-    }
+      return displayDateUpdated(dateUpdated);
+    },
   },
   computed: {
     userId() {

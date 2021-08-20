@@ -160,8 +160,8 @@ export default {
     },
 
     reviewDateUpdated(dateUpdated) {
-      return displayDateUpdated(dateUpdated)
-    }
+      return displayDateUpdated(dateUpdated);
+    },
   },
   computed: {
     appId() {

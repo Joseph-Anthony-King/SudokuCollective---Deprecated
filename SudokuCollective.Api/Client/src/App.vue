@@ -227,7 +227,7 @@ export default {
             if (this.$data.authTokenExpired) {
               this.$data.authTokenExpired = false;
             }
-            
+
             this.$data.userLoggingIn = false;
 
             this.updateUser(this.$data.user);
