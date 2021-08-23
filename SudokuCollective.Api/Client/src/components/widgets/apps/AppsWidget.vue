@@ -136,7 +136,7 @@ export default {
 
         response.apps.forEach((a) => {
           const app = new App(a);
-          app["owner"] = users.find(user => user.id === app.ownerId);
+          app["owner"] = users.find((user) => user.id === app.ownerId);
           apps.push(app);
         });
 

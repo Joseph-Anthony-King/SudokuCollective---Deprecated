@@ -269,6 +269,8 @@ export default {
     ...mapActions("settingsModule", ["updateUserName"]),
 
     async submit() {
+      this.$emit("processing-user-login", null, null);
+
       if (this.getLoginFormStatus) {
         try {
           const response = await authenticationService.authenticateUser(
@@ -286,31 +288,43 @@ export default {
               this.$data.user,
               response.data.token
             );
-          } else if (response.status === 400) {
+          } else if (response.status === 404) {
             if (
-              response.data === "Status Code 400: No User Has This User Name"
+              response.data.message ===
+              "Status Code 404: No User Has This User Name"
             ) {
               this.$data.invalidUserNames.push(this.$data.username);
               this.$refs.loginForm.validate();
               this.$data.needHelp = true;
+
+              this.$emit("user-login-process-complete", null, null);
+
               showToast(
                 this,
                 ToastMethods["error"],
-                response.data.substring(17),
+                response.data.message.substring(17),
                 defaultToastOptions()
               );
-            } else if (response.data === "Status Code 400: Password Invalid") {
+            } else if (
+              response.data.message === "Status Code 404: Password Invalid"
+            ) {
               this.$data.invalidPasswords.push(this.$data.password);
               this.$refs.loginForm.validate();
               this.$data.needHelp = true;
+
+              this.$emit("user-login-process-complete", null, null);
+
               showToast(
                 this,
                 ToastMethods["error"],
-                response.data.substring(17),
+                response.data.message.substring(17),
                 defaultToastOptions()
               );
             } else {
               this.$data.needHelp = true;
+
+              this.$emit("user-login-process-complete", null, null);
+
               showToast(
                 this,
                 ToastMethods["error"],
@@ -320,6 +334,9 @@ export default {
             }
           } else {
             this.$data.needHelp = true;
+
+            this.$emit("user-login-process-complete", null, null);
+
             showToast(
               this,
               ToastMethods["error"],
@@ -329,6 +346,9 @@ export default {
           }
         } catch (error) {
           this.$data.needHelp = true;
+
+          this.$emit("user-login-process-complete", null, null);
+
           showToast(this, ToastMethods["error"], error, defaultToastOptions());
         }
       }
@@ -392,8 +412,12 @@ export default {
       this.$data.invalidUserNames = [];
       this.$data.invalidPasswords = [];
       this.$data.invalidEmails = [];
-      this.$refs.loginForm.reset();
-      this.$refs.userNameForm.reset();
+      if (this.$refs.loginForm !== undefined) {
+        this.$refs.loginForm.reset();
+      }
+      if (this.$refs.userNameForm !== undefined) {
+        this.$refs.userNameForm.reset();
+      }
       document.activeElement.blur();
     },
 

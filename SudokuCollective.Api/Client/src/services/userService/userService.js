@@ -27,7 +27,7 @@ const getUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -42,7 +42,7 @@ const getUsers = async function (data) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -68,7 +68,7 @@ const updateUser = async function (data) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -85,7 +85,7 @@ const deleteUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -102,7 +102,7 @@ const putActivateUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -119,7 +119,7 @@ const putDeactivateUser = async function (id) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -138,7 +138,7 @@ const getConfirmEmail = async function (token) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -156,7 +156,7 @@ const putResetPassword = async function (data) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -176,7 +176,7 @@ const postRequestPasswordReset = async function (email) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -191,7 +191,7 @@ const putResendPasswordReset = async function () {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -206,7 +206,7 @@ const putCancelPasswordReset = async function () {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -221,7 +221,7 @@ const putCancelEmailConfirmation = async function () {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -236,7 +236,7 @@ const putCancelAllEmailRequests = async function () {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 

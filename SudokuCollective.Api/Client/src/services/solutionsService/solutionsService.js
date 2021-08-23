@@ -14,7 +14,7 @@ const postSolve = async function (solveModel) {
 
     return response;
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 

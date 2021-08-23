@@ -72,7 +72,7 @@ const userModule = {
       return state.selectedUser;
     },
     getUserById: (state) => (id) => {
-      return state.users.find(user => user.id === id);
+      return state.users.find((user) => user.id === id);
     },
     getUsers: (state) => {
       return state.users;

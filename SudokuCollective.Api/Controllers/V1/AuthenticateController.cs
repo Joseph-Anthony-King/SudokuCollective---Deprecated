@@ -64,23 +64,30 @@ namespace SudokuCollective.Api.V1.Controllers
                 }
                 else
                 {
-                    var result = await userManagementService
+                    var confirmAuthenticationIssueResponse = await userManagementService
                         .ConfirmAuthenticationIssue(
                             request.UserName,
                             request.Password,
                             request.License);
 
-                    if (result == UserAuthenticationErrorType.USERNAMEINVALID)
+                    var result = new BaseResult
                     {
-                        return BadRequest(ControllerMessages.StatusCode400("No User Has This User Name"));
+                        Success = false
+                    };
+
+                    if (confirmAuthenticationIssueResponse == UserAuthenticationErrorType.USERNAMEINVALID)
+                    {
+                        result.Message = ControllerMessages.StatusCode404("No User Has This User Name");
+                        return NotFound(result);
                     }
-                    else if (result == UserAuthenticationErrorType.PASSWORDINVALID)
+                    else if (confirmAuthenticationIssueResponse == UserAuthenticationErrorType.PASSWORDINVALID)
                     {
-                        return BadRequest(ControllerMessages.StatusCode400("Password Invalid"));
+                        result.Message = ControllerMessages.StatusCode404("Password Invalid");
+                        return NotFound(result);
                     }
                     else
                     {
-                        return BadRequest(ControllerMessages.StatusCode400("Bad Request"));
+                        return NotFound(ControllerMessages.StatusCode404("Bad Request"));
                     }
                 }
             }

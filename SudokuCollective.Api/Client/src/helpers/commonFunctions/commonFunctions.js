@@ -34,16 +34,16 @@ export async function passwordReset(userEmail, component) {
 }
 
 export function processError(error) {
-  console.log(error);
   let status = 0;
   let message = "";
 
   if (error.message === "Request failed with status code 401") {
-    status = 401;
+    status = error.status;
     store.dispatch("settingsModule/expireAuthToken");
     message = "Authorization has expired";
   } else {
-    message = error.message;
+    status = error.status;
+    message = error.data.message;
   }
 
   const result = {

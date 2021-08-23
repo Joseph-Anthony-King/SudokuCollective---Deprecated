@@ -19,11 +19,9 @@ const authenticateUser = async function (username, password) {
   };
 
   try {
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -42,11 +40,9 @@ const confirmUserName = async function (email, license) {
   };
 
   try {
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 

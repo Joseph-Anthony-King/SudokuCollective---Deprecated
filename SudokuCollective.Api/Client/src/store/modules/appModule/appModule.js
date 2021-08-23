@@ -168,7 +168,7 @@ const appModule = {
       return state.usersSelectedApp;
     },
     getUsersAppById: (state) => (id) => {
-      return state.usersApps.find(app => app.id === id);
+      return state.usersApps.find((app) => app.id === id);
     },
     getUsersApps: (state) => {
       return state.usersApps;
@@ -180,13 +180,13 @@ const appModule = {
       return state.selectedApp;
     },
     getAppById: (state) => (id) => {
-      return state.apps.find(app => app.id === id);
+      return state.apps.find((app) => app.id === id);
     },
     getApps: (state) => {
       return state.apps;
     },
     getAppOwner: (state) => (id) => {
-      const app = state.apps.find(app => app.id === id);
+      const app = state.apps.find((app) => app.id === id);
       return app.owner;
     },
   },

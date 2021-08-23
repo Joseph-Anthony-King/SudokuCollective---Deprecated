@@ -729,8 +729,6 @@ export default {
     async reset() {
       const response = await userProvider.getUser(this.$data.user.id);
 
-      console.log("user profile reset response:", response);
-
       if (response.success) {
         this.$data.user = new User(response.user);
         this.$data.user.login();

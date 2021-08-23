@@ -1,5 +1,14 @@
 <template>
   <v-app :style="cssProps">
+    <v-overlay :value="processing">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="100"
+        :width="10"
+        class="progress-circular"
+      ></v-progress-circular>
+    </v-overlay>
     <NavigationBar
       :userLoggedIn="user.isLoggedIn"
       :profileNavigation="profileNavigation"
@@ -27,9 +36,12 @@
 
         <v-dialog v-model="displayLoginForm" persistent max-width="600px">
           <LoginForm
+            v-show="!processing"
             :loginFormStatus="userLoggingIn"
             :authExpired="authTokenExpired"
             v-on:user-logging-in-event="login"
+            v-on:processing-user-login="processingUserLogin"
+            v-on:user-login-process-complete="userLoginProcessComplete"
             v-on:user-logging-out="logout"
             v-on:redirect-to-sign-up="redirectToSignUp"
           />
@@ -113,6 +125,7 @@ export default {
       icon: "mdi-puzzle",
     },
     navDrawerStatus: null,
+    processing: false,
   }),
   methods: {
     ...mapActions("appModule", [
@@ -158,7 +171,7 @@ export default {
 
           appsResponse.apps.forEach((a) => {
             const app = new App(a);
-            app["owner"] = users.find(user => user.id === app.ownerId);
+            app["owner"] = users.find((user) => user.id === app.ownerId);
             apps.push(app);
           });
 
@@ -176,7 +189,7 @@ export default {
 
           superUsersAppsResponse.apps.forEach((a) => {
             const app = new App(a);
-            app["owner"] = users.find(user => user.id === app.ownerId);
+            app["owner"] = users.find((user) => user.id === app.ownerId);
             superUsersApps.push(app);
           });
 
@@ -206,6 +219,7 @@ export default {
       }
 
       this.$data.userLoggingIn = false;
+      this.$data.processing = false;
     },
 
     logout() {
@@ -314,6 +328,14 @@ export default {
 
     solve() {
       console.log("solve invoked...");
+    },
+
+    processingUserLogin() {
+      this.$data.processing = true;
+    },
+
+    userLoginProcessComplete() {
+      this.$data.processing = false;
     },
   },
   computed: {

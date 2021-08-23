@@ -14,7 +14,7 @@ const getCreateGame = async function (difficultyLevel) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -29,7 +29,7 @@ const getCheckGame = async function (game) {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 

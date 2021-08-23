@@ -20,7 +20,7 @@ const postSignUp = async function (signUpModel) {
 
     return response;
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
@@ -37,7 +37,7 @@ const putResendEmailConfirmation = async function () {
 
     return response;
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 

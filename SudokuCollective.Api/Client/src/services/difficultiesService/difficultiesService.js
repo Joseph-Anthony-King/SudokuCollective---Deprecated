@@ -13,7 +13,7 @@ const getDifficulties = async function () {
 
     return await axios(config);
   } catch (error) {
-    return processError(error);
+    return processError(error.response);
   }
 };
 
