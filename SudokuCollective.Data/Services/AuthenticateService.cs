@@ -52,153 +52,160 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IAuthenticatedUserResult> IsAuthenticated(ITokenRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
-            var result = new AuthenticatedUserResult();
-
-            var validateUserTask = _userManagementService.IsValidUser(request.UserName, request.Password);
-
-            validateUserTask.Wait();
-
-            if (!validateUserTask.Result)
+            try
             {
-                result.Success = false;
-                result.Message = UsersMessages.UserNotFoundMessage;
+                if (request == null) throw new ArgumentNullException(nameof(request));
 
-                return result;
-            }
+                var result = new AuthenticatedUserResult();
 
-            var userResponse = await CacheFactory.GetByUserNameWithCacheAsync(
-                _usersRepository,
-                _distributedCache,
-                string.Format(CacheKeys.GetUserByUsernameCacheKey, request.UserName, request.License),
-                CachingStrategy.Medium,
-                request.UserName,
-                request.License);
+                var validateUserTask = _userManagementService.IsValidUser(request.UserName, request.Password);
 
-            var user = (User)((RepositoryResponse)userResponse.Item1).Object;
+                validateUserTask.Wait();
 
-            var appResponse = await CacheFactory.GetAppByLicenseWithCacheAsync(
-                _appsRepository,
-                _distributedCache,
-                string.Format(CacheKeys.GetAppByLicenseCacheKey, request.License),
-                CachingStrategy.Medium,
-                request.License);
-
-            var app = (App)((RepositoryResponse)appResponse.Item1).Object;
-            //var app = (App)(await _appsRepository.GetByLicense(request.License)).Object;
-
-            if (!app.IsActive)
-            {
-                result.Success = false;
-                result.Message = AppsMessages.AppDeactivatedMessage;
-
-                return result;
-            }
-
-            if (!app.PermitCollectiveLogins && !app.Users.Any(ua => ua.UserId == user.Id))
-            {
-                result.Success = false;
-                result.Message = AppsMessages.UserIsNotARegisteredUserOfThisAppMessage;
-
-                return result;
-            }
-
-            var appAdmins = (await _appAdminsRepository.GetAll()).Objects.ConvertAll(aa => (AppAdmin)aa);
-
-            if (!user.IsSuperUser)
-            {
-                if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                if (!validateUserTask.Result)
                 {
-                    if (!appAdmins.Any(aa => aa.AppId == app.Id && aa.UserId == user.Id && aa.IsActive))
-                    {
-                        var adminRole = user
-                            .Roles
-                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+                    result.Success = false;
+                    result.Message = UsersMessages.UserNotFoundMessage;
 
-                        user.Roles.Remove(adminRole);
-                    }
+                    return result;
                 }
-            }
-            else
-            {
-                if (!app.PermitSuperUserAccess)
+
+                var userResponse = await CacheFactory.GetByUserNameWithCacheAsync(
+                    _usersRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetUserByUsernameCacheKey, request.UserName, request.License),
+                    CachingStrategy.Medium,
+                    request.UserName,
+                    request.License);
+
+                var user = (User)((RepositoryResponse)userResponse.Item1).Object;
+
+                var appResponse = await CacheFactory.GetAppByLicenseWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetAppByLicenseCacheKey, request.License),
+                    CachingStrategy.Medium,
+                    request.License);
+
+                var app = (App)((RepositoryResponse)appResponse.Item1).Object;
+                //var app = (App)(await _appsRepository.GetByLicense(request.License)).Object;
+
+                if (!app.IsActive)
                 {
-                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
-                    {
-                        var superUserRole = user
-                            .Roles
-                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
+                    result.Success = false;
+                    result.Message = AppsMessages.AppDeactivatedMessage;
 
-                        user.Roles.Remove(superUserRole);
-                    }
+                    return result;
+                }
 
+                if (!app.PermitCollectiveLogins && !app.Users.Any(ua => ua.UserId == user.Id))
+                {
+                    result.Success = false;
+                    result.Message = AppsMessages.UserIsNotARegisteredUserOfThisAppMessage;
+
+                    return result;
+                }
+
+                var appAdmins = (await _appAdminsRepository.GetAll()).Objects.ConvertAll(aa => (AppAdmin)aa);
+
+                if (!user.IsSuperUser)
+                {
                     if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
                     {
-                        var adminRole = user
-                            .Roles
-                            .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+                        if (!appAdmins.Any(aa => aa.AppId == app.Id && aa.UserId == user.Id && aa.IsActive))
+                        {
+                            var adminRole = user
+                                .Roles
+                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
 
-                        user.Roles.Remove(adminRole);
+                            user.Roles.Remove(adminRole);
+                        }
                     }
                 }
-            }
+                else
+                {
+                    if (!app.PermitSuperUserAccess)
+                    {
+                        if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER))
+                        {
+                            var superUserRole = user
+                                .Roles
+                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.SUPERUSER);
 
-            result.User.UpdateWithUserInfo(user);
+                            user.Roles.Remove(superUserRole);
+                        }
 
-            var claim = new List<Claim> {
+                        if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                        {
+                            var adminRole = user
+                                .Roles
+                                .FirstOrDefault(ur => ur.Role.RoleLevel == RoleLevel.ADMIN);
+
+                            user.Roles.Remove(adminRole);
+                        }
+                    }
+                }
+
+                result.User.UpdateWithUserInfo(user);
+
+                var claim = new List<Claim> {
 
                 new Claim(ClaimTypes.Name, request.UserName)
             };
 
-            foreach (var role in user.Roles)
-            {
-                var r = (Role)(await _rolesRepository.Get(role.Role.Id)).Object;
+                foreach (var role in user.Roles)
+                {
+                    var r = (Role)(await _rolesRepository.Get(role.Role.Id)).Object;
 
-                claim.Add(new Claim(ClaimTypes.Role, r.RoleLevel.ToString()));
+                    claim.Add(new Claim(ClaimTypes.Role, r.RoleLevel.ToString()));
+                }
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenManagement.Secret));
+
+                var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                DateTime expirationLimit;
+
+                if (app.TimeFrame == TimeFrame.SECONDS)
+                {
+                    expirationLimit = DateTime.UtcNow.AddSeconds(app.AccessDuration);
+                }
+                else if (app.TimeFrame == TimeFrame.MINUTES)
+                {
+                    expirationLimit = DateTime.UtcNow.AddMinutes(app.AccessDuration);
+                }
+                else if (app.TimeFrame == TimeFrame.HOURS)
+                {
+                    expirationLimit = DateTime.UtcNow.AddHours(app.AccessDuration);
+                }
+                else if (app.TimeFrame == TimeFrame.DAYS)
+                {
+                    expirationLimit = DateTime.UtcNow.AddDays(app.AccessDuration);
+                }
+                else
+                {
+                    expirationLimit = DateTime.UtcNow.AddMonths(app.AccessDuration);
+                }
+
+                var jwtToken = new JwtSecurityToken(
+                        _tokenManagement.Issuer,
+                        _tokenManagement.Audience,
+                        claim.ToArray(),
+                        notBefore: DateTime.UtcNow,
+                        expires: expirationLimit,
+                        signingCredentials: credentials
+                    );
+
+                result.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                result.Success = true;
+                result.Message = UsersMessages.UserFoundMessage;
+
+                return result;
             }
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenManagement.Secret));
-
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            DateTime expirationLimit;
-
-            if (app.TimeFrame == TimeFrame.SECONDS)
+            catch
             {
-                expirationLimit = DateTime.UtcNow.AddSeconds(app.AccessDuration);
+                throw;
             }
-            else if (app.TimeFrame == TimeFrame.MINUTES)
-            {
-                expirationLimit = DateTime.UtcNow.AddMinutes(app.AccessDuration);
-            }
-            else if (app.TimeFrame == TimeFrame.HOURS)
-            {
-                expirationLimit = DateTime.UtcNow.AddHours(app.AccessDuration);
-            }
-            else if (app.TimeFrame == TimeFrame.DAYS)
-            {
-                expirationLimit = DateTime.UtcNow.AddDays(app.AccessDuration);
-            }
-            else
-            {
-                expirationLimit = DateTime.UtcNow.AddMonths(app.AccessDuration);
-            }
-
-            var jwtToken = new JwtSecurityToken(
-                    _tokenManagement.Issuer,
-                    _tokenManagement.Audience,
-                    claim.ToArray(),
-                    notBefore: DateTime.UtcNow,
-                    expires: expirationLimit,
-                    signingCredentials: credentials
-                );
-
-            result.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-            result.Success = true;
-            result.Message = UsersMessages.UserFoundMessage;
-
-            return result;
         }
     }
 }

@@ -1005,59 +1005,66 @@ namespace SudokuCollective.Data.Services
         {
             if (intList == null) throw new ArgumentNullException(nameof(intList));
 
-            var result = new BaseResult();
-
-            if (intList.Count != 81 || intList.Contains(0))
+            try
             {
-                result.Success = false;
-                result.Message = GamesMessages.GameNotSolvedMessage;
+                var result = new BaseResult();
 
-                return result;
-            }
-
-            var game = new Game(
-                new Difficulty
+                if (intList.Count != 81 || intList.Contains(0))
                 {
-                    DifficultyLevel = DifficultyLevel.TEST
-                },
-                intList);
+                    result.Success = false;
+                    result.Message = GamesMessages.GameNotSolvedMessage;
 
-            result.Success = game.IsSolved();
+                    return result;
+                }
 
-            if (result.Success)
-            {
-                // Add solution to the database
-                var response = await _solutionsRepository.GetAll();
-
-                if (response.Success)
-                {
-                    var solutionInDB = false;
-
-                    foreach (var solution in response
-                        .Objects
-                        .ConvertAll(s => (SudokuSolution)s)
-                        .Where(s => s.DateSolved > DateTime.MinValue))
+                var game = new Game(
+                    new Difficulty
                     {
-                        if (solution.SolutionList.IsThisListEqual(game.SudokuSolution.SolutionList))
+                        DifficultyLevel = DifficultyLevel.TEST
+                    },
+                    intList);
+
+                result.Success = game.IsSolved();
+
+                if (result.Success)
+                {
+                    // Add solution to the database
+                    var response = await _solutionsRepository.GetAll();
+
+                    if (response.Success)
+                    {
+                        var solutionInDB = false;
+
+                        foreach (var solution in response
+                            .Objects
+                            .ConvertAll(s => (SudokuSolution)s)
+                            .Where(s => s.DateSolved > DateTime.MinValue))
                         {
-                            solutionInDB = true;
+                            if (solution.SolutionList.IsThisListEqual(game.SudokuSolution.SolutionList))
+                            {
+                                solutionInDB = true;
+                            }
+                        }
+
+                        if (!solutionInDB)
+                        {
+                            _ = _solutionsRepository.Add(game.SudokuSolution);
                         }
                     }
 
-                    if (!solutionInDB)
-                    {
-                        _ = _solutionsRepository.Add(game.SudokuSolution);
-                    }
+                    result.Message = GamesMessages.GameSolvedMessage;
+                }
+                else
+                {
+                    result.Message = GamesMessages.GameNotSolvedMessage;
                 }
 
-                result.Message = GamesMessages.GameSolvedMessage;
+                return result;
             }
-            else
+            catch
             {
-                result.Message = GamesMessages.GameNotSolvedMessage;
+                throw;
             }
-
-            return result;
         }
         #endregion
     }

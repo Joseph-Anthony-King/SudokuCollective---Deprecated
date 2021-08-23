@@ -2952,87 +2952,101 @@ namespace SudokuCollective.Data.Services
 
         private async Task<EmailConfirmation> EnsureEmailConfirmationTokenIsUnique(EmailConfirmation emailConfirmation)
         {
-            var emailConfirmationResponse = await _emailConfirmationsRepository.GetAll();
-
-            if (emailConfirmationResponse.Success)
+            try
             {
-                bool tokenNotUnique;
+                var emailConfirmationResponse = await _emailConfirmationsRepository.GetAll();
 
-                var emailConfirmations = emailConfirmationResponse
-                    .Objects
-                    .ConvertAll(ec => (EmailConfirmation)ec);
-
-                do
+                if (emailConfirmationResponse.Success)
                 {
-                    if (emailConfirmations
-                        .Any(ec => ec.Token.ToLower()
-                        .Equals(emailConfirmation.Token.ToLower()) && ec.Id != emailConfirmation.Id))
-                    {
-                        tokenNotUnique = true;
+                    bool tokenNotUnique;
 
-                        emailConfirmation.Token = Guid.NewGuid().ToString();
-                    }
-                    else
-                    {
-                        tokenNotUnique = false;
-                    }
+                    var emailConfirmations = emailConfirmationResponse
+                        .Objects
+                        .ConvertAll(ec => (EmailConfirmation)ec);
 
-                } while (tokenNotUnique);
+                    do
+                    {
+                        if (emailConfirmations
+                            .Any(ec => ec.Token.ToLower()
+                            .Equals(emailConfirmation.Token.ToLower()) && ec.Id != emailConfirmation.Id))
+                        {
+                            tokenNotUnique = true;
+
+                            emailConfirmation.Token = Guid.NewGuid().ToString();
+                        }
+                        else
+                        {
+                            tokenNotUnique = false;
+                        }
+
+                    } while (tokenNotUnique);
+                }
+
+                return emailConfirmation;
             }
-
-            return emailConfirmation;
+            catch
+            {
+                throw;
+            }
         }
 
         private async Task<PasswordReset> EnsurePasswordResetTokenIsUnique(PasswordReset passwordReset)
         {
-            var passwordResetResponse = await _passwordResetsRepository.GetAll();
-
-            if (passwordResetResponse.Success)
+            try
             {
-                bool tokenUnique;
+                var passwordResetResponse = await _passwordResetsRepository.GetAll();
 
-                var passwordResets = passwordResetResponse
-                    .Objects
-                    .ConvertAll(pu => (PasswordReset)pu);
-
-                do
+                if (passwordResetResponse.Success)
                 {
-                    if (passwordResets
-                        .Where(pw => pw.Id != passwordReset.Id)
-                        .ToList()
-                        .Count > 0)
+                    bool tokenUnique;
+
+                    var passwordResets = passwordResetResponse
+                        .Objects
+                        .ConvertAll(pu => (PasswordReset)pu);
+
+                    do
                     {
                         if (passwordResets
                             .Where(pw => pw.Id != passwordReset.Id)
-                            .Any(pw => pw.Token.ToLower().Equals(passwordReset.Token.ToLower())))
+                            .ToList()
+                            .Count > 0)
                         {
-                            tokenUnique = false;
+                            if (passwordResets
+                                .Where(pw => pw.Id != passwordReset.Id)
+                                .Any(pw => pw.Token.ToLower().Equals(passwordReset.Token.ToLower())))
+                            {
+                                tokenUnique = false;
 
-                            passwordReset.Token = Guid.NewGuid().ToString();
+                                passwordReset.Token = Guid.NewGuid().ToString();
+                            }
+                            else
+                            {
+                                tokenUnique = true;
+                            }
                         }
                         else
                         {
+                            passwordReset.Token = Guid.NewGuid().ToString();
+
                             tokenUnique = true;
                         }
-                    }
-                    else
+
+                    } while (!tokenUnique);
+                }
+                else
+                {
+                    if (passwordReset.Id != 0)
                     {
                         passwordReset.Token = Guid.NewGuid().ToString();
-
-                        tokenUnique = true;
                     }
-
-                } while (!tokenUnique);
-            }
-            else
-            {
-                if (passwordReset.Id != 0)
-                {
-                    passwordReset.Token = Guid.NewGuid().ToString();
                 }
-            }
 
-            return passwordReset;
+                return passwordReset;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         private BaseResult SendPasswordResetEmail(
@@ -3044,73 +3058,80 @@ namespace SudokuCollective.Data.Services
             BaseResult result,
             bool newRequest)
         {
-            string EmailConfirmationAction;
-
-            if (app.UseCustomPasswordResetAction)
+            try
             {
+                string EmailConfirmationAction;
+
+                if (app.UseCustomPasswordResetAction)
+                {
+                    if (app.InDevelopment)
+                    {
+                        EmailConfirmationAction = string.Format("{0}/{1}/{2}",
+                            app.DevUrl,
+                            app.CustomPasswordResetAction,
+                            passwordReset.Token);
+                    }
+                    else
+                    {
+                        EmailConfirmationAction = string.Format("{0}/{1}/{2}",
+                            app.LiveUrl,
+                            app.CustomPasswordResetAction,
+                            passwordReset.Token);
+                    }
+                }
+                else
+                {
+                    EmailConfirmationAction = string.Format("https://{0}/passwordReset/{1}",
+                        baseUrl,
+                        passwordReset.Token);
+                }
+
+                var html = File.ReadAllText(emailTemplatePath);
+                var appTitle = app.Name;
+                string url;
+
                 if (app.InDevelopment)
                 {
-                    EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                        app.DevUrl,
-                        app.CustomPasswordResetAction,
-                        passwordReset.Token);
+                    url = app.DevUrl;
                 }
                 else
                 {
-                    EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                        app.LiveUrl,
-                        app.CustomPasswordResetAction,
-                        passwordReset.Token);
+                    url = app.LiveUrl;
                 }
-            }
-            else
-            {
-                EmailConfirmationAction = string.Format("https://{0}/passwordReset/{1}",
-                    baseUrl,
-                    passwordReset.Token);
-            }
 
-            var html = File.ReadAllText(emailTemplatePath);
-            var appTitle = app.Name;
-            string url;
+                html = html.Replace("{{USER_NAME}}", user.UserName);
+                html = html.Replace("{{CONFIRM_EMAIL_URL}}", EmailConfirmationAction);
+                html = html.Replace("{{APP_TITLE}}", appTitle);
+                html = html.Replace("{{URL}}", url);
 
-            if (app.InDevelopment)
-            {
-                url = app.DevUrl;
-            }
-            else
-            {
-                url = app.LiveUrl;
-            }
+                var emailSubject = string.Format("Greetings from {0}: Password Update Request Received", appTitle);
 
-            html = html.Replace("{{USER_NAME}}", user.UserName);
-            html = html.Replace("{{CONFIRM_EMAIL_URL}}", EmailConfirmationAction);
-            html = html.Replace("{{APP_TITLE}}", appTitle);
-            html = html.Replace("{{URL}}", url);
+                result.Success = _emailService
+                    .Send(user.Email, emailSubject, html);
 
-            var emailSubject = string.Format("Greetings from {0}: Password Update Request Received", appTitle);
-
-            result.Success = _emailService
-                .Send(user.Email, emailSubject, html);
-
-            if (result.Success)
-            {
-                if (newRequest)
+                if (result.Success)
                 {
-                    result.Message = UsersMessages.ProcessedPasswordResetRequestMessage;
+                    if (newRequest)
+                    {
+                        result.Message = UsersMessages.ProcessedPasswordResetRequestMessage;
+                    }
+                    else
+                    {
+                        result.Message = UsersMessages.ResentPasswordResetRequestMessage;
+                    }
+
+                    return result;
                 }
                 else
                 {
-                    result.Message = UsersMessages.ResentPasswordResetRequestMessage;
+                    result.Message = UsersMessages.UnableToProcessPasswordResetRequesMessage;
+
+                    return result;
                 }
-
-                return result;
             }
-            else
+            catch
             {
-                result.Message = UsersMessages.UnableToProcessPasswordResetRequesMessage;
-
-                return result;
+                throw;
             }
         }
         #endregion

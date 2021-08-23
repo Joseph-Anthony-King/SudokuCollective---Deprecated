@@ -371,27 +371,45 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var resultOne = sutInvalid.Get(appId, baseRequest);
-            var messageOne = ((BadRequestObjectResult)resultOne.Result.Result).Value;
+            var messageOne = ((BaseResult)
+                ((BadRequestObjectResult)resultOne.Result.Result)
+                    .Value)
+                    .Message;
             var statusCodeOne = ((BadRequestObjectResult)resultOne.Result.Result).StatusCode;
 
             var resultTwo = sutInvalid.GetApps(baseRequest);
-            var messageTwo = ((BadRequestObjectResult)resultTwo.Result.Result).Value;
+            var messageTwo = ((BaseResult)
+                ((BadRequestObjectResult)resultOne.Result.Result)
+                    .Value)
+                    .Message;
             var statusCodeTwo = ((BadRequestObjectResult)resultTwo.Result.Result).StatusCode;
 
             var resultThree = sutInvalid.Update(1, appRequest);
-            var messageThree = ((BadRequestObjectResult)resultThree.Result).Value;
+            var messageThree = ((BaseResult)
+                ((BadRequestObjectResult)resultOne.Result.Result)
+                    .Value)
+                    .Message;
             var statusCodeThree = ((BadRequestObjectResult)resultThree.Result).StatusCode;
 
             var resultFour = sutInvalid.GetAppUsers(1, baseRequest);
-            var messageFour = ((BadRequestObjectResult)resultFour.Result.Result).Value;
+            var messageFour = ((BaseResult)
+                ((BadRequestObjectResult)resultOne.Result.Result)
+                    .Value)
+                    .Message;
             var statusCodeFour = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
             var resultFive = sutInvalid.AddUser(1, 3, baseRequest);
-            var messageFive = ((BadRequestObjectResult)resultFive.Result).Value;
+            var messageFive = ((BaseResult)
+                ((BadRequestObjectResult)resultOne.Result.Result)
+                    .Value)
+                    .Message;
             var statusCodeFive = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
             var resultSix = sutInvalid.RemoveUser(1, 3, baseRequest);
-            var messageSix = ((BadRequestObjectResult)resultSix.Result).Value;
+            var messageSix = ((BaseResult)
+                ((BadRequestObjectResult)resultOne.Result.Result)
+                    .Value)
+                    .Message;
             var statusCodeSix = ((BadRequestObjectResult)resultFour.Result.Result).StatusCode;
 
             // Assert
@@ -440,7 +458,10 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.Delete(2, baseRequest);
-            var errorMessage = ((BadRequestObjectResult)result.Result).Value;
+            var errorMessage = ((BaseResult)
+                ((BadRequestObjectResult)result.Result)
+                    .Value)
+                    .Message;
             var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
 
             // Assert
@@ -474,7 +495,10 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutFailure.Reset(2, baseRequest);
-            var message = ((BadRequestObjectResult)result.Result).Value;
+            var message = ((BaseResult)
+                ((BadRequestObjectResult)result.Result)
+                .Value)
+                .Message;
             var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
 
             // Assert

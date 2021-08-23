@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.RequestModels;
 using SudokuCollective.Data.Models.RequestModels.GameRequests;
 using SudokuCollective.Core.Enums;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Api.V1.Controllers
 {
@@ -34,29 +36,48 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<Game>> Post(
             [FromBody] CreateGameRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await gamesService.Create(request);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode201(result.Message);
+                    var result = await gamesService.Create(request);
 
-                    return StatusCode((int)HttpStatusCode.Created, result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode201(result.Message);
+
+                        return StatusCode((int)HttpStatusCode.Created, result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -67,35 +88,54 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] UpdateGameRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                if (id != request.GameId)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    return BadRequest(ControllerMessages.IdIncorrectMessage);
-                }
+                    if (id != request.GameId)
+                    {
+                        return BadRequest(ControllerMessages.IdIncorrectMessage);
+                    }
 
-                var result =
-                    await gamesService.Update(id, request);
+                    var result =
+                        await gamesService.Update(id, request);
 
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                    return Ok(result);
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -106,29 +146,48 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await gamesService.Delete(id);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await gamesService.Delete(id);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -138,30 +197,49 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<Game>> GetGame(int id,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await gamesService.GetGame(
-                    id, request.AppId);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await gamesService.GetGame(
+                        id, request.AppId);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -171,29 +249,48 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(
             [FromBody] GamesRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await gamesService.GetGames(request);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await gamesService.GetGames(request);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -204,31 +301,50 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] GamesRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await gamesService.GetMyGame(
-                    id,
-                    request);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await gamesService.GetMyGame(
+                        id,
+                        request);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -238,30 +354,49 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<IEnumerable<Game>>> GetMyGames(
             [FromBody] GamesRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await gamesService
-                    .GetMyGames(request);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await gamesService
+                        .GetMyGames(request);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -272,31 +407,50 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] GamesRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await gamesService.DeleteMyGame(
-                    id,
-                    request);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await gamesService.DeleteMyGame(
+                        id,
+                        request);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -307,12 +461,66 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] UpdateGameRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await gamesService.Check(id, request);
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
+                {
+                    var result = await gamesService.Check(id, request);
+
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
+                }
+                else
+                {
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
+
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception e)
+            {
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
+            }
+        }
+
+        // GET:  api/v1/games/createAnnonymous
+        [AllowAnonymous]
+        [HttpGet("CreateAnnonymous")]
+        public async Task<ActionResult> CreateAnnonymous([FromQuery] AnnonymousGameRequest request)
+        {
+            try
+            {
+                if (request.DifficultyLevel == DifficultyLevel.NULL)
+                {
+                    return BadRequest(
+                        ControllerMessages.StatusCode400(
+                            GamesMessages.DifficultyLevelIsRequiredMessage));
+                }
+
+                var result = await gamesService.CreateAnnonymous(request.DifficultyLevel);
 
                 if (result.Success)
                 {
@@ -327,37 +535,15 @@ namespace SudokuCollective.Api.V1.Controllers
                     return NotFound(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-        // GET:  api/v1/games/createAnnonymous
-        [AllowAnonymous]
-        [HttpGet("CreateAnnonymous")]
-        public async Task<ActionResult> CreateAnnonymous([FromQuery] AnnonymousGameRequest request)
-        {
-            if (request.DifficultyLevel == DifficultyLevel.NULL)
-            {
-                return BadRequest(
-                    ControllerMessages.StatusCode400(
-                        GamesMessages.DifficultyLevelIsRequiredMessage));
-            }
-
-            var result = await gamesService.CreateAnnonymous(request.DifficultyLevel);
-
-            if (result.Success)
-            {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                return Ok(result);
-            }
-            else
-            {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -366,31 +552,44 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost("CheckAnnonymous")]
         public async Task<ActionResult> CheckAnnonymous([FromBody] AnnonymousCheckRequest request)
         {
-            var intList = new List<int>();
-
-            intList.AddRange(request.FirstRow);
-            intList.AddRange(request.SecondRow);
-            intList.AddRange(request.ThirdRow);
-            intList.AddRange(request.FourthRow);
-            intList.AddRange(request.FifthRow);
-            intList.AddRange(request.SixthRow);
-            intList.AddRange(request.SeventhRow);
-            intList.AddRange(request.EighthRow);
-            intList.AddRange(request.NinthRow);
-
-            var result = await gamesService.CheckAnnonymous(intList);
-
-            if (result.Success)
+            try
             {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
+                var intList = new List<int>();
 
-                return Ok(result);
+                intList.AddRange(request.FirstRow);
+                intList.AddRange(request.SecondRow);
+                intList.AddRange(request.ThirdRow);
+                intList.AddRange(request.FourthRow);
+                intList.AddRange(request.FifthRow);
+                intList.AddRange(request.SixthRow);
+                intList.AddRange(request.SeventhRow);
+                intList.AddRange(request.EighthRow);
+                intList.AddRange(request.NinthRow);
+
+                var result = await gamesService.CheckAnnonymous(intList);
+
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
             }
-            else
+            catch (Exception e)
             {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
     }

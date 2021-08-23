@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +9,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Api.V1.Controllers
 {
@@ -29,29 +32,48 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.Get(id);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService.Get(id);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -62,29 +84,48 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] AppRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.Update(id, request);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService.Update(id, request);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -95,29 +136,48 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsOwnerOfThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.DeleteOrReset(id);
-
-                if (result.Success)
+                if (await appsService.IsOwnerOfThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService.DeleteOrReset(id);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.NotOwnerMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.NotOwnerMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -127,20 +187,33 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<App>> GetByLicense(
             [FromBody] BaseRequest request)
         {
-            var result = await appsService
-                .GetAppByLicense(request.License, request.RequestorId);
-
-            if (result.Success)
+            try
             {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
+                var result = await appsService
+                    .GetAppByLicense(request.License, request.RequestorId);
 
-                return Ok(result);
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
             }
-            else
+            catch (Exception e)
             {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -150,30 +223,49 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<IEnumerable<App>>> GetApps(
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService
-                    .GetApps(request.Paginator, request.RequestorId);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService
+                        .GetApps(request.Paginator, request.RequestorId);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -183,32 +275,51 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<IEnumerable<App>>> GetMyApps(
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService
-                    .GetMyApps(
-                    request.RequestorId,
-                    request.Paginator);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService
+                        .GetMyApps(
+                        request.RequestorId,
+                        request.Paginator);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -219,31 +330,50 @@ namespace SudokuCollective.Api.V1.Controllers
             int userId,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.GetRegisteredApps(
-                    userId,
-                    request.Paginator);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService.GetRegisteredApps(
+                        userId,
+                        request.Paginator);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -254,34 +384,53 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService
-                    .GetAppUsers(
-                        id,
-                        request.RequestorId,
-                        request.Paginator,
-                        true);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService
+                        .GetAppUsers(
+                            id,
+                            request.RequestorId,
+                            request.Paginator,
+                            true);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -292,34 +441,53 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService
-                    .GetAppUsers(
-                        id,
-                        request.RequestorId,
-                        request.Paginator,
-                        false);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService
+                        .GetAppUsers(
+                            id,
+                            request.RequestorId,
+                            request.Paginator,
+                            false);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -331,29 +499,48 @@ namespace SudokuCollective.Api.V1.Controllers
             int userId,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.AddAppUser(id, userId);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService.AddAppUser(id, userId);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -365,12 +552,59 @@ namespace SudokuCollective.Api.V1.Controllers
             int userId, 
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.RemoveAppUser(id, userId);
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
+                {
+                    var result = await appsService.RemoveAppUser(id, userId);
+
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
+                }
+                else
+                {
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
+
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception e)
+            {
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
+            }
+        }
+
+        // PUT: api/apps/5/activate
+        [Authorize(Roles = "SUPERUSER, ADMIN")]
+        [HttpPut, Route("{id}/Activate")]
+        public async Task<IActionResult> Activate(int id)
+        {
+            try
+            {
+                var result = await appsService.Activate(id);
 
                 if (result.Success)
                 {
@@ -385,30 +619,15 @@ namespace SudokuCollective.Api.V1.Controllers
                     return NotFound(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-        // PUT: api/apps/5/activate
-        [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPut, Route("{id}/Activate")]
-        public async Task<IActionResult> Activate(int id)
-        {
-            var result = await appsService.Activate(id);
-
-            if (result.Success)
-            {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                return Ok(result);
-            }
-            else
-            {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -417,19 +636,32 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPut, Route("{id}/Deactivate")]
         public async Task<IActionResult> Deactivate(int id)
         {
-            var result = await appsService.Deactivate(id);
-
-            if (result.Success)
+            try
             {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
+                var result = await appsService.Deactivate(id);
 
-                return Ok(result);
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
             }
-            else
+            catch (Exception e)
             {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -440,29 +672,48 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsOwnerOfThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.DeleteOrReset(id, true);
-
-                if (result.Success)
+                if (await appsService.IsOwnerOfThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService.DeleteOrReset(id, true);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.NotOwnerMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.NotOwnerMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -474,29 +725,48 @@ namespace SudokuCollective.Api.V1.Controllers
             int userId, 
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.ActivateAdminPrivileges(id, userId);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService.ActivateAdminPrivileges(id, userId);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -508,29 +778,48 @@ namespace SudokuCollective.Api.V1.Controllers
             int userId,
             [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await appsService.DeactivateAdminPrivileges(id, userId);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    var result = await appsService.DeactivateAdminPrivileges(id, userId);
 
-                    return Ok(result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 

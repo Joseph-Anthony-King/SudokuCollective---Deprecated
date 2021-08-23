@@ -7,6 +7,8 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.RequestModels;
+using System;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Api.V1.Controllers
 {
@@ -32,30 +34,49 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<Role>> Post(
             [FromBody] CreateRoleRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await rolesService
-                    .Create(request.Name, request.RoleLevel);
-
-                if (result.Success)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    result.Message = ControllerMessages.StatusCode201(result.Message);
+                    var result = await rolesService
+                        .Create(request.Name, request.RoleLevel);
 
-                    return StatusCode((int)HttpStatusCode.Created, result);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode201(result.Message);
+
+                        return StatusCode((int)HttpStatusCode.Created, result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -66,34 +87,53 @@ namespace SudokuCollective.Api.V1.Controllers
             int id,
             [FromBody] UpdateRoleRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                if (id != request.Id)
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
                 {
-                    return BadRequest(ControllerMessages.IdIncorrectMessage);
-                }
+                    if (id != request.Id)
+                    {
+                        return BadRequest(ControllerMessages.IdIncorrectMessage);
+                    }
 
-                var result = await rolesService.Update(id, request);
+                    var result = await rolesService.Update(id, request);
 
-                if (result.Success)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                    return Ok(result);
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
 
-                    return NotFound(result);
+                    return BadRequest(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -103,12 +143,60 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult> Delete(
             int id, [FromBody] BaseRequest request)
         {
-            if (await appsService.IsRequestValidOnThisLicense(
-                request.AppId,
-                request.License,
-                request.RequestorId))
+            try
             {
-                var result = await rolesService.Delete(id);
+                if (await appsService.IsRequestValidOnThisLicense(
+                    request.AppId,
+                    request.License,
+                    request.RequestorId))
+                {
+                    var result = await rolesService.Delete(id);
+
+                    if (result.Success)
+                    {
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                        return NotFound(result);
+                    }
+                }
+                else
+                {
+                    var result = new BaseResult
+                    {
+                        Success = false,
+                        Message = ControllerMessages.InvalidLicenseRequestMessage
+                    };
+
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception e)
+            {
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
+            }
+        }
+
+        // GET: api/roles/5
+        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Role>> Get(
+            int id)
+        {
+            try
+            {
+                var result = await rolesService.Get(id);
 
                 if (result.Success)
                 {
@@ -123,31 +211,15 @@ namespace SudokuCollective.Api.V1.Controllers
                     return NotFound(result);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(ControllerMessages.InvalidLicenseRequestMessage);
-            }
-        }
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-        // GET: api/roles/5
-        [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Role>> Get(
-            int id)
-        {
-            var result = await rolesService.Get(id);
-
-            if (result.Success)
-            {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                return Ok(result);
-            }
-            else
-            {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -156,19 +228,32 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
-            var result = await rolesService.GetRoles();
-
-            if (result.Success)
+            try
             {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
+                var result = await rolesService.GetRoles();
 
-                return Ok(result);
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
             }
-            else
+            catch (Exception e)
             {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
     }

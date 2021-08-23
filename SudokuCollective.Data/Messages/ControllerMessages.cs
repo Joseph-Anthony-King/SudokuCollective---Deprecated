@@ -33,5 +33,12 @@
 
             return result;
         }
+
+        public static string StatusCode500(string serviceMessage)
+        {
+            string result = string.Format("Status Code 500: {0}", serviceMessage);
+
+            return result;
+        }
     }
 }

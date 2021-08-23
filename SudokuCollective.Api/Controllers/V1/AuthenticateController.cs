@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SudokuCollective.Core.Interfaces.Services;
@@ -30,53 +32,67 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost]
         public async Task<ActionResult> RequestToken([FromBody] TokenRequest request)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
 
-            var authenticateResult = await authService.IsAuthenticated(request);
-
-            if (authenticateResult.Success)
-            {
-                var result = new AuthenticatedUserResult()
+                if (!ModelState.IsValid)
                 {
-                    Success = true,
-                    Message = ControllerMessages.StatusCode200(authenticateResult.Message),
-                    User = authenticateResult.User,
-                    Token = authenticateResult.Token
-                };
-
-                return Ok(result);
-            }
-            else if (authenticateResult.Message.Equals(AppsMessages.AppDeactivatedMessage))
-            {
-                return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
-            }
-            else if (authenticateResult.Message.Equals(AppsMessages.UserIsNotARegisteredUserOfThisAppMessage))
-            {
-                return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
-            }
-            else
-            {
-                var result = await userManagementService
-                    .ConfirmAuthenticationIssue(
-                        request.UserName, 
-                        request.Password,
-                        request.License);
-
-                if (result == UserAuthenticationErrorType.USERNAMEINVALID)
-                {
-                    return BadRequest(ControllerMessages.StatusCode400("No User Has This User Name"));
+                    return BadRequest(ModelState);
                 }
-                else if (result == UserAuthenticationErrorType.PASSWORDINVALID)
+
+                var authenticateResult = await authService.IsAuthenticated(request);
+
+                if (authenticateResult.Success)
                 {
-                    return BadRequest(ControllerMessages.StatusCode400("Password Invalid"));
+                    var result = new AuthenticatedUserResult()
+                    {
+                        Success = true,
+                        Message = ControllerMessages.StatusCode200(authenticateResult.Message),
+                        User = authenticateResult.User,
+                        Token = authenticateResult.Token
+                    };
+
+                    return Ok(result);
+                }
+                else if (authenticateResult.Message.Equals(AppsMessages.AppDeactivatedMessage))
+                {
+                    return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
+                }
+                else if (authenticateResult.Message.Equals(AppsMessages.UserIsNotARegisteredUserOfThisAppMessage))
+                {
+                    return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
                 }
                 else
                 {
-                    return BadRequest(ControllerMessages.StatusCode400("Bad Request"));
+                    var result = await userManagementService
+                        .ConfirmAuthenticationIssue(
+                            request.UserName,
+                            request.Password,
+                            request.License);
+
+                    if (result == UserAuthenticationErrorType.USERNAMEINVALID)
+                    {
+                        return BadRequest(ControllerMessages.StatusCode400("No User Has This User Name"));
+                    }
+                    else if (result == UserAuthenticationErrorType.PASSWORDINVALID)
+                    {
+                        return BadRequest(ControllerMessages.StatusCode400("Password Invalid"));
+                    }
+                    else
+                    {
+                        return BadRequest(ControllerMessages.StatusCode400("Bad Request"));
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -84,20 +100,33 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpPost("ConfirmUserName")]
         public async Task<ActionResult> ConfirmUserName([FromBody] ConfirmUserNameRequest request)
         {
-            var result = await userManagementService.ConfirmUserName(
-                request.Email,
-                request.License);
-
-            if (result.Success)
+            try
             {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
+                var result = await userManagementService.ConfirmUserName(
+                    request.Email,
+                    request.License);
 
-                return Ok(result);
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+                    return NotFound(result);
+                }
             }
-            else
+            catch (Exception e)
             {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
-                return NotFound(result);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +7,7 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.RequestModels;
+using SudokuCollective.Data.Models.ResultModels;
 
 namespace SudokuCollective.Api.V1.Controllers
 {
@@ -27,19 +29,32 @@ namespace SudokuCollective.Api.V1.Controllers
         public async Task<ActionResult<App>> Post(
             [FromBody] LicenseRequest request)
         {
-            var result = await appsService.Create(request);
-
-            if (result.Success)
+            try
             {
-                result.Message = ControllerMessages.StatusCode201(result.Message);
+                var result = await appsService.Create(request);
 
-                return StatusCode((int)HttpStatusCode.Created, result);
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode201(result.Message);
+
+                    return StatusCode((int)HttpStatusCode.Created, result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
             }
-            else
+            catch (Exception e)
             {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 
@@ -48,19 +63,32 @@ namespace SudokuCollective.Api.V1.Controllers
         [HttpGet, Route("{id}")]
         public async Task<ActionResult> Get(int id)
         {
-            var result = await appsService.GetLicense(id);
-
-            if (result.Success)
+            try
             {
-                result.Message = ControllerMessages.StatusCode200(result.Message);
+                var result = await appsService.GetLicense(id);
 
-                return Ok(result);
+                if (result.Success)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
             }
-            else
+            catch (Exception e)
             {
-                result.Message = ControllerMessages.StatusCode404(result.Message);
+                var result = new BaseResult
+                {
+                    Success = false,
+                    Message = ControllerMessages.StatusCode500(e.Message)
+                };
 
-                return NotFound(result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
     }

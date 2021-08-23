@@ -376,67 +376,74 @@ namespace SudokuCollective.Data.Services
 
         public async Task<ISolutionResult> Generate()
         {
-            var result = new SolutionResult();
-
-            var continueLoop = true;
-
-            do
+            try
             {
-                var matrix = new SudokuMatrix();
+                var result = new SolutionResult();
 
-                matrix.GenerateSolution();
+                var continueLoop = true;
 
-                var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
-                    _solutionsRepository,
-                    _distributedCache,
-                    CacheKeys.GetSolutionsCacheKey,
-                    DateTime.Now.AddHours(1),
-                    result);
-
-                var response = cacheFactoryResponse.Item1;
-                result = (SolutionResult)cacheFactoryResponse.Item2;
-
-                var matrixNotInDB = true;
-
-                if (response.Success)
+                do
                 {
-                    foreach (var solution in response
-                        .Objects
-                        .ConvertAll(s => (SudokuSolution)s)
-                        .Where(s => s.DateSolved > DateTime.MinValue))
+                    var matrix = new SudokuMatrix();
+
+                    matrix.GenerateSolution();
+
+                    var cacheFactoryResponse = await CacheFactory.GetAllWithCacheAsync<SudokuSolution>(
+                        _solutionsRepository,
+                        _distributedCache,
+                        CacheKeys.GetSolutionsCacheKey,
+                        DateTime.Now.AddHours(1),
+                        result);
+
+                    var response = cacheFactoryResponse.Item1;
+                    result = (SolutionResult)cacheFactoryResponse.Item2;
+
+                    var matrixNotInDB = true;
+
+                    if (response.Success)
                     {
-                        if (solution.SolutionList.Count > 0 && solution.ToString().Equals(matrix))
+                        foreach (var solution in response
+                            .Objects
+                            .ConvertAll(s => (SudokuSolution)s)
+                            .Where(s => s.DateSolved > DateTime.MinValue))
                         {
-                            matrixNotInDB = false;
+                            if (solution.SolutionList.Count > 0 && solution.ToString().Equals(matrix))
+                            {
+                                matrixNotInDB = false;
+                            }
                         }
                     }
-                }
 
-                if (matrixNotInDB)
+                    if (matrixNotInDB)
+                    {
+                        result.Solution = new SudokuSolution(
+                            matrix.ToIntList());
+
+                        continueLoop = false;
+                    }
+
+                } while (continueLoop);
+
+                var solutionResponse = await _solutionsRepository.Add((SudokuSolution)result.Solution);
+
+                if (solutionResponse.Success)
                 {
-                    result.Solution = new SudokuSolution(
-                        matrix.ToIntList());
+                    result.Success = solutionResponse.Success;
+                    result.Message = SolutionsMessages.SolutionGeneratedMessage;
 
-                    continueLoop = false;
+                    return result;
                 }
+                else
+                {
+                    result.Success = solutionResponse.Success;
+                    result.Message = SolutionsMessages.SolutionNotGeneratedMessage;
 
-            } while (continueLoop);
-
-            var solutionResponse = await _solutionsRepository.Add((SudokuSolution)result.Solution);
-
-            if (solutionResponse.Success)
-            {
-                result.Success = solutionResponse.Success;
-                result.Message = SolutionsMessages.SolutionGeneratedMessage;
-
-                return result;
+                    return result;
+                }
             }
-            else
+            catch
             {
-                result.Success = solutionResponse.Success;
-                result.Message = SolutionsMessages.SolutionNotGeneratedMessage;
-
-                return result;
+                throw;
             }
         }
 

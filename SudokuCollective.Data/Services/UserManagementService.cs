@@ -38,23 +38,30 @@ namespace SudokuCollective.Data.Services
 
             if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
 
-            var userResponse = await _usersRepository.GetByUserName(username);
-
-            if (userResponse.Success)
+            try
             {
-                if ((IUser)userResponse.Object != null
-                    && BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
+                var userResponse = await _usersRepository.GetByUserName(username);
+
+                if (userResponse.Success)
                 {
-                    return true;
+                    if ((IUser)userResponse.Object != null
+                        && BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
                     return false;
                 }
             }
-            else
+            catch
             {
-                return false;
+                throw;
             }
         }
 
@@ -64,34 +71,41 @@ namespace SudokuCollective.Data.Services
 
             if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
 
-            var cachFactoryResponse = await CacheFactory.GetByUserNameWithCacheAsync(
-                _usersRepository,
-                _distributedCache,
-                string.Format(CacheKeys.GetUserByUsernameCacheKey, username, license),
-                CachingStrategy.Medium,
-                username,
-                license);
-
-            var userResponse = (RepositoryResponse)cachFactoryResponse.Item1;
-
-            if (userResponse.Success)
+            try
             {
-                if (!BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
+                var cachFactoryResponse = await CacheFactory.GetByUserNameWithCacheAsync(
+                    _usersRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetUserByUsernameCacheKey, username, license),
+                    CachingStrategy.Medium,
+                    username,
+                    license);
+
+                var userResponse = (RepositoryResponse)cachFactoryResponse.Item1;
+
+                if (userResponse.Success)
                 {
-                    return UserAuthenticationErrorType.PASSWORDINVALID;
+                    if (!BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
+                    {
+                        return UserAuthenticationErrorType.PASSWORDINVALID;
+                    }
+                    else
+                    {
+                        return UserAuthenticationErrorType.NULL;
+                    }
+                }
+                else if (!userResponse.Success && userResponse.Object == null)
+                {
+                    return UserAuthenticationErrorType.USERNAMEINVALID;
                 }
                 else
                 {
                     return UserAuthenticationErrorType.NULL;
                 }
             }
-            else if (!userResponse.Success && userResponse.Object == null)
+            catch
             {
-                return UserAuthenticationErrorType.USERNAMEINVALID;
-            }
-            else
-            {
-                return UserAuthenticationErrorType.NULL;
+                throw;
             }
         }
 
@@ -99,33 +113,40 @@ namespace SudokuCollective.Data.Services
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
 
-            var result = new AuthenticationResult();
-
-            var cachFactoryResponse = await CacheFactory.GetByEmailWithCacheAsync(
-                _usersRepository,
-                _distributedCache,
-                string.Format(CacheKeys.GetUserByUsernameCacheKey, email, license),
-                CachingStrategy.Medium,
-                email,
-                result);
-
-            var userResponse = (RepositoryResponse)cachFactoryResponse.Item1;
-            result = (AuthenticationResult)cachFactoryResponse.Item2;
-
-            if (userResponse.Success)
+            try
             {
-                result.Success = true;
-                result.Message = UsersMessages.UserNameConfirmedMessage;
-                result.UserName = ((User)userResponse.Object).UserName;
+                var result = new AuthenticationResult();
 
-                return result;
+                var cachFactoryResponse = await CacheFactory.GetByEmailWithCacheAsync(
+                    _usersRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetUserByUsernameCacheKey, email, license),
+                    CachingStrategy.Medium,
+                    email,
+                    result);
+
+                var userResponse = (RepositoryResponse)cachFactoryResponse.Item1;
+                result = (AuthenticationResult)cachFactoryResponse.Item2;
+
+                if (userResponse.Success)
+                {
+                    result.Success = true;
+                    result.Message = UsersMessages.UserNameConfirmedMessage;
+                    result.UserName = ((User)userResponse.Object).UserName;
+
+                    return result;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
+
+                    return result;
+                }
             }
-            else
+            catch
             {
-                result.Success = false;
-                result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
-
-                return result;
+                throw;
             }
         }
         #endregion

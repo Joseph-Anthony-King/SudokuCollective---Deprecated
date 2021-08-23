@@ -2296,48 +2296,59 @@ namespace SudokuCollective.Data.Services
                 return false;
             }
 
-            var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
-                _usersRepository,
-                _distributedCache,
-                string.Format(CacheKeys.GetUserCacheKey, userId, license),
-                CachingStrategy.Medium,
-                userId);
-
-            var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
-
-            cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
-                _appsRepository,
-                _distributedCache,
-                string.Format(CacheKeys.GetAppCacheKey, id),
-                CachingStrategy.Medium,
-                id);
-
-            var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
-
-            var validLicense = await CacheFactory.IsAppLicenseValidWithCacheAsync(
-                _appsRepository,
-                _distributedCache,
-                string.Format(CacheKeys.IsAppLicenseValidCacheKey, license),
-                CachingStrategy.Heavy,
-                license);
-
-            if (userResponse.Success && appResponse.Success && validLicense)
+            try
             {
-                bool userPermittedAccess;
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
+                    _usersRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetUserCacheKey, userId, license),
+                    CachingStrategy.Medium,
+                    userId);
 
-                if (!((App)appResponse.Object).PermitCollectiveLogins)
-                {
-                    userPermittedAccess = await _appsRepository
-                        .IsUserRegisteredToApp(id, license, userId);
-                }
-                else
-                {
-                    userPermittedAccess = true;
-                }
+                var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
 
-                if (userPermittedAccess && validLicense)
+                cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetAppCacheKey, id),
+                    CachingStrategy.Medium,
+                    id);
+
+                var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
+
+                var validLicense = await CacheFactory.IsAppLicenseValidWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.IsAppLicenseValidCacheKey, license),
+                    CachingStrategy.Heavy,
+                    license);
+
+                if (userResponse.Success && appResponse.Success && validLicense)
                 {
-                    if (((App)appResponse.Object).IsActive)
+                    bool userPermittedAccess;
+
+                    if (!((App)appResponse.Object).PermitCollectiveLogins)
+                    {
+                        userPermittedAccess = await _appsRepository
+                            .IsUserRegisteredToApp(id, license, userId);
+                    }
+                    else
+                    {
+                        userPermittedAccess = true;
+                    }
+
+                    if (userPermittedAccess && validLicense)
+                    {
+                        if (((App)appResponse.Object).IsActive)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else if (((User)userResponse.Object).IsSuperUser && validLicense)
                     {
                         return true;
                     }
@@ -2346,18 +2357,14 @@ namespace SudokuCollective.Data.Services
                         return false;
                     }
                 }
-                else if (((User)userResponse.Object).IsSuperUser && validLicense)
-                {
-                    return true;
-                }
                 else
                 {
                     return false;
                 }
             }
-            else
+            catch
             {
-                return false;
+                throw;
             }
         }
 
@@ -2370,42 +2377,49 @@ namespace SudokuCollective.Data.Services
                 return false;
             }
 
-            var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
-                _usersRepository,
-                _distributedCache,
-                string.Format(CacheKeys.GetUserCacheKey, userId, license),
-                CachingStrategy.Medium,
-                userId);
-
-            var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
-
-            var validLicense = await CacheFactory.IsAppLicenseValidWithCacheAsync(
-                _appsRepository,
-                _distributedCache,
-                string.Format(CacheKeys.IsAppLicenseValidCacheKey, license),
-                CachingStrategy.Heavy,
-                license);
-
-            if (userResponse.Success && validLicense)
+            try
             {
-                var requestorOwnerOfThisApp = await _appsRepository.IsUserOwnerOfApp(id, license, userId);
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
+                    _usersRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetUserCacheKey, userId, license),
+                    CachingStrategy.Medium,
+                    userId);
 
-                if (requestorOwnerOfThisApp && validLicense)
+                var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
+
+                var validLicense = await CacheFactory.IsAppLicenseValidWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.IsAppLicenseValidCacheKey, license),
+                    CachingStrategy.Heavy,
+                    license);
+
+                if (userResponse.Success && validLicense)
                 {
-                    return true;
-                }
-                else if (((User)userResponse.Object).IsSuperUser && validLicense)
-                {
-                    return true;
+                    var requestorOwnerOfThisApp = await _appsRepository.IsUserOwnerOfApp(id, license, userId);
+
+                    if (requestorOwnerOfThisApp && validLicense)
+                    {
+                        return true;
+                    }
+                    else if (((User)userResponse.Object).IsSuperUser && validLicense)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
                     return false;
                 }
             }
-            else
+            catch
             {
-                return false;
+                throw;
             }
         }
         #endregion
