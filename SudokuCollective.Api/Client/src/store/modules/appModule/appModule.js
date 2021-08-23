@@ -1,4 +1,3 @@
-import _ from "lodash";
 import {
   UPDATE_USERS_SELECTED_APP,
   UPDATE_USERS_APPS,
@@ -35,7 +34,7 @@ const appModule = {
     },
     [UPDATE_USERS_APPS](state, apps) {
       apps.forEach((app) => {
-        const index = _.findIndex(state.usersApps, { id: app.id });
+        const index = state.usersApps.indexOf(app.id);
         if (index !== -1) {
           state.usersApps.splice(index, 1, app);
         } else {
@@ -45,7 +44,7 @@ const appModule = {
     },
     [UPDATE_REGISTERED_APPS](state, registeredApps) {
       registeredApps.forEach((app) => {
-        const index = _.findIndex(state.registeredApps, { id: app.id });
+        const index = state.registeredApps.indexOf(app.id);
         if (index !== -1) {
           state.registeredApps.splice(index, 1, app);
         } else {
@@ -57,7 +56,7 @@ const appModule = {
       state.registeredApps = registeredApps;
     },
     [REMOVE_USERS_APP](state, app) {
-      const index = _.findIndex(state.usersApps, { id: app.id });
+      const index = state.usersApps.indexOf(app.id);
       if (index !== -1) {
         state.usersApps.splice(index, 1);
       }
@@ -69,7 +68,7 @@ const appModule = {
       state.registeredApps = [];
     },
     [REPLACE_USERS_APP](state, app) {
-      const index = _.findIndex(state.usersApps, { id: app.id });
+      const index = state.usersApps.indexOf(app.id);
       if (index !== -1) {
         state.usersApps.splice(index, 1, app);
       } else {
@@ -81,7 +80,7 @@ const appModule = {
     },
     [UPDATE_APPS](state, apps) {
       apps.forEach((app) => {
-        const index = _.findIndex(state.apps, { id: app.id });
+        const index = state.apps.indexOf(app.id);
         if (index !== -1) {
           state.apps.splice(index, 1, app);
         } else {
@@ -90,7 +89,7 @@ const appModule = {
       });
     },
     [REMOVE_APP](state, app) {
-      const index = _.findIndex(state.apps, { id: app.id });
+      const index = state.apps.indexOf(app.id);
       if (index !== -1) {
         state.apps.splice(index, 1);
       }
@@ -99,7 +98,7 @@ const appModule = {
       state.apps = [];
     },
     [REPLACE_APP](state, app) {
-      const index = _.findIndex(state.apps, { id: app.id });
+      const index = state.apps.indexOf(app.id);
       if (index !== -1) {
         state.apps.splice(index, 1, app);
       } else {
@@ -109,7 +108,7 @@ const appModule = {
     [UPDATE_APP_OWNER](state, owner) {
       state.apps.forEach((app) => {
         if (app.ownerId === owner.id) {
-          const index = _.findIndex(state.apps, { id: app.id });
+          const index = state.apps.indexOf(app.id);
           if (index !== -1) {
             app.owner = owner;
             state.apps.splice(index, 1, app);
@@ -169,7 +168,7 @@ const appModule = {
       return state.usersSelectedApp;
     },
     getUsersAppById: (state) => (id) => {
-      return state.usersApps.find((app) => app.id === id);
+      return state.usersApps.find(app => app.id === id);
     },
     getUsersApps: (state) => {
       return state.usersApps;
@@ -181,13 +180,13 @@ const appModule = {
       return state.selectedApp;
     },
     getAppById: (state) => (id) => {
-      return state.apps.find((app) => app.id === id);
+      return state.apps.find(app => app.id === id);
     },
     getApps: (state) => {
       return state.apps;
     },
     getAppOwner: (state) => (id) => {
-      const app = state.apps.find((app) => app.id === id);
+      const app = state.apps.find(app => app.id === id);
       return app.owner;
     },
   },

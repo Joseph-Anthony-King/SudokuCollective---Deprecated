@@ -131,7 +131,6 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appProvider } from "@/providers/appProvider";
@@ -204,8 +203,6 @@ export default {
                   this.$data.app.id,
                   user.id
                 );
-
-                console.log(response);
 
                 if (response.status === 200) {
                   successes++;
@@ -433,16 +430,16 @@ export default {
     ...mapGetters("appModule", ["getUsersSelectedApp"]),
 
     filterNonAdmins() {
-      const filteredArray = _.filter(this.$data.selectedUsers, function (user) {
-        return user.admin === "No" && user.id !== 1;
-      });
+      const filteredArray = this.$data.selectedUsers.filter(
+        (user) => user.admin === "No" && user.id !== 1
+      );
       return filteredArray.length > 0;
     },
 
     filterAdmins() {
-      const filteredArray = _.filter(this.$data.selectedUsers, function (user) {
-        return user.admin === "Yes" && user.id !== 1;
-      });
+      const filteredArray = this.$data.selectedUsers.filter(
+        (user) => user.admin === "Yes" && user.id !== 1
+      );
       return filteredArray.length > 0;
     },
   },

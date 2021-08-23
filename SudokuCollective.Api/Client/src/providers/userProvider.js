@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { processFailure } from "@/helpers/commonFunctions/commonFunctions";
 import { userService } from "@/services/userService/userService";
 import User from "@/models/user";
@@ -22,8 +21,14 @@ const getUsers = async function () {
   var response = await userService.getUsers();
 
   if (response.data.success) {
-    response.data.users = _.sortBy(response.data.users, function (user) {
-      return user.id;
+    response.data.users = response.data.users.sort(function (a, b) {
+      if (a.id < b.id) {
+        return -1;
+      }
+      if (a.id > b.id) {
+        return 1;
+      }
+      return 0;
     });
 
     let users = [];

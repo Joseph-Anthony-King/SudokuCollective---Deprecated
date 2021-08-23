@@ -73,7 +73,6 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { appProvider } from "@/providers/appProvider";
@@ -137,9 +136,7 @@ export default {
 
         response.apps.forEach((a) => {
           const app = new App(a);
-          app["owner"] = _.find(users, function (user) {
-            return user.id === app.ownerId;
-          });
+          app["owner"] = users.find(user => user.id === app.ownerId);
           apps.push(app);
         });
 
@@ -169,13 +166,9 @@ export default {
     title() {
       const apps = this.$data.apps.length == 1 ? "App" : "Apps";
 
-      const prodApps = _.filter(this.$data.apps, function (app) {
-        return !app.inDevelopment;
-      });
+      const prodApps = this.$data.apps.filter((app) => !app.inDevelopment);
 
-      const devApps = _.filter(this.$data.apps, function (app) {
-        return app.inDevelopment;
-      });
+      const devApps = this.$data.apps.filter((app) => app.inDevelopment);
 
       const prodSummary =
         prodApps.length == 1 ? " App in Production " : " Apps in Production ";

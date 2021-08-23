@@ -23,7 +23,6 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import _ from "lodash";
 import { mapGetters } from "vuex";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -64,12 +63,11 @@ export default {
          * selected OR if the user is a super user and is not review one of their own apps.
          * This then gives the general breakdown for all apps */
 
-        notSetUpApps = _.filter(apps, function (app) {
-          return (
+        notSetUpApps = apps.filter(
+          (app) =>
             app.disableCustomUrls ||
             (!app.disableCustomUrls && app.customPasswordResetAction === "")
-          );
-        });
+        );
 
         if (apps.length > 0) {
           ratio = (notSetUpApps.length / apps.length) * 100;
@@ -106,12 +104,11 @@ export default {
       let notSetUpApps = [];
 
       if (apps.length > 0) {
-        notSetUpApps = _.filter(apps, function (app) {
-          return (
+        notSetUpApps = apps.filter(
+          (app) =>
             app.disableCustomUrls ||
             (!app.disableCustomUrls && app.customPasswordResetAction === "")
-          );
-        });
+        );
       }
 
       let app;
@@ -169,12 +166,11 @@ export default {
       let notSetUp = [];
 
       if (apps.length > 0) {
-        notSetUp = _.filter(apps, function (app) {
-          return (
+        notSetUp = apps.filter(
+          (app) =>
             app.disableCustomUrls ||
             (!app.disableCustomUrls && app.customPasswordResetAction === "")
-          );
-        });
+        );
       }
 
       if (notSetUp.length > 0) {

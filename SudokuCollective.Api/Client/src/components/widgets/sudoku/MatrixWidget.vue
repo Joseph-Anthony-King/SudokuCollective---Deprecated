@@ -252,7 +252,6 @@
 
 <script>
 /* eslint-disable no-useless-escape, no-unused-vars */
-import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 
@@ -318,7 +317,7 @@ export default {
     },
 
     applyEvenRegionStyling(index) {
-      var result = _.indexOf(this.$data.evenRegionIndexes, index);
+      var result = this.$data.evenRegionIndexes.indexOf(index);
 
       if (result !== -1) {
         return true;

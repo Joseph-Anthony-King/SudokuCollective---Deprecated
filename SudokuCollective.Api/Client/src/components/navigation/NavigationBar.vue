@@ -70,7 +70,6 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import _ from "lodash";
 import { mapGetters } from "vuex";
 import User from "@/models/user";
 import MenuItem from "@/models/viewModels/menuItem";
@@ -96,7 +95,7 @@ export default {
       this.$router.options.routes.forEach((route) => {
         const routeNames = ["UserProfile", "ConfirmEmail", "ResetPassword"];
 
-        if (!_.includes(routeNames, route.name)) {
+        if (!routeNames.includes(route.name)) {
           let icon;
 
           if (route.name === "Home") {

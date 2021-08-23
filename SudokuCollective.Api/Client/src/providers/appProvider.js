@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { processFailure } from "@/helpers/commonFunctions/commonFunctions";
 import { appService } from "@/services/appService/appService";
 import App from "@/models/app";
@@ -95,8 +94,14 @@ const getMyApps = async function () {
   const response = await appService.getMyApps();
 
   if (response.data.success) {
-    response.data.apps = _.sortBy(response.data.apps, function (app) {
-      return app.id;
+    response.data.apps = response.data.apps.sort(function (a, b) {
+      if (a.id < b.id) {
+        return -1;
+      }
+      if (a.id > b.id) {
+        return 1;
+      }
+      return 0;
     });
 
     let tempArray = [];
@@ -129,8 +134,14 @@ const getApps = async function () {
   const response = await appService.getApps();
 
   if (response.data.success) {
-    response.data.apps = _.sortBy(response.data.apps, function (app) {
-      return app.id;
+    response.data.apps = response.data.apps.sort(function (a, b) {
+      if (a.id < b.id) {
+        return -1;
+      }
+      if (a.id > b.id) {
+        return 1;
+      }
+      return 0;
     });
 
     let tempArray = [];
@@ -163,8 +174,14 @@ const getRegisteredApps = async function (userid) {
   const response = await appService.getRegisteredApps(userid);
 
   if (response.data.success) {
-    response.data.apps = _.sortBy(response.data.apps, function (app) {
-      return app.id;
+    response.data.apps = response.data.apps.sort(function (a, b) {
+      if (a.id < b.id) {
+        return -1;
+      }
+      if (a.id > b.id) {
+        return 1;
+      }
+      return 0;
     });
 
     let apps = [];

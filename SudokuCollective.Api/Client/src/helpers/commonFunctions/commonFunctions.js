@@ -1,4 +1,3 @@
-import _ from "lodash";
 import store from "@/store";
 import { userProvider } from "@/providers/userProvider";
 import { ToastMethods } from "@/models/arrays/toastMethods";
@@ -78,7 +77,7 @@ export function processFailure(response) {
 export function displayDateUpdated(dateUpdated) {
   const invalidDates = ["12/31/1, 4:07:02 PM", "12/31/2001, 4:07:02 PM"];
 
-  if (!_.includes(invalidDates, dateUpdated)) {
+  if (!invalidDates.includes(dateUpdated)) {
     return true;
   } else {
     return false;

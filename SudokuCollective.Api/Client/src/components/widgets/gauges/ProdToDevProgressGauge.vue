@@ -23,7 +23,6 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import _ from "lodash";
 import { mapGetters } from "vuex";
 import App from "@/models/app";
 import User from "@/models/user";
@@ -61,9 +60,7 @@ export default {
         /* The general statistics for all apps, if a super user this is for all apps.
          * if not super user this is just for the users apps */
         let totalApps = apps.length;
-        let totalDevelopment = _.filter(apps, function (app) {
-          return app.inDevelopment;
-        });
+        let totalDevelopment = apps.filter((app) => app.inDevelopment);
         let ratio = 0;
 
         if (apps.length > 0) {
@@ -93,9 +90,7 @@ export default {
         apps = this.getApps;
       }
 
-      let totalDevelopment = _.filter(apps, function (app) {
-        return app.inDevelopment;
-      });
+      let totalDevelopment = apps.filter((app) => app.inDevelopment);
 
       let result;
 

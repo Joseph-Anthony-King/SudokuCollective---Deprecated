@@ -23,11 +23,9 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import _ from "lodash";
 import { mapGetters } from "vuex";
 import App from "@/models/app";
 import User from "@/models/user";
-import AppUsersWidgetVue from "../apps/AppUsersWidget.vue";
 
 export default {
   name: "AdminToUserProgressGauge",
@@ -60,9 +58,7 @@ export default {
             let users = [];
 
             apps.forEach((app) => {
-              const appAdmins = _.filter(app.users, function (user) {
-                return user.isAdmin;
-              });
+              const appAdmins = app.users.filter((user) => user.isAdmin);
               appAdmins.forEach((appAdmin) => {
                 let addToAdmins = true;
                 admins.forEach((admin) => {
@@ -74,9 +70,7 @@ export default {
                   admins.push(appAdmin);
                 }
               });
-              const appUsers = _.filter(app.users, function (user) {
-                return !user.isAdmin;
-              });
+              const appUsers = app.users.filter((user) => !user.isAdmin);
               appUsers.forEach((appUser) => {
                 let addToUsers = true;
                 users.forEach((user) => {
@@ -162,9 +156,7 @@ export default {
             let users = [];
 
             apps.forEach((app) => {
-              const appAdmins = _.filter(app.users, function (user) {
-                return user.isAdmin;
-              });
+              const appAdmins = app.users.filter((user) => user.isAdmin);
               appAdmins.forEach((appAdmin) => {
                 let addToAdmins = true;
                 admins.forEach((admin) => {
@@ -176,9 +168,7 @@ export default {
                   admins.push(appAdmin);
                 }
               });
-              const appUsers = _.filter(app.users, function (user) {
-                return !user.isAdmin;
-              });
+              const appUsers = app.users.filter((user) => !user.isAdmin);
               appUsers.forEach((appUser) => {
                 let addToUsers = true;
                 users.forEach((user) => {

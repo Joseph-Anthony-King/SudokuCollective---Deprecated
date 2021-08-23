@@ -66,7 +66,6 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { apiURLConfirmationService } from "@/services/apiURLConfirmationService/apiURLConfirmationService";
@@ -159,9 +158,7 @@ export default {
 
           appsResponse.apps.forEach((a) => {
             const app = new App(a);
-            app["owner"] = _.find(users, function (user) {
-              return user.id === app.ownerId;
-            });
+            app["owner"] = users.find(user => user.id === app.ownerId);
             apps.push(app);
           });
 
@@ -179,9 +176,7 @@ export default {
 
           superUsersAppsResponse.apps.forEach((a) => {
             const app = new App(a);
-            app["owner"] = _.find(users, function (user) {
-              return user.id === app.ownerId;
-            });
+            app["owner"] = users.find(user => user.id === app.ownerId);
             superUsersApps.push(app);
           });
 

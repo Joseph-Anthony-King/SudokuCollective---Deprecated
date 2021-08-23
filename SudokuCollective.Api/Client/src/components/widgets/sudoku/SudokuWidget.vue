@@ -154,7 +154,6 @@
 
 <script>
 /* eslint-disable no-useless-escape, no-unused-vars */
-import _ from "lodash";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import { gamesProvider } from "@/providers/gamesProvider";
