@@ -34,6 +34,7 @@ export async function passwordReset(userEmail, component) {
 }
 
 export function processError(error) {
+  console.log(error);
   let status = 0;
   let message = "";
 

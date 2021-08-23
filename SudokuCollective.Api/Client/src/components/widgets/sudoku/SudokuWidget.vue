@@ -1,25 +1,6 @@
 <template>
   <v-container fluid>
-    <v-card elevation="6" class="mx-auto ma-0" v-if="processing">
-      <v-card-text>
-        <v-container fluid>
-          <v-card-title class="justify-center"
-            >Sudoku puzzle is being processed, please do not navigate
-            away...</v-card-title
-          >
-          <v-row cols="12">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-              :size="100"
-              :width="10"
-              class="progress-circular"
-            ></v-progress-circular>
-          </v-row>
-        </v-container>
-      </v-card-text>
-    </v-card>
-    <v-card elevation="6" class="mx-auto" v-if="!processing">
+    <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
           <div class="center">
@@ -185,6 +166,7 @@ export default {
     difficulty: null,
   }),
   methods: {
+    ...mapActions("settingsModule", ["updateProcessing"]),
     ...mapActions("sudokuModule", [
       "initializePuzzle",
       "initializeGame",
@@ -200,6 +182,8 @@ export default {
           text: "Yes",
           onClick: async (e, toastObject) => {
             toastObject.goAway(0);
+
+            this.updateProcessing(true);
 
             try {
               const response = await gamesProvider.createGame(
@@ -229,6 +213,8 @@ export default {
                 error,
                 defaultToastOptions()
               );
+            } finally {
+              this.updateProcessing(false);
             }
           },
         },
@@ -250,6 +236,8 @@ export default {
     },
 
     async checkGame() {
+      this.updateProcessing(true);
+
       try {
         const response = await gamesProvider.checkGame(this.getGame);
 
@@ -270,6 +258,8 @@ export default {
         }
       } catch (error) {
         showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      } finally {
+        this.updateProcessing(false);
       }
     },
 
@@ -295,7 +285,7 @@ export default {
 
         showToast(
           this,
-          ToastMethods["show"],
+          ToastMethods["info"],
           `Are you sure you want to submit this game for a solution?`,
           actionToastOptions(action, "mode_edit")
         );
@@ -305,7 +295,7 @@ export default {
     },
 
     async submitPuzzle() {
-      this.$data.processing = true;
+      this.updateProcessing(true);
       var matrix = [];
 
       for (var i = 0; i < 9; i++) {
@@ -390,9 +380,9 @@ export default {
         }
       } catch (error) {
         showToast(this, ToastMethods["error"], error, defaultToastOptions());
+      } finally {
+        this.updateProcessing(false);
       }
-
-      this.$data.processing = false;
     },
 
     clear() {

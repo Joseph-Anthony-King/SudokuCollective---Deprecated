@@ -10,9 +10,7 @@ const postSolve = async function (solveModel) {
       data: solveModel,
     };
 
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
   } catch (error) {
     return processError(error.response);
   }

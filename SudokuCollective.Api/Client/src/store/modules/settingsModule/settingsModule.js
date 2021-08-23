@@ -8,6 +8,7 @@ import {
   UPDATE_APP,
   UPDATE_USER,
   UPDATE_USERNAME,
+  UPDATE_PROCESSING,
 } from "./mutation-types";
 
 const settingsModule = {
@@ -21,6 +22,7 @@ const settingsModule = {
     app: new App(),
     user: new User(),
     userName: "",
+    processing: false,
   }),
 
   mutations: {
@@ -46,6 +48,9 @@ const settingsModule = {
     [UPDATE_USERNAME](state, username) {
       state.userName = username;
     },
+    [UPDATE_PROCESSING](state, processing) {
+      state.processing = processing;
+    },
   },
 
   actions: {
@@ -69,6 +74,9 @@ const settingsModule = {
     },
     updateUserName({ commit }, username) {
       commit(UPDATE_USERNAME, username);
+    },
+    updateProcessing({ commit }, processing) {
+      commit(UPDATE_PROCESSING, processing);
     },
   },
 
@@ -105,6 +113,9 @@ const settingsModule = {
     },
     getUserName: (state) => {
       return state.userName;
+    },
+    getProcessing: (state) => {
+      return state.processing;
     },
   },
 };

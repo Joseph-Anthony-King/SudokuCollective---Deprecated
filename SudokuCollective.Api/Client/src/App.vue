@@ -337,9 +337,22 @@ export default {
     userLoginProcessComplete() {
       this.$data.processing = false;
     },
+
+    delayProcessingMessage() {
+      setTimeout(() => {
+        if (this.$data.processing) {
+          showToast(
+            this,
+            ToastMethods["show"],
+            "Processing, please do not navigate away...",
+            defaultToastOptions()
+          );
+        }
+      }, 1000);
+    },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser"]),
+    ...mapGetters("settingsModule", ["getUser", "getProcessing"]),
     ...mapGetters("sudokuModule", ["getDifficulties"]),
 
     cssProps() {
@@ -362,6 +375,14 @@ export default {
     "$store.state.settingsModule.user": {
       handler: function (val, oldVal) {
         this.$data.user = this.getUser;
+      },
+    },
+    "$store.state.settingsModule.processing": {
+      handler: function (val, oldVal) {
+        if (val) {
+          this.delayProcessingMessage();
+        }
+        this.$data.processing = this.getProcessing;
       },
     },
     "$store.state.settingsModule.authTokenExpired": {
