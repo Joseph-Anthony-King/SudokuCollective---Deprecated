@@ -6,10 +6,10 @@ import User from "@/models/user";
 const getApp = async function (id) {
   var response = await appService.getApp(id);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     const app = new App(response.data.app);
     const licenseResponse = await appService.getLicense(app.id);
-    if (licenseResponse.data.success) {
+    if (licenseResponse.data.isSuccess) {
       app.updateLicense(licenseResponse.data.license);
     }
     const appUsersResponse = await appService.getAppUsers(app.id);
@@ -19,7 +19,7 @@ const getApp = async function (id) {
     });
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       app: app,
     };
@@ -38,7 +38,7 @@ const getByLicense = async function () {
 
   const response = await appService.getByLicense(data);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return new App(response.data.app);
   } else {
     return processFailure(response);
@@ -48,12 +48,12 @@ const getByLicense = async function () {
 const postLicense = async function (data) {
   const response = await appService.postLicense(data);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     const appsResponse = await getMyApps();
 
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       app: response.data.app,
       apps: appsResponse.apps,
@@ -66,11 +66,11 @@ const postLicense = async function (data) {
 const updateApp = async function (data) {
   const response = await appService.updateApp(data);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     const app = new App(response.data.app);
 
     const licenseResponse = await appService.getLicense(app.id);
-    if (licenseResponse.data.success) {
+    if (licenseResponse.data.isSuccess) {
       app.updateLicense(licenseResponse.data.license);
     }
 
@@ -81,7 +81,7 @@ const updateApp = async function (data) {
     });
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       app: app,
     };
@@ -93,7 +93,7 @@ const updateApp = async function (data) {
 const getMyApps = async function () {
   const response = await appService.getMyApps();
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     response.data.apps = response.data.apps.sort(function (a, b) {
       if (a.id < b.id) {
         return -1;
@@ -109,7 +109,7 @@ const getMyApps = async function () {
     for (const app of response.data.apps) {
       const newApp = new App(app);
       const licenseResponse = await appService.getLicense(newApp.id);
-      if (licenseResponse.data.success) {
+      if (licenseResponse.data.isSuccess) {
         newApp.updateLicense(licenseResponse.data.license);
       }
       const appUsersResponse = await appService.getAppUsers(newApp.id);
@@ -121,7 +121,7 @@ const getMyApps = async function () {
     }
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       apps: tempArray,
     };
@@ -133,7 +133,7 @@ const getMyApps = async function () {
 const getApps = async function () {
   const response = await appService.getApps();
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     response.data.apps = response.data.apps.sort(function (a, b) {
       if (a.id < b.id) {
         return -1;
@@ -149,7 +149,7 @@ const getApps = async function () {
     for (const app of response.data.apps) {
       const newApp = new App(app);
       const licenseResponse = await appService.getLicense(newApp.id);
-      if (licenseResponse.data.success) {
+      if (licenseResponse.data.isSuccess) {
         newApp.updateLicense(licenseResponse.data.license);
       }
       const appUsersResponse = await appService.getAppUsers(newApp.id);
@@ -161,7 +161,7 @@ const getApps = async function () {
     }
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       apps: tempArray,
     };
@@ -173,7 +173,7 @@ const getApps = async function () {
 const getRegisteredApps = async function (userid) {
   const response = await appService.getRegisteredApps(userid);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     response.data.apps = response.data.apps.sort(function (a, b) {
       if (a.id < b.id) {
         return -1;
@@ -193,7 +193,7 @@ const getRegisteredApps = async function (userid) {
 
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       apps: apps,
     };
@@ -205,10 +205,10 @@ const getRegisteredApps = async function (userid) {
 const getNonAppUsers = async function (id) {
   const response = await appService.getNonAppUsers(id);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       users: response.data.users,
     };
@@ -220,16 +220,16 @@ const getNonAppUsers = async function (id) {
 const deleteApp = async function (app) {
   const response = await appService.deleteApp(app);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     const appsResponse = await appService.getMyApps();
 
-    if (appsResponse.data.success) {
+    if (appsResponse.data.isSuccess) {
       let tempArray = [];
 
       for (const app of appsResponse.data.apps) {
         const newApp = new App(app);
         const licenseResponse = await appService.getLicense(newApp.id);
-        if (licenseResponse.data.success) {
+        if (licenseResponse.data.isSuccess) {
           newApp.updateLicense(licenseResponse.data.license);
         }
         const appUsersResponse = await appService.getAppUsers(newApp.id);
@@ -246,7 +246,7 @@ const deleteApp = async function (app) {
       });
       return {
         status: response.status,
-        success: response.data.success,
+        isSuccess: response.data.isSuccess,
         message: response.data.message.substring(17),
         app: new App(),
         apps: tempArray,
@@ -260,16 +260,16 @@ const deleteApp = async function (app) {
 const resetApp = async function (app) {
   const response = await appService.resetApp(app);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     const appsResponse = await appService.getMyApps();
 
-    if (appsResponse.data.success) {
+    if (appsResponse.data.isSuccess) {
       let tempArray = [];
 
       for (const app of appsResponse.data.apps) {
         const newApp = new App(app);
         const licenseResponse = await appService.getLicense(newApp.id);
-        if (licenseResponse.data.success) {
+        if (licenseResponse.data.isSuccess) {
           newApp.updateLicense(licenseResponse.data.license);
         }
         const appUsersResponse = await appService.getAppUsers(newApp.id);
@@ -286,7 +286,7 @@ const resetApp = async function (app) {
       });
       return {
         status: response.status,
-        success: response.data.success,
+        isSuccess: response.data.isSuccess,
         message: response.data.message.substring(17),
         app: response.data.app,
         apps: tempArray,
@@ -300,10 +300,10 @@ const resetApp = async function (app) {
 const addUser = async function (appid, userid) {
   const response = await appService.putAddUser(appid, userid);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
     };
   } else {
@@ -314,10 +314,10 @@ const addUser = async function (appid, userid) {
 const removeUser = async function (appid, userid) {
   const response = await appService.deleteRemoveUser(appid, userid);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
     };
   } else {
@@ -328,10 +328,10 @@ const removeUser = async function (appid, userid) {
 const activateAdminPrivileges = async function (appid, userid) {
   const response = await appService.putActivateAdminPrivileges(appid, userid);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
     };
   } else {
@@ -342,10 +342,10 @@ const activateAdminPrivileges = async function (appid, userid) {
 const deactivateAdminPrivileges = async function (appid, userid) {
   const response = await appService.putDeactivateAdminPrivileges(appid, userid);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
     };
   } else {
@@ -356,10 +356,10 @@ const deactivateAdminPrivileges = async function (appid, userid) {
 const activateApp = async function (id) {
   var response = await appService.putActivateApp(id);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
     };
   } else {
@@ -370,10 +370,10 @@ const activateApp = async function (id) {
 const deactivateApp = async function (id) {
   var response = await appService.putDeactivateApp(id);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
     };
   } else {

@@ -6,7 +6,7 @@ namespace SudokuCollective.Data.Models.ResultModels
 {
     public class AuthenticatedUserResult : IAuthenticatedUserResult
     {
-        public bool Success { get; set; }
+        public bool IsSuccess { get; set; }
         public bool FromCache { get; set; }
         public string Message { get; set; }
         public IAuthenticatedUser User { get; set; }
@@ -14,7 +14,7 @@ namespace SudokuCollective.Data.Models.ResultModels
 
         public AuthenticatedUserResult() : base()
         {
-            Success = false;
+            IsSuccess = false;
             FromCache = false;
             Message = string.Empty;
             User = new AuthenticatedUser();

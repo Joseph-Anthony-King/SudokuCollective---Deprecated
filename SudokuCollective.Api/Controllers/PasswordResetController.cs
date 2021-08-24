@@ -34,11 +34,11 @@ namespace SudokuCollective.Api.Controllers
                     token,
                     licenseResult.License);
 
-            if (result.Success)
+            if (result.IsSuccess)
             {
                 var passwordReset = new PasswordReset
                 {
-                    Success = result.Success,
+                    Success = result.IsSuccess,
                     UserId = result.User.Id,
                     UserName = result.User.UserName,
                     AppTitle = result.App.Name,
@@ -52,7 +52,7 @@ namespace SudokuCollective.Api.Controllers
             {
                 var passwordReset = new PasswordReset
                 {
-                    Success = result.Success
+                    Success = result.IsSuccess
                 };
 
                 return View(passwordReset);
@@ -76,7 +76,7 @@ namespace SudokuCollective.Api.Controllers
                 passwordReset.UserId, 
                 app.License);
 
-            if (userResut.Success)
+            if (userResut.IsSuccess)
             {
                 var updatePasswordRequest = new UpdatePasswordRequest
                 {
@@ -88,16 +88,16 @@ namespace SudokuCollective.Api.Controllers
 
                 passwordReset.NewPassword = string.Empty;
 
-                if (updatePasswordResult.Success)
+                if (updatePasswordResult.IsSuccess)
                 {
-                    passwordReset.Success = updatePasswordResult.Success;
+                    passwordReset.Success = updatePasswordResult.IsSuccess;
                     passwordReset.Message = updatePasswordResult.Message;
 
                     return View(passwordReset);
                 }
                 else
                 {
-                    passwordReset.Success = updatePasswordResult.Success;
+                    passwordReset.Success = updatePasswordResult.IsSuccess;
                     passwordReset.Message = updatePasswordResult.Message;
 
                     return View(passwordReset);

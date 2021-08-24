@@ -2,7 +2,7 @@
 {
     public interface IBaseResult
     {
-        bool Success { get; set; }
+        bool IsSuccess { get; set; }
         bool FromCache { get; set; }
         string Message { get; set; }
     }

@@ -32,7 +32,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
                         .Get(It.IsAny<int>())
@@ -51,7 +51,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.GetDifficulties())
                 .Returns(Task.FromResult(new DifficultiesResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
                         .GetAll()
@@ -71,7 +71,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
                         .Add(It.IsAny<Difficulty>())
@@ -90,7 +90,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.Update(It.IsAny<int>(), It.IsAny<UpdateDifficultyRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
                         .Update(It.IsAny<Difficulty>())
@@ -103,7 +103,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositorySuccessfulRequest
                         .Object
                         .Delete(It.IsAny<Difficulty>())
@@ -116,7 +116,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
                         .Add(It.IsAny<Difficulty>())
@@ -135,7 +135,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.GetDifficulties())
                 .Returns(Task.FromResult(new DifficultiesResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
                         .GetAll()
@@ -149,7 +149,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new DifficultyResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
                         .Add(It.IsAny<Difficulty>())
@@ -168,7 +168,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.Update(It.IsAny<int>(), It.IsAny<UpdateDifficultyRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
                         .Update(It.IsAny<Difficulty>())
@@ -181,7 +181,7 @@ namespace SudokuCollective.Test.MockServices
                 difficultiesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockDifficultiesRepository
+                    IsSuccess = MockDifficultiesRepository
                         .DifficultiesRepositoryFailedRequest
                         .Object
                         .Delete(It.IsAny<Difficulty>())

@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="!processing">
     <v-card-title>
       <span class="headline">Edit App</span>
     </v-card-title>
@@ -207,6 +207,7 @@ export default {
     submitInvoked: false,
     timeFrames: [],
     durations: [],
+    processing: false,
   }),
   methods: {
     ...mapActions("appModule", [
@@ -224,6 +225,8 @@ export default {
             this.$data.submitInvoked = false;
 
             try {
+              this.$data.processing = true;
+
               const data = new UpdateAppModel(
                 this.$data.app.id,
                 this.$data.app.name,
@@ -242,10 +245,10 @@ export default {
 
               const response = await appProvider.updateApp(data);
 
-              if (response.status === 200) {
+              if (response.isSuccess) {
                 this.resetEditProfileFormStatus;
 
-                this.$data.app = response.app;
+                this.$data.app = new App(response.app);
 
                 this.updateUsersSelectedApp(this.$data.app);
 
@@ -279,6 +282,8 @@ export default {
                 error,
                 defaultToastOptions()
               );
+            } finally {              
+              this.$data.processing = false;
             }
           },
         },
@@ -303,6 +308,9 @@ export default {
       this.$data.app = this.getUsersSelectedApp;
       this.$data.editAppFormIsValid = true;
       this.$data.dirty = false;
+      setTimeout(() => {
+        this.$data.processing = false;
+      }, 5000);
       document.activeElement.blur();
     },
 
@@ -378,7 +386,7 @@ export default {
       },
     },
   },
-  async created() {
+  async mounted() {
     this.$data.app = this.getUsersSelectedApp;
     this.$data.user = this.getUser;
 
@@ -389,8 +397,7 @@ export default {
     } catch (error) {
       console.log(error);
     }
-  },
-  mounted() {
+
     if (this.$props.editAppFormStatus) {
       let self = this;
       window.addEventListener("keyup", function (event) {

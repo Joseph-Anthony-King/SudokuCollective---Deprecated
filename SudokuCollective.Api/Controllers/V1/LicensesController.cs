@@ -33,7 +33,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await appsService.Create(request);
 
-                if (result.Success)
+                if (result.IsSuccess)
                 {
                     result.Message = ControllerMessages.StatusCode201(result.Message);
 
@@ -50,7 +50,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = new BaseResult
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = ControllerMessages.StatusCode500(e.Message)
                 };
 
@@ -67,7 +67,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await appsService.GetLicense(id);
 
-                if (result.Success)
+                if (result.IsSuccess)
                 {
                     result.Message = ControllerMessages.StatusCode200(result.Message);
 
@@ -84,7 +84,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = new BaseResult
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = ControllerMessages.StatusCode500(e.Message)
                 };
 

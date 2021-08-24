@@ -53,7 +53,7 @@ namespace SudokuCollective.Api.Controllers
 
             var result = await usersService.ConfirmEmail(token, baseUrl, emailtTemplatePath);
 
-            if (result.Success)
+            if (result.IsSuccess)
             {
                 var confirmEmailModel = new ConfirmEmail
                 {
@@ -62,7 +62,7 @@ namespace SudokuCollective.Api.Controllers
                     Url = result.Url,
                     IsUpdate = result.IsUpdate != null && (bool)result.IsUpdate,
                     NewEmailAddressConfirmed = result.NewEmailAddressConfirmed != null && (bool)result.NewEmailAddressConfirmed,
-                    Success = result.Success
+                    Success = result.IsSuccess
                 };
 
                 return View(confirmEmailModel);
@@ -71,7 +71,7 @@ namespace SudokuCollective.Api.Controllers
             {
                 var confirmEmailModel = new ConfirmEmail
                 {
-                    Success = result.Success
+                    Success = result.IsSuccess
                 };
 
                 return View(confirmEmailModel);

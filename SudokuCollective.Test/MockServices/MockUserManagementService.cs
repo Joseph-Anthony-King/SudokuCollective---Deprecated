@@ -30,7 +30,7 @@ namespace SudokuCollective.Test.MockServices
                 userManagementService.ConfirmUserName(It.IsAny<string>(), It.IsAny<string>()))
                     .Returns(Task.FromResult(new AuthenticationResult() 
                     {
-                        Success = true,
+                        IsSuccess = true,
                         Message = UsersMessages.UserNameConfirmedMessage,
                         UserName = "TestSuperUser"
                     } as IAuthenticationResult));
@@ -43,7 +43,7 @@ namespace SudokuCollective.Test.MockServices
                 userManagementService.ConfirmUserName(It.IsAny<string>(), It.IsAny<string>()))
                     .Returns(Task.FromResult(new AuthenticationResult()
                     {
-                        Success = false,
+                        IsSuccess = false,
                         Message = UsersMessages.NoUserIsUsingThisEmailMessage
                     } as IAuthenticationResult));
 

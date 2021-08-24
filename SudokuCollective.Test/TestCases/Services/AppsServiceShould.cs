@@ -94,7 +94,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.Get(1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("App Found"));
             Assert.That(result.App, Is.TypeOf<App>());
         }
@@ -109,7 +109,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutAppRepoFailure.Get(3);
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("App not Found"));
             Assert.That(result.App.IsActive, Is.False);
         }
@@ -124,7 +124,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetApps(new Paginator(), 1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Apps Found"));
             Assert.That(result.Apps.Count, Is.EqualTo(2));
         }
@@ -148,7 +148,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var apps = context.Apps.ToList();
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("App Created"));
             Assert.That(result.App.IsActive, Is.True);
         }
@@ -172,7 +172,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var apps = context.Apps.ToList();
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("User does not Exist"));
             Assert.That(apps.Count, Is.EqualTo(2));
         }
@@ -187,7 +187,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetAppByLicense(license, 1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("App Found"));
             Assert.That(result.App.Id, Is.EqualTo(1));
             Assert.That(result.App, Is.TypeOf<App>());
@@ -204,7 +204,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutAppRepoFailure.GetAppByLicense(invalidLicense, 1);
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("App not Found"));
         }
 
@@ -218,7 +218,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetLicense(1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("App Found"));
             Assert.That(result.License, Is.EqualTo(license));
         }
@@ -233,7 +233,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutAppRepoFailure.GetLicense(5);
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("App not Found"));
             Assert.That(result.License, Is.Not.EqualTo(license));
         }
@@ -248,7 +248,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetAppUsers(1, 1, paginator);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Users Found"));
             Assert.That(result.Users.Count, Is.EqualTo(2));
         }
@@ -277,7 +277,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var apps = context.Apps.ToList();
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("App Updated"));
             Assert.That(name, Is.EqualTo("Test App 1... UPDATED!"));
         }
@@ -293,7 +293,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var appUsers = context.Users.Where(u => u.Apps.Any(ua => ua.AppId == 1)).ToList();
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("User Added to App"));
         }
 
@@ -307,7 +307,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.RemoveAppUser(1, 2);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("User Removed from App"));
         }
 
@@ -321,7 +321,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.DeleteOrReset(2);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("App Deleted"));
         }
 
@@ -336,7 +336,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("App Activated"));
             Assert.That(app.IsActive, Is.True);
         }
@@ -352,7 +352,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var app = context.Apps.FirstOrDefault(a => a.Id == 1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("App Deactivated"));
         }
 
@@ -475,7 +475,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutPromoteUser.ActivateAdminPrivileges(1, 3);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("User has been Promoted to Admin"));
         }
 
@@ -489,7 +489,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutAppRepoFailure.ActivateAdminPrivileges(1, 3);
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("App not Found"));
         }
 
@@ -505,7 +505,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Admin Privileges Deactivated"));
             Assert.That(result.User, Is.TypeOf<User>());
 
@@ -523,7 +523,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result, Is.InstanceOf<UserResult>());
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("App not Found"));
             Assert.That(result.User, Is.TypeOf<User>());
 
@@ -539,7 +539,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetMyApps(1, new Paginator());
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Apps Found"));
             Assert.That(result.Apps.Count, Is.EqualTo(2));
         }
@@ -554,7 +554,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutAppRepoFailure.GetMyApps(1, new Paginator());
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("Apps not Found"));
         }
 
@@ -568,7 +568,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetRegisteredApps(2, new Paginator());
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Apps Found"));
             Assert.That(result.Apps.Count, Is.EqualTo(2));
         }
@@ -583,7 +583,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutAppRepoFailure.GetRegisteredApps(1, new Paginator());
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("Apps not Found"));
         }
     }

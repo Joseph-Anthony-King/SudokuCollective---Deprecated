@@ -439,7 +439,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                     NinthRow = new List<int> { 1, 6, 9, 4, 7, 5, 8, 3, 2 }
                 });
 
-            var success = ((BaseResult)((ObjectResult)result.Result).Value).Success;
+            var success = ((BaseResult)((ObjectResult)result.Result).Value).IsSuccess;
             var message = ((BaseResult)((ObjectResult)result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result).StatusCode;
 
@@ -470,7 +470,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                     NinthRow = new List<int> { 1, 6, 9, 4, 7, 5, 8, 3, 2 }
                 });
 
-            var success = ((BaseResult)((ObjectResult)result.Result).Value).Success;
+            var success = ((BaseResult)((ObjectResult)result.Result).Value).IsSuccess;
             var message = ((BaseResult)((ObjectResult)result.Result).Value).Message;
             var statusCode = ((ObjectResult)result.Result).StatusCode;
 

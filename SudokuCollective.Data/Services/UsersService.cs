@@ -96,35 +96,35 @@ namespace SudokuCollective.Data.Services
             {
                 if (string.IsNullOrEmpty(request.UserName))
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNameRequiredMessage;
 
                     return result;
                 }
                 else if (string.IsNullOrEmpty(request.Email))
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.EmailRequiredMessage;
 
                     return result;
                 }
                 else if (!regex.IsMatch(request.UserName))
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNameInvalidMessage;
 
                     return result;
                 }
                 else if (!isUserNameUnique)
                 {
-                    result.Success = isUserNameUnique;
+                    result.IsSuccess = isUserNameUnique;
                     result.Message = UsersMessages.UserNameUniqueMessage;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = isEmailUnique;
+                    result.IsSuccess = isEmailUnique;
                     result.Message = UsersMessages.EmailUniqueMessage;
 
                     return result;
@@ -150,7 +150,7 @@ namespace SudokuCollective.Data.Services
 
                         if (!app.IsActive)
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = AppsMessages.AppDeactivatedMessage;
 
                             return result;
@@ -267,7 +267,7 @@ namespace SudokuCollective.Data.Services
                                 userApp.App.Users = new List<UserApp>();
                             }
 
-                            result.Success = userResponse.Success;
+                            result.IsSuccess = userResponse.Success;
                             result.Message = UsersMessages.UserCreatedMessage;
                             result.User = user;
 
@@ -275,14 +275,14 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (!userResponse.Success && userResponse.Exception != null)
                         {
-                            result.Success = userResponse.Success;
+                            result.IsSuccess = userResponse.Success;
                             result.Message = userResponse.Exception.Message;
 
                             return result;
                         }
                         else
                         {
-                            result.Success = userResponse.Success;
+                            result.IsSuccess = userResponse.Success;
                             result.Message = UsersMessages.UserNotCreatedMessage;
 
                             return result;
@@ -290,14 +290,14 @@ namespace SudokuCollective.Data.Services
                     }
                     else if (!appResponse.Success && appResponse.Exception != null)
                     {
-                        result.Success = appResponse.Success;
+                        result.IsSuccess = appResponse.Success;
                         result.Message = appResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = AppsMessages.AppNotFoundMessage;
 
                         return result;
@@ -305,7 +305,7 @@ namespace SudokuCollective.Data.Services
                 }
                 catch (Exception exp)
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = exp.Message;
 
                     return result;
@@ -323,7 +323,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage;
 
                 return result;
@@ -346,7 +346,7 @@ namespace SudokuCollective.Data.Services
                 {
                     var user = (User)response.Object;
 
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = UsersMessages.UserFoundMessage;
                     result.User = user;
 
@@ -414,14 +414,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -429,7 +429,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -452,7 +452,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage;
 
                 return result;
@@ -472,35 +472,35 @@ namespace SudokuCollective.Data.Services
             {
                 if (string.IsNullOrEmpty(request.UserName))
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNameRequiredMessage;
 
                     return result;
                 }
                 else if (string.IsNullOrEmpty(request.Email))
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.EmailRequiredMessage;
 
                     return result;
                 }
                 else if (!regex.IsMatch(request.UserName))
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNameInvalidMessage;
 
                     return result;
                 }
                 else if (!isUserNameUnique)
                 {
-                    result.Success = isUserNameUnique;
+                    result.IsSuccess = isUserNameUnique;
                     result.Message = UsersMessages.UserNameUniqueMessage;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = isEmailUnique;
+                    result.IsSuccess = isEmailUnique;
                     result.Message = UsersMessages.EmailUniqueMessage;
 
                     return result;
@@ -635,7 +635,7 @@ namespace SudokuCollective.Data.Services
                                 .Send(user.Email, emailSubject, html);
                         }
 
-                        var updateUserResponse = await CacheFactory.UpdateWithCacheAsync<User>(
+                        var updateUserResponse = await CacheFactory.UpdateWithCacheAsync(
                             _usersRepository,
                             _distributedCache,
                             user,
@@ -645,7 +645,7 @@ namespace SudokuCollective.Data.Services
                         {
                             user = (User)updateUserResponse.Object;
 
-                            result.Success = userResponse.Success;
+                            result.IsSuccess = userResponse.Success;
                             result.Message = UsersMessages.UserUpdatedMessage;
                             result.User = user;
 
@@ -653,14 +653,14 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
                         {
-                            result.Success = updateUserResponse.Success;
+                            result.IsSuccess = updateUserResponse.Success;
                             result.Message = updateUserResponse.Exception.Message;
 
                             return result;
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.UserNotUpdatedMessage;
 
                             return result;
@@ -668,14 +668,14 @@ namespace SudokuCollective.Data.Services
                     }
                     else if (!userResponse.Success && userResponse.Exception != null)
                     {
-                        result.Success = userResponse.Success;
+                        result.IsSuccess = userResponse.Success;
                         result.Message = userResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
@@ -683,7 +683,7 @@ namespace SudokuCollective.Data.Services
                 }
                 catch (Exception exp)
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = exp.Message;
 
                     return result;
@@ -704,7 +704,7 @@ namespace SudokuCollective.Data.Services
 
             if (requestorId == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage;
 
                 return result;
@@ -966,7 +966,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                             return result;
@@ -974,7 +974,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = ServicesMesages.PageNotFoundMessage;
 
                         return result;
@@ -1061,21 +1061,21 @@ namespace SudokuCollective.Data.Services
                         }
                     }
 
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = UsersMessages.UsersFoundMessage;
 
                     return result;
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UsersNotFoundMessage;
 
                     return result;
@@ -1083,7 +1083,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1096,7 +1096,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage;
             }
 
@@ -1115,7 +1115,7 @@ namespace SudokuCollective.Data.Services
                 {
                     if (((User)userResponse.Object).Id == 1 && ((User)userResponse.Object).IsSuperUser)
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.SuperUserCannotBeDeletedMessage;
 
                         return result;
@@ -1136,21 +1136,21 @@ namespace SudokuCollective.Data.Services
 
                         _ = await _appAdminsRepository.DeleteRange(admins);
 
-                        result.Success = true;
+                        result.IsSuccess = true;
                         result.Message = UsersMessages.UserDeletedMessage;
 
                         return result;
                     }
                     else if (!deletionResponse.Success && deletionResponse.Exception != null)
                     {
-                        result.Success = deletionResponse.Success;
+                        result.IsSuccess = deletionResponse.Success;
                         result.Message = deletionResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.UserNotDeletedMessage;
 
                         return result;
@@ -1158,14 +1158,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!userResponse.Success && userResponse.Exception != null)
                 {
-                    result.Success = userResponse.Success;
+                    result.IsSuccess = userResponse.Success;
                     result.Message = userResponse.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -1173,7 +1173,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1203,15 +1203,21 @@ namespace SudokuCollective.Data.Services
                     request.License);
 
                 var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
+                var app = (App)appResponse.Object;
+
+                app.License = (await CacheFactory.GetLicenseWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetAppLicenseCacheKey, app.Id),
+                    CachingStrategy.Heavy,
+                    app.Id)).Item1;
 
                 if (appResponse.Success)
                 {
-                    var license = ((App)appResponse.Object).License;
-
                     cacheFactoryResponse = await CacheFactory.GetByEmailWithCacheAsync(
                         _usersRepository,
                         _distributedCache,
-                        string.Format(CacheKeys.GetUserByEmailCacheKey, request.Email, license),
+                        string.Format(CacheKeys.GetUserByEmailCacheKey, request.Email, app.License),
                         CachingStrategy.Medium,
                         request.Email);
 
@@ -1219,7 +1225,6 @@ namespace SudokuCollective.Data.Services
 
                     if (userResponse.Success)
                     {
-                        var app = (App)appResponse.Object;
                         var user = (User)userResponse.Object;
                         PasswordReset passwordReset;
 
@@ -1227,7 +1232,7 @@ namespace SudokuCollective.Data.Services
                         {
                             if (!user.IsEmailConfirmed)
                             {
-                                result.Success = false;
+                                result.IsSuccess = false;
                                 result.Message = UsersMessages.UserEmailNotConfirmedMessage;
 
                                 return result;
@@ -1250,7 +1255,8 @@ namespace SudokuCollective.Data.Services
                                     user = (User)(await CacheFactory.UpdateWithCacheAsync<User>(
                                         _usersRepository,
                                         _distributedCache,
-                                        user)).Object;
+                                        user,
+                                        app.License)).Object;
                                 }
 
                                 return SendPasswordResetEmail(
@@ -1277,7 +1283,8 @@ namespace SudokuCollective.Data.Services
                                     user = (User)(await CacheFactory.UpdateWithCacheAsync<User>(
                                         _usersRepository,
                                         _distributedCache,
-                                        user)).Object;
+                                        user,
+                                        app.License)).Object;
 
                                     return SendPasswordResetEmail(
                                         user,
@@ -1290,14 +1297,14 @@ namespace SudokuCollective.Data.Services
                                 }
                                 else if (!passwordResetResponse.Success && passwordResetResponse.Exception != null)
                                 {
-                                    result.Success = passwordResetResponse.Success;
+                                    result.IsSuccess = passwordResetResponse.Success;
                                     result.Message = passwordResetResponse.Exception.Message;
 
                                     return result;
                                 }
                                 else
                                 {
-                                    result.Success = userResponse.Success;
+                                    result.IsSuccess = userResponse.Success;
                                     result.Message = UsersMessages.UnableToProcessPasswordResetRequesMessage;
 
                                     return result;
@@ -1306,7 +1313,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = AppsMessages.UserNotSignedUpToAppMessage;
 
                             return result;
@@ -1314,14 +1321,14 @@ namespace SudokuCollective.Data.Services
                     }
                     else if (!userResponse.Success && userResponse.Exception != null)
                     {
-                        result.Success = userResponse.Success;
+                        result.IsSuccess = userResponse.Success;
                         result.Message = userResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = userResponse.Success;
+                        result.IsSuccess = userResponse.Success;
                         result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
 
                         return result;
@@ -1329,14 +1336,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!appResponse.Success && appResponse.Exception != null)
                 {
-                    result.Success = appResponse.Success;
+                    result.IsSuccess = appResponse.Success;
                     result.Message = appResponse.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = appResponse.Success;
+                    result.IsSuccess = appResponse.Success;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
@@ -1344,7 +1351,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1376,21 +1383,21 @@ namespace SudokuCollective.Data.Services
                         ((PasswordReset)response.Object).UserId,
                         result)).Item1).Object;
 
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = UsersMessages.UserFoundMessage;
 
                     return result;
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -1398,7 +1405,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1416,21 +1423,21 @@ namespace SudokuCollective.Data.Services
                 if (response.Success)
                 {
                     result.License = await _appsRepository.GetLicense(((PasswordReset)response.Object).AppId);
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = AppsMessages.AppFoundMessage;
 
                     return result;
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
 
                     return result;
@@ -1438,7 +1445,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1491,7 +1498,7 @@ namespace SudokuCollective.Data.Services
                             {
                                 if (user.ReceivedRequestToUpdatePassword)
                                 {
-                                    result.Success = true;
+                                    result.IsSuccess = true;
                                     result.Message = UsersMessages.UserFoundMessage;
                                     result.User = user;
                                     result.App = app;
@@ -1500,7 +1507,7 @@ namespace SudokuCollective.Data.Services
                                 }
                                 else
                                 {
-                                    result.Success = false;
+                                    result.IsSuccess = false;
                                     result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
 
                                     return result;
@@ -1508,7 +1515,7 @@ namespace SudokuCollective.Data.Services
                             }
                             else
                             {
-                                result.Success = false;
+                                result.IsSuccess = false;
                                 result.Message = AppsMessages.UserNotSignedUpToAppMessage;
 
                                 return result;
@@ -1516,14 +1523,14 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (!appResponse.Success && appResponse.Exception != null)
                         {
-                            result.Success = passwordResetResponse.Success;
+                            result.IsSuccess = passwordResetResponse.Success;
                             result.Message = passwordResetResponse.Exception.Message;
 
                             return result;
                         }
                         else
                         {
-                            result.Success = appResponse.Success;
+                            result.IsSuccess = appResponse.Success;
                             result.Message = AppsMessages.AppNotFoundMessage;
 
                             return result;
@@ -1531,14 +1538,14 @@ namespace SudokuCollective.Data.Services
                     }
                     else if (!userResponse.Success && userResponse.Exception != null)
                     {
-                        result.Success = passwordResetResponse.Success;
+                        result.IsSuccess = passwordResetResponse.Success;
                         result.Message = passwordResetResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = userResponse.Success;
+                        result.IsSuccess = userResponse.Success;
                         result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
@@ -1546,14 +1553,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!passwordResetResponse.Success && passwordResetResponse.Exception != null)
                 {
-                    result.Success = passwordResetResponse.Success;
+                    result.IsSuccess = passwordResetResponse.Success;
                     result.Message = passwordResetResponse.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = passwordResetResponse.Success;
+                    result.IsSuccess = passwordResetResponse.Success;
                     result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
 
                     return result;
@@ -1561,7 +1568,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1580,7 +1587,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync<User>(
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
                     _usersRepository,
                     _distributedCache,
                     string.Format(CacheKeys.GetUserCacheKey, request.UserId, license),
@@ -1588,11 +1595,28 @@ namespace SudokuCollective.Data.Services
                     request.UserId);
 
                 var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
+                var user = (User)userResponse.Object;
+
+                cacheFactoryResponse = await CacheFactory.GetAppByLicenseWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetAppByLicenseCacheKey, license),
+                    CachingStrategy.Medium,
+                    license);
+
+                var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
+                var app = (App)appResponse.Object;
+
+                app.License = (await CacheFactory.GetLicenseWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetAppLicenseCacheKey, app.Id),
+                    CachingStrategy.Heavy,
+                    app.Id)).Item1;
+
 
                 if (userResponse.Success)
                 {
-                    var user = (User)userResponse.Object;
-
                     if (user.ReceivedRequestToUpdatePassword)
                     {
                         user.Password = BCrypt.Net.BCrypt
@@ -1605,27 +1629,36 @@ namespace SudokuCollective.Data.Services
                         var updateUserResponse = await CacheFactory.UpdateWithCacheAsync<User>(
                             _usersRepository,
                             _distributedCache,
-                            user);
+                            user,
+                            app.License);
 
                         if (updateUserResponse.Success)
                         {
+                            var passwordResetReponse = await _passwordResetsRepository
+                                .RetrievePasswordReset(
+                                    user.Id, 
+                                    app.Id);
+
+                            _ = await _passwordResetsRepository
+                                .Delete((PasswordReset)passwordResetReponse.Object);
+
                             user = (User)updateUserResponse.Object;
 
-                            result.Success = userResponse.Success;
+                            result.IsSuccess = userResponse.Success;
                             result.Message = UsersMessages.PasswordResetMessage;
 
                             return result;
                         }
                         else if (!updateUserResponse.Success && updateUserResponse.Exception != null)
                         {
-                            result.Success = userResponse.Success;
+                            result.IsSuccess = userResponse.Success;
                             result.Message = userResponse.Exception.Message;
 
                             return result;
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.PasswordNotResetMessage;
 
                             return result;
@@ -1633,7 +1666,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
 
                         return result;
@@ -1641,14 +1674,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!userResponse.Success && userResponse.Exception != null)
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -1656,7 +1689,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1676,7 +1709,7 @@ namespace SudokuCollective.Data.Services
 
             if (userid == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage;
 
                 return result;
@@ -1736,21 +1769,21 @@ namespace SudokuCollective.Data.Services
 
                         await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
 
-                        result.Success = response.Success;
+                        result.IsSuccess = response.Success;
                         result.Message = UsersMessages.RolesAddedMessage;
 
                         return result;
                     }
                     else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = response.Success;
+                        result.IsSuccess = response.Success;
                         result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.RolesNotAddedMessage;
 
                         return result;
@@ -1758,7 +1791,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.RolesInvalidMessage;
 
                     return result;
@@ -1766,7 +1799,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1786,7 +1819,7 @@ namespace SudokuCollective.Data.Services
 
             if (userid == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage;
 
                 return result;
@@ -1848,21 +1881,21 @@ namespace SudokuCollective.Data.Services
 
                         await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
 
-                        result.Success = response.Success;
+                        result.IsSuccess = response.Success;
                         result.Message = UsersMessages.RolesRemovedMessage;
 
                         return result;
                     }
                     else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = response.Success;
+                        result.IsSuccess = response.Success;
                         result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.RolesNotRemovedMessage;
 
                         return result;
@@ -1870,7 +1903,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.RolesInvalidMessage;
 
                     return result;
@@ -1878,7 +1911,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1891,7 +1924,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage;
 
                 return result;
@@ -1926,14 +1959,14 @@ namespace SudokuCollective.Data.Services
 
                     await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
 
-                    result.Success = true;
+                    result.IsSuccess = true;
                     result.Message = UsersMessages.UserActivatedMessage;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotActivatedMessage;
 
                     return result;
@@ -1941,7 +1974,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -1954,7 +1987,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage;
 
                 return result;
@@ -1989,14 +2022,14 @@ namespace SudokuCollective.Data.Services
 
                     await CacheFactory.RemoveKeysAsync(_distributedCache, cacheKeys);
 
-                    result.Success = true;
+                    result.IsSuccess = true;
                     result.Message = UsersMessages.UserDeactivatedMessage;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotDeactivatedMessage;
 
                     return result;
@@ -2004,7 +2037,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -2054,7 +2087,7 @@ namespace SudokuCollective.Data.Services
 
                             var user = (User)response.Object;
 
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.UserName = user.UserName;
                             result.Email = user.Email;
                             result.DateUpdated = user.DateUpdated;
@@ -2094,14 +2127,14 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (!response.Success && response.Exception != null)
                         {
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.Message = response.Exception.Message;
 
                             return result;
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.EmailNotConfirmedMessage;
 
                             return result;
@@ -2165,7 +2198,7 @@ namespace SudokuCollective.Data.Services
 
                             emailConfirmation = (EmailConfirmation)(await _emailConfirmationsRepository.Update(emailConfirmation)).Object;
 
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.UserName = user.UserName;
                             result.Email = user.Email;
                             result.DateUpdated = user.DateUpdated;
@@ -2178,14 +2211,14 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (!response.Success && response.Exception != null)
                         {
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.Message = response.Exception.Message;
 
                             return result;
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.OldEmailNotConfirmedMessage;
 
                             return result;
@@ -2205,7 +2238,7 @@ namespace SudokuCollective.Data.Services
 
                             var user = (User)response.Object;
 
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.Email = user.Email;
                             result.UserName = user.UserName;
                             result.DateUpdated = user.DateUpdated;
@@ -2245,14 +2278,14 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (!response.Success && response.Exception != null)
                         {
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.Message = response.Exception.Message;
 
                             return result;
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.EmailNotConfirmedMessage;
 
                             return result;
@@ -2261,14 +2294,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!emailConfirmationResponse.Success && emailConfirmationResponse.Exception != null)
                 {
-                    result.Success = emailConfirmationResponse.Success;
+                    result.IsSuccess = emailConfirmationResponse.Success;
                     result.Message = emailConfirmationResponse.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.EmailNotConfirmedMessage;
 
                     return result;
@@ -2276,7 +2309,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -2298,7 +2331,7 @@ namespace SudokuCollective.Data.Services
 
             if (userId == 0 || appId == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.EmailConfirmationEmailNotResentMessage;
 
                 return result;
@@ -2394,14 +2427,14 @@ namespace SudokuCollective.Data.Services
                                     if ((bool)result.ConfirmationEmailSuccessfullySent)
                                     {
                                         result.User = user;
-                                        result.Success = true;
+                                        result.IsSuccess = true;
                                         result.Message = UsersMessages.EmailConfirmationEmailResentMessage;
 
                                         return result;
                                     }
                                     else
                                     {
-                                        result.Success = false;
+                                        result.IsSuccess = false;
                                         result.Message = UsersMessages.EmailConfirmationEmailNotResentMessage;
 
                                         return result;
@@ -2410,14 +2443,14 @@ namespace SudokuCollective.Data.Services
                                 }
                                 else if (!emailConfirmationResponse.Success && emailConfirmationResponse.Exception != null)
                                 {
-                                    result.Success = emailConfirmationResponse.Success;
+                                    result.IsSuccess = emailConfirmationResponse.Success;
                                     result.Message = emailConfirmationResponse.Exception.Message;
 
                                     return result;
                                 }
                                 else
                                 {
-                                    result.Success = false;
+                                    result.IsSuccess = false;
                                     result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
 
                                     return result;
@@ -2426,7 +2459,7 @@ namespace SudokuCollective.Data.Services
                             }
                             else
                             {
-                                result.Success = false;
+                                result.IsSuccess = false;
                                 result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
 
                                 return result;
@@ -2434,7 +2467,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = AppsMessages.AppNotFoundMessage;
 
                             return result;
@@ -2442,7 +2475,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.EmailConfirmedMessage;
 
                         return result;
@@ -2450,7 +2483,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -2458,7 +2491,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -2479,7 +2512,7 @@ namespace SudokuCollective.Data.Services
 
             if (userId == 0 || appId == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
 
                 return result;
@@ -2567,10 +2600,10 @@ namespace SudokuCollective.Data.Services
 
                                 var emailSubject = string.Format("Greetings from {0}: Password Update Request Received", appTitle);
 
-                                result.Success = _emailService
+                                result.IsSuccess = _emailService
                                     .Send(user.Email, emailSubject, html);
 
-                                if (result.Success)
+                                if (result.IsSuccess)
                                 {
                                     result.Message = UsersMessages.PasswordResetEmailResentMessage;
 
@@ -2578,7 +2611,7 @@ namespace SudokuCollective.Data.Services
                                 }
                                 else
                                 {
-                                    result.Success = false;
+                                    result.IsSuccess = false;
                                     result.Message = UsersMessages.PasswordResetEmailNotResentMessage;
 
                                     return result;
@@ -2586,7 +2619,7 @@ namespace SudokuCollective.Data.Services
                             }
                             else
                             {
-                                result.Success = false;
+                                result.IsSuccess = false;
                                 result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
 
                                 return result;
@@ -2594,7 +2627,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
 
                             return result;
@@ -2602,7 +2635,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.UserNotFoundMessage;
 
                         return result;
@@ -2611,7 +2644,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
@@ -2619,7 +2652,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -2632,7 +2665,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0 || appId == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
 
                 return result;
@@ -2673,9 +2706,10 @@ namespace SudokuCollective.Data.Services
                             result.User = (User)(await CacheFactory.UpdateWithCacheAsync<User>(
                                 _usersRepository,
                                 _distributedCache,
-                                user)).Object;
+                                user,
+                                license)).Object;
 
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
 
                             return result;
@@ -2683,7 +2717,7 @@ namespace SudokuCollective.Data.Services
                         else if (response.Success == false && response.Exception != null)
                         {
                             result.User = (User)(await _usersRepository.Update(user)).Object;
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.Message = response.Exception.Message;
 
                             return result;
@@ -2691,7 +2725,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.User = (User)(await _usersRepository.Update(user)).Object;
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
 
                             return result;
@@ -2700,7 +2734,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.User = (User)(await _usersRepository.Get(id)).Object;
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
 
                         return result;
@@ -2708,7 +2742,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -2716,7 +2750,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -2729,7 +2763,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0 || appId == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.PasswordResetRequestNotCancelledMessage;
 
                 return result;
@@ -2768,9 +2802,10 @@ namespace SudokuCollective.Data.Services
                             result.User = (User)(await CacheFactory.UpdateWithCacheAsync<User>(
                                 _usersRepository,
                                 _distributedCache,
-                                user)).Object;
+                                user,
+                                license)).Object;
 
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.Message = UsersMessages.PasswordResetRequestCancelledMessage;
 
                             return result;
@@ -2778,7 +2813,7 @@ namespace SudokuCollective.Data.Services
                         else if (response.Success == false && response.Exception != null)
                         {
                             result.User = (User)(await _usersRepository.Update(user)).Object;
-                            result.Success = response.Success;
+                            result.IsSuccess = response.Success;
                             result.Message = response.Exception.Message;
 
                             return result;
@@ -2786,7 +2821,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.User = (User)(await _usersRepository.Update(user)).Object;
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.PasswordResetRequestNotCancelledMessage;
 
                             return result;
@@ -2795,7 +2830,7 @@ namespace SudokuCollective.Data.Services
                     else
                     {
                         result.User = (User)(await _usersRepository.Get(id)).Object;
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
 
                         return result;
@@ -2803,7 +2838,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -2811,7 +2846,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -2824,7 +2859,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0 || appId == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = UsersMessages.UserNotFoundMessage + " or " + AppsMessages.AppNotFoundMessage;
 
                 return result;
@@ -2832,7 +2867,32 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var userResponse = await _usersRepository.Get(id);
+
+                var cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetAppCacheKey, appId),
+                    CachingStrategy.Medium,
+                    appId);
+
+                var appResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
+                var app = (App)appResponse.Object;
+
+                app.License = (await CacheFactory.GetLicenseWithCacheAsync(
+                    _appsRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetAppLicenseCacheKey, app.Id),
+                    CachingStrategy.Heavy,
+                    app.Id)).Item1;
+
+                cacheFactoryResponse = await CacheFactory.GetWithCacheAsync(
+                    _usersRepository,
+                    _distributedCache,
+                    string.Format(CacheKeys.GetUserCacheKey, id, app.License),
+                    CachingStrategy.Medium,
+                    id);
+
+                var userResponse = (RepositoryResponse)cacheFactoryResponse.Item1;
 
                 if (userResponse.Success)
                 {
@@ -2860,19 +2920,20 @@ namespace SudokuCollective.Data.Services
                                     user = (User)(await CacheFactory.UpdateWithCacheAsync<User>(
                                         _usersRepository,
                                         _distributedCache,
-                                        user)).Object;
+                                        user,
+                                        app.License)).Object;
 
-                                    result.Success = response.Success;
+                                    result.IsSuccess = response.Success;
                                     result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
                                 }
                                 else if (response.Success == false && response.Exception != null)
                                 {
-                                    result.Success = response.Success;
+                                    result.IsSuccess = response.Success;
                                     result.Message = response.Exception.Message;
                                 }
                                 else
                                 {
-                                    result.Success = false;
+                                    result.IsSuccess = false;
                                     result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
                                 }
                             }
@@ -2891,23 +2952,24 @@ namespace SudokuCollective.Data.Services
                                     user = (User)(await CacheFactory.UpdateWithCacheAsync<User>(
                                         _usersRepository,
                                         _distributedCache,
-                                        user)).Object;
+                                        user,
+                                        app.License)).Object;
 
-                                    result.Success = response.Success;
+                                    result.IsSuccess = response.Success;
                                     result.Message = string.IsNullOrEmpty(result.Message) ?
                                         UsersMessages.PasswordResetRequestCancelledMessage :
                                         string.Format("{0} and {1}", result.Message, UsersMessages.PasswordResetRequestCancelledMessage);
                                 }
                                 else if (response.Success == false && response.Exception != null)
                                 {
-                                    result.Success = result.Success ? result.Success : response.Success;
+                                    result.IsSuccess = result.IsSuccess ? result.IsSuccess : response.Success;
                                     result.Message = string.IsNullOrEmpty(result.Message) ?
                                         response.Exception.Message :
                                         string.Format("{0} and {1}", result.Message, response.Exception.Message);
                                 }
                                 else
                                 {
-                                    result.Success = false;
+                                    result.IsSuccess = false;
                                     result.Message = string.IsNullOrEmpty(result.Message) ?
                                         UsersMessages.PasswordResetRequestNotCancelledMessage :
                                         string.Format("{0} and {1}", result.Message, UsersMessages.PasswordResetRequestNotCancelledMessage);
@@ -2919,7 +2981,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = UsersMessages.EmailRequestsNotFoundMessage;
 
                             return result;
@@ -2927,7 +2989,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = AppsMessages.AppNotFoundMessage;
 
                         return result;
@@ -2935,7 +2997,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -2943,7 +3005,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -3106,10 +3168,10 @@ namespace SudokuCollective.Data.Services
 
                 var emailSubject = string.Format("Greetings from {0}: Password Update Request Received", appTitle);
 
-                result.Success = _emailService
+                result.IsSuccess = _emailService
                     .Send(user.Email, emailSubject, html);
 
-                if (result.Success)
+                if (result.IsSuccess)
                 {
                     if (newRequest)
                     {

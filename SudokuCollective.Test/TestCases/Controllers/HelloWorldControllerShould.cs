@@ -16,7 +16,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sut.Get();
-            var success = ((BaseResult)((OkObjectResult)result).Value).Success;
+            var success = ((BaseResult)((OkObjectResult)result).Value).IsSuccess;
             var message = ((BaseResult)((OkObjectResult)result).Value).Message;
             var statusCode = ((OkObjectResult)result).StatusCode;
 

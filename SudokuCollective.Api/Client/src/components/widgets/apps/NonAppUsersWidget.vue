@@ -137,7 +137,7 @@ export default {
 
       this.$data.nonAppUsers = [];
 
-      if (response.success) {
+      if (response.isSuccess) {
         response.users.forEach((user) => {
           this.$data.nonAppUsers.push(new User(user));
         });
@@ -203,7 +203,7 @@ export default {
 
             var response = await appProvider.getApp(this.$data.app.id);
 
-            if (response.success) {
+            if (response.isSuccess) {
               this.$data.app = response.app;
               this.updateUsersSelectedApp(this.$data.app);
               this.replaceUsersApp(this.$data.app);
@@ -241,7 +241,7 @@ export default {
       },
     },
   },
-  created() {
+  mounted() {
     this.refreshApp();
   },
 };

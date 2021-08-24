@@ -34,7 +34,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.Create(It.IsAny<CreateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .Add(It.IsAny<Game>())
@@ -53,7 +53,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.Update(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .Update(It.IsAny<Game>())
@@ -72,7 +72,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .Delete(It.IsAny<Game>())
@@ -85,7 +85,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.GetGame(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .Get(It.IsAny<int>())
@@ -104,7 +104,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.GetGames(It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .GetAll()
@@ -124,7 +124,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.GetMyGame(It.IsAny<int>(), It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
@@ -143,7 +143,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.GetMyGames(It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .GetMyGames(It.IsAny<int>(), It.IsAny<int>())
@@ -163,7 +163,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.DeleteMyGame(It.IsAny<int>(), It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .DeleteMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
@@ -176,7 +176,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.Check(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositorySuccessfulRequest
                         .Object
                         .Update(It.IsAny<Game>())
@@ -195,7 +195,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.CreateAnnonymous(It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new AnnonymousGameResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = GamesMessages.GameCreatedMessage,
                     SudokuMatrix = new List<List<int>>(),
                 } as IAnnonymousGameResult));
@@ -204,7 +204,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.CheckAnnonymous(It.IsAny<List<int>>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = GamesMessages.GameSolvedMessage
                 } as IBaseResult));
 
@@ -212,7 +212,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.Create(It.IsAny<CreateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .Add(It.IsAny<Game>())
@@ -231,7 +231,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.Update(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .Update(It.IsAny<Game>())
@@ -250,7 +250,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.Delete(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .Delete(It.IsAny<Game>())
@@ -263,7 +263,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.GetGame(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .GetAppGame(It.IsAny<int>(), It.IsAny<int>())
@@ -282,7 +282,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.GetGames(It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .GetAppGames(It.IsAny<int>())
@@ -296,7 +296,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.GetMyGame(It.IsAny<int>(), It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
@@ -315,7 +315,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.GetMyGames(It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new GamesResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .GetMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
@@ -329,7 +329,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.DeleteMyGame(It.IsAny<int>(), It.IsAny<GamesRequest>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .DeleteMyGame(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())
@@ -342,7 +342,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.Check(It.IsAny<int>(), It.IsAny<UpdateGameRequest>()))
                 .Returns(Task.FromResult(new GameResult()
                 {
-                    Success = MockGamesRepository
+                    IsSuccess = MockGamesRepository
                         .GamesRepositoryFailedRequest
                         .Object
                         .Update(It.IsAny<Game>())
@@ -361,7 +361,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.CreateAnnonymous(It.IsAny<DifficultyLevel>()))
                 .Returns(Task.FromResult(new AnnonymousGameResult()
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = GamesMessages.GameNotCreatedMessage,
                     SudokuMatrix = null,
                 } as IAnnonymousGameResult));
@@ -370,7 +370,7 @@ namespace SudokuCollective.Test.MockServices
                 gamesService.CheckAnnonymous(It.IsAny<List<int>>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = GamesMessages.GameNotSolvedMessage
                 } as IBaseResult));
         }

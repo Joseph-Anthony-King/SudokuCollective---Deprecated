@@ -130,7 +130,7 @@ namespace SudokuCollective.Data.Services
 
                 if (userResponse.Success)
                 {
-                    result.Success = true;
+                    result.IsSuccess = true;
                     result.Message = UsersMessages.UserNameConfirmedMessage;
                     result.UserName = ((User)userResponse.Object).UserName;
 
@@ -138,7 +138,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
 
                     return result;

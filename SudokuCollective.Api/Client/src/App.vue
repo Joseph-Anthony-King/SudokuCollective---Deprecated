@@ -1,6 +1,6 @@
 <template>
   <v-app :style="cssProps">
-    <v-overlay :value="processing">
+    <v-overlay :value="getProcessing">
       <v-progress-circular
         indeterminate
         color="primary"
@@ -36,7 +36,7 @@
 
         <v-dialog v-model="displayLoginForm" persistent max-width="600px">
           <LoginForm
-            v-show="!processing"
+            v-show="!getProcessing"
             :loginFormStatus="userLoggingIn"
             :authExpired="authTokenExpired"
             v-on:user-logging-in-event="login"
@@ -125,7 +125,6 @@ export default {
       icon: "mdi-puzzle",
     },
     navDrawerStatus: null,
-    processing: false,
   }),
   methods: {
     ...mapActions("appModule", [
@@ -141,6 +140,7 @@ export default {
       "updateAuthToken",
       "updateApp",
       "updateUser",
+      "updateProcessing",
     ]),
     ...mapActions("userModule", ["updateUsers", "removeUsers"]),
     ...mapActions("sudokuModule", [
@@ -219,7 +219,6 @@ export default {
       }
 
       this.$data.userLoggingIn = false;
-      this.$data.processing = false;
     },
 
     logout() {
@@ -331,16 +330,16 @@ export default {
     },
 
     processingUserLogin() {
-      this.$data.processing = true;
+      this.updateProcessing(true);
     },
 
     userLoginProcessComplete() {
-      this.$data.processing = false;
+      this.updateProcessing(false);
     },
 
     delayProcessingMessage() {
       setTimeout(() => {
-        if (this.$data.processing) {
+        if (this.getProcessing) {
           showToast(
             this,
             ToastMethods["show"],
@@ -377,14 +376,6 @@ export default {
         this.$data.user = this.getUser;
       },
     },
-    "$store.state.settingsModule.processing": {
-      handler: function (val, oldVal) {
-        if (val) {
-          this.delayProcessingMessage();
-        }
-        this.$data.processing = this.getProcessing;
-      },
-    },
     "$store.state.settingsModule.authTokenExpired": {
       handler: function (val, oldVal) {
         if (val === true) {
@@ -395,7 +386,7 @@ export default {
       },
     },
   },
-  async created() {
+  async mounted() {
     const urlResponse = await apiURLConfirmationService.confirm();
 
     this.confirmBaseURL(urlResponse.url);
@@ -411,7 +402,7 @@ export default {
     if (this.getDifficulties.length === 0) {
       const difficultiesResponse = await difficultiesProvider.getDifficulties();
 
-      if (difficultiesResponse.success) {
+      if (difficultiesResponse.isSuccess) {
         this.updateDifficulties(difficultiesResponse.difficulties);
       } else {
         showToast(

@@ -4,7 +4,7 @@ import { gamesService } from "@/services/gamesService/gamesService";
 const createGame = async function (difficultyLevel) {
   const response = await gamesService.getCreateGame(difficultyLevel);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     let game = [];
     response.data.sudokuMatrix.forEach((row) => {
       let result = [];
@@ -19,7 +19,7 @@ const createGame = async function (difficultyLevel) {
     });
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       game: game,
     };
@@ -31,10 +31,10 @@ const createGame = async function (difficultyLevel) {
 const checkGame = async function (game) {
   const response = await gamesService.getCheckGame(game);
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
     };
   } else {

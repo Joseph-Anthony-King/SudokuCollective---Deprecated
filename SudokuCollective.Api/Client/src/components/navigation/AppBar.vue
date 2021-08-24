@@ -212,7 +212,7 @@ export default {
     },
   },
 
-  async created() {
+  async mounted() {
     this.populateAppMenuItems();
   },
 };

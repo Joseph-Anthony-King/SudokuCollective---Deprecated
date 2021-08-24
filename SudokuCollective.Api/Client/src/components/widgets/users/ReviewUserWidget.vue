@@ -218,7 +218,7 @@ export default {
       },
     },
   },
-  created() {
+  mounted() {
     this.$data.user = this.getSelectedUser;
   },
 };

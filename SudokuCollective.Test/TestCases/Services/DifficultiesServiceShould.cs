@@ -54,7 +54,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.Get(1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Difficulty Found"));
             Assert.That(result.Difficulty, Is.TypeOf<Difficulty>());
         }
@@ -69,7 +69,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetDifficulties();
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Difficulties Found"));
         }
 
@@ -87,7 +87,7 @@ namespace SudokuCollective.Test.TestCases.Services
                     || difficulty.DifficultyLevel.Equals(DifficultyLevel.TEST));
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Difficulties Found"));
             Assert.That(nullAndTestDifficultyLevelsBlocked, Is.False);
         }
@@ -112,7 +112,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 .FirstOrDefault(difficulty => difficulty.Id == 1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Difficulty Updated"));
             Assert.That(updatedDifficulty.Name, Is.EqualTo("Null"));
         }
@@ -127,7 +127,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.Delete(1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Difficulty Deleted"));
         }
 
@@ -142,7 +142,7 @@ namespace SudokuCollective.Test.TestCases.Services
                 .Create("Test", "Test", DifficultyLevel.TEST);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Difficulty Created"));
             Assert.That(result.Difficulty, Is.InstanceOf<Difficulty>());
         }

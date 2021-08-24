@@ -50,7 +50,7 @@ export function processError(error) {
     status: status,
     error: true,
     data: {
-      success: false,
+      isSuccess: false,
       message: message,
     },
   };
@@ -62,13 +62,13 @@ export function processFailure(response) {
   if (response.error) {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message,
     };
   } else {
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
     };
   }

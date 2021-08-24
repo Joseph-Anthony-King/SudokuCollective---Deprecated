@@ -16,7 +16,7 @@ namespace SudokuCollective.Api.Controllers
         {
             var result = new BaseResult
             {
-                Success = true,
+                IsSuccess = true,
                 Message = ControllerMessages.StatusCode200("Hello World from Sudoku Collective!")
             };
 

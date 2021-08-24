@@ -73,7 +73,7 @@ export default {
       },
     },
   },
-  created() {
+  mounted() {
     this.$data.processing = true;
     this.$data.user = this.getUser;
     this.$data.selectedApp = this.getUsersSelectedApp;

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!processing">
+  <div v-if="!loading">
     <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
@@ -83,9 +83,10 @@ export default {
     app: new App(),
     openingAppWidgets: false,
     apps: [],
-    processing: false,
+    loading: false,
   }),
   methods: {
+    ...mapActions("settingsModule", ["updateProcessing"]),
     ...mapActions("appModule", ["updateUsersSelectedApp", "updateUsersApps"]),
 
     openCreateAppForm() {
@@ -109,7 +110,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser"]),
+    ...mapGetters("settingsModule", ["getUser", "getProcessing"]),
     ...mapGetters("appModule", [
       "getUsersAppById",
       "getUsersApps",
@@ -130,8 +131,9 @@ export default {
       deep: true,
     },
   },
-  async created() {
-    this.$data.processing = true;
+  async mounted() {
+    this.$data.loading = true;
+    this.updateProcessing(true);
     this.$data.user = this.getUser;
     const selectedApp = this.getUsersSelectedApp;
 
@@ -144,7 +146,7 @@ export default {
     if (storeApps.length === 0) {
       const response = await appProvider.getMyApps();
 
-      if (response.success) {
+      if (response.isSuccess) {
         response.apps.forEach((app) => {
           this.$data.apps.push(new App(app));
         });
@@ -155,7 +157,8 @@ export default {
         this.$data.apps.push(store);
       });
     }
-    this.$data.processing = false;
+    this.$data.loading = false;
+    this.updateProcessing(false);
   },
 };
 </script>

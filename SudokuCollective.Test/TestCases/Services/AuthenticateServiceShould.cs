@@ -87,7 +87,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = (sutValid.IsAuthenticated(tokenRequest)).Result;
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("User Found"));
             Assert.IsNotNull(result.Token);
             Assert.AreEqual(userName, result.User.UserName);
@@ -108,7 +108,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = (sutInvalid.IsAuthenticated(tokenRequest)).Result;
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("User not Found"));
             Assert.IsEmpty(result.Token);
             Assert.AreNotEqual(userName, result.User.UserName);

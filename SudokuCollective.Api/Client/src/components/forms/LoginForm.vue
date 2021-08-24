@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="!loginSuccessful">
     <v-card-title v-show="!gettingHelp">
       <span class="headline">{{ title }}</span>
     </v-card-title>
@@ -264,12 +264,14 @@ export default {
     invalidUserNames: [],
     invalidPasswords: [],
     invalidEmails: [],
+    loginSuccessful: false,
   }),
   methods: {
-    ...mapActions("settingsModule", ["updateUserName"]),
+    ...mapActions("settingsModule", [
+      "updateUserName",
+      "updateProcessing"]),
 
     async submit() {
-      this.$emit("processing-user-login", null, null);
 
       if (this.getLoginFormStatus) {
         try {
@@ -279,15 +281,18 @@ export default {
           );
 
           if (response.status === 200) {
+            this.updateProcessing(true);
+            this.$data.loginSuccessful = true;
             this.$data.user = new User(response.data.user);
-
-            this.reset();
 
             this.$emit(
               "user-logging-in-event",
               this.$data.user,
               response.data.token
             );
+
+            this.reset();
+            this.updateProcessing(false);
           } else if (response.status === 404) {
             if (
               response.data.message ===
@@ -297,7 +302,7 @@ export default {
               this.$refs.loginForm.validate();
               this.$data.needHelp = true;
 
-              this.$emit("user-login-process-complete", null, null);
+              this.updateProcessing(false);
 
               showToast(
                 this,
@@ -312,7 +317,7 @@ export default {
               this.$refs.loginForm.validate();
               this.$data.needHelp = true;
 
-              this.$emit("user-login-process-complete", null, null);
+              this.updateProcessing(false);
 
               showToast(
                 this,
@@ -323,7 +328,7 @@ export default {
             } else {
               this.$data.needHelp = true;
 
-              this.$emit("user-login-process-complete", null, null);
+              this.updateProcessing(false);
 
               showToast(
                 this,
@@ -335,7 +340,7 @@ export default {
           } else {
             this.$data.needHelp = true;
 
-            this.$emit("user-login-process-complete", null, null);
+            this.updateProcessing(false);
 
             showToast(
               this,
@@ -347,7 +352,7 @@ export default {
         } catch (error) {
           this.$data.needHelp = true;
 
-          this.$emit("user-login-process-complete", null, null);
+          this.updateProcessing(false);
 
           showToast(this, ToastMethods["error"], error, defaultToastOptions());
         }
@@ -419,6 +424,9 @@ export default {
         this.$refs.userNameForm.reset();
       }
       document.activeElement.blur();
+      setTimeout(() => {
+        this.$data.loginSuccessful = false;
+      }, 10000)
     },
 
     close() {

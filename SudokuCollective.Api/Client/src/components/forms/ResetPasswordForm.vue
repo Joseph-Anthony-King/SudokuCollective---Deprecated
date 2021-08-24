@@ -3,15 +3,6 @@
     <v-card-title>
       <span class="headline">Reset Password</span>
     </v-card-title>
-    <v-overlay :value="processing">
-      <v-progress-circular
-        indeterminate
-        color="primary"
-        :size="100"
-        :width="10"
-        class="progress-circular"
-      ></v-progress-circular>
-    </v-overlay>
     <v-form v-model="resetPasswordFormIsValid" ref="resetPasswordForm">
       <v-card-text>
         <v-container>
@@ -82,6 +73,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import ResetPasswordModel from "@/models/viewModels/ResetPasswordModel";
 import { userProvider } from "@/providers/userProvider";
@@ -94,13 +86,14 @@ export default {
   props: ["resetPasswordFormStatus", "token"],
   mixins: [isChrome],
   data: () => ({
-    processing: false,
     resetPasswordFormIsValid: true,
     newPassword: "",
     confirmPassword: "",
     showPassword: false,
   }),
   methods: {
+    ...mapActions("settingsModule", ["updateProcessing"]),
+
     async submit() {
       var data = new ResetPasswordModel(
         this.$props.token,
@@ -109,7 +102,7 @@ export default {
 
       var response = await userProvider.resetPassword(data);
 
-      if (response.success) {
+      if (response.isSuccess) {
         this.$emit("password-reset-event", null, null);
 
         showToast(
@@ -156,9 +149,9 @@ export default {
       ];
     },
   },
-  created() {
-    this.$data.processing = true;
-    this.$data.processing = false;
+  mounted() {
+    this.updateProcessing(true);
+    this.updateProcessing(false);
   },
 };
 </script>

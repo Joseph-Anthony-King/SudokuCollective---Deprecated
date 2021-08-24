@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!processing">
+  <div v-if="!loading">
     <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
@@ -109,9 +109,10 @@ export default {
       { text: "User Count", value: "users.length" },
       { text: "Date Created", value: "dateCreated" },
     ],
-    processing: false,
+    loading: false,
   }),
   methods: {
+    ...mapActions("settingsModule", ["updateProcessing"]),
     ...mapActions("appModule", [
       "updateApps",
       "updateUsersSelectedApp",
@@ -129,7 +130,7 @@ export default {
     async refresh() {
       const response = await appProvider.getApps();
 
-      if (response.success) {
+      if (response.isSuccess) {
         var apps = [];
 
         var users = this.getUsers;
@@ -159,7 +160,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser"]),
+    ...mapGetters("settingsModule", ["getUser", "getProcessing"]),
     ...mapGetters("appModule", ["getApps"]),
     ...mapGetters("userModule", ["getUsers"]),
 
@@ -210,11 +211,13 @@ export default {
       },
     },
   },
-  async created() {
-    this.$data.processing = true;
+  async mounted() {
+    this.loading = true;
+    this.updateProcessing(true);
     this.$data.user = this.getUser;
     this.$data.apps = this.getApps;
-    this.$data.processing = false;
+    this.loading = false;
+    this.updateProcessing(false);
   },
 };
 </script>

@@ -23,7 +23,7 @@ namespace SudokuCollective.Test.MockServices
                 authenticateService.IsAuthenticated(It.IsAny<TokenRequest>()))
                     .Returns(Task.FromResult(new AuthenticatedUserResult() 
                     {
-                        Success = true,
+                        IsSuccess = true,
                         Message = UsersMessages.UserFoundMessage,
                         Token = "token",
                         User = new AuthenticatedUser()
@@ -33,7 +33,7 @@ namespace SudokuCollective.Test.MockServices
                 authenticateService.IsAuthenticated(It.IsAny<TokenRequest>()))
                     .Returns(Task.FromResult(new AuthenticatedUserResult()
                     {
-                        Success = false,
+                        IsSuccess = false,
                         Message = UsersMessages.UserNotFoundMessage
                     } as IAuthenticatedUserResult));
         }

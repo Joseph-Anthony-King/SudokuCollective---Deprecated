@@ -41,7 +41,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.Create(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .Add(It.IsAny<User>())
@@ -62,7 +62,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .Get(It.IsAny<int>())
@@ -84,7 +84,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .GetAll()
@@ -108,7 +108,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .Update(It.IsAny<User>())
@@ -130,7 +130,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = UsersMessages.ProcessedPasswordResetRequestMessage
                 } as IBaseResult));
 
@@ -142,7 +142,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = UsersMessages.PasswordResetEmailResentMessage
                 } as IBaseResult));
 
@@ -150,7 +150,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.GetUserByPasswordToken(It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = UsersMessages.UserFoundMessage,
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest
@@ -164,7 +164,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.GetAppLicenseByPasswordToken(It.IsAny<string>()))
                 .Returns(Task.FromResult(new LicenseResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = AppsMessages.AppsFoundMessage,
                     License = TestObjects.GetLicense()
                 } as ILicenseResult));
@@ -175,7 +175,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .Update(It.IsAny<User>())
@@ -188,7 +188,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.Delete(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .Delete(It.IsAny<User>())
@@ -204,7 +204,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new RolesResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .AddRoles(It.IsAny<int>(), It.IsAny<List<int>>())
@@ -221,7 +221,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .RemoveRoles(It.IsAny<int>(), It.IsAny<List<int>>())
@@ -234,7 +234,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.Activate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .Activate(It.IsAny<int>())
@@ -246,7 +246,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.Deactivate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .Deactivate(It.IsAny<int>())
@@ -261,7 +261,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new ConfirmEmailResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositorySuccessfulRequest
                         .Object
                         .ConfirmEmail(It.IsAny<IEmailConfirmation>())
@@ -274,7 +274,7 @@ namespace SudokuCollective.Test.MockServices
                 usersService.InitiatePasswordReset(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new InitiatePasswordResetResult() 
                 {
-                    Success = MockPasswordResetsRepository
+                    IsSuccess = MockPasswordResetsRepository
                         .PasswordResetsRepositorySuccessfulRequest
                         .Object
                         .Create(It.IsAny<PasswordReset>())
@@ -306,7 +306,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult() 
                 { 
-                    Success = MockEmailConfirmationsRepository
+                    IsSuccess = MockEmailConfirmationsRepository
                         .EmailConfirmationsRepositorySuccessfulRequest
                         .Object
                         .HasOutstandingEmailConfirmation(It.IsAny<int>(), It.IsAny<int>())
@@ -321,7 +321,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult() 
                 {
-                    Success = MockEmailConfirmationsRepository
+                    IsSuccess = MockEmailConfirmationsRepository
                         .EmailConfirmationsRepositorySuccessfulRequest
                         .Object
                         .Delete(It.IsAny<EmailConfirmation>())
@@ -342,7 +342,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockPasswordResetsRepository
+                    IsSuccess = MockPasswordResetsRepository
                         .PasswordResetsRepositorySuccessfulRequest
                         .Object
                         .Delete(It.IsAny<PasswordReset>())
@@ -363,7 +363,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = string.Format("{0} and {1}", 
                         UsersMessages.EmailConfirmationRequestCancelledMessage, 
                         UsersMessages.PasswordResetRequestCancelledMessage),
@@ -379,7 +379,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.Create(It.IsAny<RegisterRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .Add(It.IsAny<User>())
@@ -395,7 +395,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .Get(It.IsAny<int>())
@@ -412,7 +412,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<Paginator>()))
                 .Returns(Task.FromResult(new UsersResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .GetAll()
@@ -430,7 +430,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .Update(It.IsAny<User>())
@@ -447,7 +447,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = UsersMessages.UnableToProcessPasswordResetRequesMessage
                 } as IBaseResult));
 
@@ -459,7 +459,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = UsersMessages.UserNotFoundMessage
                 } as IBaseResult));
 
@@ -467,7 +467,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.GetUserByPasswordToken(It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = UsersMessages.UserFoundMessage,
                     User = new User()
                 } as IUserResult));
@@ -476,7 +476,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.GetAppLicenseByPasswordToken(It.IsAny<string>()))
                 .Returns(Task.FromResult(new LicenseResult()
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = AppsMessages.AppNotFoundMessage,
                     License = string.Empty
                 } as ILicenseResult));
@@ -487,7 +487,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .Update(It.IsAny<User>())
@@ -500,7 +500,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.Delete(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .Delete(It.IsAny<User>())
@@ -516,7 +516,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new RolesResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .AddRoles(It.IsAny<int>(), It.IsAny<List<int>>())
@@ -533,7 +533,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .RemoveRoles(It.IsAny<int>(), It.IsAny<List<int>>())
@@ -546,7 +546,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.Activate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .Activate(It.IsAny<int>())
@@ -558,7 +558,7 @@ namespace SudokuCollective.Test.MockServices
                 userService.Deactivate(It.IsAny<int>()))
                 .Returns(Task.FromResult(new BaseResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .Deactivate(It.IsAny<int>())
@@ -573,7 +573,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new ConfirmEmailResult()
                 {
-                    Success = MockUsersRepository
+                    IsSuccess = MockUsersRepository
                         .UsersRepositoryFailedRequest
                         .Object
                         .ConfirmEmail(It.IsAny<IEmailConfirmation>())
@@ -586,7 +586,7 @@ namespace SudokuCollective.Test.MockServices
                 usersService.InitiatePasswordReset(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new InitiatePasswordResetResult()
                 {
-                    Success = MockPasswordResetsRepository
+                    IsSuccess = MockPasswordResetsRepository
                         .PasswordResetsRepositoryFailedRequest
                         .Object
                         .Create(It.IsAny<PasswordReset>())
@@ -608,7 +608,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockEmailConfirmationsRepository
+                    IsSuccess = MockEmailConfirmationsRepository
                         .EmailConfirmationsRepositoryFailedRequest
                         .Object
                         .HasOutstandingEmailConfirmation(It.IsAny<int>(), It.IsAny<int>())
@@ -623,7 +623,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockEmailConfirmationsRepository
+                    IsSuccess = MockEmailConfirmationsRepository
                         .EmailConfirmationsRepositoryFailedRequest
                         .Object
                         .Delete(It.IsAny<EmailConfirmation>())
@@ -644,7 +644,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = MockPasswordResetsRepository
+                    IsSuccess = MockPasswordResetsRepository
                         .PasswordResetsRepositoryFailedRequest
                         .Object
                         .Delete(It.IsAny<PasswordReset>())
@@ -665,7 +665,7 @@ namespace SudokuCollective.Test.MockServices
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(new UserResult()
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = UsersMessages.EmailRequestsNotFoundMessage,
                     User = (User)MockUsersRepository
                         .UsersRepositorySuccessfulRequest

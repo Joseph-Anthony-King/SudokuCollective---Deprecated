@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="!processing">
     <v-card-title>
       <span class="headline">Edit Profile</span>
     </v-card-title>
@@ -145,9 +145,12 @@ export default {
     editProfileFormIsValid: true,
     dirty: false,
     submitInvoked: false,
+    processing: false,
   }),
   methods: {
-    ...mapActions("settingsModule", ["updateUser"]),
+    ...mapActions("settingsModule", [
+      "updateUser",
+      "updateProcessing"]),
     ...mapActions("userModule", ["replaceUser"]),
 
     async submit() {
@@ -159,6 +162,8 @@ export default {
             this.$data.submitInvoked = false;
 
             try {
+              this.$data.processing = true;
+              this.updateProcessing(true);
               let userProfie = this.getUser;
               let updatingEmail = false;
               let oldEmail = "";
@@ -263,6 +268,9 @@ export default {
                 error,
                 defaultToastOptions()
               );
+            } finally {
+              this.$data.processing = false;
+              this.updateProcessing(false);
             }
           },
         },
@@ -290,6 +298,9 @@ export default {
       this.$data.editProfileFormIsValid = true;
       this.$data.dirty = false;
       this.$data.submitInvoked = false;
+      setTimeout(() => {
+        this.$data.processing = false;
+      }, 5000);
       document.activeElement.blur();
     },
 
@@ -338,10 +349,9 @@ export default {
       },
     },
   },
-  created() {
-    this.$data.user = new User(this.getUser);
-  },
   mounted() {
+    this.$data.user = new User(this.getUser);
+
     if (this.$props.editProfileFormStatus) {
       let self = this;
       window.addEventListener("keyup", function (event) {

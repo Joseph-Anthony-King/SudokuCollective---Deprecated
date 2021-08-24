@@ -8,14 +8,14 @@ namespace SudokuCollective.Data.Resiliency
         { 
             get
             {
-                return DateTime.Now.AddMinutes(5);
+                return DateTime.Now.AddMinutes(15);
             } 
         }
         internal static DateTime Medium
         {
             get
             {
-                return DateTime.Now.AddMinutes(15);
+                return DateTime.Now.AddHours(1);
             }
         }
         internal static DateTime Heavy

@@ -3,15 +3,6 @@
     <v-card-title>
       <span class="headline">Sign Up</span>
     </v-card-title>
-    <v-overlay :value="processing">
-      <v-progress-circular
-        indeterminate
-        color="primary"
-        :size="100"
-        :width="10"
-        class="progress-circular"
-      ></v-progress-circular>
-    </v-overlay>
     <v-form v-model="signUpFormIsValid" ref="signUpForm">
       <v-card-text>
         <v-container>
@@ -170,18 +161,19 @@ export default {
     confirmPassword: "",
     signUpFormIsValid: true,
     showPassword: false,
-    processing: false,
     user: new User(),
     invalidUserNames: [],
     invalidEmails: [],
   }),
   methods: {
-    ...mapActions("settingsModule", ["updateUserName"]),
+    ...mapActions("settingsModule", [
+      "updateUserName",
+      "updateProcessing"]),
 
     async submit() {
       if (this.getSignUpFormStatus) {
         try {
-          this.$data.processing = true;
+          this.updateProcessing(true);
 
           const response = await registerService.postSignUp(
             new SignUpModel(
@@ -255,10 +247,10 @@ export default {
             );
           }
 
-          this.$data.processing = false;
+          this.updateProcessing(false);
         } catch (error) {
           showToast(this, ToastMethods["error"], error, defaultToastOptions());
-        }
+        } 
       }
     },
 

@@ -297,7 +297,7 @@ export default {
     async refreshApp() {
       var response = await appProvider.getApp(this.$data.app.id);
 
-      if (response.success) {
+      if (response.isSuccess) {
         this.$data.app = new App(response.app);
         this.updateUsersSelectedApp(this.$data.app);
         this.replaceUsersApp(this.$data.app);
@@ -610,7 +610,7 @@ export default {
       },
     },
   },
-  created() {
+  mounted() {
     this.$data.app = this.getUsersSelectedApp;
     this.$data.user = this.getUser;
   },

@@ -44,7 +44,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     var result = await rolesService
                         .Create(request.Name, request.RoleLevel);
 
-                    if (result.Success)
+                    if (result.IsSuccess)
                     {
                         result.Message = ControllerMessages.StatusCode201(result.Message);
 
@@ -61,7 +61,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 {
                     var result = new BaseResult
                     {
-                        Success = false,
+                        IsSuccess = false,
                         Message = ControllerMessages.InvalidLicenseRequestMessage
                     };
 
@@ -72,7 +72,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = new BaseResult
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = ControllerMessages.StatusCode500(e.Message)
                 };
 
@@ -101,7 +101,7 @@ namespace SudokuCollective.Api.V1.Controllers
 
                     var result = await rolesService.Update(id, request);
 
-                    if (result.Success)
+                    if (result.IsSuccess)
                     {
                         result.Message = ControllerMessages.StatusCode200(result.Message);
 
@@ -118,7 +118,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 {
                     var result = new BaseResult
                     {
-                        Success = false,
+                        IsSuccess = false,
                         Message = ControllerMessages.InvalidLicenseRequestMessage
                     };
 
@@ -129,7 +129,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = new BaseResult
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = ControllerMessages.StatusCode500(e.Message)
                 };
 
@@ -152,7 +152,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 {
                     var result = await rolesService.Delete(id);
 
-                    if (result.Success)
+                    if (result.IsSuccess)
                     {
                         result.Message = ControllerMessages.StatusCode200(result.Message);
 
@@ -169,7 +169,7 @@ namespace SudokuCollective.Api.V1.Controllers
                 {
                     var result = new BaseResult
                     {
-                        Success = false,
+                        IsSuccess = false,
                         Message = ControllerMessages.InvalidLicenseRequestMessage
                     };
 
@@ -180,7 +180,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = new BaseResult
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = ControllerMessages.StatusCode500(e.Message)
                 };
 
@@ -198,7 +198,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await rolesService.Get(id);
 
-                if (result.Success)
+                if (result.IsSuccess)
                 {
                     result.Message = ControllerMessages.StatusCode200(result.Message);
 
@@ -215,7 +215,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = new BaseResult
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = ControllerMessages.StatusCode500(e.Message)
                 };
 
@@ -232,7 +232,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = await rolesService.GetRoles();
 
-                if (result.Success)
+                if (result.IsSuccess)
                 {
                     result.Message = ControllerMessages.StatusCode200(result.Message);
 
@@ -249,7 +249,7 @@ namespace SudokuCollective.Api.V1.Controllers
             {
                 var result = new BaseResult
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = ControllerMessages.StatusCode500(e.Message)
                 };
 

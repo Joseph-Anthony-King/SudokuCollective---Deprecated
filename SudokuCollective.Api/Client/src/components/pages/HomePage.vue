@@ -114,7 +114,7 @@ export default {
       try {
         const response = await userProvider.confirmEmail(token);
 
-        if (response.success) {
+        if (response.isSuccess) {
           let message = "";
 
           if (this.$data.user.isLoggedIn) {
@@ -201,7 +201,7 @@ export default {
       },
     },
   },
-  async created() {
+  async mounted() {
     this.$data.app = this.getApp;
     this.$data.user = this.getUser;
 

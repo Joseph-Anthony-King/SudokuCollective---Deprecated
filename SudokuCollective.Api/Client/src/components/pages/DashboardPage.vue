@@ -1,15 +1,6 @@
 <template>
   <v-container fluid>
-    <v-overlay :value="processing">
-      <v-progress-circular
-        indeterminate
-        color="primary"
-        :size="100"
-        :width="10"
-        class="progress-circular"
-      ></v-progress-circular>
-    </v-overlay>
-    <v-card elevation="6" class="mx-auto" v-if="!processing">
+    <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
           <v-card-title v-if="user.isLoggedIn" class="justify-center"
@@ -54,6 +45,7 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import CreateAppForm from "@/components/forms/CreateAppForm";
 import EditAppForm from "@/components/forms/EditAppForm";
@@ -81,12 +73,13 @@ export default {
   data: () => ({
     user: new User(),
     app: new App(),
-    processing: false,
     creatingApp: false,
     editingApp: false,
     openingAppWidgets: false,
   }),
   methods: {
+    ...mapActions("settingsModule", ["updateProcessing"]),
+
     openCreateAppForm() {
       if (!this.$data.user.isAdmin) {
         showToast(
@@ -139,11 +132,10 @@ export default {
       },
     },
   },
-  created() {
-    this.$data.processing = true;
+  mounted() {
+    this.updateProcessing(true);
     this.$data.user = new User(this.getUser);
-
-    this.$data.processing = false;
+    this.updateProcessing(false);
   },
 };
 </script>

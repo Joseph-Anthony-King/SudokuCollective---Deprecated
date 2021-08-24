@@ -6,14 +6,14 @@ namespace SudokuCollective.Data.Models.ResultModels
 {
     public class SolutionResult : ISolutionResult
     {
-        public bool Success { get; set; }
+        public bool IsSuccess { get; set; }
         public bool FromCache { get; set; }
         public string Message { get; set; }
         public ISudokuSolution Solution { get; set; }
 
         public SolutionResult() : base()
         {
-            Success = false;
+            IsSuccess = false;
             FromCache = false;
             Message = string.Empty;
             Solution = new SudokuSolution();

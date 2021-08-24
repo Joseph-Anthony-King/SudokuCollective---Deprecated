@@ -22,7 +22,10 @@ const userModule = {
     },
     [UPDATE_USERS](state, users) {
       users.forEach((user) => {
-        const index = state.users.indexOf(user.id);
+        const index = state.users.map((u) => { 
+          return u.id; 
+        })
+        .indexOf(user.id);
         if (index !== -1) {
           state.users.splice(index, 1, user);
         } else {
@@ -31,7 +34,10 @@ const userModule = {
       });
     },
     [REMOVE_USER](state, user) {
-      const index = state.users.indexOf(user.id);
+      const index = state.users.map((u) => { 
+        return u.id; 
+      })
+      .indexOf(user.id);
       if (index !== -1) {
         state.users.splice(index, 1);
       }
@@ -40,7 +46,10 @@ const userModule = {
       state.users = [];
     },
     [REPLACE_USER](state, user) {
-      const index = state.users.indexOf(user.id);
+      const index = state.users.map((u) => { 
+        return u.id; 
+      })
+      .indexOf(user.id);
       if (index !== -1) {
         state.users.splice(index, 1, user);
       } else {

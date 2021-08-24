@@ -54,7 +54,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.Get(1);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Solution Found"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
         }
@@ -69,7 +69,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutFailure.Get(1);
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("Solution not Found"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
         }
@@ -84,7 +84,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.GetSolutions(baseRequest);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Solutions Found"));
             Assert.That(result.Solutions, Is.TypeOf<List<ISudokuSolution>>());
         }
@@ -99,7 +99,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutFailure.GetSolutions(baseRequest);
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("Solutions not Found"));
             Assert.That(result.Solutions, Is.TypeOf<List<ISudokuSolution>>());
         }
@@ -126,7 +126,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.Solve((ISolutionRequest)solutionRequest);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Sudoku Solution Found"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
         }
@@ -141,7 +141,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.Generate();
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Solution Generated"));
             Assert.That(result.Solution, Is.TypeOf<SudokuSolution>());
         }
@@ -156,7 +156,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.Add(10);
 
             // Assert
-            Assert.That(result.Success, Is.True);
+            Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Message, Is.EqualTo("Solutions Added"));
         }
 
@@ -170,7 +170,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutFailure.Add(10);
 
             // Assert
-            Assert.That(result.Success, Is.False);
+            Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("Solutions not Added"));
         }
     }

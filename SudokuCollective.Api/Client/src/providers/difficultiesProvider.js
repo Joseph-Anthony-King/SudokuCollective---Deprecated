@@ -5,7 +5,7 @@ import Difficulty from "@/models/difficulty";
 const getDifficulties = async function () {
   const response = await difficultiesService.getDifficulties();
 
-  if (response.data.success) {
+  if (response.data.isSuccess) {
     let difficulties = [];
 
     response.data.difficulties.forEach((difficulty) => {
@@ -13,7 +13,7 @@ const getDifficulties = async function () {
     });
     return {
       status: response.status,
-      success: response.data.success,
+      isSuccess: response.data.isSuccess,
       message: response.data.message.substring(17),
       difficulties: difficulties,
     };

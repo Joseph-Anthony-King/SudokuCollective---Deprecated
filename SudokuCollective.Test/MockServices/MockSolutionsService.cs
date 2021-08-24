@@ -36,7 +36,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
-                    Success = MockSolutionsRepository
+                    IsSuccess = MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
                         .Get(It.IsAny<int>())
@@ -55,7 +55,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.GetSolutions(It.IsAny<BaseRequest>()))
                 .Returns(Task.FromResult(new SolutionsResult()
                 {
-                    Success = MockSolutionsRepository
+                    IsSuccess = MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
                         .GetAll()
@@ -75,7 +75,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Solve(It.IsAny<ISolutionRequest>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = SolutionsMessages.SudokuSolutionFoundMessage,
                     Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
@@ -89,7 +89,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Generate()).Returns(
                     Task.FromResult(new SolutionResult()
                     {
-                        Success = MockSolutionsRepository
+                        IsSuccess = MockSolutionsRepository
                         .SolutionsRepositorySuccessfulRequest
                         .Object
                         .Add(It.IsAny<SudokuSolution>())
@@ -108,7 +108,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Add(It.IsAny<int>())).Returns(
                     Task.FromResult(new BaseResult()
                     {
-                        Success = MockSolutionsRepository
+                        IsSuccess = MockSolutionsRepository
                             .SolutionsRepositorySuccessfulRequest
                             .Object
                             .AddSolutions(It.IsAny<List<ISudokuSolution>>())
@@ -121,7 +121,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Get(It.IsAny<int>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
-                    Success = MockSolutionsRepository
+                    IsSuccess = MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
                         .Get(It.IsAny<int>())
@@ -140,7 +140,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.GetSolutions(It.IsAny<BaseRequest>()))
                 .Returns(Task.FromResult(new SolutionsResult()
                 {
-                    Success = MockSolutionsRepository
+                    IsSuccess = MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
                         .GetAll()
@@ -154,7 +154,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Solve(It.IsAny<ISolutionRequest>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
-                    Success = false,
+                    IsSuccess = false,
                     Message = SolutionsMessages.SudokuSolutionNotFoundMessage,
                     Solution = (SudokuSolution)MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
@@ -168,7 +168,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Generate()).Returns(
                     Task.FromResult(new SolutionResult()
                     {
-                        Success = MockSolutionsRepository
+                        IsSuccess = MockSolutionsRepository
                         .SolutionsRepositoryFailedRequest
                         .Object
                         .Add(It.IsAny<SudokuSolution>())
@@ -187,7 +187,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Add(It.IsAny<int>())).Returns(
                     Task.FromResult(new BaseResult()
                     {
-                        Success = MockSolutionsRepository
+                        IsSuccess = MockSolutionsRepository
                             .SolutionsRepositoryFailedRequest
                             .Object
                             .AddSolutions(It.IsAny<List<ISudokuSolution>>())
@@ -200,7 +200,7 @@ namespace SudokuCollective.Test.MockServices
                 solutionsService.Solve(It.IsAny<ISolutionRequest>()))
                 .Returns(Task.FromResult(new SolutionResult()
                 {
-                    Success = true,
+                    IsSuccess = true,
                     Message = SolutionsMessages.SudokuSolutionNotFoundMessage,
                     Solution = null
                 } as ISolutionResult));

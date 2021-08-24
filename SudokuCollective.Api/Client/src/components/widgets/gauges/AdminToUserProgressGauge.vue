@@ -33,7 +33,6 @@ export default {
     user: new User(),
     users: [],
     selectedApp: new App(),
-    processing: false,
   }),
   computed: {
     ...mapGetters("settingsModule", ["getUser"]),
@@ -240,10 +239,8 @@ export default {
       },
     },
   },
-  created() {
-    this.$data.processing = true;
+  mounted() {
     this.$data.user = this.getUser;
-    this.$data.processing = false;
   },
 };
 </script>

@@ -132,7 +132,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sut.ConfirmUserName(
                 email, 
                 TestObjects.GetLicense());
-            var success = result.Success;
+            var success = result.IsSuccess;
             var username = result.UserName;
 
             // Assert
@@ -151,7 +151,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var result = await sutFailure.ConfirmUserName(
                 "invalidEmail@example.com",
                 TestObjects.GetLicense());
-            var success = result.Success;
+            var success = result.IsSuccess;
             var message = result.Message;
 
             // Assert

@@ -44,7 +44,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = SolutionsMessages.SolutionNotFoundMessage;
 
                 return result;
@@ -58,7 +58,7 @@ namespace SudokuCollective.Data.Services
                 {
                     var solution = (SudokuSolution)solutionResponse.Object;
 
-                    result.Success = solutionResponse.Success;
+                    result.IsSuccess = solutionResponse.Success;
                     result.Message = SolutionsMessages.SolutionFoundMessage;
                     result.Solution = solution;
 
@@ -66,14 +66,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!solutionResponse.Success && solutionResponse.Exception != null)
                 {
-                    result.Success = solutionResponse.Success;
+                    result.IsSuccess = solutionResponse.Success;
                     result.Message = solutionResponse.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = SolutionsMessages.SolutionNotFoundMessage;
 
                     return result;
@@ -81,7 +81,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -207,7 +207,7 @@ namespace SudokuCollective.Data.Services
                             }
                             else
                             {
-                                result.Success = false;
+                                result.IsSuccess = false;
                                 result.Message = ServicesMesages.SortValueNotImplementedMessage;
 
                                 return result;
@@ -215,7 +215,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Message = ServicesMesages.PageNotFoundMessage;
 
                             return result;
@@ -226,21 +226,21 @@ namespace SudokuCollective.Data.Services
                         result.Solutions = response.Objects.ConvertAll(s => (ISudokuSolution)s);
                     }
 
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = SolutionsMessages.SolutionsFoundMessage;
 
                     return result;
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = SolutionsMessages.SolutionsNotFoundMessage;
 
                     return result;
@@ -248,7 +248,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -313,7 +313,7 @@ namespace SudokuCollective.Data.Services
                         solution = solvedSolutions.Where(s => s.SolutionList.IsThisListEqual(solution.SolutionList)).FirstOrDefault();
                     }
 
-                    result.Success = true;
+                    result.IsSuccess = true;
                     result.Solution = solution;
                     result.Message = SolutionsMessages.SudokuSolutionFoundMessage;
                 }
@@ -341,7 +341,7 @@ namespace SudokuCollective.Data.Services
                             if (possibleSolution)
                             {
                                 solutonInDB = possibleSolution;
-                                result.Success = possibleSolution;
+                                result.IsSuccess = possibleSolution;
                                 result.Solution = solution;
                                 result.Message = SolutionsMessages.SudokuSolutionFoundMessage;
                                 break;
@@ -350,14 +350,14 @@ namespace SudokuCollective.Data.Services
 
                         if (!solutonInDB)
                         {
-                            result.Success = false;
+                            result.IsSuccess = false;
                             result.Solution = null;
                             result.Message = SolutionsMessages.SudokuSolutionNotFoundMessage;
                         }
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Solution = null;
                         result.Message = SolutionsMessages.SudokuSolutionNotFoundMessage;
                     }
@@ -367,7 +367,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -428,14 +428,14 @@ namespace SudokuCollective.Data.Services
 
                 if (solutionResponse.Success)
                 {
-                    result.Success = solutionResponse.Success;
+                    result.IsSuccess = solutionResponse.Success;
                     result.Message = SolutionsMessages.SolutionGeneratedMessage;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = solutionResponse.Success;
+                    result.IsSuccess = solutionResponse.Success;
                     result.Message = SolutionsMessages.SolutionNotGeneratedMessage;
 
                     return result;
@@ -453,7 +453,7 @@ namespace SudokuCollective.Data.Services
 
             if (limitArg == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = SolutionsMessages.SolutionsNotAddedMessage;
 
                 return result;
@@ -482,7 +482,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -535,21 +535,21 @@ namespace SudokuCollective.Data.Services
 
                 if (solutionsResponse.Success)
                 {
-                    result.Success = solutionsResponse.Success;
+                    result.IsSuccess = solutionsResponse.Success;
                     result.Message = SolutionsMessages.SolutionsAddedMessage;
 
                     return result;
                 }
                 else if (!solutionsResponse.Success && solutionsResponse.Exception != null)
                 {
-                    result.Success = solutionsResponse.Success;
+                    result.IsSuccess = solutionsResponse.Success;
                     result.Message = solutionsResponse.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = SolutionsMessages.SolutionsNotAddedMessage;
 
                     return result;
@@ -558,7 +558,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;

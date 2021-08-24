@@ -64,7 +64,7 @@ namespace SudokuCollective.Data.Services
 
                 if (!validateUserTask.Result)
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = UsersMessages.UserNotFoundMessage;
 
                     return result;
@@ -92,7 +92,7 @@ namespace SudokuCollective.Data.Services
 
                 if (!app.IsActive)
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = AppsMessages.AppDeactivatedMessage;
 
                     return result;
@@ -100,7 +100,7 @@ namespace SudokuCollective.Data.Services
 
                 if (!app.PermitCollectiveLogins && !app.Users.Any(ua => ua.UserId == user.Id))
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = AppsMessages.UserIsNotARegisteredUserOfThisAppMessage;
 
                     return result;
@@ -197,7 +197,7 @@ namespace SudokuCollective.Data.Services
                     );
 
                 result.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-                result.Success = true;
+                result.IsSuccess = true;
                 result.Message = UsersMessages.UserFoundMessage;
 
                 return result;

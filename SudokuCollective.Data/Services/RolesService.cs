@@ -65,7 +65,7 @@ namespace SudokuCollective.Data.Services
 
                     if (response.Success)
                     {
-                        result.Success = response.Success;
+                        result.IsSuccess = response.Success;
                         result.Message = RolesMessages.RoleCreatedMessage;
                         result.Role = (IRole)response.Object;
 
@@ -73,14 +73,14 @@ namespace SudokuCollective.Data.Services
                     }
                     else if (!response.Success && response.Exception != null)
                     {
-                        result.Success = response.Success;
+                        result.IsSuccess = response.Success;
                         result.Message = response.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = RolesMessages.RoleNotCreatedMessage;
 
                         return result;
@@ -88,7 +88,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = RolesMessages.RoleAlreadyExistsMessage;
 
                     return result;
@@ -96,7 +96,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -109,7 +109,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = RolesMessages.RoleNotFoundMessage;
 
                 return result;
@@ -132,7 +132,7 @@ namespace SudokuCollective.Data.Services
                 {
                     var role = (Role)response.Object;
 
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = RolesMessages.RoleFoundMessage;
                     result.Role = role;
 
@@ -140,14 +140,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = RolesMessages.RoleNotFoundMessage;
 
                     return result;
@@ -155,7 +155,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -172,7 +172,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = RolesMessages.RoleNotFoundMessage;
 
                 return result;
@@ -202,21 +202,21 @@ namespace SudokuCollective.Data.Services
 
                     if (updateResponse.Success)
                     {
-                        result.Success = updateResponse.Success;
+                        result.IsSuccess = updateResponse.Success;
                         result.Message = RolesMessages.RoleUpdatedMessage;
 
                         return result;
                     }
                     else if (!updateResponse.Success && updateResponse.Exception != null)
                     {
-                        result.Success = updateResponse.Success;
+                        result.IsSuccess = updateResponse.Success;
                         result.Message = updateResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = RolesMessages.RoleNotUpdatedMessage;
 
                         return result;
@@ -225,14 +225,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = RolesMessages.RoleNotFoundMessage;
 
                     return result;
@@ -240,7 +240,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -253,7 +253,7 @@ namespace SudokuCollective.Data.Services
 
             if (id == 0)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = RolesMessages.RoleNotFoundMessage;
 
                 return result;
@@ -272,21 +272,21 @@ namespace SudokuCollective.Data.Services
 
                     if (deleteResponse.Success)
                     {
-                        result.Success = deleteResponse.Success;
+                        result.IsSuccess = deleteResponse.Success;
                         result.Message = RolesMessages.RoleDeletedMessage;
 
                         return result;
                     }
                     else if (!deleteResponse.Success && deleteResponse.Exception != null)
                     {
-                        result.Success = deleteResponse.Success;
+                        result.IsSuccess = deleteResponse.Success;
                         result.Message = deleteResponse.Exception.Message;
 
                         return result;
                     }
                     else
                     {
-                        result.Success = false;
+                        result.IsSuccess = false;
                         result.Message = RolesMessages.RoleNotDeletedMessage;
 
                         return result;
@@ -295,14 +295,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = RolesMessages.RoleNotFoundMessage;
 
                     return result;
@@ -310,7 +310,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;
@@ -337,7 +337,7 @@ namespace SudokuCollective.Data.Services
                 {
                     var roles = response.Objects.ConvertAll(r => (IRole)r);
 
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = RolesMessages.RolesFoundMessage;
                     result.Roles = roles;
 
@@ -345,14 +345,14 @@ namespace SudokuCollective.Data.Services
                 }
                 else if (!response.Success && response.Exception != null)
                 {
-                    result.Success = response.Success;
+                    result.IsSuccess = response.Success;
                     result.Message = response.Exception.Message;
 
                     return result;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccess = false;
                     result.Message = RolesMessages.RolesNotFoundMessage;
 
                     return result;
@@ -360,7 +360,7 @@ namespace SudokuCollective.Data.Services
             }
             catch (Exception exp)
             {
-                result.Success = false;
+                result.IsSuccess = false;
                 result.Message = exp.Message;
 
                 return result;

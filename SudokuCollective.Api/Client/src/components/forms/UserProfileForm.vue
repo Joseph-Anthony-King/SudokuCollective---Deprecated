@@ -306,7 +306,8 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response = await registerService.putResendEmailConfirmation();
+              const response =
+                await registerService.putResendEmailConfirmation();
 
               if (response.status === 200) {
                 await this.reset();
@@ -729,7 +730,7 @@ export default {
     async reset() {
       const response = await userProvider.getUser(this.$data.user.id);
 
-      if (response.success) {
+      if (response.isSuccess) {
         this.$data.user = new User(response.user);
         this.$data.user.login();
         this.updateUser(this.$data.user);
@@ -760,7 +761,7 @@ export default {
       },
     },
   },
-  created() {
+  mounted() {
     this.$data.user = this.getUser;
   },
 };

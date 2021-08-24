@@ -37,8 +37,8 @@
         </v-container>
       </v-card-text>
     </v-card>
-    <hr v-if="!processing" />
-    <v-card elevation="6" class="mx-auto" v-if="!processing">
+    <hr v-if="!getProcessing" />
+    <v-card elevation="6" class="mx-auto" v-if="!getProcessing">
       <v-card-title class="justify-center">Available Actions</v-card-title>
       <v-card-actions>
         <v-container>
@@ -154,7 +154,6 @@ export default {
     MatrixWidget,
   },
   data: () => ({
-    processing: false,
     solutionPending: true,
     playGame: null,
     modes: [
@@ -190,7 +189,7 @@ export default {
                 this.$data.difficulty.difficultyLevel
               );
 
-              if (response.success) {
+              if (response.isSuccess) {
                 this.updateGame(response.game);
                 showToast(
                   this,
@@ -241,7 +240,7 @@ export default {
       try {
         const response = await gamesProvider.checkGame(this.getGame);
 
-        if (response.success) {
+        if (response.isSuccess) {
           showToast(
             this,
             ToastMethods["success"],
@@ -405,8 +404,9 @@ export default {
       "getGame",
       "getDifficulties",
       "getSelectedDifficulty",
-      "getPlayGame"
+      "getPlayGame",
     ]),
+    ...mapGetters("settingsModule", ["getProcessing"]),
   },
   watch: {
     selectedMode: {
@@ -425,8 +425,8 @@ export default {
       },
     },
   },
-  created() {
-    if (this.getPlayGame){
+  mounted() {
+    if (this.getPlayGame) {
       this.$data.selectedMode = this.$data.modes[0];
     } else {
       this.$data.selectedMode = this.$data.modes[1];

@@ -135,7 +135,7 @@ export default {
       },
     },
   },
-  async created() {
+  async mounted() {
     this.updateGreeting();
 
     this.populateNavMenuItems();

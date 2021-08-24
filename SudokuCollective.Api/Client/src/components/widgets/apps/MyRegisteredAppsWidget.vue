@@ -1,6 +1,6 @@
 <template>
-  <div v-if="!processing">
-    <v-card elevation="6" class="mx-auto" v-if="!processing">
+  <div v-if="!loading">
+    <v-card elevation="6" class="mx-auto">
       <v-card-text>
         <v-container fluid>
           <v-card-title class="justify-center">{{ title }}</v-card-title>
@@ -83,9 +83,10 @@ export default {
   data: () => ({
     user: new User(),
     apps: [],
-    processing: false,
+    loading: false,
   }),
   methods: {
+    ...mapActions("settingsModule", ["updateProcessing"]),
     ...mapActions("appModule", [
       "updateRegisteredApps",
       "replaceRegisteredApps",
@@ -129,12 +130,12 @@ export default {
                 this.$data.user.id
               );
 
-              if (response.success) {
+              if (response.isSuccess) {
                 const appsResponse = await appProvider.getRegisteredApps(
                   this.$data.user.id
                 );
 
-                if (appsResponse.success) {
+                if (appsResponse.isSuccess) {
                   let apps = [];
 
                   appsResponse.apps.forEach((app) => {
@@ -191,7 +192,7 @@ export default {
       const response = await appProvider.getRegisteredApps(this.$data.user.id);
 
       try {
-        if (response.success) {
+        if (response.isSuccess) {
           this.replaceRegisteredApps(response.apps);
           this.$data.apps = response.apps;
 
@@ -215,7 +216,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("settingsModule", ["getUser"]),
+    ...mapGetters("settingsModule", ["getUser", "getProcessing"]),
     ...mapGetters("appModule", ["getRegisteredApps"]),
     title() {
       const apps = this.$data.apps.length === 1 ? "App" : "Apps";
@@ -227,8 +228,9 @@ export default {
       );
     },
   },
-  async created() {
-    this.$data.processing = true;
+  async mounted() {
+    this.$data.loading = true;
+    this.updateProcessing(true);
     this.$data.user = new User(this.getUser);
 
     const storeRegisteredApps = this.getRegisteredApps;
@@ -236,7 +238,7 @@ export default {
     if (storeRegisteredApps.length === 0) {
       const response = await appProvider.getRegisteredApps(this.$data.user.id);
 
-      if (response.success) {
+      if (response.isSuccess) {
         this.updateRegisteredApps(response.apps);
         this.$data.apps = response.apps;
       }
@@ -244,7 +246,8 @@ export default {
       this.$data.apps = storeRegisteredApps;
     }
 
-    this.$data.processing = false;
+    this.$data.loading = false;
+    this.updateProcessing(false);
   },
 };
 </script>
