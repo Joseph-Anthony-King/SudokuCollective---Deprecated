@@ -285,7 +285,7 @@ export default {
 
         showToast(
           this,
-          ToastMethods["info"],
+          ToastMethods["show"],
           `Are you sure you want to submit this game for a solution?`,
           actionToastOptions(action, "mode_edit")
         );
