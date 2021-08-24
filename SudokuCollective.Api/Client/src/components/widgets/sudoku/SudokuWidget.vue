@@ -6,8 +6,8 @@
           <div class="center">
             <v-combobox
               class="combo"
-              v-model="select"
-              :items="items"
+              v-model="selectedMode"
+              :items="modes"
               item-text="key"
               label="Please make a selection"
               single-line
@@ -157,12 +157,12 @@ export default {
     processing: false,
     solutionPending: true,
     playGame: null,
-    items: [
+    modes: [
       { key: "Play Game", value: true },
       { key: "Solve Sudoku Puzzle", value: false },
     ],
     difficulties: [],
-    select: null,
+    selectedMode: null,
     difficulty: null,
   }),
   methods: {
@@ -394,8 +394,8 @@ export default {
       this.$data.solutionPending = true;
     },
 
-    assignData(value) {
-      this.$data.select = value;
+    assignData(data) {
+      this.$data.select = data;
       this.$data.playGame = this.$data.select.value;
     },
   },
@@ -405,10 +405,11 @@ export default {
       "getGame",
       "getDifficulties",
       "getSelectedDifficulty",
+      "getPlayGame"
     ]),
   },
   watch: {
-    select: {
+    selectedMode: {
       handler: function (val, oldVal) {
         this.assignData(val);
       },
@@ -425,7 +426,11 @@ export default {
     },
   },
   created() {
-    this.assignData(this.$data.items[0]);
+    if (this.getPlayGame){
+      this.$data.selectedMode = this.$data.modes[0];
+    } else {
+      this.$data.selectedMode = this.$data.modes[1];
+    }
 
     this.$data.difficulties = this.getDifficulties;
 
