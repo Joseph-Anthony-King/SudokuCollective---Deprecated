@@ -56,11 +56,23 @@ namespace SudokuCollective.Api.V1.Controllers
                 }
                 else if (authenticateResult.Message.Equals(AppsMessages.AppDeactivatedMessage))
                 {
-                    return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
+                    var result = new BaseResult()
+                    {
+                        IsSuccess = false,
+                        Message = ControllerMessages.StatusCode404(authenticateResult.Message),
+                    };
+
+                    return NotFound(result);
                 }
                 else if (authenticateResult.Message.Equals(AppsMessages.UserIsNotARegisteredUserOfThisAppMessage))
                 {
-                    return NotFound(ControllerMessages.StatusCode404(authenticateResult.Message));
+                    var result = new BaseResult()
+                    {
+                        IsSuccess = false,
+                        Message = ControllerMessages.StatusCode404(authenticateResult.Message),
+                    };
+
+                    return NotFound(result);
                 }
                 else
                 {
