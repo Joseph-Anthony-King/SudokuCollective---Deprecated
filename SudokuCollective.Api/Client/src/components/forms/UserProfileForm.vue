@@ -306,8 +306,7 @@ export default {
             toastObject.goAway(0);
 
             try {
-              const response =
-                await registerService.putResendEmailConfirmation();
+              const response = await registerService.putResendEmailConfirmation();
 
               if (response.status === 200) {
                 await this.reset();

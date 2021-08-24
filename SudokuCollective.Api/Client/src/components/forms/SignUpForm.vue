@@ -166,9 +166,7 @@ export default {
     invalidEmails: [],
   }),
   methods: {
-    ...mapActions("settingsModule", [
-      "updateUserName",
-      "updateProcessing"]),
+    ...mapActions("settingsModule", ["updateUserName", "updateProcessing"]),
 
     async submit() {
       if (this.getSignUpFormStatus) {
@@ -250,7 +248,7 @@ export default {
           this.updateProcessing(false);
         } catch (error) {
           showToast(this, ToastMethods["error"], error, defaultToastOptions());
-        } 
+        }
       }
     },
 

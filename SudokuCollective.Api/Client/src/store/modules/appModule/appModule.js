@@ -68,8 +68,9 @@ const appModule = {
       state.registeredApps = [];
     },
     [REPLACE_USERS_APP](state, app) {
-      const index = state.usersApps.map((a) => { 
-          return a.id; 
+      const index = state.usersApps
+        .map((a) => {
+          return a.id;
         })
         .indexOf(app.id);
       if (index !== -1) {
@@ -83,10 +84,11 @@ const appModule = {
     },
     [UPDATE_APPS](state, apps) {
       apps.forEach((app) => {
-        const index = state.apps.map((a) => { 
-          return a.id; 
-        })
-        .indexOf(app.id);
+        const index = state.apps
+          .map((a) => {
+            return a.id;
+          })
+          .indexOf(app.id);
         if (index !== -1) {
           state.apps.splice(index, 1, app);
         } else {
@@ -95,10 +97,11 @@ const appModule = {
       });
     },
     [REMOVE_APP](state, app) {
-      const index = state.apps.map((a) => { 
-        return a.id; 
-      })
-      .indexOf(app.id);
+      const index = state.apps
+        .map((a) => {
+          return a.id;
+        })
+        .indexOf(app.id);
       if (index !== -1) {
         state.apps.splice(index, 1);
       }
@@ -107,10 +110,11 @@ const appModule = {
       state.apps = [];
     },
     [REPLACE_APP](state, app) {
-      const index = state.apps.map((a) => { 
-        return a.id; 
-      })
-      .indexOf(app.id);
+      const index = state.apps
+        .map((a) => {
+          return a.id;
+        })
+        .indexOf(app.id);
       if (index !== -1) {
         state.apps.splice(index, 1, app);
       } else {
@@ -120,10 +124,11 @@ const appModule = {
     [UPDATE_APP_OWNER](state, owner) {
       state.apps.forEach((app) => {
         if (app.ownerId === owner.id) {
-          const index = state.apps.map((a) => { 
-            return a.id; 
-          })
-          .indexOf(app.id);
+          const index = state.apps
+            .map((a) => {
+              return a.id;
+            })
+            .indexOf(app.id);
           if (index !== -1) {
             app.owner = owner;
             state.apps.splice(index, 1, app);

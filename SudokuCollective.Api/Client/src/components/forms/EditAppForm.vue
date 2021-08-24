@@ -282,7 +282,7 @@ export default {
                 error,
                 defaultToastOptions()
               );
-            } finally {              
+            } finally {
               this.$data.processing = false;
             }
           },

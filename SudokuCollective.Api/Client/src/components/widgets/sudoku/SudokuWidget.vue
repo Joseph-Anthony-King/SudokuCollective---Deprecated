@@ -416,7 +416,7 @@ export default {
         this.initializePuzzle();
       }
       this.$data.solutionPending = true;
-    
+
       this.updateDifficulty();
     },
 
@@ -426,7 +426,6 @@ export default {
     },
 
     updateDifficulty() {
-
       this.$data.difficulties = this.getDifficulties;
 
       if (this.getSelectedDifficulty !== null) {
@@ -471,7 +470,7 @@ export default {
     } else {
       this.$data.selectedMode = this.$data.modes[1];
     }
-    
+
     this.updateDifficulty();
   },
 };

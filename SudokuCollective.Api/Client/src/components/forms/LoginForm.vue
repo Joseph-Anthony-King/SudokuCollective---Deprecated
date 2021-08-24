@@ -267,12 +267,9 @@ export default {
     loginSuccessful: false,
   }),
   methods: {
-    ...mapActions("settingsModule", [
-      "updateUserName",
-      "updateProcessing"]),
+    ...mapActions("settingsModule", ["updateUserName", "updateProcessing"]),
 
     async submit() {
-
       if (this.getLoginFormStatus) {
         try {
           const response = await authenticationService.authenticateUser(
@@ -426,7 +423,7 @@ export default {
       document.activeElement.blur();
       setTimeout(() => {
         this.$data.loginSuccessful = false;
-      }, 10000)
+      }, 10000);
     },
 
     close() {

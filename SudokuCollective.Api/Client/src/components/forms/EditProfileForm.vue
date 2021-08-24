@@ -148,9 +148,7 @@ export default {
     processing: false,
   }),
   methods: {
-    ...mapActions("settingsModule", [
-      "updateUser",
-      "updateProcessing"]),
+    ...mapActions("settingsModule", ["updateUser", "updateProcessing"]),
     ...mapActions("userModule", ["replaceUser"]),
 
     async submit() {
