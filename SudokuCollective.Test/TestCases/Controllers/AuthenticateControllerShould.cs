@@ -88,13 +88,13 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutInvalidUserName.RequestToken(tokenRequest);
-            var message = ((BadRequestObjectResult)result.Result).Value;
-            var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result, Is.TypeOf<Task<ActionResult>>());
-            Assert.That(message, Is.EqualTo("Status Code 400: No User Has This User Name"));
-            Assert.That(statusCode, Is.EqualTo(400));
+            Assert.That(message, Is.EqualTo("Status Code 404: No User Has This User Name"));
+            Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
@@ -105,13 +105,13 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutInvalidPassword.RequestToken(tokenRequest);
-            var message = ((BadRequestObjectResult)result.Result).Value;
-            var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
+            var message = ((BaseResult)((NotFoundObjectResult)result.Result).Value).Message;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result, Is.TypeOf<Task<ActionResult>>());
-            Assert.That(message, Is.EqualTo("Status Code 400: Password Invalid"));
-            Assert.That(statusCode, Is.EqualTo(400));
+            Assert.That(message, Is.EqualTo("Status Code 404: Password Invalid"));
+            Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
@@ -122,13 +122,13 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             // Act
             var result = sutInvalid.RequestToken(tokenRequest);
-            var message = ((BadRequestObjectResult)result.Result).Value;
-            var statusCode = ((BadRequestObjectResult)result.Result).StatusCode;
+            var message = ((NotFoundObjectResult)result.Result).Value;
+            var statusCode = ((NotFoundObjectResult)result.Result).StatusCode;
 
             // Assert
             Assert.That(result, Is.TypeOf<Task<ActionResult>>());
-            Assert.That(message, Is.EqualTo("Status Code 400: Bad Request"));
-            Assert.That(statusCode, Is.EqualTo(400));
+            Assert.That(message, Is.EqualTo("Status Code 404: Bad Request"));
+            Assert.That(statusCode, Is.EqualTo(404));
         }
 
         [Test]
