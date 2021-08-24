@@ -77,6 +77,23 @@
                 <span>Check Game</span>
               </v-tooltip>
             </v-col>
+            <v-col v-if="playGame">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="button-full"
+                    color="blue darken-1"
+                    text
+                    @click="resetGame"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Reset Game
+                  </v-btn>
+                </template>
+                <span>Reset Game</span>
+              </v-tooltip>
+            </v-col>
             <v-col>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -169,8 +186,10 @@ export default {
     ...mapActions("sudokuModule", [
       "initializePuzzle",
       "initializeGame",
+      "initializeInitialGame",
       "updatePuzzle",
       "updateGame",
+      "updateInitialGame",
       "updateSelectedDifficulty",
       "updatePlayGame",
     ]),
@@ -191,6 +210,7 @@ export default {
 
               if (response.isSuccess) {
                 this.updateGame(response.game);
+                this.updateInitialGame(response.game);
                 showToast(
                   this,
                   ToastMethods["success"],
@@ -260,6 +280,10 @@ export default {
       } finally {
         this.updateProcessing(false);
       }
+    },
+
+    resetGame() {
+      this.updateGame(this.getInitialGame);
     },
 
     async solve() {
@@ -387,21 +411,37 @@ export default {
     clear() {
       if (this.$data.playGame) {
         this.initializeGame();
+        this.initializeInitialGame();
       } else {
         this.initializePuzzle();
       }
       this.$data.solutionPending = true;
+    
+      this.updateDifficulty();
     },
 
     assignData(data) {
       this.$data.select = data;
       this.$data.playGame = this.$data.select.value;
     },
+
+    updateDifficulty() {
+
+      this.$data.difficulties = this.getDifficulties;
+
+      if (this.getSelectedDifficulty !== null) {
+        this.$data.difficulty = this.getSelectedDifficulty;
+      } else {
+        this.$data.difficulty = this.$data.difficulties[0];
+        this.updateSelectedDifficulty(this.$data.difficulty);
+      }
+    },
   },
   computed: {
     ...mapGetters("sudokuModule", [
       "getPuzzle",
       "getGame",
+      "getInitialGame",
       "getDifficulties",
       "getSelectedDifficulty",
       "getPlayGame",
@@ -431,15 +471,8 @@ export default {
     } else {
       this.$data.selectedMode = this.$data.modes[1];
     }
-
-    this.$data.difficulties = this.getDifficulties;
-
-    if (this.getSelectedDifficulty !== null) {
-      this.$data.difficulty = this.getSelectedDifficulty;
-    } else {
-      this.$data.difficulty = this.$data.difficulties[0];
-      this.updateSelectedDifficulty(this.$data.difficulty);
-    }
+    
+    this.updateDifficulty();
   },
 };
 </script>

@@ -5,6 +5,9 @@ import {
   INITIALIZE_GAME,
   UPDATE_GAME,
   REMOVE_GAME,
+  INITIALIZE_INITIAL_GAME,
+  UPDATE_INITIAL_GAME,
+  REMOVE_INITIAL_GAME,
   UPDATE_DIFFICULTIES,
   REMOVE_DIFFICULTIES,
   UPDATE_PLAYGAME,
@@ -18,6 +21,7 @@ const sudokuModule = {
   state: () => ({
     puzzle: [],
     game: [],
+    initialGame: [],
     difficulties: [],
     selectedDifficulty: null,
     playGame: true,
@@ -31,7 +35,11 @@ const sudokuModule = {
       }
     },
     [UPDATE_PUZZLE](state, puzzle) {
-      state.puzzle = puzzle;
+      let newPuzzle = [81];
+      for (let i = 0; i < puzzle.length; i++) {
+        newPuzzle[i] = puzzle[i];
+      }
+      state.puzzle = newPuzzle;
     },
     [REMOVE_PUZZLE](state) {
       state.puzzle = [];
@@ -43,10 +51,30 @@ const sudokuModule = {
       }
     },
     [UPDATE_GAME](state, game) {
-      state.game = game;
+      let newGame = [81];
+      for (let i = 0; i < game.length; i++) {
+        newGame[i] = game[i];
+      }
+      state.game = newGame;
     },
     [REMOVE_GAME](state) {
       state.game = [];
+    },
+    [INITIALIZE_INITIAL_GAME](state) {
+      state.initialGame = [];
+      for (var i = 0; i < 81; i++) {
+        state.initialGame.push("");
+      }
+    },
+    [UPDATE_INITIAL_GAME](state, game) {
+      let newGame = [81];
+      for (let i = 0; i < game.length; i++) {
+        newGame[i] = game[i];
+      }
+      state.initialGame = newGame;
+    },
+    [REMOVE_INITIAL_GAME](state) {
+      state.initialGame = [];
     },
     [UPDATE_DIFFICULTIES](state, difficulties) {
       state.difficulties = [];
@@ -91,6 +119,18 @@ const sudokuModule = {
       commit(REMOVE_GAME);
     },
 
+    initializeInitialGame({ commit }) {
+      commit(INITIALIZE_INITIAL_GAME);
+    },
+
+    updateInitialGame({ commit }, game) {
+      commit(UPDATE_INITIAL_GAME, game);
+    },
+
+    removeInitialGame({ commit }) {
+      commit(REMOVE_INITIAL_GAME);
+    },
+
     updateDifficulties({ commit }, difficulties) {
       commit(UPDATE_DIFFICULTIES, difficulties);
     },
@@ -119,6 +159,10 @@ const sudokuModule = {
 
     getGame: (state) => {
       return state.game;
+    },
+
+    getInitialGame: (state) => {
+      return state.initialGame;
     },
 
     getDifficulties: (state) => {
