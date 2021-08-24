@@ -345,7 +345,7 @@ export default {
   watch: {
     "$store.state.settingsModule.user": {
       handler: function (val, oldVal) {
-        this.$data.user = new User(this.getUser);
+        this.$data.user = this.getUser;
       },
     },
   },
