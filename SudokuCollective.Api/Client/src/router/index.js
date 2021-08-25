@@ -35,16 +35,18 @@ const routes = [
       import(/* webpackChuckName: "Solve" */ "../views/Sudoku.vue"),
   },
   {
-    path: "/confirmEmail/:emailToken",
+    path: "/confirmEmail/:token?",
     name: "ConfirmEmail",
     component: () =>
       import(/* webpackChuckName: "ConfirmEmail" */ "../views/Home.vue"),
+    beforeEnter: checkToken,
   },
   {
-    path: "/resetPassword/:passwordToken",
+    path: "/resetPassword/:token?",
     name: "ResetPassword",
     component: () =>
       import(/* webpackChuckName: "ResetPassword" */ "../views/Home.vue"),
+    beforeEnter: checkToken,
   },
 ];
 
@@ -58,6 +60,14 @@ function checkAuth(to, from, next) {
   var user = store.getters["settingsModule/getUser"];
   if (user.isLoggedIn) next();
   else next("/");
+}
+
+function checkToken(to, from, next) {
+  if (to.params.token !== undefined) {
+    next();
+  } else {
+    next("/");
+  }
 }
 
 export default router;

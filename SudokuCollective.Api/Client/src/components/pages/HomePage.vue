@@ -42,7 +42,7 @@
       <ResetPasswordForm
         v-on:password-reset-event="passwordReset"
         v-on:password-reset-form-closed-event="closePasswordResetForm"
-        :token="passwordToken"
+        :token="token"
       />
     </v-dialog>
   </v-container>
@@ -105,7 +105,7 @@ export default {
     user: new User(),
     app: new App(),
     resetPassword: false,
-    passwordToken: null,
+    token: null,
   }),
   methods: {
     ...mapActions("settingsModule", ["updateUser"]),
@@ -205,13 +205,15 @@ export default {
     this.$data.app = this.getApp;
     this.$data.user = this.getUser;
 
-    if (this.$route.params.emailToken !== undefined) {
-      await this.confirmEmail(this.$route.params.emailToken);
+    if (this.$route.name === "ConfirmEmail" 
+      && this.$route.params.token !== undefined) {
+      await this.confirmEmail(this.$route.params.token);
     }
 
-    if (this.$route.params.passwordToken !== undefined) {
+    if (this.$route.name === "ResetPassword" 
+      && this.$route.params.token !== undefined) {
       this.$data.resetPassword = true;
-      this.$data.passwordToken = this.$route.params.passwordToken;
+      this.$data.token = this.$route.params.token;
     }
   },
 };
