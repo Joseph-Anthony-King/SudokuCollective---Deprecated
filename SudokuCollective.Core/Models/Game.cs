@@ -125,7 +125,7 @@ namespace SudokuCollective.Core.Models
 
                     if (KeepScore)
                     {
-                        TimeToSolve = SudokuMatrix.Stopwatch.Elapsed;
+                        TimeToSolve = DateTime.Now - DateCreated;
 
                         if (SudokuMatrix.Difficulty.DifficultyLevel == DifficultyLevel.EASY)
                         {
