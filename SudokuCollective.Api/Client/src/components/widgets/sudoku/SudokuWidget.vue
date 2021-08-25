@@ -369,28 +369,10 @@ export default {
             defaultToastOptions()
           );
         } else if (response.status === 400) {
-          const errorKeys = Object.keys(response.data.errors);
-          var errorMessage = "Submission failed with the following errors: ";
-
-          if (errorKeys.length === 1) {
-            errorKeys.forEach((key, index) => {
-              errorMessage = errorMessage + `${response.data.errors[key]}`;
-            });
-          } else {
-            errorKeys.forEach((key, index) => {
-              if (index !== errorKeys.length - 1) {
-                errorMessage =
-                  errorMessage + `${response.data.errors[key]}` + " & ";
-              } else {
-                errorMessage = errorMessage + `${response.data.errors[key]}`;
-              }
-            });
-          }
-
           showToast(
             this,
             ToastMethods["error"],
-            errorMessage,
+            response.message,
             defaultToastOptions()
           );
         } else {
