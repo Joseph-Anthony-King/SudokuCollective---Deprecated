@@ -41,7 +41,8 @@ export function processError(error) {
     status = error.status;
     store.dispatch("settingsModule/expireAuthToken");
     message = "Authorization has expired";
-  } else if (error.data.title === "One or more validation errors occurred.") {
+  } else if (error.status === 400 
+    && error.data.title === "One or more validation errors occurred.") {
     status = error.status;
     message = error.data.title + " ";
     if (error.data.errors !== undefined) {
@@ -51,6 +52,9 @@ export function processError(error) {
           .substring(0, explanations[key][0].length - 1) + " ";
       });
     }
+  } else if (error.status === 404) {
+    status = error.status;
+    message = error.data.message.substring(17);
   } else {
     status = error.status;
     message = error.data.message;
