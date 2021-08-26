@@ -7,7 +7,7 @@ namespace SudokuCollective.Data.Models.ResultModels
     public class InitiatePasswordResetResult : IInitiatePasswordResetResult
     {
         public bool IsSuccess { get; set; }
-        public bool FromCache { get; set; }
+        public bool IsFromCache { get; set; }
         public string Message { get; set; }
         public string Token { get; set; }
         public bool? ConfirmationEmailSuccessfullySent { get; set; }
@@ -17,7 +17,7 @@ namespace SudokuCollective.Data.Models.ResultModels
         public InitiatePasswordResetResult() : base()
         {
             IsSuccess = false;
-            FromCache = false;
+            IsFromCache = false;
             Message = string.Empty;
             Token = null;
             ConfirmationEmailSuccessfullySent = null;

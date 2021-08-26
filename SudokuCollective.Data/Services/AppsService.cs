@@ -1571,7 +1571,7 @@ namespace SudokuCollective.Data.Services
                         result);
 
                     result.IsSuccess = true;
-                    result.FromCache = response.Item2.FromCache;
+                    result.IsFromCache = response.Item2.IsFromCache;
                     result.Message = AppsMessages.AppFoundMessage;
                     result.License = response.Item1;
 

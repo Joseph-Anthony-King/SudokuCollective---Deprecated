@@ -7,14 +7,14 @@ namespace SudokuCollective.Data.Models.ResultModels
     public class RoleResult : IRoleResult
     {
         public bool IsSuccess { get; set; }
-        public bool FromCache { get; set; }
+        public bool IsFromCache { get; set; }
         public string Message { get; set; }
         public IRole Role { get; set; }
 
         public RoleResult() : base()
         {
             IsSuccess = false;
-            FromCache = false;
+            IsFromCache = false;
             Message = string.Empty;
             Role = new Role();
         }

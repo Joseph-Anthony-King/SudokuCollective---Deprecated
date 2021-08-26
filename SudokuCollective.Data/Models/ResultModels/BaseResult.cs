@@ -5,13 +5,13 @@ namespace SudokuCollective.Data.Models.ResultModels
     public class BaseResult : IBaseResult
     {
         public bool IsSuccess { get; set; }
-        public bool FromCache { get; set; }
+        public bool IsFromCache { get; set; }
         public string Message { get; set; }
 
         public BaseResult()
         {
             IsSuccess = false;
-            FromCache = false;
+            IsFromCache = false;
             Message = string.Empty;
         }
     }

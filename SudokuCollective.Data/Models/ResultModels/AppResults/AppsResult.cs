@@ -7,14 +7,14 @@ namespace SudokuCollective.Data.Models.ResultModels
     public class AppsResult : IAppsResult
     {
         public bool IsSuccess { get; set; }
-        public bool FromCache { get; set; }
+        public bool IsFromCache { get; set; }
         public string Message { get; set; }
         public List<IApp> Apps { get; set; }
 
         public AppsResult() : base()
         {
             IsSuccess = false;
-            FromCache = false;
+            IsFromCache = false;
             Message = string.Empty;
             Apps = new List<IApp>();
         }

@@ -140,7 +140,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -197,7 +197,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -492,7 +492,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -550,7 +550,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -608,7 +608,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -666,7 +666,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -724,7 +724,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -776,7 +776,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -970,7 +970,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else
@@ -1034,7 +1034,7 @@ namespace SudokuCollective.Data.Resiliency
 
                     if (result != null)
                     {
-                        result.FromCache = true;
+                        result.IsFromCache = true;
                     }
                 }
                 else

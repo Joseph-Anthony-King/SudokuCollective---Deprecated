@@ -7,7 +7,7 @@ namespace SudokuCollective.Data.Models.ResultModels
     public class UserResult : IUserResult
     {
         public bool IsSuccess { get; set; }
-        public bool FromCache { get; set; }
+        public bool IsFromCache { get; set; }
         public string Message { get; set; }
         public IUser User { get; set; }
         public bool? ConfirmationEmailSuccessfullySent { get; set; }
@@ -16,7 +16,7 @@ namespace SudokuCollective.Data.Models.ResultModels
         public UserResult() : base()
         {
             IsSuccess = false;
-            FromCache = false;
+            IsFromCache = false;
             Message = string.Empty;
             User = new User();
             ConfirmationEmailSuccessfullySent = null;

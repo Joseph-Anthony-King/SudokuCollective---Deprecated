@@ -3,7 +3,7 @@
     public interface IBaseResult
     {
         bool IsSuccess { get; set; }
-        bool FromCache { get; set; }
+        bool IsFromCache { get; set; }
         string Message { get; set; }
     }
 }
